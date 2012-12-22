@@ -3,6 +3,20 @@
 class Internal extends CI_Controller {
 
 	public function index() {
-		$this->load->view('index');
+		
+		$head = array(
+			'title' => 'Internal - Stockholm Makerspace',
+		);
+		
+		$this->load->view('header');
+
+		if(!is_loggedin()) {
+			$this->load->view('login');
+		} else {
+			$this->load->view('index');
+		}
+
+		$this->load->view('footer');
+
 	}
 }
