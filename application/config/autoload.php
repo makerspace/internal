@@ -64,7 +64,7 @@ $autoload['libraries'] = array('database', 'mongo_db');
 |	$autoload['helper'] = array('url', 'file');
 */
 
-$autoload['helper'] = array('url', 'file', 'form');
+$autoload['helper'] = array('makerspace', 'url', 'file', 'form');
 
 
 /*

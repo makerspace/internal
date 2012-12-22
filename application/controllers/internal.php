@@ -8,7 +8,7 @@ class Internal extends CI_Controller {
 			'title' => 'Internal - Stockholm Makerspace',
 		);
 		
-		$this->load->view('header');
+		$this->load->view('header', $head);
 
 		if(!is_loggedin()) {
 			$this->load->view('login');
