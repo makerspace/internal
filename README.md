@@ -1,4 +1,10 @@
-internal.makerspace.se
+Internal.makerspace.se
 ======================
 
-Internt system för hantering av b.la. medlemmar.
+Internal system for member management and similar tasks.
+
+Build using CodeIgniter, Boostrap, MariaDB and MongoDB (and other awesome tools)
+
+
+
+
