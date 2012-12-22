@@ -1,12 +1,14 @@
 <div class="container">
 
+	
 	<?php echo form_open('auth/login', array('class' => 'form-signin')); ?>
-		<h2 class="form-signin-heading">Please sign in</h2>
+		<h3>Stockholm Makerspace</h3>
 		
-		<input type="text" class="input-block-level" placeholder="Email address">
-		<input type="password" class="input-block-level" placeholder="Password">
+		<input type="text" class="input-block-level" placeholder="E-postadress">
+		<input type="password" class="input-block-level" placeholder="Ange lösenord">
 		
-		<button class="btn btn-large btn-primary" type="submit">Sign in</button>
+		<button class="btn btn-medium btn-primary" type="submit">Logga in</button>
+		
 	<?php echo form_close(); ?>
 
 </div>
