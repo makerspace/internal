@@ -64,7 +64,7 @@ $autoload['libraries'] = array('database', 'session', 'form_validation', 'ion_au
 |	$autoload['helper'] = array('url', 'file');
 */
 
-$autoload['helper'] = array('makerspace', 'url', 'file', 'form');
+$autoload['helper'] = array('makerspace', 'string', 'url', 'file', 'form');
 
 
 /*

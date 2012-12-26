@@ -10,10 +10,10 @@ class Internal extends CI_Controller {
 		
 		$this->load->view('header', $head);
 
-		if(!is_loggedin()) {
-			$this->load->view('login');
+		if(!$this->ion_auth->logged_in()) {
+			$this->load->view('auth/login');
 		} else {
-			$this->load->view('index');
+			$this->load->view('internal/index');
 		}
 
 		$this->load->view('footer');

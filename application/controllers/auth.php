@@ -714,7 +714,6 @@ class Auth extends CI_Controller {
 
 	function _get_csrf_nonce()
 	{
-		$this->load->helper('string');
 		$key   = random_string('alnum', 8);
 		$value = random_string('alnum', 20);
 		$this->session->set_flashdata('csrfkey', $key);
