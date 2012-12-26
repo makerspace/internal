@@ -1,28 +1,19 @@
-<h1>Login</h1>
-<p>Please login with your email/username and password below.</p>
+<div class="container">
 	
-<div id="infoMessage"><?php echo $message;?></div>
+	<?php echo form_open('auth/login', array('class' => 'form-signin')); ?>
+		<h3>Stockholm Makerspace</h3>
+		
+		<p>This area is restricted for members only. Visit our frontpage at <a href="http://www.makerspace.se">www.makerspace.se</a> to register.</p>
+		
+		<?php echo form_email('email', set_value('email'), 'class="input-block-level" placeholder="E-mail address"'); ?>
+		<?php echo form_password('password', '', 'class="input-block-level" placeholder="Enter password"'); ?>
+		<label class="checkbox">
+          <?php echo form_checkbox('remember', '1', false);?> Remember me
+        </label>
+		
+		<button class="btn btn-medium btn-primary" type="submit">Sign in</button>
+		<a href="/auth/forgot_password" class="btn btn-medium pull-right">Forgot your password?</button>
+		
+	<?php echo form_close(); ?>
 
-<?php echo form_open("auth/login");?>
-  	
-  <p>
-    <label for="identity">Email/Username:</label>
-    <?php echo form_input($identity);?>
-  </p>
-
-  <p>
-    <label for="password">Password:</label>
-    <?php echo form_input($password);?>
-  </p>
-
-  <p>
-    <label for="remember">Remember Me:</label>
-    <?php echo form_checkbox('remember', '1', FALSE, 'id="remember"');?>
-  </p>
-    
-    
-  <p><?php echo form_submit('submit', 'Login');?></p>
-    
-<?php echo form_close();?>
-
-<p><a href="forgot_password">Forgot your password?</a></p>
+</div>
