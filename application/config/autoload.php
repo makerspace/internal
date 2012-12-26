@@ -52,7 +52,7 @@ $autoload['packages'] = array();
 |	$autoload['libraries'] = array('database', 'session', 'xmlrpc');
 */
 
-$autoload['libraries'] = array('database', 'mongo_db', 'session');
+$autoload['libraries'] = array('database', 'session');
 
 
 /*
@@ -80,7 +80,7 @@ $autoload['helper'] = array('makerspace', 'url', 'file', 'form');
 |
 */
 
-$autoload['config'] = array('makerspace', 'mongodb');
+$autoload['config'] = array('makerspace');
 
 
 /*
