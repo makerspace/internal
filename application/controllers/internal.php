@@ -4,10 +4,8 @@ class Internal extends CI_Controller {
 
 	public function index() {
 	
-		if(!is_loggedin()) {
-			redirect('/auth/login');
-			return;
-		}
+		// Force login
+		if(!is_loggedin()) redirect('auth/login');
 		
 		$head = array(
 			'title' => 'Internal - Stockholm Makerspace',

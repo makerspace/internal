@@ -15,5 +15,6 @@
 	<![endif]-->
 </head>
 <body>
+	<?php if(is_loggedin()) $this->load->view('navbar'); ?>
 	<div class="container">
 		<?php echo get_flashdata(); ?>
