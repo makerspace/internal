@@ -1,6 +1,4 @@
-
-<!-- saved from url=(0085)https://raw.github.com/joelcox/codeigniter-amazon-ses/master/libraries/Amazon_ses.php -->
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><style type="text/css"></style></head><body><pre style="word-wrap: break-word; white-space: pre-wrap;">&lt;?php defined('BASEPATH') OR exit('No direct script access allowed');
+<?php
 /**
  * CodeIgniter Amazon SES
  *
@@ -39,40 +37,34 @@ class Amazon_ses {
 	function __construct()
 	{
 		log_message('debug', 'Amazon SES Class Initialized');
-		$this-&gt;_ci =&amp; get_instance();
+		$this->_ci =&amp; get_instance();
 		
 		// Load all config items
-		$this-&gt;_ci-&gt;load-&gt;config('amazon_ses');
-		$this-&gt;_access_key = $this-&gt;_ci-&gt;config-&gt;item('amazon_ses_access_key');
-		$this-&gt;_secret_key = $this-&gt;_ci-&gt;config-&gt;item('amazon_ses_secret_key');
-		$this-&gt;_cert_path = $this-&gt;_ci-&gt;config-&gt;item('amazon_ses_cert_path');			
-		$this-&gt;from = $this-&gt;_ci-&gt;config-&gt;item('amazon_ses_from');
-		$this-&gt;from_name = $this-&gt;_ci-&gt;config-&gt;item('amazon_ses_from_name');
-		$this-&gt;charset = $this-&gt;_ci-&gt;config-&gt;item('amazon_ses_charset');
+		$this->_ci->load->config('amazon_ses');
+		$this->_access_key = $this->_ci->config->item('amazon_ses_access_key');
+		$this->_secret_key = $this->_ci->config->item('amazon_ses_secret_key');
+		$this->_cert_path = $this->_ci->config->item('amazon_ses_cert_path');			
+		$this->from = $this->_ci->config->item('amazon_ses_from');
+		$this->from_name = $this->_ci->config->item('amazon_ses_from_name');
+		$this->charset = $this->_ci->config->item('amazon_ses_charset');
 		
 		// Check whether reply_to is not set
-		if ($this-&gt;_ci-&gt;config-&gt;item('amazon_ses_reply_to') === FALSE)
+		if ($this->_ci->config->item('amazon_ses_reply_to') === FALSE)
 		{
-			$this-&gt;reply_to = $this-&gt;_ci-&gt;config-&gt;item('amazon_ses_from');
+			$this->reply_to = $this->_ci->config->item('amazon_ses_from');
 		}
 		else
 		{
-			$this-&gt;reply_to = $this-&gt;_ci-&gt;config-&gt;item('amazon_ses_reply_to');
+			$this->reply_to = $this->_ci->config->item('amazon_ses_reply_to');
 		}
 		
 		// Is our certificate path valid?
-		if ( ! file_exists($this-&gt;_cert_path))
+		if ( ! file_exists($this->_cert_path))
 		{
-			show_error('CA root certificates not found. Please &lt;a href="http://curl.haxx.se/ca/cacert.pem"&gt;download&lt;/a&gt; a bundle of public root certificates and/or specify its location in config/amazon_ses.php');
+			show_error('CA root certificates not found. Please <a href="http://curl.haxx.se/ca/cacert.pem">download</a> a bundle of public root certificates and/or specify its location in config/amazon_ses.php');
 		}
 		
-		// Load Phil's cURL library as a Spark or the normal way
-		if (method_exists($this-&gt;_ci-&gt;load, 'spark'))
-		{
-			$this-&gt;_ci-&gt;load-&gt;spark('curl/1.0.0');
-		}
-		
-		$this-&gt;_ci-&gt;load-&gt;library('curl');
+		$this->_ci->load->library('curl');
 		
 	}
 	
@@ -87,16 +79,16 @@ class Amazon_ses {
 	public function from($from, $name = FALSE)
 	{
 		
-		$this-&gt;_ci-&gt;load-&gt;helper('email');
+		$this->_ci->load->helper('email');
 		
 		if ($name)
 		{
-			$this-&gt;from_name = $name;
+			$this->from_name = $name;
 		}
 		
 		if (valid_email($from))
 		{
-			$this-&gt;from = $from;			
+			$this->from = $from;			
 			return $this;
 		}
 	
@@ -114,7 +106,7 @@ class Amazon_ses {
 	 */
 	public function to($to)
 	{
-		$this-&gt;_add_address($to, 'to');
+		$this->_add_address($to, 'to');
 		return $this;
 	}
 	
@@ -127,7 +119,7 @@ class Amazon_ses {
 	 */
 	public function cc($cc)
 	{	
-		$this-&gt;_add_address($cc, 'cc');
+		$this->_add_address($cc, 'cc');
 		return $this;
 	}
 	
@@ -140,7 +132,7 @@ class Amazon_ses {
 	 */
 	public function bcc($bcc)
 	{
-		$this-&gt;_add_address($bcc, 'bcc');
+		$this->_add_address($bcc, 'bcc');
 		return $this;
 	}
 	
@@ -153,7 +145,7 @@ class Amazon_ses {
 	 */
 	public function subject($subject)
 	{
-		$this-&gt;subject = $subject;
+		$this->subject = $subject;
 		return $this;
 	}
 	
@@ -166,7 +158,7 @@ class Amazon_ses {
 	 */
 	public function message($message)
 	{
-		$this-&gt;message = $message;
+		$this->message = $message;
 		return $this;
 	}
 	
@@ -179,7 +171,7 @@ class Amazon_ses {
 	 */
 	public function message_alt($message_alt)
 	{
-		$this-&gt;message_alt = $message_alt;
+		$this->message_alt = $message_alt;
 		return $this;
 	}
 	
@@ -194,15 +186,15 @@ class Amazon_ses {
 	{
 		
 		// Create the message query string
-		$query_string = $this-&gt;_format_query_string();
+		$query_string = $this->_format_query_string();
 		
 		// Pass it to the Amazon API	
-		$response = $this-&gt;_api_request($query_string);		
+		$response = $this->_api_request($query_string);		
 		
 		// Destroy recipients if set
 		if ($destroy === TRUE)
 		{
-			unset($this-&gt;recipients);
+			unset($this->recipients);
 		}
 	
 		return $response;
@@ -223,12 +215,12 @@ class Amazon_ses {
 		
 		// Prep our query string
 		$query_string = array(
-			'Action' =&gt; 'VerifyEmailAddress',
-			'EmailAddress' =&gt; $address
+			'Action' => 'VerifyEmailAddress',
+			'EmailAddress' => $address
 		);
 		
 		// Hand it off to Amazon		
-		return $this-&gt;_api_request($query_string);
+		return $this->_api_request($query_string);
 		
 	}
 	
@@ -243,14 +235,14 @@ class Amazon_ses {
 	{
 		// Prep our query string
 		$query_string = array(
-			'Action' =&gt; 'ListVerifiedEmailAddresses'
+			'Action' => 'ListVerifiedEmailAddresses'
 		);
 
 		// Get our list with verified addresses
-		$response = $this-&gt;_api_request($query_string, TRUE);
+		$response = $this->_api_request($query_string, TRUE);
 
 		// Just return the text response when we're in debug mode
-		if ($this-&gt;debug === TRUE)
+		if ($this->debug === TRUE)
 		{
 			return $response;
 		}
@@ -278,7 +270,7 @@ class Amazon_ses {
 	 */
 	public function debug($bool)
 	{
-		$this-&gt;debug = (bool) $bool;
+		$this->debug = (bool) $bool;
 	}
 	
 	/**
@@ -291,16 +283,16 @@ class Amazon_ses {
 	private function _add_address($address, $type)
 	{
 		
-		$this-&gt;_ci-&gt;load-&gt;helper('email');
+		$this->_ci->load->helper('email');
 		
 		// Take care of arrays and comma delimitered lists	
-		if ( ! $this-&gt;_format_addresses($address, $type))	
+		if ( ! $this->_format_addresses($address, $type))	
 		{	
-			$this-&gt;_ci-&gt;load-&gt;helper('email');
+			$this->_ci->load->helper('email');
 						
 			if (valid_email($address))
 			{
-				$this-&gt;recipients[$type][] = $address;
+				$this->recipients[$type][] = $address;
 			}
 			else
 			{
@@ -333,7 +325,7 @@ class Amazon_ses {
 		{
 			foreach ($addresses as $address)
 			{
-				$this-&gt;{$type}($address);
+				$this->{$type}($address);
 			}
 			
 			return TRUE;
@@ -347,7 +339,7 @@ class Amazon_ses {
 			
 			foreach ($addresses as $address)
 			{
-				$this-&gt;{$type}($address);
+				$this->{$type}($address);
 			}
 			
 			return TRUE;	
@@ -366,50 +358,50 @@ class Amazon_ses {
 	private function _format_query_string()
 	{
 		$query_string = array(
-			'Action' =&gt; 'SendEmail',
-			'Source' =&gt; ($this-&gt;from_name ? $this-&gt;from_name . ' &lt;' . $this-&gt;from . '&gt;' : $this-&gt;from),
-			'Message.Subject.Data' =&gt; $this-&gt;subject,
-			'Message.Body.Text.Data' =&gt; (empty($this-&gt;message_alt) ? strip_tags($this-&gt;message) : $this-&gt;message_alt),
-			'Message.Body.Html.Data' =&gt; $this-&gt;message
+			'Action' => 'SendEmail',
+			'Source' => ($this->from_name ? $this->from_name . ' <' . $this->from . '>' : $this->from),
+			'Message.Subject.Data' => $this->subject,
+			'Message.Body.Text.Data' => (empty($this->message_alt) ? strip_tags($this->message) : $this->message_alt),
+			'Message.Body.Html.Data' => $this->message
 		);
 		
 		// Add all recipients to array
-		if (isset($this-&gt;recipients['to']))
+		if (isset($this->recipients['to']))
 		{
-			for ($i = 0; $i &lt; count($this-&gt;recipients['to']); $i++)
+			for ($i = 0; $i < count($this->recipients['to']); $i++)
 			{
-				$query_string['Destination.ToAddresses.member.' . ($i + 1)] = $this-&gt;recipients['to'][$i]; 
+				$query_string['Destination.ToAddresses.member.' . ($i + 1)] = $this->recipients['to'][$i]; 
 			}	
 		}
 		
-		if (isset($this-&gt;recipients['cc']))
+		if (isset($this->recipients['cc']))
 		{
-			for ($i = 0; $i &lt; count($this-&gt;recipients['cc']); $i++)
+			for ($i = 0; $i < count($this->recipients['cc']); $i++)
 			{
-				$query_string['Destination.CcAddresses.member.' . ($i + 1)] = $this-&gt;recipients['cc'][$i]; 
+				$query_string['Destination.CcAddresses.member.' . ($i + 1)] = $this->recipients['cc'][$i]; 
 			}
 		}
 		
-		if (isset($this-&gt;recipients['bcc']))
+		if (isset($this->recipients['bcc']))
 		{
-			for ($i = 0; $i &lt; count($this-&gt;recipients['bcc']); $i++)
+			for ($i = 0; $i < count($this->recipients['bcc']); $i++)
 			{
-				$query_string['Destination.BccAddresses.member.' . ($i + 1)] = $this-&gt;recipients['bcc'][$i]; 
+				$query_string['Destination.BccAddresses.member.' . ($i + 1)] = $this->recipients['bcc'][$i]; 
 			}
 		}
 		
-		if (isset($this-&gt;reply_to) AND ( ! empty($this-&gt;reply_to))) 
+		if (isset($this->reply_to) AND ( ! empty($this->reply_to))) 
 		{
-			$query_string['ReplyToAddresses.member'] = $this-&gt;reply_to;
+			$query_string['ReplyToAddresses.member'] = $this->reply_to;
 		}
 		
 		
 		// Add character encoding if set
-		if ( ! empty($this-&gt;charset))
+		if ( ! empty($this->charset))
 		{
-			$query_string['Message.Body.Html.Charset'] = $this-&gt;charset;
-			$query_string['Message.Body.Text.Charset'] = $this-&gt;charset;
-			$query_string['Message.Subject.Charset'] = $this-&gt;charset;	
+			$query_string['Message.Body.Html.Charset'] = $this->charset;
+			$query_string['Message.Body.Text.Charset'] = $this->charset;
+			$query_string['Message.Subject.Charset'] = $this->charset;	
 		}
 				
 		return $query_string;
@@ -425,11 +417,11 @@ class Amazon_ses {
 	private function _set_headers()
 	{
 		$date = date(DATE_RSS);
-		$signature = $this-&gt;_sign_signature($date);
+		$signature = $this->_sign_signature($date);
 		
-		$this-&gt;_ci-&gt;curl-&gt;http_header('Content-Type', 'application/x-www-form-urlencoded');
-		$this-&gt;_ci-&gt;curl-&gt;http_header('Date', $date);
-		$this-&gt;_ci-&gt;curl-&gt;http_header('X-Amzn-Authorization', 'AWS3-HTTPS AWSAccessKeyId=' . $this-&gt;_access_key . ', Algorithm=HmacSHA256, Signature=' . $signature);
+		$this->_ci->curl->http_header('Content-Type', 'application/x-www-form-urlencoded');
+		$this->_ci->curl->http_header('Date', $date);
+		$this->_ci->curl->http_header('X-Amzn-Authorization', 'AWS3-HTTPS AWSAccessKeyId=' . $this->_access_key . ', Algorithm=HmacSHA256, Signature=' . $signature);
 		
 	}
 	
@@ -442,7 +434,7 @@ class Amazon_ses {
 	 */
 	private function _sign_signature($date)
 	{
-		$hash = hash_hmac('sha256', $date, $this-&gt;_secret_key, TRUE);	
+		$hash = hash_hmac('sha256', $date, $this->_secret_key, TRUE);	
 		return base64_encode($hash);
 	}
 	
@@ -454,7 +446,7 @@ class Amazon_ses {
 	 */
 	private function _endpoint()
 	{		
-		return 'https://email.' . $this-&gt;region . '.amazonaws.com';
+		return 'https://email.' . $this->region . '.amazonaws.com';
 	}
 	
 	/**
@@ -469,28 +461,28 @@ class Amazon_ses {
 	{
 		
 		// Set the endpoint		
-		$this-&gt;_ci-&gt;curl-&gt;create($this-&gt;_endpoint());
+		$this->_ci->curl->create($this->_endpoint());
 				
-		$this-&gt;_ci-&gt;curl-&gt;post($query_string);
-		$this-&gt;_set_headers();
+		$this->_ci->curl->post($query_string);
+		$this->_set_headers();
 		
 		// Make sure we connect over HTTPS and verify
 		if( ! isset($_SERVER['HTTPS']))
 		{
-			$this-&gt;_ci-&gt;curl-&gt;ssl(TRUE, 2, $this-&gt;_cert_path);
+			$this->_ci->curl->ssl(TRUE, 2, $this->_cert_path);
 		}
 		
 		// Show headers when in debug mode		
-		if($this-&gt;debug === TRUE)
+		if($this->debug === TRUE)
 		{
-			$this-&gt;_ci-&gt;curl-&gt;option(CURLOPT_FAILONERROR, FALSE);
-			$this-&gt;_ci-&gt;curl-&gt;option(CURLINFO_HEADER_OUT, TRUE);
+			$this->_ci->curl->option(CURLOPT_FAILONERROR, FALSE);
+			$this->_ci->curl->option(CURLINFO_HEADER_OUT, TRUE);
 		}
 			
-		$response = $this-&gt;_ci-&gt;curl-&gt;execute();
+		$response = $this->_ci->curl->execute();
 
 		// Return the actual response when in debug or if requested specifically
-		if($this-&gt;debug === TRUE OR $return === TRUE)
+		if($this->debug === TRUE OR $return === TRUE)
 		{
 			return $response;
 		}
@@ -506,4 +498,4 @@ class Amazon_ses {
 		
 	}
 		
-}</pre></body></html>
+}
