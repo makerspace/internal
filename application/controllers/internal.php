@@ -8,7 +8,7 @@ class Internal extends CI_Controller {
 		if(!is_loggedin()) redirect('auth/login');
 		
 		$head = array(
-			'title' => 'Internal - Stockholm Makerspace',
+			'title' => 'Internal',
 		);
 		
 		$this->load->view('header', $head);

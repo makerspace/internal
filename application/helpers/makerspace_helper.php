@@ -88,11 +88,22 @@ function ip_address() {
 	return $_SERVER['REMOTE_ADDR'];
 }
 
+function is_json($str) {
+
+	// Speed things up.
+	if($str[0] != '{' && $str[0] != '[') {
+		return false;
+	}
+	
+	@json_decode($str);
+	return (json_last_error() == JSON_ERROR_NONE);
+}
+
 /**
  * Gravatar Helper
  * @author Jim Nelin
  **/
-function gravatar($email, $rating = 'pg', $size = 32, $default = 'retro') {
+function gravatar($email, $size = 32, $rating = 'pg', $default = 'retro') {
 	
 	// Optional options
 	$options = array();
@@ -101,5 +112,5 @@ function gravatar($email, $rating = 'pg', $size = 32, $default = 'retro') {
 	if ($default) $options[] = "default=$default";
 	
 	// Return gravatar URL
-	return 'https://secure.gravatar.com/avatar/' . md5(strtolower(trim($email))) . implode($options, '&');
+	return 'https://secure.gravatar.com/avatar/' . md5(strtolower(trim($email))) . '?'. implode($options, '&');
 }

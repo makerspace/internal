@@ -51,11 +51,11 @@ Stockholm Makerspace';
 			
 			$mail = new PHPMailerLite();
 			
-			$mail->SetFrom($this->config->item('email_from'), $this->config->item('email_name'));
+			$mail->SetFrom($this->dbconfig->email_from, $this->dbconfig->email_name);
 			$mail->AddAddress($to);
 			
 			// VERP
-			$mail->Sender = sprintf($this->config->item('email_return_path'), str_replace('@', '=', $to));
+			$mail->Sender = sprintf($this->dbconfig->email_return_path, str_replace('@', '=', $to));
 			
 			return $mail;
 	}

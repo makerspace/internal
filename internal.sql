@@ -8,6 +8,12 @@ CREATE TABLE `acl` (
   `admin` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT 'Admin access in internal.makerspace.se',
   PRIMARY KEY (`user_id`)
 );
+CREATE TABLE `config` (
+  `key` varchar(64) NOT NULL COMMENT 'Config-key',
+  `value` varchar(2048) NOT NULL,
+  `desc` varchar(255) DEFAULT NULL COMMENT 'Optional description of config',
+  PRIMARY KEY (`key`)
+);
 CREATE TABLE `logins` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,

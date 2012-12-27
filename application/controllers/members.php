@@ -6,7 +6,7 @@ class Members extends CI_Controller {
 		admin_gatekeeper();
 		
 		$head = array(
-			'title' => 'Members - Stockholm Makerspace',
+			'title' => 'Members',
 		);
 		
 		// ToDo: Pagination
@@ -17,4 +17,25 @@ class Members extends CI_Controller {
 		$this->load->view('footer');
 
 	}
+	
+	public function view($user_id = '') {
+	
+		
+	
+	}
+	
+	
+	public function add() {
+		admin_gatekeeper();
+		
+		$head = array(
+			'title' => 'Add new member',
+		);
+		
+		$this->load->view('header', $head);
+		$this->load->view('members/add');
+		$this->load->view('footer');
+	
+	}
+	
 }
