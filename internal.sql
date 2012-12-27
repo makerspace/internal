@@ -44,9 +44,9 @@ CREATE TABLE `users` (
   UNIQUE KEY `email` (`email`)
 );
 
-INSERT INTO config VALUES("pop3_account", NULL, NULL);
-INSERT INTO config VALUES("pop3_password", NULL, NULL);
-INSERT INTO config VALUES("email_name", NULL, NULL);
-INSERT INTO config VALUES("email_from", NULL, NULL);
-INSERT INTO config VALUES("email_return_path", NULL, "Used as Return-Path in PHPMailer");
-INSERT INTO config VALUES("acl", NULL, "Access levels");
+INSERT INTO config VALUES('pop3_account', NULL, NULL);
+INSERT INTO config VALUES('pop3_password', NULL, NULL);
+INSERT INTO config VALUES('email_name', NULL, NULL);
+INSERT INTO config VALUES('email_from', NULL, NULL);
+INSERT INTO config VALUES('email_return_path', NULL, 'Used as Return-Path in PHPMailer');
+INSERT INTO config VALUES('acl', NULL, 'Access levels');
