@@ -10,7 +10,7 @@ CREATE TABLE `acl` (
 );
 CREATE TABLE `config` (
   `key` varchar(64) NOT NULL COMMENT 'config key-name ($this->dbconfig->KEY)',
-  `value` varchar(2048) NOT NULL,
+  `value` varchar(2048) DEFAULT NULL,
   `desc` varchar(255) DEFAULT NULL COMMENT 'Optional description of config',
   PRIMARY KEY (`key`)
 );
@@ -43,3 +43,10 @@ CREATE TABLE `users` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
 );
+
+INSERT INTO config VALUES("pop3_account", NULL, NULL);
+INSERT INTO config VALUES("pop3_password", NULL, NULL);
+INSERT INTO config VALUES("email_name", NULL, NULL);
+INSERT INTO config VALUES("email_from", NULL, NULL);
+INSERT INTO config VALUES("email_return_path", NULL, "Used as Return-Path in PHPMailer");
+INSERT INTO config VALUES("acl", NULL, "Access levels");
