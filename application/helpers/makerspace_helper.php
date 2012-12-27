@@ -23,6 +23,16 @@ function no_gatekeeper() {
 	}
 }
 
+function user_id() {
+	$CI =& get_instance();
+	
+	if(is_loggedin()) {
+		return (int)$CI->session->userdata('user_id');
+	}
+	
+	return 0;
+}
+
 /**
  * Flashmessage helpers for CI
  **/
