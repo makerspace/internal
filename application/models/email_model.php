@@ -9,6 +9,7 @@
  * - Handle bounces
  * - Add newsletter functions
  **/
+
 class Email_model extends CI_Model {
 
 	public function __construct() {
