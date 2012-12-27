@@ -9,7 +9,7 @@ CREATE TABLE `acl` (
   PRIMARY KEY (`user_id`)
 );
 CREATE TABLE `config` (
-  `key` varchar(64) NOT NULL COMMENT 'config key-name ($this->dbconfig->KEY)',
+  `key` varchar(64) NOT NULL COMMENT 'Config key-name',
   `value` varchar(2048) DEFAULT NULL,
   `desc` varchar(255) DEFAULT NULL COMMENT 'Optional description of config',
   PRIMARY KEY (`key`)

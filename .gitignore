@@ -7,3 +7,4 @@
 */cache/!index.html
 *.txt
 dump.sh
+public_html/preview*
