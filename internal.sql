@@ -51,3 +51,4 @@ INSERT INTO config VALUES('email_name', NULL, NULL);
 INSERT INTO config VALUES('email_from', NULL, NULL);
 INSERT INTO config VALUES('email_return_path', NULL, 'Used as Return-Path in PHPMailer');
 INSERT INTO config VALUES('acl', NULL, 'Access levels');
+INSERT INTO config VALUES('countries', NULL, 'Countries in JSON format');

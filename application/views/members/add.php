@@ -3,7 +3,7 @@
 	<?php echo form_open('members/add', 'class="form-horizontal"'); ?>
 
 	<div class="span6 pull-left">
-		<?php echo form_fieldset('User Information'); ?>
+		<?php echo form_fieldset('Member Information'); ?>
 			<div class="control-group">
 				<?php echo form_label('E-mail address', 'email', array('class' => 'control-label')); ?>
 				<div class="controls">
@@ -29,6 +29,15 @@
 					<span class="help-inline">Optional</span>
 				</div>
 			</div>
+			
+			
+			<div class="control-group">
+				<?php echo form_label('Membership Due', 'membership', array('class' => 'control-label')); ?>
+				<div class="controls">
+					<?php echo form_input('membership', set_value('membership'), 'data-date-format="yyyy-mm-dd" id="membership" class="datepicker" required'); ?>
+				</div>
+			</div>
+				
 		<?php echo form_fieldset_close(); ?>
 	</div>
 	<div class="span6 pull-right">
@@ -63,7 +72,7 @@
 				</div>
 				
 				<div class="control-group">
-					<?php echo form_label('Address', 'address2', array('class' => 'control-label')); ?>
+					<?php echo form_label('Address 2', 'address2', array('class' => 'control-label')); ?>
 					<div class="controls">
 						<?php echo form_input('address2', set_value('address2'), 'id="address2"'); ?>
 					<span class="help-inline">Optional</span>
@@ -88,14 +97,14 @@
 				<div class="control-group">
 					<?php echo form_label('Country', 'country', array('class' => 'control-label')); ?>
 					<div class="controls">
-						<?php echo form_dropdown('country', array('' => '', 'SE' => 'Sweden'), set_value('country'), 'id="country"'); ?>
+						<?php echo form_dropdown('country', $this->dbconfig->countries, set_value('country'), 'id="country" required'); ?>
 					</div>
 				</div>
 				
 				<div class="control-group">
 					<?php echo form_label('Phone', 'phone', array('class' => 'control-label')); ?>
 					<div class="controls">
-						<?php echo form_input('phone', set_value('phone'), 'id="phone" required placeholder="+46812345678"'); ?>
+						<?php echo form_input('phone', set_value('phone'), 'id="phone" placeholder="+46812345678"'); ?>
 						<span class="help-inline">Optional</span>
 					</div>
 				</div>
@@ -103,15 +112,8 @@
 				<div class="control-group">
 					<?php echo form_label('Mobile', 'mobile', array('class' => 'control-label')); ?>
 					<div class="controls">
-						<?php echo form_input('mobile', set_value('mobile'), 'id="mobile" required placeholder="+46812345678"'); ?>
+						<?php echo form_input('mobile', set_value('mobile'), 'id="mobile" placeholder="+46812345678"'); ?>
 						<span class="help-inline">Optional</span>
-					</div>
-				</div>
-				
-				<div class="control-group">
-					<?php echo form_label('Membership Due', 'membership', array('class' => 'control-label')); ?>
-					<div class="controls">
-						<?php echo form_input('membership', set_value('membership'), 'id="membership" required placeholder="Format: 2013-12-31"'); ?>
 					</div>
 				</div>
 				
@@ -120,12 +122,12 @@
 	<div class="span6">
 		<?php echo form_fieldset('Member Access (ACL)'); ?>
 			<div class="span2 pull-left">
-				<label><?php echo form_checkbox('login', '1', true); ?> Login Access</label>
+				<label><?php echo form_checkbox('active', '1', true); ?> Active member</label>
 				<label><?php echo form_checkbox('labaccess', '1', false); ?> Access to the lab</label>
-				<label><?php echo form_checkbox('feepaid', '1', false); ?> Fee Paid</label>
+				<label><?php echo form_checkbox('feepaid', '1', false); ?> Member Fee Paid</label>
 			</div>
 			<div class="span3 pull-right">
-				<label><?php echo form_checkbox('boardmember', '1', false); ?> Boardmember</label>
+				<label><?php echo form_checkbox('boardmember', '1', false); ?> Board member</label>
 				<label><?php echo form_checkbox('founder', '1', false); ?> Founder of Makerspace</label>
 				<label><?php echo form_checkbox('admin', '1', false); ?> Administrator</label>
 			</div>
@@ -133,7 +135,7 @@
 				<br>
 				<br>
 				<button type="submit" class="btn btn-large span3 btn-primary pull-left">Add new member</button>
-				<button type="submit" class="btn btn-large span2 pull-left">Reset</button>
+				<button type="reset" class="btn btn-large span2 pull-left">Reset</button>
 			</div>	
 		<?php echo form_fieldset_close(); ?>
 	</div>
