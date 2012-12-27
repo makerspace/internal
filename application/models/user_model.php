@@ -91,7 +91,8 @@ class User_model extends CI_Model {
 			$token = random_string('alnum', 34);
 			
 			$this->load->model('Email_model');
-			$email = $this->Email_model->send_forgot_password($user->username, $token);
+			$email = $this->Email_model->send_forgot_password($user->email, $token);
+			
 			
 			// Check if sent
 			if(!$email) {

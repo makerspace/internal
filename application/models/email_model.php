@@ -54,6 +54,9 @@ Stockholm Makerspace';
 			$mail->SetFrom($this->config->item('email_from'), $this->config->item('email_name'));
 			$mail->AddAddress($to);
 			
+			// VERP
+			$mail->Sender = sprintf($this->config->item('email_return_path'), str_replace('@', '=', $to));
+			
 			return $mail;
 	}
 

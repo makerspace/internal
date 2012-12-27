@@ -6,3 +6,4 @@ $config['acl'] = array('login', 'labaccess', 'feepaid', 'boardmember', 'founder'
 // E-mail config
 $config['email_name'] = 'Stockholm Makerspace';
 $config['email_from'] = 'info@makerspace.se';
+$config['email_return_path'] = 'bounces+%s@makerspace.se';

@@ -12,6 +12,6 @@
 	
 	<br>
 	<button class="btn btn-medium btn-primary" type="submit">Sign in</button>
-	<a href="/auth/forgot_password" class="btn btn-medium pull-right">Forgot your password?</button>
+	<a href="/auth/forgot" class="btn btn-medium pull-right">Forgot your password?</a>
 	
 <?php echo form_close(); ?>

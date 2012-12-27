@@ -43,6 +43,25 @@ class Auth extends CI_Controller {
 	
 	public function forgot() {
 		no_gatekeeper();
+		
+		if (!$this->form_validation->run()) {
+
+			$header = array(
+				'title' => 'Forgot password',
+			);
+			
+			$this->load->view('header', $header);
+			$this->load->view('auth/forgot');
+			$this->load->view('footer');
+			
+		} else {
+		
+			$email = $this->input->post('email');
+			$this->User_model->forgot($email);
+			
+			redirect('/auth/forgot');
+			
+		}
 	
 	}
 	
