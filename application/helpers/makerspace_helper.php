@@ -62,6 +62,14 @@ function json_output($json) {
 }
 
 /**
+ * String helpers for CI
+ * @author Jim Nelin
+ **/
+function ip_address() {
+	return $_SERVER['REMOTE_ADDR'];
+}
+
+/**
  * Gravatar Helper
  * @author Jim Nelin
  **/
