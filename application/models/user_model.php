@@ -195,4 +195,16 @@ class User_model extends CI_Model {
 	
 	}
 	
+	public function get_all($limit = 1000, $offset = 0) {
+		
+		$this->db->join('acl', 'acl.user_id = users.id', 'left')->order_by('users.id', 'desc');
+		$query = $this->db->limit($limit)->offset($offset)->get('users');
+	
+		if($query->num_rows() > 0) {
+			return $query->result();	
+		}
+		
+		return array();
+	}
+	
 }
