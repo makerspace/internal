@@ -162,6 +162,8 @@ class User_model extends CI_Model {
 	
 	public function get_user($where = '', $value = '') {
 	
+		// ToDO: Memcache this.
+		
 		// Get current user
 		if(empty($where)) {
 			$where = 'id';
@@ -182,6 +184,15 @@ class User_model extends CI_Model {
 		
 		return false;
 		
+	}
+	
+	public function is_admin($user_id = '') {
+	
+		$user = $this->get_user($user_id);
+		if($user->admin == 1) return true;
+		
+		return false;
+	
 	}
 	
 }
