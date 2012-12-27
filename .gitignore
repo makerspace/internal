@@ -5,5 +5,5 @@
 */logs/!index.html
 */cache/*
 */cache/!index.html
-ToDo.txt
+*.txt
 dump.sh
