@@ -1,13 +1,3 @@
--- MySQL dump 10.14  Distrib 5.5.28a-MariaDB, for debian-linux-gnu (x86_64)
---
--- Host: localhost    Database: internal
--- ------------------------------------------------------
--- Server version	5.5.28a-MariaDB-a1~squeeze-log
-
---
--- Table structure for table `acl`
---
-
 CREATE TABLE `acl` (
   `user_id` int(11) NOT NULL COMMENT 'Member ID',
   `active` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT 'Ability to login to internal.makerspace.se',
@@ -18,26 +8,16 @@ CREATE TABLE `acl` (
   `admin` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT 'Admin access in internal.makerspace.se',
   PRIMARY KEY (`user_id`)
 );
-
---
--- Table structure for table `logins`
---
-
 CREATE TABLE `logins` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NOT NULL,
   `ip_address` varchar(64) NOT NULL,
   `timestamp` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`)
 );
-
---
--- Table structure for table `users`
---
-
 CREATE TABLE `users` (
-  `id` int(11) NOT NULL COMMENT 'Member ID',
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Member ID',
   `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
   `password_token` char(34) DEFAULT NULL,
@@ -57,6 +37,3 @@ CREATE TABLE `users` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
 );
-
-
--- Dump completed on 2012-12-27 17:17:54
