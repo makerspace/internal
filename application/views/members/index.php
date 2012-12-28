@@ -38,3 +38,5 @@
 	<?php } ?>
 	</tbody>
 </table>
+
+<a href="/members/add" class="btn btn-primary pull-right">Add new member</a>
