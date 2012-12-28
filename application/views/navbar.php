@@ -1,6 +1,6 @@
 <div class="navbar navbar-inverse navbar-fixed-top">
 	<div class="navbar-inner">
-		<div class="container-fluid">
+		<div class="container">
 			<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
 				<?php if($this->User_model->is_admin()) { ?>
 					<span class="icon-bar"></span>
