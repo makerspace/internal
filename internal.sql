@@ -45,10 +45,20 @@ CREATE TABLE `users` (
   UNIQUE KEY `email` (`email`)
 );
 
-INSERT INTO config VALUES('pop3_account', NULL, NULL);
-INSERT INTO config VALUES('pop3_password', NULL, NULL);
-INSERT INTO config VALUES('email_name', NULL, NULL);
-INSERT INTO config VALUES('email_from', NULL, NULL);
+INSERT INTO config VALUES('pop3_account', NULL, 'POP3 account used as Return-Path to track bounces');
+INSERT INTO config VALUES('pop3_password', NULL, 'POP3 password for');
+INSERT INTO config VALUES('email_name', NULL, 'PHPMailer From Name');
+INSERT INTO config VALUES('email_from', NULL, 'PHPMailer From Address');
 INSERT INTO config VALUES('email_return_path', NULL, 'Used as Return-Path in PHPMailer');
-INSERT INTO config VALUES('acl', NULL, 'Access levels');
+INSERT INTO config VALUES('acl', NULL, 'Array with user-access levels');
 INSERT INTO config VALUES('countries', NULL, 'Countries in JSON format');
+INSERT INTO config VALUES('paypal_username', NULL, 'PayPal Live API Username');
+INSERT INTO config VALUES('paypal_password', NULL, 'PayPal Live API Password');
+INSERT INTO config VALUES('paypal_signature', NULL, 'PayPal Live API Signature');
+INSERT INTO config VALUES('paypal_endpoint', NULL, 'PayPal Live Endpoint');
+INSERT INTO config VALUES('paypal_dev_endpoint', NULL, 'Paypal Sandbox Endpoint');
+INSERT INTO config VALUES('paypal_dev_username', NULL, 'PayPal Sandbox API Username');
+INSERT INTO config VALUES('paypal_dev_password', NULL, 'PayPal Sandbox API Password');
+INSERT INTO config VALUES('paypal_dev_signature', NULL, 'PayPal Sandbox API Signature');
+INSERT INTO config VALUES('paypal_auth_url', NULL, 'PayPal Live Express Checkout Redirect URL');
+INSERT INTO config VALUES('paypal_dev_auth_url', NULL, 'PayPal Sandbox Express Checkout Redirect URL');
