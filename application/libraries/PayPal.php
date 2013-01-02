@@ -85,7 +85,7 @@ class PayPal {
 	 * @var $custom_data bool Set to true to use custom SetExpressCheckout POST-data (overrides everything)
 	 * @return array PayPal response
 	 **/
-	function set_ec($data = array(), $custom_data = false) {
+	function SetExpressCheckout($data = array(), $custom_data = false) {
 		$nvpdata = array();
 		
 		if (!$custom_data) {
@@ -230,7 +230,7 @@ class PayPal {
 	 * @var string $token Token from $_GET['TOKEN'] passed by Paypal when redirected to return_url
 	 * @return associative array With response from paypal.
 	 **/
-	public function get_ec_details($token) {
+	public function GetExpressCheckoutDetails($token) {
 	
 		// Set token
 		$data = array('TOKEN' => $token);
@@ -256,7 +256,7 @@ class PayPal {
 	 *
 	 * @return associative array With response from paypal.
 	 **/
-	public function do_ec_payment($details, $type = 'Sale') {		
+	public function DoExpressCheckoutPayment($details, $type = 'Sale') {		
 		$nvpdata = array();
 		
 		// We need these fields.
@@ -291,7 +291,7 @@ class PayPal {
 	 * @var $token string NVP Token.
 	 * @var $mobile bool Redirect to mobile-site or not. (default false)
 	 **/
-	public function redirect_to_paypal($token, $mobile = false) {
+	public function redirect($token, $mobile = false) {
 	
 		// str-replace if $mobile != false
 		$url = ($mobile != false ? str_replace("_express-checkout", "_express-checkout-mobile", $this->redirect_url) : $this->redirect_url);
