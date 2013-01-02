@@ -2,11 +2,13 @@
 
 /**
  * PayPal Express Checkout Library for CodeIgniter 2.x
- * Totally rewritten to fit "my way", depends on DBConfig CI-model, cURL CI-library and php5-curl.
+ * Totally rewritten to fit "my way", depends on DBConfig CI-model and php5-curl.
  * Uses the ENVIRONMENT constant to select which dbconfig vars to use.
  *
- * @methods set_ec($nvpdata, $custom = false), get_ec_details($nvptoken), 
- *			do_ec_payment($nvpdata /w paymentdetails and ipn, $type)
+ * @methods SetExpressCheckout($nvpdata, $custom = false) - creates new payment on paypal.
+ *			redirect() - redirects to paypal after SetExpressCheckout
+ *			GetExpressCheckoutDetails($nvptoken) - get payment details when returned.
+ *			DoExpressCheckoutPayment($nvpdata /w paymentdetails and ipn, $type) - makes actual transaction.
  *
  * Based upon code by Khairil Iszuddin Ismail: https://github.com/kidino/paypal_ec
  * Creds to him for creating the base structure (and showing me how it's done).
@@ -17,9 +19,6 @@
  * @todo: Rewrite to use cURL library for CodeIgniter to strip away code.
  **/
 class PayPal {
-	
-	// Turn on/off verbose output
-	public $debug = true;
 
 	// Codeigniter object
 	private $CI;
@@ -50,7 +49,7 @@ class PayPal {
 			$env = '_dev';
 		}
 		
-		// Use dbconfig to set internal vars
+		// Use dbconfig to set internal vars (This is optional, you can use regular config-items to!)
 		$this->api_username = $this->CI->dbconfig->{'paypal'.$env.'_username'};
 		$this->api_password = $this->CI->dbconfig->{'paypal'.$env.'_password'};
 		$this->api_signature = $this->CI->dbconfig->{'paypal'.$env.'_signature'};
@@ -210,11 +209,11 @@ class PayPal {
 		}
 		
 		// Do actual SetExpressCheckout request against PayPal
-		$return = $this->_api_call("SetExpressCheckout", $nvpdata);
+		$return = $this->_api_call('SetExpressCheckout', $nvpdata);
 		
 		// Check return status
-		$ack = strtoupper($return["ACK"]);
-		if ($ack == "SUCCESS" || $ack == "SUCCESSWITHWARNING") {
+		$ack = strtoupper($return['ACK']);
+		if ($ack == 'SUCCESS' || $ack == 'SUCCESSWITHWARNING') {
 			$return['status'] = true;
 		} else {
 			$return['status'] = false;
@@ -236,11 +235,11 @@ class PayPal {
 		$data = array('TOKEN' => $token);
 		
 		// Do GetExpressCheckoutDetails request against PayPal
-		$return = $this->_api_call("GetExpressCheckoutDetails", $data);
+		$return = $this->_api_call('GetExpressCheckoutDetails', $data);
 		
 		// Check return status
-		$ack = strtoupper($return["ACK"]);
-		if ($ack == "SUCCESS" || $ack == "SUCCESSWITHWARNING") {
+		$ack = strtoupper($return['ACK']);
+		if ($ack == 'SUCCESS' || $ack == 'SUCCESSWITHWARNING') {
 			$return['status'] = true;
 		} else {
 			$return['status'] = false;
@@ -251,7 +250,7 @@ class PayPal {
 	
 	/**
 	 * Makes a DoExpressCheckoutPayment request against PayPal	
-	 * - which is called after redirected from Paypal back to return_URL
+	 * - which is called after redirected from Paypal back to return_url
 	 * - most of the data can be obtained from GetExpressCheckoutDetails
 	 *
 	 * @return associative array With response from paypal.
@@ -274,10 +273,10 @@ class PayPal {
 		$nvpdata['PAYMENTREQUEST_0_PAYMENTACTION'] = $type;
 				
 		// Do the actual request against PayPal
-		$return = $this->_api_call("DoExpressCheckoutPayment", $nvpdata);
+		$return = $this->_api_call('DoExpressCheckoutPayment', $nvpdata);
 		
-		$ack = strtoupper($return["ACK"]);
-		if ($ack == "SUCCESS" || $ack == "SUCCESSWITHWARNING") {
+		$ack = strtoupper($return['ACK']);
+		if ($ack == 'SUCCESS' || $ack == 'SUCCESSWITHWARNING') {
 			$return['status'] = true;
 		} else {
 			$return['status'] = false;
@@ -294,7 +293,7 @@ class PayPal {
 	public function redirect($token, $mobile = false) {
 	
 		// str-replace if $mobile != false
-		$url = ($mobile != false ? str_replace("_express-checkout", "_express-checkout-mobile", $this->redirect_url) : $this->redirect_url);
+		$url = ($mobile != false ? str_replace('_express-checkout', '_express-checkout-mobile', $this->redirect_url) : $this->redirect_url);
 		$redirect = sprintf($url, $token);
 		
 		// Redirect to PayPal
@@ -326,7 +325,7 @@ class PayPal {
 		curl_setopt($ch, CURLOPT_POST, 1);
 		
 		// Basic NVP vars to POST to API
-		$nvp = array(
+		$nvpbase = array(
 			'METHOD' => $method,
 			'VERSION' => $this->api_version,
 			'PWD' => $this->api_password,
@@ -335,10 +334,10 @@ class PayPal {
 		);
 		
 		// Merge with request data array
-		$nvp = array_merge($nvp, $data);
+		$nvpdata = array_merge($nvpbase, $data);
 		
 		// Build post-data querystring
-		$postfields = http_build_query($nvp);
+		$postfields = http_build_query($nvpdata);
 		
 		// Datafields to post /w curl
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $postfields);
@@ -352,10 +351,13 @@ class PayPal {
 		// Check if request succeded.
 		if (curl_errno($ch)) {
 			
-			var_dump($ch);		
+			#var_dump($ch);
+			#error(curl_error($ch));
 		
-			// Display error?
-			// error(curl_error($ch));
+			// Insert errorhandling code here.
+			// use curl_error($ch) to get curl error.
+			
+			return false;
 		}
 		
 		
