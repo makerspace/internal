@@ -137,12 +137,23 @@ class CI_Security {
 	 */
 	public function csrf_verify()
 	{
+
 		// If it's not a POST request we will set the CSRF cookie
 		if (strtoupper($_SERVER['REQUEST_METHOD']) !== 'POST')
 		{
 			return $this->csrf_set_cookie();
 		}
 
+		// Check if URI has been whitelisted from CSRF checks
+		if ($exclude_uris = config_item('csrf_exclude_uris'))
+		{
+			$uri = load_class('URI', 'core');
+			if (in_array($uri->uri_string(), $exclude_uris))
+			{
+				return $this;
+			}
+		}
+		
 		// Do the tokens exist in both the _POST and _COOKIE arrays?
 		if ( ! isset($_POST[$this->_csrf_token_name], $_COOKIE[$this->_csrf_cookie_name]))
 		{
