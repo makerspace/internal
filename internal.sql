@@ -62,3 +62,4 @@ INSERT INTO config VALUES('paypal_dev_password', NULL, 'PayPal Sandbox API Passw
 INSERT INTO config VALUES('paypal_dev_signature', NULL, 'PayPal Sandbox API Signature');
 INSERT INTO config VALUES('paypal_auth_url', NULL, 'PayPal Live Express Checkout Redirect URL');
 INSERT INTO config VALUES('paypal_dev_auth_url', NULL, 'PayPal Sandbox Express Checkout Redirect URL');
+INSERT INTO config VALUES('paypal_ipn', NULL, 'PayPal IPN URL');
