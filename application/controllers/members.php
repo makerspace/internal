@@ -26,7 +26,7 @@ class Members extends CI_Controller {
 		);
 		
 		$this->load->view('header', $head);
-		#$this->load->view('members/view', array('user' => $this->User_model->get_user($user_id)));
+		$this->load->view('members/view', array('member' => $this->User_model->get_user($user_id)));
 		$this->load->view('footer');
 		
 	

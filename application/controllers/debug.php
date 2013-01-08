@@ -9,7 +9,7 @@ class Debug extends CI_Controller {
 		#$this->load->library('Pass');
 		#$this->db->update('users', array('password' => $this->pass->hash('lol123lol123')), array('id' => 1000));
 		
-		
+		/*
 		// Testing of PayPal lib
 		$this->load->library('PayPal');
 		
@@ -38,6 +38,7 @@ class Debug extends CI_Controller {
 		} else {
 			$this->_error($return);
 		}
+		*/
 		
 		$this->load->view('header');
 		$this->load->view('debug');

@@ -31,6 +31,7 @@ CREATE TABLE `users` (
   `firstname` varchar(255) DEFAULT NULL,
   `lastname` varchar(255) DEFAULT NULL,
   `company` varchar(255) DEFAULT NULL,
+  `orgno` varchar(12) DEFAULT NULL,
   `address` varchar(255) DEFAULT NULL,
   `address2` varchar(255) DEFAULT NULL,
   `city` varchar(64) DEFAULT NULL,

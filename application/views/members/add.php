@@ -1,6 +1,6 @@
 <h2>Add new member</h2>
 <div class="row">
-	<?php echo form_open('members/add', 'class="form-horizontal"'); ?>
+	<?php echo form_open('members/add', 'class="form-horizontal" autocomplete="off"'); ?>
 
 	<div class="span6 pull-left">
 		<?php echo form_fieldset('Member Information'); ?>
@@ -61,6 +61,14 @@
 					<?php echo form_label('Company Name', 'company', array('class' => 'control-label')); ?>
 					<div class="controls">
 						<?php echo form_input('company', set_value('company'), 'id="company"'); ?>
+						<span class="help-inline">Optional</span>
+					</div>
+				</div>
+				
+				<div class="control-group">
+					<?php echo form_label('Org. Number', 'orgno', array('class' => 'control-label')); ?>
+					<div class="controls">
+						<?php echo form_input('orgno', set_value('orgno'), 'id="orgno" placeholder="XXXXXX-YYYY"'); ?>
 						<span class="help-inline">Optional</span>
 					</div>
 				</div>
