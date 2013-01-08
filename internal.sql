@@ -25,7 +25,7 @@ CREATE TABLE `logins` (
 CREATE TABLE `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Member ID',
   `email` varchar(255) NOT NULL,
-  `password` varchar(255) NOT NULL,
+  `password` varchar(255) DEFAULT NULL,
   `password_token` char(34) DEFAULT NULL,
   `registered` int(11) NOT NULL,
   `firstname` varchar(255) DEFAULT NULL,

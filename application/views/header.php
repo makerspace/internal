@@ -16,6 +16,6 @@
 </head>
 <body>
 	<?php if(is_loggedin()) $this->load->view('navbar'); ?>
-	<div class="container">
+	<div class="container <?php echo $this->router->fetch_class(); ?>">
 		<?php echo get_flashdata(); ?>
 		<?php echo get_errors(); ?>

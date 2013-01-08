@@ -67,4 +67,27 @@ class Members extends CI_Controller {
 	
 	}
 	
+	public function acl_switch($user_id = '', $acl = '') {
+		admin_gatekeeper();
+	
+		if(empty($user_id)) {
+			error('Invalid user id');
+			redirect();
+		} elseif(empty($acl)) {
+			error('Invalid access level');
+			redirect();
+		}
+		
+		$return = $this->User_model->acl_switch($user_id, $acl);
+		
+		if(!$return) {
+			error('Couldn\'t update the user ACL!');
+			redirect();
+		}
+		
+		message('User ACL successfully updated.');
+		redirect('/members/view/'.$user_id);
+	
+	}
+	
 }

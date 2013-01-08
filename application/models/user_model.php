@@ -197,7 +197,7 @@ class User_model extends CI_Model {
 	
 	public function get_all($limit = 1000, $offset = 0) {
 		
-		$this->db->join('acl', 'acl.user_id = users.id', 'left')->order_by('users.id', 'desc');
+		$this->db->join('acl', 'acl.user_id = users.id', 'left')->order_by('users.id', 'asc');
 		$query = $this->db->limit($limit)->offset($offset)->get('users');
 	
 		if($query->num_rows() > 0) {
@@ -205,6 +205,26 @@ class User_model extends CI_Model {
 		}
 		
 		return array();
+	}
+	
+	public function acl_switch($user_id, $acl) {
+	
+		$user = $this->get_user($user_id);
+		if(!$user) return false;
+		
+		if($user->{$acl}) {
+			// Set to false
+			$data = array($acl => 0);
+		} else {
+			// Set to true 
+			$data = array($acl => 1);
+		}
+		
+		
+		$this->db->update('acl', $data, array('user_id' => $user_id));
+	
+		return true;
+		
 	}
 	
 }

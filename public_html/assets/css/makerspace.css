@@ -15,6 +15,12 @@ body {
 
 td.avatar { width: 22px; }
 
+div.auth .alert {
+	width: 307px;
+	margin-right: auto;
+	margin-left: auto;
+}
+
 
  /*
 	Datepicker for Bootstrap

@@ -7,6 +7,9 @@ class Internal extends CI_Controller {
 		// Force login
 		if(!is_loggedin()) redirect('auth/login');
 		
+		// Redirect to member overview for now...
+		redirect('members');
+		
 		$head = array(
 			'title' => 'Internal',
 		);
