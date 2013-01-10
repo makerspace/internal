@@ -1,6 +1,9 @@
-<h2>View member</h2>
-
 <div class="row">
+	<div class="span12">
+		<h2 class="pull-left">View member</h2>
+		<a href="/members/edit/<?php echo $member->id; ?>" class="btn btn-primary pull-right">Update</a>
+	</div>
+	
 	<div class="span4">
 		<h4>Quick links</h4>
 		<p>

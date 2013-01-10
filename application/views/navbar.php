@@ -20,11 +20,11 @@
 				
 				<ul class="nav">
 					<?php if($this->User_model->is_admin()) { ?>
-						<li><a href="/members">Members</a></li>
-						<li><a href="/newsletter">Newsletter</a></li>
-						<li><a href="/todo">ToDo</a></li>
-						<li><a href="/admin">Admin</a></li>
-						<li class="active"><a href="/debug">Debug</a></li>
+						<li<?php echo menu_active('members'); ?>><a href="/members">Members</a></li>
+						<li<?php echo menu_active('newsletter'); ?>><a href="/newsletter">Newsletter</a></li>
+						<li<?php echo menu_active('todo'); ?>><a href="/todo">ToDo</a></li>
+						<li<?php echo menu_active('admin'); ?>><a href="/admin">Admin</a></li>
+						<li<?php echo menu_active('debug'); ?>><a href="/debug">Debug</a></li>
 					<?php } else { ?>
 						<li><a href="mailto:info@makerspace.se">Contact</a></li>
 					<?php } ?>

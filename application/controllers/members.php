@@ -36,14 +36,21 @@ class Members extends CI_Controller {
 	public function add() {
 		admin_gatekeeper();
 		
-		$head = array(
-			'title' => 'Add new member',
-		);
+		if ($this->form_validation->run() == false) {
 		
-		$this->load->view('header', $head);
-		$this->load->view('members/add');
-		$this->load->view('footer');
-	
+			$head = array(
+				'title' => 'Add new member',
+			);
+			
+			$this->load->view('header', $head);
+			$this->load->view('members/add');
+			$this->load->view('footer');
+			
+		} else {
+		
+			// Add member to db
+		
+		}
 	}
 	
 	public function edit($user_id = '') {
@@ -57,14 +64,21 @@ class Members extends CI_Controller {
 			redirect();
 		}
 		
-		$head = array(
-			'title' => 'Edit member',
-		);
+		if ($this->form_validation->run() == false) {
 		
-		$this->load->view('header', $head);
-		$this->load->view('members/edit', array('user' => $this->User_model->get_user($user_id)));
-		$this->load->view('footer');
+			$head = array(
+				'title' => 'Edit member',
+			);
+			
+			$this->load->view('header', $head);
+			$this->load->view('members/edit', array('user' => $this->User_model->get_user($user_id)));
+			$this->load->view('footer');
 	
+		} else {
+		
+			// Update member in db
+		
+		}
 	}
 	
 	public function acl_switch($user_id = '', $acl = '') {

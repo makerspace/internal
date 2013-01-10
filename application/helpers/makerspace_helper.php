@@ -160,3 +160,16 @@ function gravatar($email, $size = 32, $rating = 'pg', $default = 'retro') {
 	// Return gravatar URL
 	return 'https://secure.gravatar.com/avatar/' . md5(strtolower(trim($email))) . '?'. implode($options, '&');
 }
+
+/**
+ * Menu helper
+ */
+function menu_active($controller) {
+	
+	$CI =& get_instance();
+	
+	if($CI->router->fetch_class() == $controller) {
+		return ' class="active"';
+	}
+	
+}
