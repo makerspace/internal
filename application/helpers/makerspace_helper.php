@@ -173,3 +173,34 @@ function menu_active($controller) {
 	}
 	
 }
+
+/**
+ * XML Helpers
+ **/
+
+/**
+ * array_to_xml - Converts an PHP array to XML. 
+ * From: http://www.kerstner.at/en/2011/12/php-array-to-xml-conversion/
+ *
+ * @param array $array the array to be converted
+ * @param string $root if specified will be taken as root element, defaults to <root>
+ * @param SimpleXMLElement? if specified content will be appended, used for recursion
+ * @return string XML version of $array
+ */
+function array_to_xml($array, $root = 'root', $xml = null) {
+	$_xml = $xml;
+
+	if ($_xml === null) {
+		$_xml = new SimpleXMLElement('<'.$root.'/>');
+	}
+
+	foreach ($array as $k => $v) {
+		if (is_array($v)) { //nested array
+			array_to_xml($v, $k, $_xml->addChild($k));
+		} else {
+			$_xml->addChild($k, $v);
+		}
+	}
+
+	return $_xml->asXML();
+}
