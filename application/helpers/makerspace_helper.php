@@ -12,7 +12,7 @@ function is_loggedin() {
 function gatekeeper() {
 	if(!is_loggedin()) {
 		error('You have to login to access this page.');
-		redirect('/');
+		redirect();
 	}
 }
 function admin_gatekeeper() {
@@ -21,14 +21,14 @@ function admin_gatekeeper() {
 	$CI =& get_instance();	
 	if(!$CI->Member_model->is_admin()) {
 		error('Admin access required to access this page.');
-		redirect('/');
+		redirect();
 	}
 }
 
 function no_gatekeeper() {
 	if(is_loggedin()) {
 		error('You have to be logged out to access this page.');
-		redirect('/');
+		redirect();
 	}
 }
 

@@ -22,11 +22,11 @@
 		<br>
 		<h4>Access list (ACL) <small>Click to change</small></h4>
 		
-		<?php foreach($this->dbconfig->acl as $acl) { ?>
+		<?php /*foreach($this->dbconfig->acl as $acl) { ?>
 			<a href="/members/acl_switch/<?php echo $member->id; ?>/<?php echo $acl; ?>" class="label<?php echo ($member->{$acl} ? ' label-success' : ''); ?>">
 				<?php echo ucfirst($acl); ?>
 			</a>
-		<?php } ?>
+		<?php }*/ ?>
 	</div>
 
 	<div class="span8">

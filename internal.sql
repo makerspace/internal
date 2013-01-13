@@ -1,12 +1,9 @@
 CREATE TABLE `acl` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ACL ID',
   `member_id` int(11) NOT NULL,
-  `active` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT 'Ability to login to internal.makerspace.se',
-  `labaccess` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT 'Access to the lab',
-  `feepaid` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT 'Paid annual fee',
-  `boardmember` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT 'Member of the board',
-  `founder` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT 'Founder of Stockholm Makerspace',
-  `admin` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT 'Admin access in internal.makerspace.se',
-  PRIMARY KEY (`member_id`)
+  `acl` varchar(255) NOT NULL COMMENT 'Key',
+  `value` tinyint(4) NOT NULL DEFAULT '0' COMMENT 'Value',
+  PRIMARY KEY (`id`)
 );
 CREATE TABLE `config` (
   `key` varchar(64) NOT NULL COMMENT 'Config key-name',

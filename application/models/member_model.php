@@ -12,9 +12,8 @@ class Member_model extends CI_Model {
 			return false;
 		}
 		
-		// Check ACL (login)
-		if($member->active < 1) {
-			// Inactive account (or similar)
+		// Check ACL (Currently only allow admins to login)
+		if(!$this->get_acl($member->id, 'admin')) {
 			return false;
 		}
 		
@@ -215,29 +214,24 @@ class Member_model extends CI_Model {
 			$where = 'id';
 		} 
 		
-		$this->db->join('acl', 'acl.member_id = members.id', 'left');
+		//$this->db->join('acl', 'acl.member_id = members.id', 'left'); // Old
 		$query = $this->db->get_where('members', array($where => $value), 1);
 	
 		if($query->num_rows() > 0) {
-			return $query->row();	
+			$member = $query->row();
+			$member->acl = $this->get_acl($member->id); // Get all ACL
+			
+			return $member;	
 		}
 		
 		return false;
 		
 	}
-	
-	public function is_admin($member_id = '') {
-	
-		$member = $this->get_member($member_id);
-		if($member->admin == 1) return true;
 		
-		return false;
-	
-	}
-	
 	public function get_all($limit = 1000, $offset = 0) {
 		
-		$this->db->join('acl', 'acl.member_id = members.id', 'left')->order_by('members.id', 'asc');
+		// $this->db->join('acl', 'acl.member_id = members.id', 'left');
+		$this->db->order_by('members.id', 'asc');
 		$query = $this->db->limit($limit)->offset($offset)->get('members');
 	
 		if($query->num_rows() > 0) {
@@ -247,24 +241,76 @@ class Member_model extends CI_Model {
 		return array();
 	}
 	
+	
+	/***********************
+	 * Member ACL functions
+	 ***********************/
 	public function acl_switch($member_id, $acl) {
 	
 		$member = $this->get_member($member_id);
 		if(!$member) return false;
 		
-		if($member->{$acl}) {
+		if(isset($member->acl->{$acl}) && $member->acl->{$acl} == '1') {
 			// Set to false
-			$data = array($acl => 0);
+			$data = array('acl' => $acl, 'value' => 0);
 		} else {
 			// Set to true 
-			$data = array($acl => 1);
+			$data = array('acl' => $acl, 'value' => 1);
 		}
 		
 		
-		$this->db->update('acl', $data, array('member_id' => $member_id));
+		$this->db->update('acl', $data, array('member_id' => $member_id), array('member_id' => $member_id, 'acl' => $acl));
 	
 		return true;
 		
+	}
+	
+	/**
+	 * Get a specific ACL for member
+	 * if $acl is empty, return full acl object
+	 */
+	public function get_acl($member_id = '', $acl = '') {
+	
+		// ToDo: Find a nicer way to do this, this is ugly as *piip*
+		// Also todo: Memcache this.
+	
+		// Create a empty object
+		$aclobj = (object)array();
+		
+		// Get ACL from db
+		$query = $this->db->select('acl, value')->get_where('acl', array('member_id' => $member_id));
+		
+		// If any, go through the result
+		if($query->num_rows() > 0) {
+		
+			// Add ACL to previously created ACL object
+			foreach($query->result() as $row) {
+				$aclobj->{$row->acl} = $row->value;
+			}
+			
+		} else {
+			// Failsafe if user don't have any ACL
+			return $aclobj; // Empty object
+		}
+		
+		// Return all ACLs if $acl is empty
+		if(empty($acl)) {
+			return $aclobj;
+		}
+		
+		// Else return ACL as bool
+		return (isset($aclobj->{$acl}) && $aclobj->{$acl} == '1');
+	}
+	
+	/**
+	 * Short-cuts for get_acl(...)
+	 */
+	public function is_admin($member_id = '') {
+		return $this->get_acl($member_id, 'admin');
+	}
+	
+	public function is_active($member_id = '') {
+		return $this->get_acl($member_id, 'active');
 	}
 	
 }

@@ -6,7 +6,7 @@
 <h3>Create a new newsletter</h3>
 <p>Select recipients access levels below. Leave empty to send to all members.</p>
 <?php echo form_open('/newsletter/new'); ?>
-	<?php echo form_multiselect('access_levels', $this->dbconfig->acl, '', 'class="span4" size="8"'); ?><br>
+	<?php echo form_multiselect('access_levels', array(), '', 'class="span4" size="8"'); // $this->dbconfig->acl ?><br>
 	<?php echo form_submit('continue', 'Continue to next step', 'class="btn btn-primary"'); ?>
 <?php echo form_close(); ?>
 
