@@ -30,9 +30,9 @@
 			<td><?php echo (!empty($member->mobile) ? '<a href="callto:'.$member->mobile.'">'.$member->mobile.'</a>' : '<em>N/A</em>'); ?></td>
 			<td><?php echo date('Y-m-d', $member->registered); ?></td>
 			<td><?php echo (!empty($member->membership) ? $member->membership : '<em>N/A</em>'); ?></td>
-			<td><span class="badge<?php echo ((int)$member->active ? ' badge-success">Yes' : '">No'); ?></span></td>
-			<td><span class="badge<?php echo ((int)$member->labaccess ? ' badge-success">Yes' : '">No'); ?></span></td>
-			<td><span class="badge<?php echo ((int)$member->feepaid ? ' badge-success">Yes' : '">No'); ?></span></td>
+			<td><span class="badge<?php echo ($member->acl->active ? ' badge-success">Yes' : '">No'); ?></span></td>
+			<td><span class="badge<?php echo ($member->acl->labaccess ? ' badge-success">Yes' : '">No'); ?></span></td>
+			<td><span class="badge<?php echo ($member->acl->feepaid ? ' badge-success">Yes' : '">No'); ?></span></td>
 			<td><a href="/members/view/<?php echo $member->id; ?>" class="btn btn-mini">View</a> <a href="/members/edit/<?php echo $member->id; ?>" class="btn btn-primary btn-mini">Edit</a></td>
 		</tr>
 	<?php } ?>

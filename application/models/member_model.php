@@ -200,44 +200,59 @@ class Member_model extends CI_Model {
 	
 	public function get_member($where = '', $value = '') {
 	
-		// ToDo: Memcache this.
-		// ToDo2: Switch structure of ACL
+		// ToDo: Memcache!
 		
-		// Get current member
+		// Get current member as default
 		if(empty($where)) {
 			$where = 'id';
 			$value = member_id();
 			
-		// Get where id = $where (ugly hack)
+		// Get where id = $where (a bit ugly hack)
 		} elseif(empty($value)) {
 			$value = $where;
 			$where = 'id';
 		} 
 		
-		//$this->db->join('acl', 'acl.member_id = members.id', 'left'); // Old
 		$query = $this->db->get_where('members', array($where => $value), 1);
 	
+		// If user is found.
 		if($query->num_rows() > 0) {
-			$member = $query->row();
-			$member->acl = $this->get_acl($member->id); // Get all ACL
 			
+			// Get member
+			$member = $query->row();
+			
+			// Add ACL to object
+			$this->_add_acl($member);
+			
+			// Now, return member with ACL.
 			return $member;	
 		}
 		
+		// Non-existent user, return false
 		return false;
 		
 	}
 		
 	public function get_all($limit = 1000, $offset = 0) {
 		
+		// Previous ACL join.
 		// $this->db->join('acl', 'acl.member_id = members.id', 'left');
+		
+		// Get members
 		$this->db->order_by('members.id', 'asc');
 		$query = $this->db->limit($limit)->offset($offset)->get('members');
 	
+		// Check if we got anything.
 		if($query->num_rows() > 0) {
+		
+			// Walk the entire result set and add ACLs :)
+			array_walk($query->result(), array($this, '_add_acl'));
+			
+			// Return result array.
 			return $query->result();	
 		}
 		
+		// No results.
 		return array();
 	}
 	
@@ -245,23 +260,69 @@ class Member_model extends CI_Model {
 	/***********************
 	 * Member ACL functions
 	 ***********************/
-	public function acl_switch($member_id, $acl) {
 	
-		$member = $this->get_member($member_id);
-		if(!$member) return false;
+	/**
+	 * Private method to add ACL to member.
+	 */
+	
+	private function _add_acl(&$member, $index = 0) {
+	
+		# ToDo: Improve look-up so we don't make more then one db query.
+				
+		// Clone database ACLs to member temporarily...
+		// @note According to PHP-manual, it's not allowed to change the
+		//		 structure of the referenced var, but it seems to work???
+		// @see http://php.net/manual/en/function.array-walk.php#refsect1-function.array-walk-parameters
+		$member->acl = clone $this->dbconfig->acl;
+					
+		// Set ACL value from db and/or remove description.
+		foreach($member->acl as $acl => $desc) {
 		
-		if(isset($member->acl->{$acl}) && $member->acl->{$acl} == '1') {
-			// Set to false
-			$data = array('acl' => $acl, 'value' => 0);
-		} else {
-			// Set to true 
-			$data = array('acl' => $acl, 'value' => 1);
+			// Default all to 0 (int equals non-existant acl).
+			$member->acl->{$acl} = 0;
+				
+			// Get ACL from db.
+			$query = $this->db->select('value')->get_where('acl', array('member_id' => $member->id, 'acl' => $acl), 1); 
+			
+			// If found, set to value
+			if($query->num_rows()) {
+				$member->acl->{$acl} = (bool)$query->row()->value;
+			}
 		}
 		
-		
-		$this->db->update('acl', $data, array('member_id' => $member_id), array('member_id' => $member_id, 'acl' => $acl));
+	}
 	
-		return true;
+	/**
+	 * Update a ACL for member.
+	 **/
+	public function acl_switch($member_id = '', $acl) {
+	
+		$member = $this->get_member($member_id);
+		if(!$member) return false; // Failsafe
+		
+		// Check if acl is valid
+		if(!empty($acl) && isset($member->acl->{$acl})) {
+		
+			// Flip value
+			$data = array('value' => (int)!$member->acl->{$acl});
+			
+			// Update if ACL key exists, otherwise insert new row.
+			// This is a bit of a ugly, check if we got a bool or int. (bool = exists)
+			if(is_bool($member->acl->{$acl})) {
+				$this->db->update('acl', $data, array('member_id' => $member->id, 'acl' => $acl));
+				
+			// It's not bool, which means it doesn't exist yet.
+			} else {
+				// Insert $data combined with acl key and member.
+				$this->db->insert('acl', array_merge($data, array('member_id' => $member->id, 'acl' => $acl)));
+			}
+			
+			// Return query result for update or insert.
+			return (bool)$this->db->affected_rows();
+		}
+		
+		// False as default
+		return false;
 		
 	}
 	
@@ -270,36 +331,22 @@ class Member_model extends CI_Model {
 	 * if $acl is empty, return full acl object
 	 */
 	public function get_acl($member_id = '', $acl = '') {
-	
-		// ToDo: Find a nicer way to do this, this is ugly as *piip*
-		// Also todo: Memcache this.
-	
-		// Create a empty object
-		$aclobj = (object)array();
 		
-		// Get ACL from db
-		$query = $this->db->select('acl, value')->get_where('acl', array('member_id' => $member_id));
+		// Get member
+		$member = $this->get_member($member_id);
 		
-		// If any, go through the result
-		if($query->num_rows() > 0) {
-		
-			// Add ACL to previously created ACL object
-			foreach($query->result() as $row) {
-				$aclobj->{$row->acl} = $row->value;
-			}
-			
-		} else {
-			// Failsafe if user don't have any ACL
-			return $aclobj; // Empty object
+		// Failsafe
+		if(!$member) {
+			return false;
 		}
-		
+			
 		// Return all ACLs if $acl is empty
 		if(empty($acl)) {
-			return $aclobj;
+			return $member->acl;
 		}
 		
-		// Else return ACL as bool
-		return (isset($aclobj->{$acl}) && $aclobj->{$acl} == '1');
+		// Return ACL if it's set
+		return (isset($member->acl->{$acl}) && $member->acl->{$acl} == '1');
 	}
 	
 	/**

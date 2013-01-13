@@ -20,13 +20,13 @@
 		</p>
 		
 		<br>
-		<h4>Access list (ACL) <small>Click to change</small></h4>
+		<h4>Access list (ACL) <small>Click to change status</small></h4>
 		
-		<?php /*foreach($this->dbconfig->acl as $acl) { ?>
-			<a href="/members/acl_switch/<?php echo $member->id; ?>/<?php echo $acl; ?>" class="label<?php echo ($member->{$acl} ? ' label-success' : ''); ?>">
-				<?php echo ucfirst($acl); ?>
+		<?php foreach($this->dbconfig->acl as $acl => $desc) { ?>
+			<a href="/members/acl_switch/<?php echo $member->id; ?>/<?php echo $acl; ?>" class="label<?php echo ($member->acl->{$acl} ? ' label-success' : ''); ?>">
+				<?php echo $desc; ?>
 			</a>
-		<?php }*/ ?>
+		<?php } ?>
 	</div>
 
 	<div class="span8">
