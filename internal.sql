@@ -1,12 +1,12 @@
 CREATE TABLE `acl` (
-  `user_id` int(11) NOT NULL COMMENT 'Member ID',
+  `member_id` int(11) NOT NULL,
   `active` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT 'Ability to login to internal.makerspace.se',
   `labaccess` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT 'Access to the lab',
   `feepaid` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT 'Paid annual fee',
   `boardmember` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT 'Member of the board',
   `founder` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT 'Founder of Stockholm Makerspace',
   `admin` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT 'Admin access in internal.makerspace.se',
-  PRIMARY KEY (`user_id`)
+  PRIMARY KEY (`member_id`)
 );
 CREATE TABLE `config` (
   `key` varchar(64) NOT NULL COMMENT 'Config key-name',
@@ -16,14 +16,14 @@ CREATE TABLE `config` (
 );
 CREATE TABLE `logins` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) NOT NULL,
+  `member_id` int(11) NOT NULL,
   `ip_address` varchar(64) NOT NULL,
   `timestamp` int(11) NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `user_id` (`user_id`)
+  KEY `user_id` (`member_id`)
 );
-CREATE TABLE `users` (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Member ID',
+CREATE TABLE `members` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `email` varchar(255) NOT NULL,
   `password` varchar(255) DEFAULT NULL,
   `reset_token` char(34) DEFAULT NULL,
@@ -42,17 +42,17 @@ CREATE TABLE `users` (
   `mobile` varchar(64) DEFAULT NULL,
   `twitter` varchar(255) DEFAULT NULL,
   `membership` date DEFAULT NULL COMMENT 'Membership Due Date',
-  `comment` varchar(255) DEFAULT NULL COMMENT 'Comment on the member (Notes etc)',
+  `comment` varchar(255) DEFAULT NULL COMMENT 'Comment on member (Notes etc)',
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
 );
 
 INSERT INTO config VALUES('pop3_account', NULL, 'POP3 account used as Return-Path to track bounces');
-INSERT INTO config VALUES('pop3_password', NULL, 'POP3 password for');
+INSERT INTO config VALUES('pop3_password', NULL, 'POP3 password for pop3_account');
 INSERT INTO config VALUES('email_name', NULL, 'PHPMailer From Name');
 INSERT INTO config VALUES('email_from', NULL, 'PHPMailer From Address');
 INSERT INTO config VALUES('email_return_path', NULL, 'Used as Return-Path in PHPMailer');
-INSERT INTO config VALUES('acl', NULL, 'Array with user-access levels');
+INSERT INTO config VALUES('acl', NULL, 'Array with member access levels');
 INSERT INTO config VALUES('countries', NULL, 'Countries in JSON format');
 INSERT INTO config VALUES('paypal_username', NULL, 'PayPal Live API Username');
 INSERT INTO config VALUES('paypal_password', NULL, 'PayPal Live API Password');

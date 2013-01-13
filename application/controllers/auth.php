@@ -10,7 +10,7 @@ class Auth extends CI_Controller {
 
 			// Try to login
 			$login = $this->input->post();
-			$result = $this->User_model->login($login);
+			$result = $this->Member_model->login($login);
 
 			if(!$result) {
 				// Invalid credentials.
@@ -36,7 +36,7 @@ class Auth extends CI_Controller {
 		gatekeeper();
 		
 		// Logout and redirect to frontpage
-		$this->User_model->logout();
+		$this->Member_model->logout();
 		redirect();
 	}
 	
@@ -48,7 +48,7 @@ class Auth extends CI_Controller {
 
 			// Send reset e-mail 
 			$email = $this->input->post('email');
-			$this->User_model->forgot($email);
+			$this->Member_model->forgot($email);
 			
 			redirect();
 		}
@@ -66,11 +66,11 @@ class Auth extends CI_Controller {
 	public function reset($token = '') {
 		no_gatekeeper();
 		
-		// Validate token and get user
-		$user = $this->User_model->valid_token($token);
+		// Validate token and get member
+		$member = $this->Member_model->valid_token($token);
 		
 		// If invalid token
-		if(!$user) {
+		if(!$member) {
 			redirect('/auth/forgot');
 		}
 		
@@ -78,7 +78,7 @@ class Auth extends CI_Controller {
 		if ($this->form_validation->run('auth/reset')) {
 		
 			// Actually update password (uses password field)
-			$this->User_model->change_password($user->id, null, false);
+			$this->Member_model->change_password($member->id, null, false);
 			
 			redirect();	
 		}

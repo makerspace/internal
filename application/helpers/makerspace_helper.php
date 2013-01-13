@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Auth/User Helpers
+ * Auth/Member Helpers
  * @author Jim Nelin
  **/
 function is_loggedin() {
@@ -19,7 +19,7 @@ function admin_gatekeeper() {
 	gatekeeper();
 	
 	$CI =& get_instance();	
-	if(!$CI->User_model->is_admin()) {
+	if(!$CI->Member_model->is_admin()) {
 		error('Admin access required to access this page.');
 		redirect('/');
 	}
@@ -32,15 +32,15 @@ function no_gatekeeper() {
 	}
 }
 
-function user_id() {
+function member_id() {
 	$CI =& get_instance();
 	
 	if(is_loggedin()) {
-		return (int)$CI->session->userdata('user_id');
+		return (int)$CI->session->userdata('member_id');
 	}
 	
 	// Failsafe, shouldn't happen.
-	error('ERROR! Requested user_id but no member is signed in.');
+	error('ERROR! Requested member_id but no member is signed in.');
 	redirect();
 }
 

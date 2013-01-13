@@ -1,7 +1,7 @@
 <div class="row">
 	<div class="span12">
 		<h2 class="pull-left">View member</h2>
-		<a href="/members/edit/<?php echo $member->id; ?>" class="btn btn-primary pull-right">Update</a>
+		<a href="/members/edit/<?php echo $member->id; ?>" class="btn btn-primary pull-right">Update information</a>
 	</div>
 	
 	<div class="span4">

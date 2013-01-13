@@ -1,19 +1,19 @@
 <?php
 
-class User_model extends CI_Model {
+class Member_model extends CI_Model {
 	
 	public function login($form, $session = true) {
 		
 		// Check if e-mail exists.
-		$user = $this->get_user('email', $form['email']);
+		$member = $this->get_member('email', $form['email']);
 		
-		if(!$user) {
+		if(!$member) {
 			// That's a negative
 			return false;
 		}
 		
 		// Check ACL (login)
-		if($user->active < 1) {
+		if($member->active < 1) {
 			// Inactive account (or similar)
 			return false;
 		}
@@ -22,7 +22,7 @@ class User_model extends CI_Model {
 		$this->load->library('Pass');
 		
 		// Verify password
-		$result = $this->pass->verify($form['password'], $user->password);
+		$result = $this->pass->verify($form['password'], $member->password);
 		if(!$result) {
 			return false;
 		}
@@ -32,7 +32,7 @@ class User_model extends CI_Model {
 		
 			// Set session
 			$data = array(
-				'user_id' => $user->id,
+				'member_id' => $member->id,
 				'email' => $form['email'],
 				'logged_in' => true,
 			);
@@ -44,7 +44,7 @@ class User_model extends CI_Model {
 			$this->session->set_userdata($data);
 			
 			// Update last_login and add to logins.
-			$this->db->insert('logins', array('user_id' => $user->id, 'ip_address' => ip_address(), 'timestamp' => time()));
+			$this->db->insert('logins', array('member_id' => $member->id, 'ip_address' => ip_address(), 'timestamp' => time()));
 			
 			// Failsafe
 			return is_loggedin();
@@ -77,8 +77,8 @@ class User_model extends CI_Model {
 		   'registered' => time(),
 		);
 	
-		// Add user to db
-		$result = $this->db->insert('users', $data); 
+		// Add member to db
+		$result = $this->db->insert('members', $data); 
 		
 		return $result;
 	
@@ -86,23 +86,23 @@ class User_model extends CI_Model {
 	
 	public function forgot($email) {
 	
-		$user = $this->get_user('email', $email);
+		$member = $this->get_member('email', $email);
 		
-		// If user exists
-		if($user) {
+		// If member exists
+		if($member) {
 			
 			// Send mail
 			$token = random_string('alnum', 34);
 			
 			$this->load->model('Email_model');
-			$email = $this->Email_model->send_forgot_password($user->email, $token);
+			$email = $this->Email_model->send_forgot_password($member->email, $token);
 			
 			
 			// Check if sent
 			if(!$email) {
 				error('The password reset could not be sent out. If this error remains, please contact info@makerspace.se.');
 			} else {
-				$this->db->update('users', array('reset_token' => $token, 'reset_expire' => strtotime('+3 days')), array('id' => $user->id)); 
+				$this->db->update('members', array('reset_token' => $token, 'reset_expire' => strtotime('+3 days')), array('id' => $member->id)); 
 				message('An password reset link has been sent to your e-mail. Please note that the link expires in 3 days.');
 			}
 	
@@ -118,26 +118,26 @@ class User_model extends CI_Model {
 			return false;
 		}
 		
-		// Get user from token
-		$user = $this->get_user('reset_token', $token);
+		// Get member from token
+		$member = $this->get_member('reset_token', $token);
 		
 		// If we have a valid token.
-		if($user) {
+		if($member) {
 		
 			// Check if token has expired
-			if($user->reset_expire < time()) {
+			if($member->reset_expire < time()) {
 			
 				// Expired token, update db
-				$this->db->update('users', array('reset_token' => null, 'reset_expire' => null), array('id' => $user->id));
+				$this->db->update('members', array('reset_token' => null, 'reset_expire' => null), array('id' => $member->id));
 				
-				// ... and notify user.
+				// ... and notify member.
 				error('The password reset token has expired!');
 				
 				return false;
 				
-			// Valid, return user
+			// Valid, return member
 			} else {
-				return $user;
+				return $member;
 			}
 			
 		} else {
@@ -148,10 +148,10 @@ class User_model extends CI_Model {
 	
 	}
 		
-	public function change_password($user_id = '', $new_password = '', $verify_old = true) {
+	public function change_password($member_id = '', $new_password = '', $verify_old = true) {
 	
-			if(empty($user_id)) {
-				$user_id = user_id();
+			if(empty($member_id)) {
+				$member_id = $this->current_id();
 			}
 			
 			// Use post
@@ -159,12 +159,12 @@ class User_model extends CI_Model {
 				$new_password = $this->input->post('password');
 			}
 			
-			// Get user by id
-			$user = $this->get_user($user_id);
+			// Get member by id
+			$member = $this->get_member($member_id);
 			
-			// Check if invalid user
-			if(!$user) {
-				error('Invalid user, please try again.');
+			// Check if invalid member id
+			if(!$member) {
+				error('Invalid member id, please try again.');
 				redirect();
 			}
 			
@@ -175,7 +175,7 @@ class User_model extends CI_Model {
 			if($verify_old) {
 				
 				$current_password = $this->input->post('current_password');
-				$result = $this->pass->verify($current_password, $user->password);
+				$result = $this->pass->verify($current_password, $member->password);
 				
 				if(!$result) {
 					error('Your current password was wrong, please try again.');
@@ -190,7 +190,7 @@ class User_model extends CI_Model {
 				'reset_token' => null, 'reset_expire' => null
 			);
 			
-			$this->db->update('users', $data, array('id' => $user->id));
+			$this->db->update('members', $data, array('id' => $member->id));
 			
 			message('Password sucessfully updated!');
 			
@@ -199,14 +199,15 @@ class User_model extends CI_Model {
 	}
 	
 	
-	public function get_user($where = '', $value = '') {
+	public function get_member($where = '', $value = '') {
 	
-		// ToDO: Memcache this.
+		// ToDo: Memcache this.
+		// ToDo2: Switch structure of ACL
 		
-		// Get current user
+		// Get current member
 		if(empty($where)) {
 			$where = 'id';
-			$value = user_id();
+			$value = member_id();
 			
 		// Get where id = $where (ugly hack)
 		} elseif(empty($value)) {
@@ -214,8 +215,8 @@ class User_model extends CI_Model {
 			$where = 'id';
 		} 
 		
-		$this->db->join('acl', 'acl.user_id = users.id', 'left');
-		$query = $this->db->get_where('users', array($where => $value), 1);
+		$this->db->join('acl', 'acl.member_id = members.id', 'left');
+		$query = $this->db->get_where('members', array($where => $value), 1);
 	
 		if($query->num_rows() > 0) {
 			return $query->row();	
@@ -225,10 +226,10 @@ class User_model extends CI_Model {
 		
 	}
 	
-	public function is_admin($user_id = '') {
+	public function is_admin($member_id = '') {
 	
-		$user = $this->get_user($user_id);
-		if($user->admin == 1) return true;
+		$member = $this->get_member($member_id);
+		if($member->admin == 1) return true;
 		
 		return false;
 	
@@ -236,8 +237,8 @@ class User_model extends CI_Model {
 	
 	public function get_all($limit = 1000, $offset = 0) {
 		
-		$this->db->join('acl', 'acl.user_id = users.id', 'left')->order_by('users.id', 'asc');
-		$query = $this->db->limit($limit)->offset($offset)->get('users');
+		$this->db->join('acl', 'acl.member_id = members.id', 'left')->order_by('members.id', 'asc');
+		$query = $this->db->limit($limit)->offset($offset)->get('members');
 	
 		if($query->num_rows() > 0) {
 			return $query->result();	
@@ -246,12 +247,12 @@ class User_model extends CI_Model {
 		return array();
 	}
 	
-	public function acl_switch($user_id, $acl) {
+	public function acl_switch($member_id, $acl) {
 	
-		$user = $this->get_user($user_id);
-		if(!$user) return false;
+		$member = $this->get_member($member_id);
+		if(!$member) return false;
 		
-		if($user->{$acl}) {
+		if($member->{$acl}) {
 			// Set to false
 			$data = array($acl => 0);
 		} else {
@@ -260,7 +261,7 @@ class User_model extends CI_Model {
 		}
 		
 		
-		$this->db->update('acl', $data, array('user_id' => $user_id));
+		$this->db->update('acl', $data, array('member_id' => $member_id));
 	
 		return true;
 		

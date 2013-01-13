@@ -10,15 +10,15 @@ class Members extends CI_Controller {
 		);
 		
 		// ToDo: Pagination
-		$users = $this->User_model->get_all();
+		$members = $this->Member_model->get_all();
 
 		$this->load->view('header', $head);
-		$this->load->view('members/index', array('members' => $users));
+		$this->load->view('members/index', array('members' => $members));
 		$this->load->view('footer');
 
 	}
 	
-	public function view($user_id = '') {
+	public function view($member_id = '') {
 		gatekeeper();
 		
 		$head = array(
@@ -26,7 +26,7 @@ class Members extends CI_Controller {
 		);
 		
 		$this->load->view('header', $head);
-		$this->load->view('members/view', array('member' => $this->User_model->get_user($user_id)));
+		$this->load->view('members/view', array('member' => $this->Member_model->get_member($member_id)));
 		$this->load->view('footer');
 		
 	
@@ -53,12 +53,12 @@ class Members extends CI_Controller {
 		}
 	}
 	
-	public function edit($user_id = '') {
+	public function edit($member_id = '') {
 		gatekeeper();
 		
 		// Failsafes
-		if(empty($user_id)) redirect('members/edit/'.user_id());
-		if(($user_id != user_id()) && !$this->User_model->is_admin()) {
+		if(empty($member_id)) redirect('members/edit/'.member_id());
+		if(($member_id != member_id()) && !$this->Member_model->is_admin()) {
 			// Not you!
 			error('Access denied.');
 			redirect();
@@ -71,7 +71,7 @@ class Members extends CI_Controller {
 			);
 			
 			$this->load->view('header', $head);
-			$this->load->view('members/edit', array('user' => $this->User_model->get_user($user_id)));
+			$this->load->view('members/edit', array('member' => $this->Member_model->get_member($member_id)));
 			$this->load->view('footer');
 	
 		} else {
@@ -81,26 +81,26 @@ class Members extends CI_Controller {
 		}
 	}
 	
-	public function acl_switch($user_id = '', $acl = '') {
+	public function acl_switch($member_id = '', $acl = '') {
 		admin_gatekeeper();
 	
-		if(empty($user_id)) {
-			error('Invalid user id');
+		if(empty($member_id)) {
+			error('Invalid member id');
 			redirect();
 		} elseif(empty($acl)) {
 			error('Invalid access level');
 			redirect();
 		}
 		
-		$return = $this->User_model->acl_switch($user_id, $acl);
+		$return = $this->Member_model->acl_switch($member_id, $acl);
 		
 		if(!$return) {
-			error('Couldn\'t update the user ACL!');
+			error('Couldn\'t update the member ACL!');
 			redirect();
 		}
 		
-		message('User ACL successfully updated.');
-		redirect('/members/view/'.$user_id);
+		message('Member ACL successfully updated.');
+		redirect('/members/view/'.$member_id);
 	
 	}
 	

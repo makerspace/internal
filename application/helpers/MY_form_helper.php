@@ -1,7 +1,11 @@
-<?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-
-// HTML5 Form helper
-
+<?php
+/**
+ * HTML5 Form helper for CI
+ * Adds HTML5-form elements.
+ *
+ * @author Unknown
+ **/
+ 
 /**
  * Common Input Field
  *
