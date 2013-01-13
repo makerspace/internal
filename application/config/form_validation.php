@@ -46,5 +46,19 @@ $config = array(
 				'rules' => 'trim|required|max_length[255]|valid_email|is_unique[members.email]'
 			),
 		),
+		
+		// Create/edit newsletter
+		'newsletter/validate' => array(
+			array(
+				'field' => 'subject',
+				'label' => 'newsletter subject',
+				'rules' => 'trim|required|min_length[10]|max_length[255]'
+			),
+			array(
+				'field' => 'body',
+				'label' => 'newsletter body',
+				'rules' => 'trim|required|min_length[50]'
+			),
+		),
 
 );

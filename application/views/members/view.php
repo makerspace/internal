@@ -1,26 +1,27 @@
 <div class="row">
 	<div class="span12">
 		<h2 class="pull-left">View member</h2>
-		<a href="/members/edit/<?php echo $member->id; ?>" class="btn btn-primary pull-right">Update information</a>
+		<a href="/members/edit/<?php echo $member->id; ?>" class="btn btn-primary pull-right">Change Member Information</a>
 	</div>
 	
 	<div class="span4">
-		<h4>Quick links</h4>
+		<h4>Member Tasks</h4>		
 		<p>
-			<a href="#" class="btn btn-info">Ge lokalaccess</a> 
-			<a href="#" class="btn btn-primary">Gör till admin</a>
+			<a href="#" class="btn btn-primary">Download Membership Card <small>(as PDF)</small></a>
 		</p>
-		
 		<p>
-			<a href="#" class="btn btn-primary">Skicka betalningsinfo</a> 
-		</p>
-		
-		<p>
-			<a href="#" class="btn btn-inverse">Ladda ner medlemskort i PDF</a> 
+			<a href="#" class="btn">View RFID Tag ID <small>(For Lab Access)</small></a> 
 		</p>
 		
 		<br>
-		<h4>Access list (ACL) <small>Click to change status</small></h4>
+		<h4>Membership Fee Payment</h4>
+		<p>
+			<a href="#" class="btn">Send Fortnox Invoice</a> 
+			<a href="#" class="btn">Send PayPal Link</a> 
+		</p>
+		
+		<br>
+		<h4>Access list (ACL) <small>Click to switch state</small></h4>
 		
 		<?php foreach($this->dbconfig->acl as $acl => $desc) { ?>
 			<a href="/members/acl_switch/<?php echo $member->id; ?>/<?php echo $acl; ?>" class="label<?php echo ($member->acl->{$acl} ? ' label-success' : ''); ?>">

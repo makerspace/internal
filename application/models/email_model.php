@@ -7,7 +7,6 @@
  * - Store e-mails in db as config-key/value.
  * - Store config in db
  * - Handle bounces
- * - Add newsletter functions
  **/
 
 class Email_model extends CI_Model {
@@ -18,7 +17,7 @@ class Email_model extends CI_Model {
 		$this->load->library('PHPMailerLite');
 	}
 
-	public function send_forgot_password($to, $token) {
+	public function send_forgot_password($to, $token, $recipient_name = '') {
 	
 		$subject = 'Password recovery for internal.makerspace.se';
 		$template = 'Hello!
@@ -34,7 +33,7 @@ Regards, E-mail Robot
 Stockholm Makerspace';
 
 		// New email
-		$email = $this->new_email($to);
+		$email = $this->new_email($to, $recipient_name);
 		$body = sprintf($template, ip_address(), $token);
 		
 		// Set subject
@@ -47,12 +46,12 @@ Stockholm Makerspace';
 
 	}
 	
-	public function new_email($to) {
+	public function new_email($to, $recipient_name = '') {
 			
 			$mail = new PHPMailerLite();
 			
 			$mail->SetFrom($this->dbconfig->email_from, $this->dbconfig->email_name);
-			$mail->AddAddress($to);
+			$mail->AddAddress($to, $recipient_name);
 			
 			// VERP
 			$mail->Sender = sprintf($this->dbconfig->email_return_path, str_replace('@', '=', $to));

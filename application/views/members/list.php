@@ -25,7 +25,7 @@
 			<td class="avatar"><img src="<?php echo gravatar($member->email, 22); ?>"></td>
 			<td><a href="/members/view/<?php echo $member->id; ?>"><?php echo $member->id; ?></a></td>
 			<td><?php echo $member->firstname . ' ' . $member->lastname; ?></td>
-			<td><?php echo $member->email; ?></td>
+			<td><a href="mailto:<?php echo $member->email; ?>"><?php echo $member->email; ?></a></td>
 			<td><?php echo (!empty($member->phone) ? '<a href="callto:'.$member->phone.'">'.$member->phone.'</a>' : '<em>N/A</em>'); ?></td>
 			<td><?php echo (!empty($member->mobile) ? '<a href="callto:'.$member->mobile.'">'.$member->mobile.'</a>' : '<em>N/A</em>'); ?></td>
 			<td><?php echo date('Y-m-d', $member->registered); ?></td>

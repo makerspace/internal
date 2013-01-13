@@ -122,6 +122,10 @@ function is_json($str) {
 	return (json_last_error() == JSON_ERROR_NONE);
 }
 
+function when($timestamp) {
+	return date('Y-m-d H:i:s', $timestamp);
+}
+
 /**
  * Function to generate v4 UUID
  **/

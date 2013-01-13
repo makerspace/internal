@@ -94,7 +94,7 @@ class Member_model extends CI_Model {
 			$token = random_string('alnum', 34);
 			
 			$this->load->model('Email_model');
-			$email = $this->Email_model->send_forgot_password($member->email, $token);
+			$email = $this->Email_model->send_forgot_password($member->email, $token, $member->fullname);
 			
 			
 			// Check if sent
@@ -221,6 +221,9 @@ class Member_model extends CI_Model {
 			// Get member
 			$member = $query->row();
 			
+			// Combine first and lastname and set fullname
+			$member->fullname = trim($member->firstname.' '.$member->lastname);
+			
 			// Add ACL to object
 			$this->_add_acl($member);
 			
@@ -234,9 +237,6 @@ class Member_model extends CI_Model {
 	}
 		
 	public function get_all($limit = 1000, $offset = 0) {
-		
-		// Previous ACL join.
-		// $this->db->join('acl', 'acl.member_id = members.id', 'left');
 		
 		// Get members
 		$this->db->order_by('members.id', 'asc');
@@ -264,7 +264,6 @@ class Member_model extends CI_Model {
 	/**
 	 * Private method to add ACL to member.
 	 */
-	
 	private function _add_acl(&$member, $index = 0) {
 	
 		# ToDo: Improve look-up so we don't make more then one db query.

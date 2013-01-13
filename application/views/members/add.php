@@ -113,7 +113,7 @@
 				<div class="control-group">
 					<?php echo form_label('Phone', 'phone', array('class' => 'control-label')); ?>
 					<div class="controls">
-						<?php echo form_input('phone', set_value('phone'), 'id="phone" placeholder="+46812345678"'); ?>
+						<?php echo form_input('phone', set_value('phone'), 'id="phone" placeholder="+46812300000"'); ?>
 						<span class="help-inline">Optional</span>
 					</div>
 				</div>
@@ -121,7 +121,7 @@
 				<div class="control-group">
 					<?php echo form_label('Mobile', 'mobile', array('class' => 'control-label')); ?>
 					<div class="controls">
-						<?php echo form_input('mobile', set_value('mobile'), 'id="mobile" placeholder="+46812345678"'); ?>
+						<?php echo form_input('mobile', set_value('mobile'), 'id="mobile" placeholder="+46812300000"'); ?>
 						<span class="help-inline">Optional</span>
 					</div>
 				</div>
@@ -130,16 +130,9 @@
 	</div>
 	<div class="span6">
 		<?php echo form_fieldset('Member Access (ACL)'); ?>
-			<div class="span2 pull-left">
-				<label><?php echo form_checkbox('active', '1', true); ?> Active member</label>
-				<label><?php echo form_checkbox('labaccess', '1', false); ?> Access to the lab</label>
-				<label><?php echo form_checkbox('feepaid', '1', false); ?> Member Fee Paid</label>
-			</div>
-			<div class="span3 pull-right">
-				<label><?php echo form_checkbox('boardmember', '1', false); ?> Board member</label>
-				<label><?php echo form_checkbox('founder', '1', false); ?> Founder of Makerspace</label>
-				<label><?php echo form_checkbox('admin', '1', false); ?> Administrator</label>
-			</div>
+			<?php foreach($this->dbconfig->acl as $key => $desc) { ?>
+				<label class="span2"><?php echo form_checkbox($key, '1') . ' ' . $desc; ?></label>
+			<?php } ?>
 			<div class="span6 pull-left">
 				<br>
 				<br>

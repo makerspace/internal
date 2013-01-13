@@ -43,6 +43,19 @@ CREATE TABLE `members` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
 );
+CREATE TABLE `newsletters` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `created_by` int(11) NOT NULL COMMENT 'Member ID',
+  `recipients` text NOT NULL COMMENT 'Array of Member IDs in JSON',
+  `subject` varchar(255) NOT NULL,
+  `body` mediumtext NOT NULL COMMENT 'E-mail body',
+  `created` int(11) NOT NULL COMMENT 'Timestamp',
+  `last_updated` int(11) NOT NULL COMMENT 'Timestamp',
+  `sent_timestamp` int(11) DEFAULT NULL COMMENT 'When the newsletter was sent',
+  `sent` int(11) NOT NULL DEFAULT '0',
+  `bounces` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+);
 
 INSERT INTO config VALUES('pop3_account', NULL, 'POP3 account used as Return-Path to track bounces');
 INSERT INTO config VALUES('pop3_password', NULL, 'POP3 password for pop3_account');

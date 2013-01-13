@@ -114,7 +114,7 @@
 				<div class="control-group">
 					<?php echo form_label('Phone', 'phone', array('class' => 'control-label')); ?>
 					<div class="controls">
-						<?php echo form_input('phone', $member->phone, 'id="phone" placeholder="+46812345678"'); ?>
+						<?php echo form_input('phone', $member->phone, 'id="phone" placeholder="+46812300000"'); ?>
 						<span class="help-inline">Optional</span>
 					</div>
 				</div>
@@ -122,30 +122,25 @@
 				<div class="control-group">
 					<?php echo form_label('Mobile', 'mobile', array('class' => 'control-label')); ?>
 					<div class="controls">
-						<?php echo form_input('mobile', $member->mobile, 'id="mobile" placeholder="+46812345678"'); ?>
+						<?php echo form_input('mobile', $member->mobile, 'id="mobile" placeholder="+46812300000"'); ?>
 						<span class="help-inline">Optional</span>
 					</div>
 				</div>
 				
 		<?php echo form_fieldset_close(); ?>
 	</div>
-	<div class="span6">
+	<div class="span6 pull-left">
 		<?php echo form_fieldset('Member Access (ACL)'); ?>
-			<div class="span2 pull-left">
-				<label><?php echo form_checkbox('active', '1', (bool)$member->active); ?> Active member</label>
-				<label><?php echo form_checkbox('labaccess', '1', (bool)$member->labaccess); ?> Access to the lab</label>
-				<label><?php echo form_checkbox('feepaid', '1', (bool)$member->feepaid); ?> Member Fee Paid</label>
-			</div>
-			<div class="span3 pull-right">
-				<label><?php echo form_checkbox('boardmember', '1', (bool)$member->boardmember); ?> Board member</label>
-				<label><?php echo form_checkbox('founder', '1', (bool)$member->founder); ?> Founder of Makerspace</label>
-				<label><?php echo form_checkbox('admin', '1', (bool)$member->admin); ?> Administrator</label>
-			</div>
-			<div class="span6 pull-left">
-				<br>
-				<br>
+			
+			<?php foreach($this->dbconfig->acl as $key => $desc) { ?>
+				<label class="span2"><?php echo form_checkbox($key, '1', (bool)$member->acl->{$key}) . ' ' . $desc; ?></label>
+			<?php } ?>
+			
+			<div class="span6">
+				<br><br>
 				<button type="submit" class="btn btn-large span5 btn-info pull-left">Update Member</button>
 			</div>	
+			
 		<?php echo form_fieldset_close(); ?>
 	</div>
 	<?php echo form_close(); ?>
