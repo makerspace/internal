@@ -13,7 +13,7 @@ class Members extends CI_Controller {
 		$members = $this->Member_model->get_all();
 
 		$this->load->view('header', $head);
-		$this->load->view('members/index', array('members' => $members));
+		$this->load->view('members/list', array('members' => $members));
 		$this->load->view('footer');
 
 	}
