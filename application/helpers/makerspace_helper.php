@@ -39,7 +39,9 @@ function user_id() {
 		return (int)$CI->session->userdata('user_id');
 	}
 	
-	return 0;
+	// Failsafe, shouldn't happen.
+	error('ERROR! Requested user_id but no member is signed in.');
+	redirect();
 }
 
 /**

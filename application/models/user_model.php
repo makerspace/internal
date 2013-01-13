@@ -18,8 +18,10 @@ class User_model extends CI_Model {
 			return false;
 		}
 		
-		// Verify password
+		// Load password library
 		$this->load->library('Pass');
+		
+		// Verify password
 		$result = $this->pass->verify($form['password'], $user->password);
 		if(!$result) {
 			return false;
@@ -66,6 +68,7 @@ class User_model extends CI_Model {
 	
 	public function register($form) {
 	
+		// Load password library
 		$this->load->library('Pass');
 		
 		$data = array(
@@ -73,7 +76,8 @@ class User_model extends CI_Model {
 		   'password' => $this->pass->hash($form['password']),
 		   'registered' => time(),
 		);
-
+	
+		// Add user to db
 		$result = $this->db->insert('users', $data); 
 		
 		return $result;
@@ -98,8 +102,8 @@ class User_model extends CI_Model {
 			if(!$email) {
 				error('The password reset could not be sent out. If this error remains, please contact info@makerspace.se.');
 			} else {
-				$this->db->update('users', array('password_token' => $token), array('id' => $user->id)); 
-				message('An e-mail with more information has been sent to the address you provided.');
+				$this->db->update('users', array('reset_token' => $token, 'reset_expire' => strtotime('+3 days')), array('id' => $user->id)); 
+				message('An password reset link has been sent to your e-mail. Please note that the link expires in 3 days.');
 			}
 	
 		} else {
@@ -110,40 +114,68 @@ class User_model extends CI_Model {
 	public function valid_token($token) {
 			
 		if(strlen($token) != 34) {
-			error('Invalid password reset token.');
+			error('Invalid password reset token!');
 			return false;
 		}
 		
 		// Get user from token
-		$user = $this->get_user('password_token', $token);
+		$user = $this->get_user('reset_token', $token);
 		
 		// If we have a valid token.
 		if($user) {
-			return $user;
+		
+			// Check if token has expired
+			if($user->reset_expire < time()) {
+			
+				// Expired token, update db
+				$this->db->update('users', array('reset_token' => null, 'reset_expire' => null), array('id' => $user->id));
+				
+				// ... and notify user.
+				error('The password reset token has expired!');
+				
+				return false;
+				
+			// Valid, return user
+			} else {
+				return $user;
+			}
+			
 		} else {
-			error('Invalid password reset token, please try again.');
+			error('Invalid password reset token!');
 		}
 		
 		return false;
 	
 	}
 		
-	public function change_password($user_id = '', $verify_old = true) {
+	public function change_password($user_id = '', $new_password = '', $verify_old = true) {
 	
 			if(empty($user_id)) {
 				$user_id = user_id();
 			}
 			
-			$new_password = $this->input->post('new_password');
-	
+			// Use post
+			if(empty($new_password)) {
+				$new_password = $this->input->post('password');
+			}
+			
 			// Get user by id
 			$user = $this->get_user($user_id);
 			
-			// Verify current_password, if needed
-			if($verify_old) {
+			// Check if invalid user
+			if(!$user) {
+				error('Invalid user, please try again.');
+				redirect();
+			}
 			
-				$this->load->library('Pass');
-				$result = $this->pass->verify($this->input->post('current_password'), $user->password);
+			// Load password library
+			$this->load->library('Pass');
+			
+			// Verify current password, if needed
+			if($verify_old) {
+				
+				$current_password = $this->input->post('current_password');
+				$result = $this->pass->verify($current_password, $user->password);
 				
 				if(!$result) {
 					error('Your current password was wrong, please try again.');
@@ -151,8 +183,15 @@ class User_model extends CI_Model {
 				}
 				
 			}
-			// Update password to new one.
-			$this->db->update('users', array('password' => $this->pass->hash($new_password)), array('id' => $user_id));
+			
+			// Update password and remove reset token
+			$data = array(
+				'password' => $this->pass->hash($new_password),
+				'reset_token' => null, 'reset_expire' => null
+			);
+			
+			$this->db->update('users', $data, array('id' => $user->id));
+			
 			message('Password sucessfully updated!');
 			
 			return true;

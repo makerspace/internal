@@ -9,7 +9,7 @@
 
 	<br><br>
 	
-	<button class="btn btn-medium btn-primary" type="submit">Reset password</button>
+	<button class="btn btn-medium btn-primary" type="submit">Send password reminder</button>
 	<a href="/auth/login" class="btn btn-medium pull-right">Return to login</a>
 	
 <?php echo form_close(); ?>

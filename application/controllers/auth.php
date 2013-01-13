@@ -5,18 +5,10 @@ class Auth extends CI_Controller {
 	public function login() {
 		no_gatekeeper();
 
-		if (!$this->form_validation->run()) {
+		// If POST is valid
+		if ($this->form_validation->run()) {
 
-			$header = array(
-				'title' => 'Login',
-			);
-			
-			$this->load->view('header', $header);
-			$this->load->view('auth/login');
-			$this->load->view('footer');
-			
-		} else {
-		
+			// Try to login
 			$login = $this->input->post();
 			$result = $this->User_model->login($login);
 
@@ -28,8 +20,15 @@ class Auth extends CI_Controller {
 			
 			// Redirect on success
 			redirect();
-			
 		}
+		
+		$header = array(
+			'title' => 'Login',
+		);
+		
+		$this->load->view('header', $header);
+		$this->load->view('auth/login');
+		$this->load->view('footer');
 		
 	}
 	
@@ -44,30 +43,55 @@ class Auth extends CI_Controller {
 	public function forgot() {
 		no_gatekeeper();
 		
-		if (!$this->form_validation->run()) {
+		// If POST is valid
+		if ($this->form_validation->run()) {
 
-			$header = array(
-				'title' => 'Forgot password',
-			);
-			
-			$this->load->view('header', $header);
-			$this->load->view('auth/forgot');
-			$this->load->view('footer');
-			
-		} else {
-		
+			// Send reset e-mail 
 			$email = $this->input->post('email');
 			$this->User_model->forgot($email);
 			
-			redirect('/auth/forgot');
-			
+			redirect();
 		}
+		
+		$header = array(
+			'title' => 'Forgot password',
+		);
+		
+		$this->load->view('header', $header);
+		$this->load->view('auth/forgot_password');
+		$this->load->view('footer');
 	
 	}
 	
-	public function reset() {
+	public function reset($token = '') {
 		no_gatekeeper();
-	
+		
+		// Validate token and get user
+		$user = $this->User_model->valid_token($token);
+		
+		// If invalid token
+		if(!$user) {
+			redirect('/auth/forgot');
+		}
+		
+		// If submitted and POST is valid
+		if ($this->form_validation->run('auth/reset')) {
+		
+			// Actually update password (uses password field)
+			$this->User_model->change_password($user->id, null, false);
+			
+			redirect();	
+		}
+		
+		$header = array(
+			'title' => 'Reset password',
+		);
+		
+		// View reset password form
+		$this->load->view('header', $header);
+		$this->load->view('auth/reset_password', array('token' => $token));
+		$this->load->view('footer');
+		
 	}
 
 }

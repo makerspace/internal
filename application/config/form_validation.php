@@ -24,6 +24,20 @@ $config = array(
                 ),
         ),
 		
+		// Reset password
+        'auth/reset' => array(
+                array(
+                        'field' => 'password',
+                        'label' => 'password',
+                        'rules' => 'trim|required|min_length[8]|matches[password2]'
+                ),
+                array(
+                        'field' => 'password2',
+                        'label' => 'repeat new password',
+                        'rules' => 'trim|required'
+                ),
+        ),
+		
 		// Add new member
 		'members/add' => array(
 			array(
