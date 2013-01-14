@@ -90,6 +90,13 @@
 					<a href="callto:<?php echo $member->mobile; ?>"><?php echo $member->mobile; ?></a>
 				</p>
 				<?php } ?>
+				
+				<?php if(!empty($member->skype)) { ?>
+				<p>
+					<strong>Skype:</strong><br>
+					<a href="skype:<?php echo $member->skype; ?>?chat"><?php echo $member->skype; ?></a>
+				</p>
+				<?php } ?>
 			</div>
 		</div>
 	</div>

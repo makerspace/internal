@@ -21,6 +21,13 @@
 			</div>
 			
 			<div class="control-group">
+				<?php echo form_label('Membership Due', 'membership', array('class' => 'control-label')); ?>
+				<div class="controls">
+					<?php echo form_input('membership', $member->membership, 'data-date-format="yyyy-mm-dd" id="membership" class="datepicker" required'); ?>
+				</div>
+			</div>
+			
+			<div class="control-group">
 				<?php echo form_label('Twitter', 'twitter', array('class' => 'control-label')); ?>
 				<div class="controls">
 					<div class="input-prepend">
@@ -31,13 +38,14 @@
 				</div>
 			</div>
 			
-			
 			<div class="control-group">
-				<?php echo form_label('Membership Due', 'membership', array('class' => 'control-label')); ?>
+				<?php echo form_label('Skype Name', 'skype', array('class' => 'control-label')); ?>
 				<div class="controls">
-					<?php echo form_input('membership', $member->membership, 'data-date-format="yyyy-mm-dd" id="membership" class="datepicker" required'); ?>
+					<?php echo form_input('skype', $member->skype, 'id="skype"'); ?>
+					<span class="help-inline">Optional</span>
 				</div>
 			</div>
+			
 				
 		<?php echo form_fieldset_close(); ?>
 	</div>
@@ -69,7 +77,7 @@
 				<div class="control-group">
 					<?php echo form_label('Org. Number', 'orgno', array('class' => 'control-label')); ?>
 					<div class="controls">
-						<?php echo form_input('orgno', $member->orgno, 'id="orgno"'); ?>
+						<?php echo form_input('orgno', $member->orgno, 'id="orgno" placeholder="XXXXXX-YYYY"'); ?>
 						<span class="help-inline">Optional</span>
 					</div>
 				</div>

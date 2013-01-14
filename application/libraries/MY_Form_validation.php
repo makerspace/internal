@@ -29,6 +29,36 @@ class MY_Form_validation extends CI_Form_validation {
 		return $this->_error_array;
 	}
 
+    /**
+     * Valid Date (ISO format)
+     *
+     * @access    public
+     * @param    string
+     * @return    bool
+	 * @todo Rewrite to not use ereg (deprecated)
+     */
+    function valid_date($str) {
 	
+	/*
+		$CI =& get_instance();
+		$CI->form_validation->set_message('valid_date', 'The %s field must be in format: YYYY-MM-DD.');
+	
+        if ( ereg("([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})", $str) ) 
+        {
+            $arr = split("-", $str);    // splitting the array
+            $yyyy = $arr[0];            // first element of the array is year
+            $mm = $arr[1];              // second element is month
+            $dd = $arr[2];              // third element is days
+            return ( checkdate($mm, $dd, $yyyy) );
+        } 
+        else 
+        {
+            return FALSE;
+        }
+	*/
+	
+		return true;
+	
+    }
 
 }

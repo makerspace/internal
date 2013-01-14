@@ -38,6 +38,7 @@ CREATE TABLE `members` (
   `phone` varchar(64) DEFAULT NULL,
   `mobile` varchar(64) DEFAULT NULL,
   `twitter` varchar(255) DEFAULT NULL,
+  `skype` varchar(255) DEFAULT NULL,
   `membership` date DEFAULT NULL COMMENT 'Membership Due Date',
   `comment` varchar(255) DEFAULT NULL COMMENT 'Comment on member (Notes etc)',
   PRIMARY KEY (`id`),
