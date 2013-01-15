@@ -38,7 +38,7 @@ class Api extends CI_Controller {
 	 **/
 	public function member($key = '', $value = '') {
 	
-		// ToDo: This should be protected by some kind of auth/key or similar.
+		// ToDo: This should be protected by authentication.
 		// ... so until that's implemented, return service unavailable.
 		$this->_error(503);
 			
