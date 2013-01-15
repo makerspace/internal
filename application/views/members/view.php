@@ -83,7 +83,7 @@
 				
 				<p>
 					<strong>Address:</strong><br>
-					<?php echo $member->address; ?><br>
+					<?php echo (!empty($member->address) ? $member->address . '<br>' : ''); ?>
 					<?php echo (!empty($member->address2) ? $member->address2 . '<br>' : ''); ?>
 					<?php echo $member->zipcode; ?> <?php echo $member->city; ?>
 					<?php echo (!empty($member->country) ? '<br>'.$this->dbconfig->countries->{$member->country} : ''); ?>

@@ -13,7 +13,7 @@ class Member_model extends CI_Model {
 		}
 		
 		// Check ACL (Currently only allow admins to login)
-		if(!$this->get_acl($member->id, 'admin')) {
+		if(!$this->is_admin($member->id)) {
 			return false;
 		}
 		
@@ -90,9 +90,9 @@ class Member_model extends CI_Model {
 		// If member exists
 		if($member) {
 		
-			// Only admins atm.
-			if(empty($member->acl->admin)) {
-				error('Adminlogin only.');
+			// Check ACL (Currently only allow admins to use)
+			if(!$this->is_admin($member->id)) {
+				error('No account with that e-mail was found. Please try again.');
 				return false;
 			}
 			

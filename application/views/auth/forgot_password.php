@@ -1,5 +1,6 @@
 <?php echo form_open('auth/forgot', array('class' => 'form-signin')); ?>
-	<h3>Stockholm Makerspace</h3>
+
+	<img src="/assets/img/logo.png" alt="Stockholm Makerspace">
 	
 	<p>Forgot your password? Just enter your e-mail below and further instructions will be sent to you shortly.</p>
 
