@@ -2,7 +2,7 @@
 
 	<img src="/assets/img/logo.png" alt="Stockholm Makerspace">
 	
-	<p>Forgot your password? Just enter your e-mail below and further instructions will be sent to you shortly.</p>
+	<p><strong>Forgot your password?</strong> No worries. Just enter your e-mail address below to initialize a password reset.</p>
 
 	<br>
 	
@@ -10,7 +10,7 @@
 
 	<br><br>
 	
-	<button class="btn btn-medium btn-primary" type="submit">Send password reminder</button>
+	<button class="btn btn-medium btn-primary" type="submit">Send password reset</button>
 	<a href="/auth/login" class="btn btn-medium pull-right">Return to login</a>
 	
 <?php echo form_close(); ?>

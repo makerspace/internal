@@ -2,7 +2,7 @@
 
 	<img src="/assets/img/logo.png" alt="Stockholm Makerspace">
 	
-	<p>To finialize the password reset, please fill in your <strong>new password</strong> twice in the fields below.</p>
+	<p>To finialize your password reset, please enter a <strong>new password</strong> in both the fields below.</p>
 
 	<br>
 	<label for="new_password">New password</label>

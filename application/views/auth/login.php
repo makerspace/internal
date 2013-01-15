@@ -2,9 +2,10 @@
 
 	<img src="/assets/img/logo.png" alt="Stockholm Makerspace">
 	
-	<p>This area is restricted to members only. Visit our frontpage at <a href="http://www.makerspace.se">www.makerspace.se</a> to become a member.</p>
-	<br>
+	<p>This is a <strong>restricted area</strong> for members only. If you're not a member of Stockholm Makerspace, 
+	please return to our main website at <a href="http://www.makerspace.se">www.makerspace.se</a> to sign up.</p>
 	
+	<br>
 	<?php echo form_email('email', set_value('email'), 'class="input-block-level" placeholder="E-mail address" required'); ?>
 	<?php echo form_password('password', '', 'class="input-block-level" placeholder="Your password" required'); ?>
 	<label class="checkbox">
