@@ -5,18 +5,6 @@ class Debug extends CI_Controller {
     public function index() {
 		gatekeeper();
 		
-		require_once('/tmp/mkrspc.php');
-		# $members array of members.
-		
-		#var_dump($members);
-		
-		#$this->db->insert_batch('members', $members); 
-		
-		
-		// Change password for user
-		#$this->load->library('Pass');
-		#$this->db->update('users', array('password' => $this->pass->hash('lol123lol123')), array('id' => 1000));
-		
 		/*
 		// Testing of PayPal lib
 		$this->load->library('PayPal');
@@ -48,11 +36,12 @@ class Debug extends CI_Controller {
 		}
 		*/
 		
-		#$this->load->view('header');
-		#$this->load->view('debug');
-		#$this->load->view('footer');
+		$this->load->view('header');
+		$this->load->view('debug');
+		$this->load->view('footer');
 
     }
+	
 	/*
 	public function paypal_return() {
 	
