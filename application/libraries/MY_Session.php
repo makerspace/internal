@@ -61,7 +61,7 @@ class MY_Session extends CI_Session {
 		$this->CI->load->library('user_agent');
 
 		// Check if this is a crawler or it's a json-request or api request.
-		if ($this->CI->agent->is_robot() || strpos(current_url(), '.json') !== false || substr(current_url(), 0, 3) == '/api') {
+		if ($this->CI->agent->is_robot() || strpos(current_url(), '.json') !== false || substr(uri_string(), 0, 3) == 'api') {
 			// Don't do shit.
 			return;
 		}
