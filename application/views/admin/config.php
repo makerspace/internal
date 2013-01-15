@@ -16,9 +16,9 @@
 		
 		<?php echo form_open(); ?>
 			<?php echo form_hidden('key', $key); ?>
-			<label>Config key: <strong><?php echo $key; ?></strong></label>
+			<label>Config: <strong><?php echo $key; ?></strong></label>
 			<textarea name="value" rows="5" class="span6"><?php echo $value; ?></textarea>
-			<?php echo form_submit('submit', 'Update'); ?>
+			<?php echo form_submit('submit', 'Update', 'class="btn"'); ?>
 		<?php echo form_close(); ?>
 
 		<?php } ?>

@@ -5,6 +5,8 @@ class Newsletter extends CI_Controller {
 	public function __construct() {
 		parent::__construct();
 		
+		admin_gatekeeper();
+		
 		// Always load Newsletter model
 		$this->load->model('Newsletter_model');
 	}

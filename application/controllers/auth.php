@@ -37,6 +37,9 @@ class Auth extends CI_Controller {
 		
 		// Logout and redirect to frontpage
 		$this->Member_model->logout();
+		
+		message('Successfully signed out.');
+		
 		redirect();
 	}
 	
