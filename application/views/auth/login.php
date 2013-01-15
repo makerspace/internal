@@ -1,6 +1,6 @@
 <?php echo form_open('auth/login', array('class' => 'form-signin')); ?>
 
-	<img src="/assets/img/logo.png" alt="Stockholm Makerspace">
+	<img src="/assets/img/logo.png" alt="Stockholm Makerspace" class="logo">
 	
 	<p>This is a <strong>restricted area</strong> for members only. If you're not a member of Stockholm Makerspace, 
 	please return to our main website at <a href="http://www.makerspace.se">www.makerspace.se</a> to sign up.</p>

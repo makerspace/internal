@@ -1,6 +1,6 @@
 <?php echo form_open('', array('class' => 'form-signin')); ?>
 
-	<img src="/assets/img/logo.png" alt="Stockholm Makerspace">
+	<img src="/assets/img/logo.png" alt="Stockholm Makerspace" class="logo">
 	
 	<p>To finialize your password reset, please enter a <strong>new password</strong> in both the fields below.</p>
 
