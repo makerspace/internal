@@ -29,7 +29,7 @@ $config = array(
 			array(
 					'field' => 'password',
 					'label' => 'password',
-					'rules' => 'required|min_length[8]|matches[password2]' // ToDo: |callback__validate_password
+					'rules' => 'required|min_length[8]|max_length[255]|matches[password2]' // ToDo: |callback__validate_password
 			),
 			array(
 					'field' => 'password2',
@@ -43,7 +43,12 @@ $config = array(
 			array(
 				'field' => 'email',
 				'label' => 'e-mail address',
-				'rules' => 'trim|required|max_length[255]|valid_email|is_unique[members.email]'
+				'rules' => 'trim|required|min_length[6]|max_length[255]|valid_email|is_unique[members.email]'
+			),
+			array(
+				'field' => 'password',
+				'label' => 'password',
+				'rules' => 'max_length[255]'
 			),
 			array(
 				'field' => 'firstname',
@@ -78,7 +83,7 @@ $config = array(
 			array(
 				'field' => 'zipcode',
 				'label' => 'zipcode',
-				'rules' => 'trim|max_length[8]'
+				'rules' => 'trim|max_length[8]' // ToDo: |callback__normalize_zipcode
 			),
 			array(
 				'field' => 'city',
@@ -98,12 +103,12 @@ $config = array(
 			array(
 				'field' => 'mobile',
 				'label' => 'mobile',
-				'rules' => 'trim|max_length[64]'
+				'rules' => 'trim|max_length[64]' // ToDo: |callback__normalize_phone
 			),
 			array(
 				'field' => 'alt. phone',
 				'label' => 'phone',
-				'rules' => 'trim|max_length[64]'
+				'rules' => 'trim|max_length[64]' // ToDo: |callback__normalize_phone
 			),
 			array(
 				'field' => 'twitter',
@@ -127,7 +132,12 @@ $config = array(
 			array(
 				'field' => 'email',
 				'label' => 'e-mail address',
-				'rules' => 'trim|required|max_length[255]' // |valid_email|is_unique[members.email]
+				'rules' => 'trim|required|min_length[6]|max_length[255]|valid_email'
+			),
+			array(
+				'field' => 'password',
+				'label' => 'password',
+				'rules' => 'max_length[255]'
 			),
 			array(
 				'field' => 'firstname',
@@ -162,7 +172,7 @@ $config = array(
 			array(
 				'field' => 'zipcode',
 				'label' => 'zipcode',
-				'rules' => 'trim|max_length[8]'
+				'rules' => 'trim|max_length[8]' // ToDo: |callback__normalize_zipcode
 			),
 			array(
 				'field' => 'city',
@@ -177,12 +187,12 @@ $config = array(
 			array(
 				'field' => 'mobile',
 				'label' => 'mobile',
-				'rules' => 'trim|max_length[64]'
+				'rules' => 'trim|max_length[64]' // ToDo: |callback__normalize_phone
 			),
 			array(
 				'field' => 'alt. phone',
 				'label' => 'phone',
-				'rules' => 'trim|max_length[64]'
+				'rules' => 'trim|max_length[64]' // ToDo: |callback__normalize_phone
 			),
 			array(
 				'field' => 'birthday',

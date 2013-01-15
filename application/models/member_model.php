@@ -281,6 +281,22 @@ class Member_model extends CI_Model {
 	 **/
 	public function add_member($data) {
 	
+		// Make an exception for the password field
+		if(!empty($data['password'])) {
+			// Hash the new password
+			# Here!
+		}
+		
+		// ACL Exception - remove ACL for now.
+		// ToDo: Make it work.
+		unset($data['acl']);
+		
+		// Add registered timestamp
+		$data['registered'] = time();
+		
+		// Remove NULL and empty fields (incl. false)
+		$data = array_filter($data);
+		
 		// Add to database
 		$this->db->insert('members', $data);
 		
@@ -295,7 +311,26 @@ class Member_model extends CI_Model {
 	 * ToDo: Validate all fields somewhere central!
 	 **/
 	public function update_member($member_id, $data) {
-	
+		
+		// Make an exception for the password field
+		if(!empty($data['password'])) {
+			// Hash the new password
+			# Here!
+		} else {
+			// Don't remove if empty
+			unset($data['password']);
+		}
+		
+		// ACL Exception - remove ACL for now.
+		// ToDo: Make it work.
+		unset($data['acl']);
+		
+		// Add last_updated field
+		$data['last_updated'] = time();
+		
+		// Remove NULL and empty fields (incl. false)
+		$data = array_filter($data);
+		
 		// Update member based upon id
 		$this->db->update('members', $data, array('id' => $member_id));
 		

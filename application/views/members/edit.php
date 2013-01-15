@@ -1,7 +1,6 @@
 <h2>Edit Member</h2>
 <div class="row">
-	<?php echo form_open('members/edit', 'class="form-horizontal" autocomplete="off"'); ?>
-	<?php echo form_hidden('member_id', $member->id); ?>
+	<?php echo form_open('', 'class="form-horizontal" autocomplete="off"'); ?>
 	
 	<div class="span6 pull-left">
 		<?php echo form_fieldset('Member Information'); ?>
@@ -149,7 +148,7 @@
 		<?php echo form_fieldset('Member Access (ACL)'); ?>
 			
 			<?php foreach($this->dbconfig->acl as $key => $desc) { ?>
-				<label class="span2"><?php echo form_checkbox($key, '1', (bool)$member->acl->{$key}) . ' ' . $desc; ?></label>
+				<label class="span2"><?php echo form_checkbox('acl['.$key.']', '1', (bool)$member->acl->{$key}) . ' ' . $desc; ?></label>
 			<?php } ?>
 			
 			<div class="span6">

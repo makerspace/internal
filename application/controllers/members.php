@@ -36,53 +36,75 @@ class Members extends CI_Controller {
 	public function add() {
 		admin_gatekeeper();
 		
-		if ($this->form_validation->run() == false) {
-		
-			$head = array(
-				'title' => 'Add new member',
-			);
-			
-			$this->load->view('header', $head);
-			$this->load->view('members/add');
-			$this->load->view('footer');
-			
-		} else {
+		// If POST is valid
+		if ($this->form_validation->run()) {
 		
 			// Add member to db
-			$data = $this->db->post();
-			$this->Member_model->add_member($data);
+			$data = $this->input->post();
+			$result = $this->Member_model->add_member($data);
 			
+			if($result) {
+				message('Successfully added new member.');
+				redirect('members/view/'.$this->db->insert_id());
+			} else {
+				error('Couldn\'t add new member, please try again.');
+			}
 		}
+		
+		$head = array(
+			'title' => 'Add new member',
+		);
+		
+		$this->load->view('header', $head);
+		$this->load->view('members/add');
+		$this->load->view('footer');
+		
 	}
 	
 	public function edit($member_id = '') {
 		gatekeeper();
 		
-		// Failsafes
+		// No member selected
 		if(empty($member_id)) redirect('members/edit/'.member_id());
-		if(($member_id != member_id()) && !$this->Member_model->is_admin()) {
-			// Not you!
-			error('Access denied.');
+		
+		// Get and validate member
+		$member = $this->Member_model->get_member($member_id);
+		if(!$member) {
+			error('That member doesn\'t exist!');
 			redirect();
 		}
 		
-		if ($this->form_validation->run() == false) {
-		
-			$head = array(
-				'title' => 'Edit member',
-			);
-			
-			$this->load->view('header', $head);
-			$this->load->view('members/edit', array('member' => $this->Member_model->get_member($member_id)));
-			$this->load->view('footer');
-	
-		} else {
-		
-			// Update member in db
-			$data = $this->db->post();
-			$this->Member_model->update_member($data);
-			
+		// Check access
+		if(($member_id != member_id() && !$this->Member_model->is_admin())) {
+			// Not you!
+			error('Access denied! You tried to edit a member that\'s not you.');
+			redirect();
 		}
+		
+		// If POST is valid
+		if ($this->form_validation->run('members/edit')) {
+		
+			// Get POST-data fields.
+			$data = $this->input->post();
+			
+			// Update member in database.
+			$result = $this->Member_model->update_member($member_id, $data);
+			
+			if($result) {
+				message('Successfully updated member.');
+				redirect('members/view/'.$member_id);
+			} else {
+				error('Couldn\'t update member, please try again.');
+			}
+		}
+		
+		$head = array(
+			'title' => 'Edit member',
+		);
+		
+		$this->load->view('header', $head);
+		$this->load->view('members/edit', array('member' => $member));
+		$this->load->view('footer');
 	}
 	
 	public function acl_switch($member_id = '', $acl = '') {

@@ -22,7 +22,8 @@
 			<div class="control-group">
 				<?php echo form_label('Membership Due', 'membership', array('class' => 'control-label')); ?>
 				<div class="controls">
-					<?php echo form_input('membership', set_value('membership'), 'data-date-format="yyyy-mm-dd" id="membership" class="datepicker" required'); ?>
+					<?php echo form_input('membership', set_value('membership'), 'data-date-format="yyyy-mm-dd" id="membership" class="datepicker"'); ?>
+					<span class="help-inline">Optional</span>
 				</div>
 			</div>
 			
@@ -83,7 +84,8 @@
 				<div class="control-group">
 					<?php echo form_label('Address', 'address', array('class' => 'control-label')); ?>
 					<div class="controls">
-						<?php echo form_input('address', set_value('address'), 'id="address" required'); ?>
+						<?php echo form_input('address', set_value('address'), 'id="address"'); ?>
+						<span class="help-inline">Optional</span>
 					</div>
 				</div>
 				
@@ -98,22 +100,24 @@
 				<div class="control-group">
 					<?php echo form_label('Zip code', 'zipcode', array('class' => 'control-label')); ?>
 					<div class="controls">
-						<?php echo form_input('zipcode', set_value('zipcode'), 'id="zipcode" required placeholder="12345"'); ?>
-						<span class="help-inline">Without spaces</span>
+						<?php echo form_input('zipcode', set_value('zipcode'), 'id="zipcode" placeholder="12345"'); ?>
+						<span class="help-inline">Optional - Without spaces</span>
 					</div>
 				</div>
 				
 				<div class="control-group">
 					<?php echo form_label('City', 'city', array('class' => 'control-label')); ?>
 					<div class="controls">
-						<?php echo form_input('city', set_value('city'), 'id="city" required'); ?>
+						<?php echo form_input('city', set_value('city'), 'id="city"'); ?>
+						<span class="help-inline">Optional</span>
 					</div>
 				</div>
 				
 				<div class="control-group">
 					<?php echo form_label('Country', 'country', array('class' => 'control-label')); ?>
 					<div class="controls">
-						<?php echo form_dropdown('country', $this->dbconfig->countries, set_value('country'), 'id="country" required'); ?>
+						<?php echo form_dropdown('country', $this->dbconfig->countries, set_value('country'), 'id="country"'); ?>
+						<span class="help-inline">Optional</span>
 					</div>
 				</div>
 				
@@ -146,7 +150,7 @@
 	<div class="span6">
 		<?php echo form_fieldset('Member Access (ACL)'); ?>
 			<?php foreach($this->dbconfig->acl as $key => $desc) { ?>
-				<label class="span2"><?php echo form_checkbox($key, '1') . ' ' . $desc; ?></label>
+				<label class="span2"><?php echo form_checkbox('acl['.$key.']', '1', set_checkbox('acl['.$key.']')) . ' ' . $desc; ?></label>
 			<?php } ?>
 			<div class="span6 pull-left">
 				<br>

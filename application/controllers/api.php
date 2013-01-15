@@ -70,7 +70,7 @@ class Api extends CI_Controller {
 			// Unset comment-field
 			unset($member->comment);
 			
-			// Remove null and false-fields
+			// Remove NULL and empty fields (incl. false).
 			$member = (object) array_filter((array) $member);
 			
 			// And return as JSON
