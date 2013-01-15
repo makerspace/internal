@@ -3,6 +3,8 @@ body {
 	padding-top: 60px;
 }
 
+pre, .well { background: #fff; }
+
 .form-signin {
 	max-width: 300px;
 	padding: 19px 29px 29px;
