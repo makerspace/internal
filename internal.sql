@@ -28,6 +28,7 @@ CREATE TABLE `members` (
   `reset_token` char(34) DEFAULT NULL,
   `reset_expire` int(11) DEFAULT NULL,
   `registered` int(11) NOT NULL,
+  `last_updated` int(11) DEFAULT NULL,
   `firstname` varchar(255) DEFAULT NULL,
   `lastname` varchar(255) DEFAULT NULL,
   `company` varchar(255) DEFAULT NULL,
