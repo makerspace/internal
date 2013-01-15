@@ -7,7 +7,7 @@
 	
 	<br>
 	<?php echo form_email('email', set_value('email'), 'class="input-block-level" placeholder="E-mail address" required'); ?>
-	<?php echo form_password('password', '', 'class="input-block-level" placeholder="Your password" required'); ?>
+	<?php echo form_password('password', '', 'class="input-block-level" placeholder="Your password" required pattern=".{8,}" title="Minimum 8 characters"'); ?>
 	<label class="checkbox">
 	  <?php echo form_checkbox('remember', '1', false);?> Remember me
 	</label>
