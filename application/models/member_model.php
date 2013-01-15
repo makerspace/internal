@@ -274,6 +274,36 @@ class Member_model extends CI_Model {
 		return array();
 	}
 	
+	/**
+	 * Method for adding a new member.
+	 *
+	 * ToDo: Validate all fields somewhere central!
+	 **/
+	public function add_member($data) {
+	
+		// Add to database
+		$this->db->insert('members', $data);
+		
+		// Return result
+		return (bool)$this->db->affected_rows();
+		
+	}
+	
+	/**
+	 * Method for updating an existing member.
+	 *
+	 * ToDo: Validate all fields somewhere central!
+	 **/
+	public function update_member($member_id, $data) {
+	
+		// Update member based upon id
+		$this->db->update('members', $data, array('id' => $member_id));
+		
+		// Return result
+		return (bool)$this->db->affected_rows();
+		
+	}
+	
 	
 	/***********************
 	 * Member ACL functions

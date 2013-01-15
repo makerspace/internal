@@ -49,8 +49,9 @@ class Members extends CI_Controller {
 		} else {
 		
 			// Add member to db
-			$post = $this->db->post();
-			$this->Member_model->add_member();
+			$data = $this->db->post();
+			$this->Member_model->add_member($data);
+			
 		}
 	}
 	
@@ -78,7 +79,9 @@ class Members extends CI_Controller {
 		} else {
 		
 			// Update member in db
-		
+			$data = $this->db->post();
+			$this->Member_model->update_member($data);
+			
 		}
 	}
 	
