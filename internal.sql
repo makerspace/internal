@@ -3,7 +3,8 @@ CREATE TABLE `acl` (
   `member_id` int(11) NOT NULL,
   `acl` varchar(255) NOT NULL COMMENT 'Key',
   `value` tinyint(4) NOT NULL DEFAULT '0' COMMENT 'Value',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `member_id` (`member_id`)
 );
 CREATE TABLE `config` (
   `key` varchar(64) NOT NULL COMMENT 'Config key-name',
@@ -77,3 +78,5 @@ INSERT INTO config VALUES('paypal_dev_signature', NULL, 'PayPal Sandbox API Sign
 INSERT INTO config VALUES('paypal_auth_url', NULL, 'PayPal Live Express Checkout Redirect URL');
 INSERT INTO config VALUES('paypal_dev_auth_url', NULL, 'PayPal Sandbox Express Checkout Redirect URL');
 INSERT INTO config VALUES('paypal_ipn', NULL, 'PayPal IPN URL');
+INSERT INTO config VALUES('fortnox_dev_token', NULL, 'Fortnox Dev API Token');
+INSERT INTO config VALUES('fortnox_dev_db', NULL, 'Fortnox Dev API Database');

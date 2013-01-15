@@ -273,17 +273,32 @@ class Member_model extends CI_Model {
 	
 	/**
 	 * Private method to add ACL to member.
+	 * ToDo: REWRITE THIS (agaiiiiiin!)
 	 */
 	private function _add_acl(&$member, $index = 0) {
+		
+		// Try memcache first
+		if($cached = $this->memcache->get('acl_'.$member->id)) {
+		
+			// Found, use it!
+			$member->acl = $cached;
+			
+			return;
+		}
 	
-		# ToDo: Improve look-up so we don't make more then one db query.
-				
-		// Clone database ACLs to member temporarily...
-		// @note According to PHP-manual, it's not allowed to change the
-		//		 structure of the referenced var, but it seems to work???
-		// @see http://php.net/manual/en/function.array-walk.php#refsect1-function.array-walk-parameters
+		
+		/*******************************************************************
+		 * Clone database ACLs to member temporarily...
+		 * @note According to PHP-manual, it's not allowed to change the
+		 *		 structure of the referenced var, but it seems to work???
+		 * @see http://php.net/manual/en/function.array-walk.php#refsect1-function.array-walk-parameters
+		 *******************************************************************/
 		$member->acl = clone $this->dbconfig->acl;
-					
+			
+		
+		// PRIORITIZED TODO:
+		// - Improve look-up so we don't make more then one db query!
+		
 		// Set ACL value from db and/or remove description.
 		foreach($member->acl as $acl => $desc) {
 		
@@ -298,6 +313,9 @@ class Member_model extends CI_Model {
 				$member->acl->{$acl} = (bool)$query->row()->value;
 			}
 		}
+		
+		// Save to memcache, store forever.
+		$this->memcache->set('acl_'.$member->id, $member->acl, 0);
 		
 	}
 	
