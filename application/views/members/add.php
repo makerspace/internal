@@ -96,17 +96,17 @@
 				</div>
 				
 				<div class="control-group">
-					<?php echo form_label('City', 'city', array('class' => 'control-label')); ?>
-					<div class="controls">
-						<?php echo form_input('city', set_value('city'), 'id="city" required'); ?>
-					</div>
-				</div>
-				
-				<div class="control-group">
 					<?php echo form_label('Zip code', 'zipcode', array('class' => 'control-label')); ?>
 					<div class="controls">
 						<?php echo form_input('zipcode', set_value('zipcode'), 'id="zipcode" required placeholder="12345"'); ?>
 						<span class="help-inline">Without spaces</span>
+					</div>
+				</div>
+				
+				<div class="control-group">
+					<?php echo form_label('City', 'city', array('class' => 'control-label')); ?>
+					<div class="controls">
+						<?php echo form_input('city', set_value('city'), 'id="city" required'); ?>
 					</div>
 				</div>
 				
@@ -118,7 +118,15 @@
 				</div>
 				
 				<div class="control-group">
-					<?php echo form_label('Phone', 'phone', array('class' => 'control-label')); ?>
+					<?php echo form_label('Mobile', 'mobile', array('class' => 'control-label')); ?>
+					<div class="controls">
+						<?php echo form_input('mobile', set_value('mobile'), 'id="mobile" placeholder="+46812300000"'); ?>
+						<span class="help-inline">Optional</span>
+					</div>
+				</div>
+				
+				<div class="control-group">
+					<?php echo form_label('Alt. Phone', 'phone', array('class' => 'control-label')); ?>
 					<div class="controls">
 						<?php echo form_input('phone', set_value('phone'), 'id="phone" placeholder="+46812300000"'); ?>
 						<span class="help-inline">Optional</span>
@@ -126,9 +134,9 @@
 				</div>
 				
 				<div class="control-group">
-					<?php echo form_label('Mobile', 'mobile', array('class' => 'control-label')); ?>
+					<?php echo form_label('Birthday', 'birthday', array('class' => 'control-label')); ?>
 					<div class="controls">
-						<?php echo form_input('mobile', set_value('mobile'), 'id="mobile" placeholder="+46812300000"'); ?>
+						<?php echo form_input('birthday', set_value('birthday'), 'id="birthday" data-date-format="yyyy-mm-dd" class="datepicker"'); ?>
 						<span class="help-inline">Optional</span>
 					</div>
 				</div>

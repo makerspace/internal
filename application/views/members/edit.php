@@ -98,17 +98,17 @@
 				</div>
 				
 				<div class="control-group">
-					<?php echo form_label('City', 'city', array('class' => 'control-label')); ?>
-					<div class="controls">
-						<?php echo form_input('city', $member->city, 'id="city" required'); ?>
-					</div>
-				</div>
-				
-				<div class="control-group">
 					<?php echo form_label('Zip code', 'zipcode', array('class' => 'control-label')); ?>
 					<div class="controls">
 						<?php echo form_input('zipcode', $member->zipcode, 'id="zipcode" required placeholder="12345"'); ?>
 						<span class="help-inline">Without spaces</span>
+					</div>
+				</div>
+				
+				<div class="control-group">
+					<?php echo form_label('City', 'city', array('class' => 'control-label')); ?>
+					<div class="controls">
+						<?php echo form_input('city', $member->city, 'id="city" required'); ?>
 					</div>
 				</div>
 				
@@ -120,7 +120,15 @@
 				</div>
 				
 				<div class="control-group">
-					<?php echo form_label('Phone', 'phone', array('class' => 'control-label')); ?>
+					<?php echo form_label('Mobile', 'mobile', array('class' => 'control-label')); ?>
+					<div class="controls">
+						<?php echo form_input('mobile', $member->mobile, 'id="mobile" placeholder="+46812300000"'); ?>
+						<span class="help-inline">Optional</span>
+					</div>
+				</div>
+				
+				<div class="control-group">
+					<?php echo form_label('Alt. Phone', 'phone', array('class' => 'control-label')); ?>
 					<div class="controls">
 						<?php echo form_input('phone', $member->phone, 'id="phone" placeholder="+46812300000"'); ?>
 						<span class="help-inline">Optional</span>
@@ -128,9 +136,9 @@
 				</div>
 				
 				<div class="control-group">
-					<?php echo form_label('Mobile', 'mobile', array('class' => 'control-label')); ?>
+					<?php echo form_label('Birthday', 'birthday', array('class' => 'control-label')); ?>
 					<div class="controls">
-						<?php echo form_input('mobile', $member->mobile, 'id="mobile" placeholder="+46812300000"'); ?>
+						<?php echo form_input('birthday', $member->birthday, 'id="birthday" data-date-format="yyyy-mm-dd" class="datepicker"'); ?>
 						<span class="help-inline">Optional</span>
 					</div>
 				</div>

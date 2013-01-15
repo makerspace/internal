@@ -155,7 +155,7 @@ function uuid() {
  * Gravatar Helper
  * @author Jim Nelin
  **/
-function gravatar($email, $size = 32, $rating = 'pg', $default = 'retro') {
+function gravatar($email, $size = 32, $rating = 'pg', $default = 'mm') {
 	
 	// Optional options
 	$options = array();

@@ -2,7 +2,7 @@
  * Javascript for internal.makerspace.se
  * @author Jim Nelin
  * ====================================== */
- $(function(){
+$(function(){
 	// Add datepicker to all input.datepicker
 	$('.datepicker').datepicker();
 	
@@ -13,9 +13,6 @@
 		});
 	}, 4000); // 4 seconds
 });
-
-
-
 
 /* =========================================================
  * bootstrap-datepicker.js 

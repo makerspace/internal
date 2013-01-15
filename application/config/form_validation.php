@@ -55,6 +55,71 @@ $config = array(
 				'label' => 'lastname',
 				'rules' => 'trim|required|max_length[255]'
 			),
+			array(
+				'field' => 'company',
+				'label' => 'company',
+				'rules' => 'trim|max_length[255]'
+			),
+			array(
+				'field' => 'orgno',
+				'label' => 'orgno',
+				'rules' => 'trim|max_length[12]'
+			),
+			array(
+				'field' => 'address',
+				'label' => 'address',
+				'rules' => 'trim|max_length[255]'
+			),
+			array(
+				'field' => 'address2',
+				'label' => 'address 2',
+				'rules' => 'trim|max_length[255]'
+			),
+			array(
+				'field' => 'zipcode',
+				'label' => 'zipcode',
+				'rules' => 'trim|max_length[8]'
+			),
+			array(
+				'field' => 'city',
+				'label' => 'city',
+				'rules' => 'trim|max_length[64]'
+			),
+			array(
+				'field' => 'country',
+				'label' => 'country',
+				'rules' => 'trim'
+			),
+			array(
+				'field' => 'birthday',
+				'label' => 'birthday',
+				'rules' => 'trim|max_length[10]|valid_date'
+			),
+			array(
+				'field' => 'mobile',
+				'label' => 'mobile',
+				'rules' => 'trim|max_length[64]'
+			),
+			array(
+				'field' => 'alt. phone',
+				'label' => 'phone',
+				'rules' => 'trim|max_length[64]'
+			),
+			array(
+				'field' => 'twitter',
+				'label' => 'twitter',
+				'rules' => 'trim|max_length[255]'
+			),
+			array(
+				'field' => 'skype',
+				'label' => 'skype',
+				'rules' => 'trim|max_length[255]'
+			),
+			array(
+				'field' => 'membership',
+				'label' => 'membership due',
+				'rules' => 'trim|max_length[10]|valid_date'
+			),
 		),
 		
 		// Edit member
@@ -95,14 +160,14 @@ $config = array(
 				'rules' => 'trim|max_length[255]'
 			),
 			array(
-				'field' => 'city',
-				'label' => 'city',
-				'rules' => 'trim|max_length[64]'
-			),
-			array(
 				'field' => 'zipcode',
 				'label' => 'zipcode',
 				'rules' => 'trim|max_length[8]'
+			),
+			array(
+				'field' => 'city',
+				'label' => 'city',
+				'rules' => 'trim|max_length[64]'
 			),
 			array(
 				'field' => 'country',
@@ -110,14 +175,19 @@ $config = array(
 				'rules' => 'trim'
 			),
 			array(
-				'field' => 'phone',
+				'field' => 'mobile',
+				'label' => 'mobile',
+				'rules' => 'trim|max_length[64]'
+			),
+			array(
+				'field' => 'alt. phone',
 				'label' => 'phone',
 				'rules' => 'trim|max_length[64]'
 			),
 			array(
-				'field' => 'mobile',
-				'label' => 'mobile',
-				'rules' => 'trim|max_length[64]'
+				'field' => 'birthday',
+				'label' => 'birthday',
+				'rules' => 'trim|max_length[10]|valid_date'
 			),
 			array(
 				'field' => 'twitter',

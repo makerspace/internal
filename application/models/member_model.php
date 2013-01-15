@@ -89,6 +89,12 @@ class Member_model extends CI_Model {
 		
 		// If member exists
 		if($member) {
+		
+			// Only admins atm.
+			if(empty($member->acl->admin)) {
+				error('Adminlogin only.');
+				return false;
+			}
 			
 			// Send mail
 			$token = random_string('alnum', 34);
