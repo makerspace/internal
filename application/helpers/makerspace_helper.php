@@ -54,7 +54,7 @@ function get_flashdata() {
 	$flash_error = $CI->session->flashdata('flash_error');
 	
 	if(!empty($flash_message)) {
-		return '<div class="alert alert-info"><button type="button" class="close" data-dismiss="alert">&times;</button>'.htmlspecialchars($flash_message).'</div>';
+		return '<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert">&times;</button>'.htmlspecialchars($flash_message).'</div>';
 	} elseif(!empty($flash_error)) {
 		return '<div class="alert alert-error"><button type="button" class="close" data-dismiss="alert">&times;</button>'.htmlspecialchars($flash_error).'</div>';
 	}
