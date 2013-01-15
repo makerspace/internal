@@ -4,8 +4,9 @@ class Admin extends CI_Controller {
     
 	public function __construct() {
 		parent::__construct();
-		
 		admin_gatekeeper();
+		
+		$this->load->model('Admin_model');
 	}
 	
 	public function index() {
@@ -15,15 +16,14 @@ class Admin extends CI_Controller {
 	public function config() {
 		
 		// Update value if posted.
-		if ($this->input->post()) {
+		if ($this->form_validation->run()) {
+			
+			$key = $this->input->post('key');
+			$value = $this->input->post('value');
 			
 			// Update database
-			$this->db->update('config', array('value' => $this->input->post('value')), array('key' => $this->input->post('key')));
-			
-			if($this->db->affected_rows()) {
-				message('Config value successfully saved.');
-			}
-			
+			$this->Admin_model->set_config($key, $value);
+						
 			redirect('admin/config');
 		}
 		
@@ -31,8 +31,12 @@ class Admin extends CI_Controller {
 			'title' => 'Internal Administration',
 		);
 		
+		$data = array(
+			'dbconfig' => $this->Admin_model->get_dbconfig(),
+		);
+		
 		$this->load->view('header', $head);
-		$this->load->view('admin/config');
+		$this->load->view('admin/view_config', $data);
 		$this->load->view('footer');
 	
 	}
@@ -42,19 +46,8 @@ class Admin extends CI_Controller {
 		// If POST is valid
 		if ($this->form_validation->run()) {
 			
-			// Insert into database
-			$data = array(
-				'value' => $this->input->post('value'),
-				'key' => $this->input->post('key'),
-				'desc' => $this->input->post('desc'),
-			);
-			$this->db->insert('config', $data);
-			
-			if($this->db->affected_rows()) {
-				message('Config value successfully created.');
-			} else {
-				error('Couldn\'t save config, is the key unique?');
-			}
+			// Add to database.
+			$this->Admin_model->add_config($this->input->post());
 			
 			redirect('admin/config');
 		}

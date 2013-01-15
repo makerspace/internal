@@ -9,7 +9,7 @@ class Members extends CI_Controller {
 			'title' => 'Members',
 		);
 		
-		// ToDo: Pagination
+		// ToDo: Pagination? Tablesorter?
 		$members = $this->Member_model->get_all();
 
 		$this->load->view('header', $head);
@@ -49,7 +49,8 @@ class Members extends CI_Controller {
 		} else {
 		
 			// Add member to db
-		
+			$post = $this->db->post();
+			$this->Member_model->add_member();
 		}
 	}
 	

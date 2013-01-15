@@ -4,19 +4,19 @@
 		<a href="/admin/add_config" class="btn btn-primary pull-right">Add new config</a>
 	</div>
 	<div class="span12">
-		<?php foreach($this->dbconfig as $key => $value) { ?>
+		<?php foreach($dbconfig as $item) { ?>
 		
 		<?php
-		if(is_object($value) || is_array($value)) { 
-			$value = json_encode($value);
+		if(is_object($item->value) || is_array($item->value)) { 
+			$value = json_encode($item->value);
 		} else {
-			$value = htmlspecialchars($value);
+			$value = form_prep($item->value);
 		}
 		?>
 		
 		<?php echo form_open(); ?>
-			<?php echo form_hidden('key', $key); ?>
-			<label>Config: <strong><?php echo $key; ?></strong></label>
+			<?php echo form_hidden('key', $item->key); ?>
+			<label>Key: <strong><?php echo $item->key; ?></strong> - <?php echo $item->desc; ?></label>
 			<textarea name="value" rows="5" class="span6"><?php echo $value; ?></textarea>
 			<?php echo form_submit('submit', 'Update', 'class="btn"'); ?>
 		<?php echo form_close(); ?>

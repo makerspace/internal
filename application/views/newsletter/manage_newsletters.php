@@ -9,7 +9,7 @@
 Please note that you can't change the recipients or recipient groups after you've created a newsletter!</p>
 <?php echo form_open('/newsletter/create'); ?>
 	<?php echo form_multiselect('groups[]', $this->dbconfig->acl, '', 'class="span4" size="8"'); // $this->dbconfig->acl ?><br>
-	<?php echo form_submit('continue', 'Continue to next step', 'class="btn btn-primary"'); ?>
+	<?php echo form_submit('continue', 'Continue to next step', 'class="btn btn-large btn-primary"'); ?>
 <?php echo form_close(); ?>
 <br>
 

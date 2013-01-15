@@ -1,6 +1,6 @@
 <?php
 /**
- * Newsletter Module
+ * Newsletter Model
  * @author Jim Nelin
  **/
 

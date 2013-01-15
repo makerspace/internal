@@ -238,5 +238,19 @@ $config = array(
 				'rules' => 'trim|max_length[255]'
 			),
 		),
+		
+		// Admin - update config
+		'admin/config' => array(
+			array(
+				'field' => 'key',
+				'label' => 'config key',
+				'rules' => 'trim|required|max_length[64]'
+			),
+			array(
+				'field' => 'value',
+				'label' => 'config value',
+				'rules' => 'trim|required|max_length[2048]'
+			),
+		),
 
 );
