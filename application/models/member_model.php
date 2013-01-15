@@ -403,6 +403,9 @@ class Member_model extends CI_Model {
 		// Check if acl is valid
 		if(!empty($acl) && isset($member->acl->{$acl})) {
 		
+			// Remove memcached acl
+			$this->memcache->delete('acl_'.$member_id);
+		
 			// Flip value
 			$data = array('value' => (int)!$member->acl->{$acl});
 			

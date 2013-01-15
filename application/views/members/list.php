@@ -14,6 +14,7 @@
 			<th>Registered</th>
 			<th>Membership Due</th>
 			<th>Active</th>
+			<th>Admin</th>
 			<th>Lab Access</th>
 			<th>Fee Paid</th>
 			<th>Manage</th>
@@ -31,6 +32,7 @@
 			<td><?php echo date('Y-m-d', $member->registered); ?></td>
 			<td><?php echo (!empty($member->membership) ? $member->membership : '<em>N/A</em>'); ?></td>
 			<td><span class="badge<?php echo ($member->acl->active ? ' badge-success">Yes' : '">No'); ?></span></td>
+			<td><span class="badge<?php echo ($member->acl->admin ? ' badge-success">Yes' : '">No'); ?></span></td>
 			<td><span class="badge<?php echo ($member->acl->labaccess ? ' badge-success">Yes' : '">No'); ?></span></td>
 			<td><span class="badge<?php echo ($member->acl->feepaid ? ' badge-success">Yes' : '">No'); ?></span></td>
 			<td><a href="/members/view/<?php echo $member->id; ?>" class="btn btn-mini">View</a> <a href="/members/edit/<?php echo $member->id; ?>" class="btn btn-primary btn-mini">Edit</a></td>
