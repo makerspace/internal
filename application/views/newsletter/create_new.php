@@ -35,7 +35,7 @@
 			<?php echo form_textarea('body', set_value('body'), 'class="ckeditor"'); ?>
 			
 			<br>
-			<?php echo form_submit('save', 'Save and Preview', 'class="btn btn-large"'); ?>
+			<?php echo form_submit('save', 'Save and Preview', 'class="btn btn-primary btn-large"'); ?>
 			
 		<?php echo form_close(); ?>
 	</div>

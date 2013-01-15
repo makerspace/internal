@@ -37,7 +37,7 @@
 
 		<h3>Public resources</h3>
 		<ul>
-			<li>POST /api/member - Adds a new member</li>
+			<li>POST /api/member - Add a new member</li>
 			<li>GET /api/newsletter/*id* - Get newsletter by id</li>
 			<li>GET /api/coffee</li>
 		</ul>
@@ -50,6 +50,7 @@
 		<ul>
 			<li>GET /api/member/*id* - Get member by id</li>
 			<li>GET /api/member/*key*/*value* - Get member by key</li>
+			<li>POST /api/member/*id* - Update member with id</li>
 		</ul>
 		
 	</div>
