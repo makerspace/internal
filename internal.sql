@@ -14,9 +14,10 @@ CREATE TABLE `config` (
 );
 CREATE TABLE `logins` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `member_id` int(11) NOT NULL,
+  `member_id` int(11) DEFAULT NULL,
   `ip_address` varchar(64) NOT NULL,
   `timestamp` int(11) NOT NULL,
+  `valid` tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `user_id` (`member_id`)
 );

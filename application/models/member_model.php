@@ -8,11 +8,15 @@ class Member_model extends CI_Model {
 		$member = $this->get_member('email', $form['email']);
 		
 		if(!$member) {
+		
+			// Log unsuccessful login to database
+			$this->db->insert('logins', array('ip_address' => ip_address(), 'timestamp' => time()));
+			
 			// That's a negative
 			return false;
 		}
 		
-		// Check ACL (Currently only allow admins to login)
+		// TEMPORARY Check ACL (Currently only allow admins to login)
 		if(!$this->is_admin($member->id)) {
 			return false;
 		}
@@ -23,6 +27,10 @@ class Member_model extends CI_Model {
 		// Verify password
 		$result = $this->pass->verify($form['password'], $member->password);
 		if(!$result) {
+			
+			// Log unsuccessful login to database
+			$this->db->insert('logins', array('member_id' => $member->id, 'ip_address' => ip_address(), 'timestamp' => time()));
+			
 			return false;
 		}
 		
@@ -42,8 +50,8 @@ class Member_model extends CI_Model {
 			
 			$this->session->set_userdata($data);
 			
-			// Update last_login and add to logins.
-			$this->db->insert('logins', array('member_id' => $member->id, 'ip_address' => ip_address(), 'timestamp' => time()));
+			// Log successful login in database
+			$this->db->insert('logins', array('member_id' => $member->id, 'ip_address' => ip_address(), 'timestamp' => time(), 'valid' => 1));
 			
 			// Failsafe
 			return is_loggedin();
