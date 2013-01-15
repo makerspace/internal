@@ -61,7 +61,7 @@ class MY_Session extends CI_Session {
 		$this->CI->load->library('user_agent');
 
 		// Check if this is a crawler or it's a json-request or api request.
-		if ($this->CI->agent->is_robot() || strpos(current_url(), '.json') !== false || strpos(current_url(), '/api/') !== false) {
+		if ($this->CI->agent->is_robot() || strpos(current_url(), '.json') !== false || strpos(current_url(), '/api') !== false) {
 			// Don't do shit.
 			return;
 		}
@@ -69,10 +69,10 @@ class MY_Session extends CI_Session {
         // Run the Session routine. If a session doesn't exist we'll
         // create a new one.  If it does, we'll update it.
         if (!$this->sess_read()) {
-            log_message('info', 'Couldn\'t read session, creating new one.');
+            log_message('debug', 'Couldn\'t read session, creating new one.');
             $this->sess_create();
         } else {
-            log_message('info','Run sess_update()');
+            log_message('debug','Run sess_update()');
             $this->sess_update();
         }
 

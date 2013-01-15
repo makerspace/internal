@@ -60,9 +60,13 @@ class Member_model extends CI_Model {
 	}
 	
 	public function logout() {
-	
+		
+		// Kill session
 		$this->session->sess_destroy();
 	
+		// ... and then recreate it.
+		$this->session->__construct();
+		
 	}
 	
 	public function register($form) {
