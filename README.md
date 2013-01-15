@@ -1,12 +1,13 @@
 Internal.makerspace.se
 ======================
 
-Internal system for member management and similar tasks.
+Internal system for member management, access control, payments and invoices, newsletters and similar.
 
-Build using CodeIgniter, Boostrap, MariaDB, Memcached and other awesome tools.
+Built using CodeIgniter, Boostrap, MariaDB, Memcached and other awesome tools and softwares.
 
 LICENSE
 =======
-Licensed under AGPL which means that you HAVE to release the source-code if you've added or changed anything. (We suggest that you fork the repo on github!)
+Licensed under AGPL which means that you have to release the source-code if you've modified or improved anything. See the LICENSE file for more details.
+We suggest that you fork the repo on github: https://github.com/makerspace/internal.makerspace.se
 
 ~ Stay open source!
