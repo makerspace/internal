@@ -1,6 +1,6 @@
 <?php echo form_open('auth/forgot', array('class' => 'form-signin')); ?>
 
-	<img src="/assets/img/logo.png" alt="Stockholm Makerspace" class="logo">
+	<a href="/auth/login"><img src="/assets/img/logo.png" alt="Stockholm Makerspace" class="logo"></a>
 	
 	<p><strong>Forgot your password?</strong> No worries. Just enter your e-mail address below to initialize a password reset.</p>
 

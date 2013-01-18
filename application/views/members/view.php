@@ -7,10 +7,7 @@
 	<div class="span4">
 		<h4>Member Tasks</h4>		
 		<p>
-			<a href="#" class="btn btn-primary">Download Membership Card <small>(as PDF)</small></a>
-		</p>
-		<p>
-			<a href="#" class="btn">View RFID Tag ID <small>(For Lab Access)</small></a> 
+			<a href="/pdf/membership_card/<?php echo $member->id; ?>" class="btn btn-primary">Download Membership Card <small>(as PDF)</small></a>
 		</p>
 		
 		<br>
@@ -119,26 +116,26 @@
 				</tr>
 			</thead>
 			<tbody>
+				<?php foreach($projects as $project) { ?>
 				<tr>
-					<td>Memeber Management System</td>
-					<td><span class="label label-info">In development</span></td>
-					<td>2012-12-01</td>
-					<td><a>https://internal.makerspace.se/</a></td>
+					<td><?php echo $project->title; ?></td>
+					<td><span class="label label-info"><?php echo $project->status; ?></span></td>
+					<td><?php echo date('Y-m-d', $project->created); ?></td>
+					<td><?php echo anchor($project->url); ?></td>
 				</tr>
+				<?php } if(empty($projects)) { ?>
 				<tr>
-					<td>Fortnox API Library</td>
-					<td><span class="label label-info">In development</span></td>
-					<td>2013-01-12</td>
-					<td><a>https://github.com/makerspace/fortnox</a></td>
+					<td colspan="4">No member projects found.</td>
 				</tr>
+				<?php } ?>
 			</tbody>
 		</table>
 		
-		<br>
+		<!--<br>
 		<h4>Member Wall</h4>
 		<p>
 			* Comes later, maybe *
-		</p>
+		</p>-->
 	</div>
 	
 	<?php if(!empty($member->twitter)) { ?>

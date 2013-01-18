@@ -29,7 +29,8 @@
 		<ul>
 			<li>200 = OK</li>
 			<li>201 = Resource created</li>
-			<li>401 = Unauthorized</li>
+			<li>400 = Bad Request</li>
+			<li>403 = Forbidden</li>
 			<li>404 = Not found</li>
 			<li>405 = Method Not Allowed</li>
 			<li>501 = Not Implemented</li>
@@ -39,8 +40,7 @@
 
 		<h3>Public resources</h3>
 		<ul>
-			<li>POST /api/member - Add a new member</li>
-			<li>GET /api/newsletter/*id* - Get newsletter by id</li>
+			<!--<li>GET /api/newsletter/*id* - Get newsletter by id</li>-->
 			<li>GET /api/coffee</li>
 		</ul>
 
@@ -52,6 +52,7 @@
 		<ul>
 			<li>GET /api/member/*id* - Get member by id</li>
 			<li>GET /api/member/*key*/*value* - Get member by key</li>
+			<li>POST /api/member - Add a new member</li>
 			<li>POST /api/member/*id* - Update member with id</li>
 		</ul>
 		

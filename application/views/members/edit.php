@@ -22,7 +22,7 @@
 			<div class="control-group">
 				<?php echo form_label('Membership Due', 'membership', array('class' => 'control-label')); ?>
 				<div class="controls">
-					<?php echo form_input('membership', $member->membership, 'data-date-format="yyyy-mm-dd" id="membership" class="datepicker" required'); ?>
+					<?php echo form_input('membership', $member->membership, 'data-date-format="yyyy-mm-dd" id="membership" class="datepicker"'); ?>
 				</div>
 			</div>
 			
@@ -84,7 +84,7 @@
 				<div class="control-group">
 					<?php echo form_label('Address', 'address', array('class' => 'control-label')); ?>
 					<div class="controls">
-						<?php echo form_input('address', $member->address, 'id="address" required'); ?>
+						<?php echo form_input('address', $member->address, 'id="address"'); ?>
 					</div>
 				</div>
 				
@@ -99,7 +99,7 @@
 				<div class="control-group">
 					<?php echo form_label('Zip code', 'zipcode', array('class' => 'control-label')); ?>
 					<div class="controls">
-						<?php echo form_input('zipcode', $member->zipcode, 'id="zipcode" required placeholder="12345"'); ?>
+						<?php echo form_input('zipcode', $member->zipcode, 'id="zipcode" placeholder="12345"'); ?>
 						<span class="help-inline">Without spaces</span>
 					</div>
 				</div>
@@ -107,14 +107,14 @@
 				<div class="control-group">
 					<?php echo form_label('City', 'city', array('class' => 'control-label')); ?>
 					<div class="controls">
-						<?php echo form_input('city', $member->city, 'id="city" required'); ?>
+						<?php echo form_input('city', $member->city, 'id="city"'); ?>
 					</div>
 				</div>
 				
 				<div class="control-group">
 					<?php echo form_label('Country', 'country', array('class' => 'control-label')); ?>
 					<div class="controls">
-						<?php echo form_dropdown('country', $this->dbconfig->countries, $member->country, 'id="country" required'); ?>
+						<?php echo form_dropdown('country', $this->dbconfig->countries, $member->country, 'id="country"'); ?>
 					</div>
 				</div>
 				

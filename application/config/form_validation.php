@@ -93,7 +93,7 @@ $config = array(
 			array(
 				'field' => 'country',
 				'label' => 'country',
-				'rules' => 'trim'
+				'rules' => 'trim|callback__validate_country'
 			),
 			array(
 				'field' => 'birthday',
@@ -182,7 +182,7 @@ $config = array(
 			array(
 				'field' => 'country',
 				'label' => 'country',
-				'rules' => 'trim'
+				'rules' => 'trim|callback__validate_country'
 			),
 			array(
 				'field' => 'mobile',

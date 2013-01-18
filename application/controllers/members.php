@@ -21,12 +21,23 @@ class Members extends CI_Controller {
 	public function view($member_id = '') {
 		gatekeeper();
 		
+		// Check if member exists.
+		if(!$member = $this->Member_model->get_member($member_id)) {
+				error('The member doesn\'t exist!');
+				redirect();
+		}
+		
 		$head = array(
 			'title' => 'View Member',
 		);
 		
+		$data = array(
+			'member' => $member,
+			'projects' => $this->Member_model->get_projects($member_id),
+		);
+		
 		$this->load->view('header', $head);
-		$this->load->view('members/view', array('member' => $this->Member_model->get_member($member_id)));
+		$this->load->view('members/view', $data);
 		$this->load->view('footer');
 		
 	
@@ -128,6 +139,29 @@ class Members extends CI_Controller {
 		message('Member ACL successfully updated.');
 		redirect('/members/view/'.$member_id);
 	
+	}
+	
+	public function _validate_country($str) {
+	
+		// Validate country against dbconfig
+		if(!empty($str)) {
+		
+			// Get countries
+			$countries = (array)$this->dbconfig->countries;
+			
+			// Remove first item (null option)
+			$countries = array_slice($countries, 1);
+			
+			// Validate country
+			if(array_key_exists($str, $countries)) {
+				return true;
+			}
+			
+			$this->form_validation->set_message('_validate_country', 'The field %s doesn\'t contain a valid option.');
+			return false;
+			
+		}
+		
 	}
 	
 }

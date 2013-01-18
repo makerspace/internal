@@ -37,10 +37,9 @@ class Api extends CI_Controller {
 	 * Member resource.
 	 **/
 	public function member($key = '', $value = '') {
-	
-		// ToDo: This should be protected by authentication.
-		// ... so until that's implemented, return service unavailable.
-		$this->_error(503);
+		
+		// Require X-Username/Password auth.
+		$this->_check_authentication();
 			
 		// POST: Add new member
 		if($this->input->post()) {
@@ -56,10 +55,15 @@ class Api extends CI_Controller {
 				$key = 'id';
 			}
 			
-			// Get member
+			// Failsafe against empty values
+			if(empty($value)) {
+				$this->_error(400); // Bad Request
+			}
+			
+			// Get member by key
 			$member = $this->Member_model->get_member($key, $value);
 			
-			// If not found, 404
+			// Return 404 if not found
 			if(!$member) {
 				$this->_error(404);
 			}
@@ -121,5 +125,40 @@ class Api extends CI_Controller {
 		// Set Content-Type and output
 		$this->output->set_content_type('application/json')->set_output($json);
 
+	}
+	
+	/**
+	 * Check authentication headers (X-Username, X-Password)
+	 * @using login method in member model.
+	 */
+	private function _check_authentication($check_acl = true) {
+	
+		$username = $this->input->get_request_header('X-Username');
+		$password = $this->input->get_request_header('X-Password');
+		
+		// Check input
+		if(empty($username) || empty($password)) {
+			$this->_error(403); // Forbidden
+		}
+		
+		
+		// Try to login but don't set session.
+		$login = array('email' => $username, 'password' => $password);
+		$result = $this->Member_model->login($login, false);
+		
+		// Check result
+		if($result) {
+			
+			// Check ACL (if needed)
+			if($check_acl) {
+				## Here.
+			}
+			
+			return true;
+		}
+	
+		// Default to Forbidden
+		$this->_error(403);
+		
 	}
 } 

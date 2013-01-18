@@ -2,10 +2,10 @@
 
 class Member_model extends CI_Model {
 	
-	public function login($form, $session = true) {
+	public function login($data, $session = true) {
 		
 		// Check if e-mail exists.
-		$member = $this->get_member('email', $form['email']);
+		$member = $this->get_member('email', $data['email']);
 		
 		if(!$member) {
 		
@@ -25,7 +25,7 @@ class Member_model extends CI_Model {
 		$this->load->library('Pass');
 		
 		// Verify password
-		$result = $this->pass->verify($form['password'], $member->password);
+		$result = $this->pass->verify($data['password'], $member->password);
 		if(!$result) {
 			
 			// Log unsuccessful login to database
@@ -38,17 +38,17 @@ class Member_model extends CI_Model {
 		if($session) {
 		
 			// Set session
-			$data = array(
+			$userdata = array(
 				'member_id' => $member->id,
-				'email' => $form['email'],
+				'email' => $data['email'],
 				'logged_in' => true,
 			);
 			
-			if(!empty($form['remember'])) {
-				$data['remember_me'] = true;
+			if(!empty($data['remember'])) {
+				$userdata['remember_me'] = true;
 			}
 			
-			$this->session->set_userdata($data);
+			$this->session->set_userdata($userdata);
 			
 			// Log successful login in database
 			$this->db->insert('logins', array('member_id' => $member->id, 'ip_address' => ip_address(), 'timestamp' => time(), 'valid' => 1));
@@ -75,24 +75,6 @@ class Member_model extends CI_Model {
 		// ... and then recreate it.
 		$this->session->__construct();
 		
-	}
-	
-	public function register($form) {
-	
-		// Load password library
-		$this->load->library('Pass');
-		
-		$data = array(
-		   'email' => $form['email'],
-		   'password' => $this->pass->hash($form['password']),
-		   'registered' => time(),
-		);
-	
-		// Add member to db
-		$result = $this->db->insert('members', $data); 
-		
-		return $result;
-	
 	}
 	
 	public function forgot($email) {
@@ -281,21 +263,11 @@ class Member_model extends CI_Model {
 	 **/
 	public function add_member($data) {
 	
-		// Make an exception for the password field
-		if(!empty($data['password'])) {
-			// Hash the new password
-			# Here!
-		}
-		
-		// ACL Exception - remove ACL for now.
-		// ToDo: Make it work.
-		unset($data['acl']);
+		// Normalize the member-array.
+		$data = $this->_normalize($data);
 		
 		// Add registered timestamp
 		$data['registered'] = time();
-		
-		// Remove NULL and empty fields (incl. false)
-		$data = array_filter($data);
 		
 		// Add to database
 		$this->db->insert('members', $data);
@@ -312,24 +284,11 @@ class Member_model extends CI_Model {
 	 **/
 	public function update_member($member_id, $data) {
 		
-		// Make an exception for the password field
-		if(!empty($data['password'])) {
-			// Hash the new password
-			# Here!
-		} else {
-			// Don't remove if empty
-			unset($data['password']);
-		}
-		
-		// ACL Exception - remove ACL for now.
-		// ToDo: Make it work.
-		unset($data['acl']);
+		// Normalize the member-array.
+		$data = $this->_normalize($data);
 		
 		// Add last_updated field
 		$data['last_updated'] = time();
-		
-		// Remove NULL and empty fields (incl. false)
-		$data = array_filter($data);
 		
 		// Update member based upon id
 		$this->db->update('members', $data, array('id' => $member_id));
@@ -461,6 +420,66 @@ class Member_model extends CI_Model {
 	
 	public function is_active($member_id = '') {
 		return $this->get_acl($member_id, 'active');
+	}
+	
+	/**
+	 * Get member projects
+	 * ToDo: Move this to Project_model(?)
+	 */
+	public function get_projects($member_id, $limit = 100, $offset = 0) {
+		$query = $this->db->get_where('projects', array('member_id' => $member_id));
+		
+		if($query->num_rows() > 0) {
+			return $query->result();
+		}
+		
+		return array();
+	}
+	
+	/**
+	 * Function to filter all field of a member array.
+	 */
+	private function _normalize($array) {
+	
+		// Allowed form fields
+		$fields = array(
+			'email', 'password', 'membership', 'twitter', 'skype', 
+			'firstname', 'lastname', 'company', 'orgno', 'address',
+			'address2', 'zipcode', 'city', 'country', 'mobile', 'phone', 'acl'
+		);
+		
+		// Filter out only those fields we allow
+		$data = array_intersect_key($array, array_flip($fields));
+		
+		// Remove false/null/0 values
+		$data = array_filter($data);
+		
+		// Add those items removed in previous step
+		$diff = array_diff_key(array_flip($fields), $data);
+		foreach($diff as $key => $val) {
+			$data[$key] = null;
+		}
+		
+		// Make an exception for the password field
+		if(!empty($data['password'])) {
+			
+			// Load password library
+			$this->load->library('Pass');
+			
+			// Hash the password 
+			$data['password'] = $this->pass->hash($data['password']);
+			
+		} else {
+			// Remove if unset
+			unset($data['password']);
+		}
+		
+		// ACL Exception - remove ACL for now.
+		// ToDo: Make it work!
+		unset($data['acl']);
+		
+		return $data;
+	
 	}
 	
 }
