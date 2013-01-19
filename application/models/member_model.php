@@ -77,7 +77,7 @@ class Member_model extends CI_Model {
 		
 	}
 	
-	public function forgot($email) {
+	public function forgot_password($email) {
 	
 		$member = $this->get_member('email', $email);
 		

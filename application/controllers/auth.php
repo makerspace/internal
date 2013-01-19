@@ -50,7 +50,7 @@ class Auth extends CI_Controller {
 
 			// Send reset e-mail 
 			$email = $this->input->post('email');
-			$this->Member_model->forgot($email);
+			$this->Member_model->forgot_password($email);
 			
 			redirect();
 		}
