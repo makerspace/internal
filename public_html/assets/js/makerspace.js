@@ -14,6 +14,7 @@ $(function(){
 	}, 4000); // 4 seconds
 });
 
+
 /* =========================================================
  * bootstrap-datepicker.js 
  * http://www.eyecon.ro/bootstrap-datepicker

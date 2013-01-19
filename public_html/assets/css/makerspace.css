@@ -28,6 +28,19 @@ div.auth .alert {
 	margin-left: auto;
 }
 
+.error-container {
+	max-width: 600px;
+	margin: 0 auto;
+	text-align: center;
+}
+
+.error-container .well {
+	padding: 60px 0;
+	margin-top: 40px;
+}
+
+
+
 
  /*
 	Datepicker for Bootstrap
