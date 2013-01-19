@@ -18,7 +18,7 @@
 <div class="container-fluid">
 	<div class="span12">
 	
-		<img src="/assets/img/logo.png" alt="Stockholm Makerspace" class="logo">
+		<a href="/auth/login"><img src="/assets/img/logo.png" alt="Stockholm Makerspace" class="logo"></a>
 		
 		<h1>API Documentation</h1>
 		<p>REST API for Internal - Version 0.1.</p>
