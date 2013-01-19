@@ -71,14 +71,11 @@ class Api extends CI_Controller {
 			// Unset password-related fields.
 			unset($member->password, $member->reset_token, $member->reset_expire);
 			
-			// Unset comment-field
-			unset($member->comment);
-			
 			// Remove NULL and empty fields (incl. false).
-			$member = (object) array_filter((array) $member);
+			$member = (object)array_filter((array)$member);
 			
 			// And return as JSON
-			$this->_out($member);
+			$this->_json_out($member);
 		
 		}
 		
@@ -117,7 +114,7 @@ class Api extends CI_Controller {
 	/**
 	 * JSON Output Method
 	 */
-	private function _out($data) {
+	private function _json_out($data) {
 
 		// Encode as JSON
 		$json = json_encode($data);

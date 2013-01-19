@@ -3,12 +3,12 @@
 /**
  * Administration Model
  * @author Jim Nelin
- **/
+ */
 class Admin_model extends CI_Model {
 
 	/**
 	 * Get all dbconfig items
-	 **/
+	 */
 	public function get_dbconfig() {
 	
 		// Take config-item into consideration.
@@ -29,7 +29,7 @@ class Admin_model extends CI_Model {
 	
 	/**
 	 * Add new config item.
-	 **/
+	 */
 	public function add_config($post) {
 	
 		$data = array(
@@ -61,7 +61,7 @@ class Admin_model extends CI_Model {
 	
 	/**
 	 * Add new config key/value and desc
-	 **/
+	 */
 	public function set_config($key, $value) {
 	
 		// Update config key

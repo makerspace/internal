@@ -7,7 +7,7 @@
  * - Store e-mails in db as config-key/value.
  * - Store config in db
  * - Handle bounces
- **/
+ */
 
 class Email_model extends CI_Model {
 

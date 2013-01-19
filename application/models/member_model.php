@@ -260,7 +260,7 @@ class Member_model extends CI_Model {
 	 * Method for adding a new member.
 	 *
 	 * ToDo: Validate all fields somewhere central!
-	 **/
+	 */
 	public function add_member($data) {
 	
 		// Normalize the member-array.
@@ -281,7 +281,7 @@ class Member_model extends CI_Model {
 	 * Method for updating an existing member.
 	 *
 	 * ToDo: Validate all fields somewhere central!
-	 **/
+	 */
 	public function update_member($member_id, $data) {
 		
 		// Normalize the member-array.
@@ -299,9 +299,9 @@ class Member_model extends CI_Model {
 	}
 	
 	
-	/***********************
+	/**
 	 * Member ACL functions
-	 ***********************/
+	 */
 	
 	/**
 	 * Private method to add ACL to member.
@@ -319,12 +319,12 @@ class Member_model extends CI_Model {
 		}
 	
 		
-		/*******************************************************************
+		/**
 		 * Clone database ACLs to member temporarily...
 		 * @note According to PHP-manual, it's not allowed to change the
 		 *		 structure of the referenced var, but it seems to work???
 		 * @see http://php.net/manual/en/function.array-walk.php#refsect1-function.array-walk-parameters
-		 *******************************************************************/
+		 */
 		$member->acl = clone $this->dbconfig->acl;
 			
 		
@@ -353,7 +353,7 @@ class Member_model extends CI_Model {
 	
 	/**
 	 * Update a ACL for member.
-	 **/
+	 */
 	public function acl_switch($member_id = '', $acl) {
 	
 		$member = $this->get_member($member_id);

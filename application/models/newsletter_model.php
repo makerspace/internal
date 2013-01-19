@@ -2,7 +2,7 @@
 /**
  * Newsletter Model
  * @author Jim Nelin
- **/
+ */
 
 class Newsletter_model extends CI_Model {
 
@@ -15,7 +15,7 @@ class Newsletter_model extends CI_Model {
 
 	/**
 	 * Create newsletter in db.
-	 **/
+	 */
 	public function create($recipients, $subject, $body) {
 	
 		$data = array(
@@ -40,7 +40,7 @@ class Newsletter_model extends CI_Model {
 	}
 	/**
 	 * Save updated newsletter to db.
-	 **/
+	 */
 	public function save($id, $subject, $body) {
 	
 		$data = array(
@@ -79,7 +79,7 @@ class Newsletter_model extends CI_Model {
 	
 	/**
 	 * Send a Test Newsletter to current member.
-	 **/
+	 */
 	public function test_send($subject, $body) {
 		
 		// Get current member
@@ -100,7 +100,7 @@ class Newsletter_model extends CI_Model {
 	
 	/**
 	 * Private method for replacement of {placeholders} to actual data.
-	 **/
+	 */
 	private function _replace_placeholders($str, $member) {
 		// Not implemented yet.
 		return $str; 
