@@ -8,3 +8,4 @@
 *.txt
 *.sh
 public_html/preview*
+*doxygen*
