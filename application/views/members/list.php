@@ -1,7 +1,12 @@
 <h2 class="pull-left">List of Members <small>(<?php echo $this->db->count_all('members'); ?> members)</small></h2>
 
-<a href="/members/add" class="btn btn-primary pull-right">Add new member</a>
-
+<div class="span6 pull-right">
+	<a href="/members/add" class="btn btn-primary pull-right">Add new member</a>
+	<?php echo form_open('members/search', 'class="form-search"'); ?>
+		<input type="text" class="input-xlarge" placeholder="Enter search query here.">
+		<button type="submit" class="btn">Search for member </button>
+	<?php echo form_close(); ?>
+</div>
 <table class="table table-striped table-condensed table-bordered">
 	<thead>
 		<tr>
@@ -39,7 +44,7 @@
 		</tr>
 	<?php } if(empty($members)) { ?>
 		<tr>
-			<td colspan="13">Sorry, there isn't any members in the database. Add a new one using the button below!</td>
+			<td colspan="13">Sorry, couldn't find any members in the database.</td>
 		</tr>
 	<?php } ?>
 	</tbody>

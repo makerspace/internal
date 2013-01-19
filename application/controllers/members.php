@@ -25,7 +25,7 @@ class Members extends CI_Controller {
 			'title' => 'Search Members',
 		);
 		
-		$membeers = array();
+		$members = array();
 		$keyword = trim($this->input->post('search'));
 		
 		if(!empty($keyword)) {

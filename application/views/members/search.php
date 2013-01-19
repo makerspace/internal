@@ -1,6 +1,12 @@
 <h2 class="pull-left">Search Results <small>(<?php echo count($members); ?> members found)</small></h2>
 
-<a href="/members/add" class="btn btn-primary pull-right">Add new member</a>
+<div class="span6 pull-right">
+	<a href="/members/add" class="btn btn-primary pull-right">Add new member</a>
+	<?php echo form_open('members/search', 'class="form-search"'); ?>
+		<input type="text" name="search" class="input-xlarge" value="<?php echo set_value('search'); ?>" placeholder="Enter search query here.">
+		<button type="submit" class="btn">Search for member</button>
+	<?php echo form_close(); ?>
+</div>
 
 <table class="table table-striped table-condensed table-bordered">
 	<thead>
@@ -44,5 +50,3 @@
 	<?php } ?>
 	</tbody>
 </table>
-
-<a href="/members/add" class="btn btn-primary pull-right">Add new member</a>
