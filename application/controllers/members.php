@@ -18,6 +18,25 @@ class Members extends CI_Controller {
 
 	}
 	
+	public function search() {
+		admin_gatekeeper();
+		
+		$head = array(
+			'title' => 'Search Members',
+		);
+		
+		$string = $this->input->post('search');
+		if(empty(trim($string))) {
+		
+		}
+		$members = $this->Member_model->search();
+
+		$this->load->view('header', $head);
+		$this->load->view('members/list', array('members' => $members));
+		$this->load->view('footer');
+
+	}
+	
 	public function view($member_id = '') {
 		gatekeeper();
 		
