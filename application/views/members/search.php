@@ -3,8 +3,8 @@
 <div class="span6 pull-right">
 	<a href="/members/add" class="btn btn-primary pull-right">Add new member</a>
 	<?php echo form_open('members/search', 'class="form-search"'); ?>
-		<input type="text" name="search" class="input-xlarge" value="<?php echo set_value('search'); ?>" placeholder="Enter search query here.">
-		<button type="submit" class="btn">Search for member</button>
+		<input type="text" name="search" class="input-xlarge" value="<?php echo set_value('search'); ?>" required placeholder="Enter search string..." pattern=".{2,}" title="Minimum 2 characters">
+		<button type="submit" class="btn">Search for members</button>
 	<?php echo form_close(); ?>
 </div>
 

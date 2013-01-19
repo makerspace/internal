@@ -263,8 +263,36 @@ class Member_model extends CI_Model {
 	 */
 	public function search_member($keyword) {
 	
-		return array();
+		// Search in these fields
+		$search_fields = array(
+			'id', 'firstname', 'lastname', 'company', 'orgno',
+			'address', 'address2', 'zipcode', 'city', 'country',
+			'mobile', 'phone', 'twitter', 'skype'
+		);
+		
+		// Search in e-mail first.
+		$this->db->like('email', $keyword);
+		
+		// Loop, cause it's easier.
+		foreach($search_fields as $field) {
+			$this->db->or_like($field, $keyword);
+		}
+		
+		// Do query
+		$query = $this->db->get('members');
+		
+		// Did we get anything?
+		if($query->num_rows() > 0) {
+			
+			// Walk the entire result set and add ACLs :)
+			array_walk($query->result(), array($this, '_add_acl'));
+			
+			// Return matching users
+			return $query->result();
+		}
 	
+		// Nothing found
+		return array();
 	}
 	
 	

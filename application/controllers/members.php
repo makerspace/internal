@@ -25,13 +25,14 @@ class Members extends CI_Controller {
 			'title' => 'Search Members',
 		);
 		
-		$members = array();
-		$keyword = trim($this->input->post('search'));
-		
-		if(!empty($keyword)) {
+		// If POST is valid
+		if ($this->form_validation->run()) {
+			$keyword = $this->input->post('search');
 			$members = $this->Member_model->search_member($keyword);
+		} else {
+			$members = array();
 		}
-
+		
 		$this->load->view('header', $head);
 		$this->load->view('members/search', array('members' => $members));
 		$this->load->view('footer');

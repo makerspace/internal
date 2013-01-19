@@ -262,5 +262,13 @@ $config = array(
 				'rules' => 'trim|required|max_length[2048]'
 			),
 		),
+		// Search members
+		'members/search' => array(
+			array(
+				'field' => 'search',
+				'label' => 'search',
+				'rules' => 'trim|required|min_length[2]'
+			),
+		),
 
 );

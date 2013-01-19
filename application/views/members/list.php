@@ -3,7 +3,7 @@
 <div class="span6 pull-right">
 	<a href="/members/add" class="btn btn-primary pull-right">Add new member</a>
 	<?php echo form_open('members/search', 'class="form-search"'); ?>
-		<input type="text" class="input-xlarge" placeholder="Enter search query here.">
+		<input type="text" class="input-xlarge" required placeholder="Enter search string..." pattern=".{2,}" title="Minimum 2 characters">
 		<button type="submit" class="btn">Search for member </button>
 	<?php echo form_close(); ?>
 </div>
