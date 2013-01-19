@@ -17,7 +17,7 @@
  * @license AGPL (GNU Affero General Public License, version 3)
  *
  * @todo: Rewrite to use cURL library for CodeIgniter to strip away code.
- **/
+ */
 class PayPal {
 
 	// Codeigniter object
@@ -83,7 +83,7 @@ class PayPal {
 	 *
 	 * @var $custom_data bool Set to true to use custom SetExpressCheckout POST-data (overrides everything)
 	 * @return array PayPal response
-	 **/
+	 */
 	function SetExpressCheckout($data = array(), $custom_data = false) {
 		$nvpdata = array();
 		
@@ -228,7 +228,7 @@ class PayPal {
 	 *
 	 * @var string $token Token from $_GET['TOKEN'] passed by Paypal when redirected to return_url
 	 * @return associative array With response from paypal.
-	 **/
+	 */
 	public function GetExpressCheckoutDetails($token) {
 	
 		// Set token
@@ -254,7 +254,7 @@ class PayPal {
 	 * - most of the data can be obtained from GetExpressCheckoutDetails
 	 *
 	 * @return associative array With response from paypal.
-	 **/
+	 */
 	public function DoExpressCheckoutPayment($details, $type = 'Sale') {		
 		$nvpdata = array();
 		
@@ -289,7 +289,7 @@ class PayPal {
 	 *
 	 * @var $token string NVP Token.
 	 * @var $mobile bool Redirect to mobile-site or not. (default false)
-	 **/
+	 */
 	public function redirect($token, $mobile = false) {
 	
 		// str-replace if $mobile != false
@@ -311,7 +311,7 @@ class PayPal {
 	 * @var $data array NVP-data to POST.
 	 *
 	 * @return associtive array Containing the response from the server.
-	 **/
+	 */
 	private function _api_call($method, $data) {
 	
 		// Init curl

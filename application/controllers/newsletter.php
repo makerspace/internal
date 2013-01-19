@@ -28,7 +28,7 @@ class Newsletter extends CI_Controller {
 	
 	/**
 	 * Create a new newsletter.
-	 **/
+	 */
 	public function create() {
 		
 		// Run validation, when posted on this page only

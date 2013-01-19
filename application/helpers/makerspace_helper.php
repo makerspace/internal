@@ -3,7 +3,7 @@
 /**
  * Auth/Member Helpers
  * @author Jim Nelin
- **/
+ */
 function is_loggedin() {
 	$CI =& get_instance();
 	return ($CI->session->userdata('logged_in') == true);
@@ -46,7 +46,7 @@ function member_id() {
 
 /**
  * Flashmessage helpers for CI
- **/
+ */
 function get_flashdata() {
 	$CI =& get_instance();
 
@@ -76,7 +76,7 @@ function message($message) {
 /**
  * Error helper for CI
  * @author Jim Nelin
- **/ 
+ */ 
 function get_errors() {
 
 	$CI =& get_instance();
@@ -95,7 +95,7 @@ function get_errors() {
 /**
  * String helpers for CI
  * @author Jim Nelin
- **/
+ */
 function ip_address() {
 	return $_SERVER['REMOTE_ADDR'];
 }
@@ -117,7 +117,7 @@ function when($timestamp) {
 
 /**
  * Function to generate v4 UUID
- **/
+ */
 function uuid() {
     return sprintf('%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
         // 32 bits for "time_low"
@@ -143,7 +143,7 @@ function uuid() {
 /**
  * Gravatar Helper
  * @author Jim Nelin
- **/
+ */
 function gravatar($email, $size = 32, $rating = 'pg', $default = 'mm') {
 	
 	// Optional options
@@ -171,7 +171,7 @@ function menu_active($controller) {
 
 /**
  * XML Helpers
- **/
+ */
 
 /**
  * array_to_xml - Converts an PHP array to XML. 

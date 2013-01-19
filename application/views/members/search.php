@@ -1,4 +1,4 @@
-<h2 class="pull-left">List of Members <small>(<?php echo $this->db->count_all('members'); ?> members)</small></h2>
+<h2 class="pull-left">Search Results <small>(<?php echo count($members); ?> members found)</small></h2>
 
 <a href="/members/add" class="btn btn-primary pull-right">Add new member</a>
 
@@ -39,7 +39,7 @@
 		</tr>
 	<?php } if(empty($members)) { ?>
 		<tr>
-			<td colspan="13">Sorry, there isn't any members in the database. Add a new one using the button below!</td>
+			<td colspan="13">Sorry, no matching members found. Please try again.</td>
 		</tr>
 	<?php } ?>
 	</tbody>

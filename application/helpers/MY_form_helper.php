@@ -4,7 +4,7 @@
  * Adds HTML5-form elements.
  *
  * @author Unknown
- **/
+ */
  
 /**
  * Common Input Field

@@ -197,6 +197,7 @@ class Member_model extends CI_Model {
 			
 	}
 	
+	########################## Get and search members ##########################
 	
 	public function get_member($where = '', $value = '') {
 	
@@ -257,6 +258,20 @@ class Member_model extends CI_Model {
 	}
 	
 	/**
+	 * Method to search for members (wildcard)
+	 * @todo Full-text search or similar? Sphinx?
+	 */
+	public function search_member($keyword) {
+	
+		return array();
+	
+	}
+	
+	
+	########################## Add and edit members ##########################
+	
+	
+	/**
 	 * Method for adding a new member.
 	 *
 	 * ToDo: Validate all fields somewhere central!
@@ -299,9 +314,8 @@ class Member_model extends CI_Model {
 	}
 	
 	
-	/**
-	 * Member ACL functions
-	 */
+	########################## Member ACL functions ##########################
+	 
 	
 	/**
 	 * Private method to add ACL to member.
@@ -411,6 +425,8 @@ class Member_model extends CI_Model {
 		return (isset($member->acl->{$acl}) && $member->acl->{$acl} == '1');
 	}
 	
+	########################## Other methods ##########################
+	 
 	/**
 	 * Short-cuts for get_acl(...)
 	 */

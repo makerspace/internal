@@ -3,13 +3,13 @@
  * REST Api Controller for Internal
  * 
  * @author Jim Nelin
- **/
+ */
  
 class Api extends CI_Controller {
 
 	/**
 	 * Constructor
-	 **/
+	 */
 	public function  __construct() {
 		parent::__construct();
 		
@@ -21,7 +21,7 @@ class Api extends CI_Controller {
 	
 	/**
 	 * Index: API Documentation
-	 **/
+	 */
 	public function index() {
 		
 		// Only allow GET
@@ -35,7 +35,7 @@ class Api extends CI_Controller {
 	
 	/**
 	 * Member resource.
-	 **/
+	 */
 	public function member($key = '', $value = '') {
 		
 		// Require X-Username/Password auth.
@@ -83,7 +83,7 @@ class Api extends CI_Controller {
 	
 	/**
 	 * Newsletter resource.
-	 **/
+	 */
 	public function newsletter() {
 	
 		// Only allow GET
@@ -98,14 +98,14 @@ class Api extends CI_Controller {
 	
 	/**
 	 * HTCPC Protocol (RFC 2324)
-	 **/
+	 */
 	public function coffee() {
 		$this->_error(418, 'I\'m a teapot');
 	}
 
 	/**
 	 * Set HTTP Status and exit
-	 **/
+	 */
 	private function _error($code, $str = '') {
 		$this->output->set_status_header($code, $str);
 		exit;

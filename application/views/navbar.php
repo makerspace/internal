@@ -13,7 +13,7 @@
 				<?php } ?>
 			</a>
 			
-			<a class="brand" href="/">Makerspace</a>
+			<a class="brand" href="/">Makerspace Internal</a>
 
 			<div class="nav-collapse collapse">
 				<p class="navbar-text pull-right">Logged in as <a href="/members/view/<?php echo member_id(); ?>"><?php echo $this->Member_model->get_member()->email; ?></a> | <a href="/auth/logout">Log out</a></p>
