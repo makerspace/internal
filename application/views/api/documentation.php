@@ -46,7 +46,7 @@
 
 
 		<h3>Protected resources (Requires authentication)</h3>
-		<p>Use the HTTP Headers <strong>X-Username</strong> and <strong>X-Password</strong> to authenticate.<br>
+		<p>Use the HTTP Headers <strong>X-Username</strong> (your e-mail address) and <strong>X-Password</strong> to authenticate.<br>
 		<em>Note: These resources might also require the "API" ACL on your account.</em></p>
 
 		<ul>

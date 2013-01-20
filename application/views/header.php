@@ -6,6 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="author" content="Stockholm Makerspace">
 
+	<link rel="shortcut icon" href="/assets/img/favicon.png">
 	<link href="/assets/css/bootstrap.min.css" rel="stylesheet">
 	<link href="/assets/css/makerspace.css" rel="stylesheet">
 
