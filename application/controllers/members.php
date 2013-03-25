@@ -54,7 +54,6 @@ class Members extends CI_Controller {
 		
 		$data = array(
 			'member' => $member,
-			'projects' => $this->Member_model->get_projects($member_id),
 		);
 		
 		$this->load->view('header', $head);

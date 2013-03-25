@@ -8,4 +8,7 @@
 *.txt
 *.sh
 public_html/preview*
+phpmyadmin/
+phpldapadmin/
+tmp/
 *doxygen*

@@ -65,6 +65,7 @@
 					<strong>Skype:</strong><br>
 					<a href="skype:<?php echo $member->skype; ?>?chat"><?php echo $member->skype; ?></a>
 				</p>
+
 				<?php } ?>
 				
 			</div>
@@ -96,54 +97,15 @@
 					<strong>Membership Due:</strong><br>
 					<?php echo $member->membership; ?>
 				</p>
+
+				<?php } if(!empty($member->twitter)) { ?>
+				<p>
+					<strong>Twitter:</strong><br>
+					<a href="http://twitter.com/<?php echo $member->twitter; ?>"><?php echo $member->twitter; ?></a>
+				</p>
+
 				<?php } ?>
 			</div>
 		</div>
 	</div>
-</div>
-
-<br>
-<div class="row">
-	<div class="span6">
-		<h4>Member Projects</h4>
-		<table class="table table-striped table-condensed">
-			<thead>
-				<tr>
-					<th>Name</th>
-					<th>Status</th>
-					<th>Started</th>
-					<th>URL</th>
-				</tr>
-			</thead>
-			<tbody>
-				<?php foreach($projects as $project) { ?>
-				<tr>
-					<td><?php echo $project->title; ?></td>
-					<td><span class="label label-info"><?php echo $project->status; ?></span></td>
-					<td><?php echo date('Y-m-d', $project->created); ?></td>
-					<td><?php echo anchor($project->url); ?></td>
-				</tr>
-				<?php } if(empty($projects)) { ?>
-				<tr>
-					<td colspan="4">No member projects found.</td>
-				</tr>
-				<?php } ?>
-			</tbody>
-		</table>
-		
-		<!--<br>
-		<h4>Member Wall</h4>
-		<p>
-			* Comes later, maybe *
-		</p>-->
-	</div>
-	
-	<?php if(!empty($member->twitter)) { ?>
-		<div class="span6">
-			<h4>Tweets by @<?php echo $member->twitter; ?> <small>(ToDo: Make this pretty)</small></h4>
-			<span id="member_tweets"></span>
-			<script src="/assets/js/tweets.min.js"></script>
-			<script src="//api.twitter.com/1/statuses/user_timeline.json?screen_name=<?php echo $member->twitter; ?>&callback=twitterCallback2&count=10"></script>
-		</div>
-	<?php } ?>
 </div>

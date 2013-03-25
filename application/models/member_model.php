@@ -467,20 +467,6 @@ class Member_model extends CI_Model {
 	}
 	
 	/**
-	 * Get member projects
-	 * ToDo: Move this to Project_model(?)
-	 */
-	public function get_projects($member_id, $limit = 100, $offset = 0) {
-		$query = $this->db->get_where('projects', array('member_id' => $member_id));
-		
-		if($query->num_rows() > 0) {
-			return $query->result();
-		}
-		
-		return array();
-	}
-	
-	/**
 	 * Function to filter all field of a member array.
 	 */
 	private function _normalize($array) {
