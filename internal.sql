@@ -37,14 +37,13 @@ CREATE TABLE `members` (
   `address2` varchar(255) DEFAULT NULL,
   `zipcode` int(11) DEFAULT NULL,
   `city` varchar(64) DEFAULT NULL,
-  `country` char(2) DEFAULT 'SE',
+  `country` char(2) DEFAULT NULL,
   `phone` varchar(64) DEFAULT NULL,
   `mobile` varchar(64) DEFAULT NULL,
   `birthday` date DEFAULT NULL,
   `twitter` varchar(255) DEFAULT NULL,
   `skype` varchar(255) DEFAULT NULL,
   `membership` date DEFAULT NULL COMMENT 'Membership Due Date',
-  `comment` varchar(255) DEFAULT NULL COMMENT 'Comment on member (Notes etc)',
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
 );
