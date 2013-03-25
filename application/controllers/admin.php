@@ -4,7 +4,7 @@ class Admin extends CI_Controller {
     
 	public function __construct() {
 		parent::__construct();
-		admin_gatekeeper();
+		gatekeeper();
 		
 		$this->load->model('Admin_model');
 	}

@@ -15,15 +15,6 @@ function gatekeeper() {
 		redirect();
 	}
 }
-function admin_gatekeeper() {
-	gatekeeper();
-	
-	$CI =& get_instance();	
-	if(!$CI->Member_model->is_admin()) {
-		error('Admin access required to access this page.');
-		redirect();
-	}
-}
 
 function no_gatekeeper() {
 	if(is_loggedin()) {

@@ -5,12 +5,11 @@ class Debug extends CI_Controller {
 	public function __construct() {
 		parent::__construct();
 		
-		admin_gatekeeper();
+		gatekeeper();
 	}
 	
     public function index() {
-		admin_gatekeeper();
-		
+
 		/*
 		// Testing of PayPal lib
 		$this->load->library('PayPal');

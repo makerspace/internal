@@ -3,7 +3,7 @@
 class Members extends CI_Controller {
 
 	public function index() {
-		admin_gatekeeper();
+		gatekeeper();
 		
 		$head = array(
 			'title' => 'Members',
@@ -19,7 +19,7 @@ class Members extends CI_Controller {
 	}
 	
 	public function search() {
-		admin_gatekeeper();
+		gatekeeper();
 		
 		$head = array(
 			'title' => 'Search Members',
@@ -65,7 +65,7 @@ class Members extends CI_Controller {
 	
 	
 	public function add() {
-		admin_gatekeeper();
+		gatekeeper();
 		
 		// If POST is valid
 		if ($this->form_validation->run()) {
@@ -139,7 +139,7 @@ class Members extends CI_Controller {
 	}
 	
 	public function acl_switch($member_id = '', $acl = '') {
-		admin_gatekeeper();
+		gatekeeper();
 	
 		if(empty($member_id)) {
 			error('Invalid member id');
