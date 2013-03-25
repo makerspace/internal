@@ -66,6 +66,12 @@
 					<a href="skype:<?php echo $member->skype; ?>?chat"><?php echo $member->skype; ?></a>
 				</p>
 
+				<?php } if(!empty($member->twitter)) { ?>
+				<p>
+					<strong>Twitter:</strong><br>
+					<a href="http://twitter.com/<?php echo $member->twitter; ?>"><?php echo $member->twitter; ?></a>
+				</p>
+
 				<?php } ?>
 				
 			</div>
@@ -96,12 +102,6 @@
 				<p>
 					<strong>Membership Due:</strong><br>
 					<?php echo $member->membership; ?>
-				</p>
-
-				<?php } if(!empty($member->twitter)) { ?>
-				<p>
-					<strong>Twitter:</strong><br>
-					<a href="http://twitter.com/<?php echo $member->twitter; ?>"><?php echo $member->twitter; ?></a>
 				</p>
 
 				<?php } ?>
