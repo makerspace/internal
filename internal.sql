@@ -1,16 +1,3 @@
-CREATE TABLE `arsmote` (
-  `firstname` varchar(25) NOT NULL,
-  `lastname` varchar(25) NOT NULL,
-  `email` varchar(25) NOT NULL,
-  `address` varchar(25) NOT NULL,
-  `zipcode` varchar(25) NOT NULL,
-  `city` varchar(25) NOT NULL,
-  `mobile` varchar(25) NOT NULL,
-  `birthday` varchar(25) NOT NULL,
-  `payment` varchar(25) NOT NULL,
-  `date` varchar(25) NOT NULL,
-  `time` varchar(25) NOT NULL
-);
 CREATE TABLE `config` (
   `key` varchar(64) NOT NULL COMMENT 'Config key-name',
   `value` varchar(2048) DEFAULT NULL,
@@ -38,7 +25,7 @@ CREATE TABLE `member_groups` (
   `member_id` int(11) NOT NULL,
   `group_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `member_id` (`member_id`,`group_id`)
+  KEY `member_groups` (`member_id`,`group_id`)
 );
 CREATE TABLE `members` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -46,7 +33,7 @@ CREATE TABLE `members` (
   `password` varchar(255) DEFAULT NULL,
   `reset_token` char(34) DEFAULT NULL,
   `reset_expire` int(11) DEFAULT NULL,
-  `registered` int(11) NOT NULL,
+  `registered` int(11) NOT NULL DEFAULT '1356994800',
   `last_updated` int(11) DEFAULT NULL,
   `firstname` varchar(255) DEFAULT NULL,
   `lastname` varchar(255) DEFAULT NULL,
