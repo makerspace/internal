@@ -14,13 +14,12 @@
 				<li>{firstname} - Firstname of member</li>
 				<li>{lastname} - Lastname of member</li>
 				<li>{fullname} - First and lastname of member</li>
-				<li>{company} - Company of member</li>
-				<li>{membershipdue} - Membership Due Date</li>
 				<br>
-				<li>{week} - Current week (52)</li>
-				<li>{date} - Current date (01)</li>
-				<li>{month} - Current month (12)</li>
-				<li>{year} - Current year (2013)</li>
+				<li>{date} - Current date (<?php echo date('Y-m-d'); ?>)</li>
+				<li>{week} - Current week (<?php echo date('W'); ?>)</li>
+				<li>{date} - Current date (<?php echo date('d'); ?>)</li>
+				<li>{month} - Current month (<?php echo date('m'); ?>)</li>
+				<li>{year} - Current year (<?php echo date('Y'); ?>)</li>
 			</ul>
 		</div>
 		

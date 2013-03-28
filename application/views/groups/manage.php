@@ -1,8 +1,4 @@
-<h2 class="pull-left">List of Groups</h2>
-
-<div class="span6 pull-right">
-	<a href="/groups/add" class="btn btn-primary pull-right">Create new group</a>
-</div>
+<h2>List of Groups</h2>
 
 <table class="table table-striped table-condensed table-bordered">
 	<thead>
@@ -21,7 +17,7 @@
 			<td><?php echo $group->id; ?></td>
 			<td><?php echo $group->description; ?></td>
 			<td>Not implemented</td>
-			<td>Not implemented</td>
+			<td><?php echo $this->Group_model->member_count($group->id); ?></td>
 		</tr>
 	<?php } if(empty($groups)) { ?>
 		<tr>
@@ -31,4 +27,7 @@
 	</tbody>
 </table>
 
-<a href="/groups/add" class="btn btn-primary pull-right">Create new group</a>
+<h2>Create new group</h2>
+<strong>
+ToDo: Add "Create Group" form here.
+</strong>

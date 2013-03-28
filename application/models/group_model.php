@@ -12,12 +12,19 @@ class Group_model extends CI_Model {
 		if($query->num_rows() > 0) {
 			
 			// Return result array.
-			return $query->result();	
+			return $query->result();
 			
 		}
 		
 		// No results.
 		return array();
+	}
+	
+	public function member_count($group_id) {
+		
+		$this->db->where('group_id', $group_id)->from('member_groups');
+		return (int)$this->db->count_all_results();
+		
 	}
 	
 	public function get_group_by_name($name) {

@@ -20,10 +20,13 @@ class Newsletter extends CI_Controller {
 		);
 		
 		// Get all newsletters
-		$data = array('newsletters' => $this->Newsletter_model->get_all());
+		$data = array(
+			'newsletters' => $this->Newsletter_model->get_all(),
+			'groups' => $this->Group_model->newsletter_groups(),
+		);
 		
 		$this->load->view('header', $head);
-		$this->load->view('newsletter/manage_newsletters', $data);
+		$this->load->view('newsletter/manage', $data);
 		$this->load->view('footer');
 	
 	}
