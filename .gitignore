@@ -10,5 +10,6 @@
 public_html/preview*
 phpmyadmin/
 phpldapadmin/
+openvbx/
 tmp/
 *doxygen*

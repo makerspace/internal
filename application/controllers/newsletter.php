@@ -5,10 +5,12 @@ class Newsletter extends CI_Controller {
 	public function __construct() {
 		parent::__construct();
 		
+		// Protect entire controller.
 		gatekeeper();
 		
 		// Always load Newsletter model
 		$this->load->model('Newsletter_model');
+		$this->load->model('Group_model');
 	}
 	
 	public function index() {

@@ -17,12 +17,9 @@
 			<th>E-mail</th>
 			<th>Mobile</th>
 			<th>Alt. Phone</th>
-			<th>Registered</th>
-			<th>Membership Due</th>
-			<th>Active</th>
-			<th>Admin</th>
-			<th>Lab Access</th>
-			<th>Fee Paid</th>
+			<th>Member Since</th>
+			<th>Administrator</th>
+			<th>Active Member</th>
 			<th>Manage</th>
 		</tr>
 	</thead>
@@ -36,17 +33,16 @@
 			<td><?php echo (!empty($member->mobile) ? '<a href="callto:'.$member->mobile.'">'.$member->mobile.'</a>' : '<em>N/A</em>'); ?></td>
 			<td><?php echo (!empty($member->phone) ? '<a href="callto:'.$member->phone.'">'.$member->phone.'</a>' : '<em>N/A</em>'); ?></td>
 			<td><?php echo date('Y-m-d', $member->registered); ?></td>
-			<td><?php echo (!empty($member->membership) ? $member->membership : '<em>N/A</em>'); ?></td>
-			<td><span class="badge<?php echo ($member->acl->active ? ' badge-success">Yes' : '">No'); ?></span></td>
-			<td><span class="badge<?php echo ($member->acl->admin ? ' badge-success">Yes' : '">No'); ?></span></td>
-			<td><span class="badge<?php echo ($member->acl->labaccess ? ' badge-success">Yes' : '">No'); ?></span></td>
-			<td><span class="badge<?php echo ($member->acl->feepaid ? ' badge-success">Yes' : '">No'); ?></span></td>
+			<td><span class="badge<?php echo (!empty($member->groups['admins']) ? ' badge-success">Yes' : '">No'); ?></span></td>
+			<td><span class="badge<?php echo (!empty($member->groups['member'.date('Y')]) ? ' badge-success">Yes' : '">No'); ?></span></td>
 			<td><a href="/members/view/<?php echo $member->id; ?>" class="btn btn-mini">View</a> <a href="/members/edit/<?php echo $member->id; ?>" class="btn btn-primary btn-mini">Edit</a></td>
 		</tr>
 	<?php } if(empty($members)) { ?>
 		<tr>
-			<td colspan="13">Sorry, no matching members found. Please try again.</td>
+			<td colspan="10">Sorry, no matching members found. Please try again.</td>
 		</tr>
 	<?php } ?>
 	</tbody>
 </table>
+
+<a href="/members/add" class="btn btn-primary pull-right">Add new member</a>

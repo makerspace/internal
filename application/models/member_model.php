@@ -2,6 +2,12 @@
 
 class Member_model extends CI_Model {
 	
+	public function __construct() {
+		parent::__construct();
+		
+		$this->load->model('Group_model');
+	}
+	
 	public function login($data, $session = true) {
 		
 		// Check if e-mail exists.
@@ -16,8 +22,8 @@ class Member_model extends CI_Model {
 			return false;
 		}
 		
-		// Check ACL (Only allow administrators to login)
-		if(!$this->is_admin($member->id)) {
+		// Check is member is a admin or boardmember
+		if(!$this->is_boardmember($member->id) && !$this->is_admin($member->id)) {
 			return false;
 		}
 		
@@ -84,9 +90,9 @@ class Member_model extends CI_Model {
 		// If member exists
 		if($member) {
 		
-			// Check ACL
-			if(!$this->is_admin($member->id)) {
-				error('No account with that e-mail was found. Please try again.');
+			// Check is member is a admin or boardmember
+			if(!$this->is_boardmember($member->id) && !$this->is_admin($member->id)) {
+				error('Access denied.');
 				return false;
 			}
 			
@@ -123,6 +129,11 @@ class Member_model extends CI_Model {
 		// If we have a valid token.
 		if($member) {
 		
+			// Check is member is a admin or boardmember
+			if(!$this->is_boardmember($member->id) && !$this->is_admin($member->id)) {
+				return false;
+			}
+			
 			// Check if token has expired
 			if($member->reset_expire < time()) {
 			
@@ -167,6 +178,12 @@ class Member_model extends CI_Model {
 				redirect();
 			}
 			
+			// Check is member is a admin or boardmember
+			if(!$this->is_boardmember($member->id) && !$this->is_admin($member->id)) {
+				error('Access denied.');
+				redirect();
+			}
+			
 			// Load password library
 			$this->load->library('Pass');
 			
@@ -200,7 +217,7 @@ class Member_model extends CI_Model {
 	########################## Get and search members ##########################
 	
 	public function get_member($where = '', $value = '') {
-	
+		
 		// ToDo: Memcache!
 		
 		// Get current member as default
@@ -225,10 +242,10 @@ class Member_model extends CI_Model {
 			// Combine first and lastname and set fullname
 			$member->fullname = trim($member->firstname.' '.$member->lastname);
 			
-			// Add ACL to object
-			$this->_add_acl($member);
+			// Get all members groups
+			$member->groups = $this->Group_model->member_groups($member->id);
 			
-			// Now, return member with ACL.
+			// Now, return member with groups.
 			return $member;	
 		}
 		
@@ -246,8 +263,8 @@ class Member_model extends CI_Model {
 		// Check if we got anything.
 		if($query->num_rows() > 0) {
 		
-			// Walk the entire result set and add ACLs :)
-			array_walk($query->result(), array($this, '_add_acl'));
+			// Walk the entire result and get groups :)
+			array_walk($query->result(), array($this, '_get_groups'));
 			
 			// Return result array.
 			return $query->result();	
@@ -284,8 +301,8 @@ class Member_model extends CI_Model {
 		// Did we get anything?
 		if($query->num_rows() > 0) {
 			
-			// Walk the entire result set and add ACLs :)
-			array_walk($query->result(), array($this, '_add_acl'));
+			// Walk the entire result and get groups :)
+			array_walk($query->result(), array($this, '_get_groups'));
 			
 			// Return matching users
 			return $query->result();
@@ -342,130 +359,45 @@ class Member_model extends CI_Model {
 	}
 	
 	
-	########################## Member ACL functions ##########################
-	 
+	########################## Member Group functions ##########################
 	
 	/**
-	 * Private method to add ACL to member.
-	 * ToDo: REWRITE THIS (agaiiiiiin!)
+	 * Quick hack to get groups for a bunch of members.
 	 */
-	private function _add_acl(&$member, $index = 0) {
-		
-		// Try memcache first
-		if($cached = $this->memcache->get('acl_'.$member->id)) {
-		
-			// Found, use it!
-			$member->acl = $cached;
-			
-			return;
-		}
+	private function _get_groups(&$member, $index = 0) {
 	
-		
-		/**
-		 * Clone database ACLs to member temporarily...
-		 * @note According to PHP-manual, it's not allowed to change the
-		 *		 structure of the referenced var, but it seems to work???
-		 * @see http://php.net/manual/en/function.array-walk.php#refsect1-function.array-walk-parameters
-		 */
-		$member->acl = clone $this->dbconfig->acl;
-			
-		
-		// PRIORITIZED TODO:
-		// - Improve look-up so we don't make more then one db query!
-		
-		// Set ACL value from db and/or remove description.
-		foreach($member->acl as $acl => $desc) {
-		
-			// Default all to 0 (int equals non-existant acl).
-			$member->acl->{$acl} = 0;
-				
-			// Get ACL from db.
-			$query = $this->db->select('value')->get_where('acl', array('member_id' => $member->id, 'acl' => $acl), 1); 
-			
-			// If found, set to value
-			if($query->num_rows()) {
-				$member->acl->{$acl} = (bool)$query->row()->value;
-			}
-		}
-		
-		// Save to memcache, store forever.
-		$this->memcache->set('acl_'.$member->id, $member->acl, 0);
+		$member->groups = $this->Group_model->member_groups($member->id);
 		
 	}
 	
 	/**
-	 * Update a ACL for member.
+	 * Short-cuts for a few of the Group_model methods
 	 */
-	public function acl_switch($member_id = '', $acl) {
-	
-		$member = $this->get_member($member_id);
-		if(!$member) return false; // Failsafe
-		
-		// Check if acl is valid
-		if(!empty($acl) && isset($member->acl->{$acl})) {
-		
-			// Remove memcached acl
-			$this->memcache->delete('acl_'.$member_id);
-		
-			// Flip value
-			$data = array('value' => (int)!$member->acl->{$acl});
-			
-			// Update if ACL key exists, otherwise insert new row.
-			// This is a bit of a ugly, check if we got a bool or int. (bool = exists)
-			if(is_bool($member->acl->{$acl})) {
-				$this->db->update('acl', $data, array('member_id' => $member->id, 'acl' => $acl));
-				
-			// It's not bool, which means it doesn't exist yet.
-			} else {
-				// Insert $data combined with acl key and member.
-				$this->db->insert('acl', array_merge($data, array('member_id' => $member->id, 'acl' => $acl)));
-			}
-			
-			// Return query result for update or insert.
-			return (bool)$this->db->affected_rows();
-		}
-		
-		// False as default
-		return false;
-		
-	}
-	
-	/**
-	 * Get a specific ACL for member
-	 * if $acl is empty, return full acl object
-	 */
-	public function get_acl($member_id = '', $acl = '') {
-		
-		// Get member
-		$member = $this->get_member($member_id);
-		
+	public function is_active($member_id = '') {
 		// Failsafe
-		if(!$member) {
-			return false;
-		}
-			
-		// Return all ACLs if $acl is empty
-		if(empty($acl)) {
-			return $member->acl;
-		}
+		if(empty($member_id)) $member_id = member_id();
 		
-		// Return ACL if it's set
-		return (isset($member->acl->{$acl}) && $member->acl->{$acl} == '1');
+		// Ugly hack for checking if the user is an active member THIS year.
+		return $this->Group_model->member_of_group($member_id, 'member'.date('Y'));
 	}
+	
+	public function is_boardmember($member_id = '') {
+		// Failsafe
+		if(empty($member_id)) $member_id = member_id();
+		
+		return $this->Group_model->member_of_group($member_id, 'boardmember'.date('Y'));
+	}
+	
+	public function is_admin($member_id = '') {
+		// Failsafe
+		if(empty($member_id)) $member_id = member_id();
+		
+		return $this->Group_model->member_of_group($member_id, 'admins');
+	}
+	
 	
 	########################## Other methods ##########################
 	 
-	/**
-	 * Short-cuts for get_acl(...)
-	 */
-	public function is_admin($member_id = '') {
-		return $this->get_acl($member_id, 'admin');
-	}
-	
-	public function is_active($member_id = '') {
-		return $this->get_acl($member_id, 'active');
-	}
-	
 	/**
 	 * Function to filter all field of a member array.
 	 */
@@ -473,9 +405,9 @@ class Member_model extends CI_Model {
 	
 		// Allowed form fields
 		$fields = array(
-			'email', 'password', 'membership', 'twitter', 'skype', 
+			'email', 'password', 'twitter', 'skype', 'mobile', 'phone',
 			'firstname', 'lastname', 'company', 'orgno', 'address',
-			'address2', 'zipcode', 'city', 'country', 'mobile', 'phone', 'acl'
+			'address2', 'zipcode', 'city', 'country',
 		);
 		
 		// Filter out only those fields we allow
@@ -504,9 +436,9 @@ class Member_model extends CI_Model {
 			unset($data['password']);
 		}
 		
-		// ACL Exception - remove ACL for now.
-		// ToDo: Make it work!
-		unset($data['acl']);
+		// Exception - remove groups for now.
+		// ToDo: Make it work?
+		unset($data['groups']);
 		
 		return $data;
 	

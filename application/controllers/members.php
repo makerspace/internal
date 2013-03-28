@@ -22,7 +22,7 @@ class Members extends CI_Controller {
 		gatekeeper();
 		
 		$head = array(
-			'title' => 'Search Members',
+			'title' => 'Search Result',
 		);
 		
 		// If POST is valid
@@ -105,13 +105,6 @@ class Members extends CI_Controller {
 			redirect();
 		}
 		
-		// Check access
-		if(($member_id != member_id() && !$this->Member_model->is_admin())) {
-			// Not you!
-			error('Access denied! You tried to edit a member that\'s not you.');
-			redirect();
-		}
-		
 		// If POST is valid
 		if ($this->form_validation->run('members/edit')) {
 		
@@ -138,29 +131,30 @@ class Members extends CI_Controller {
 		$this->load->view('footer');
 	}
 	
-	public function acl_switch($member_id = '', $acl = '') {
+	public function group_switch($member_id = '', $group_name = '') {
 		gatekeeper();
-	
+
 		if(empty($member_id)) {
 			error('Invalid member id');
 			redirect();
-		} elseif(empty($acl)) {
-			error('Invalid access level');
+		} elseif(empty($group_name)) {
+			error('Invalid group name');
 			redirect();
 		}
 		
-		$return = $this->Member_model->acl_switch($member_id, $acl);
+		// Modify group membership for member
+		$return = $this->Group_model->group_switch($member_id, $group_name);
 		
 		if(!$return) {
-			error('Couldn\'t update the member ACL!');
+			error('Couldn\'t change the group membership!');
 			redirect();
 		}
-		
-		message('Member ACL successfully updated.');
+
+		message('Membership of group successfully updated.');
 		redirect('/members/view/'.$member_id);
-	
+
 	}
-	
+
 	public function _validate_country($str) {
 	
 		// Validate country against dbconfig

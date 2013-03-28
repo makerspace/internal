@@ -3,8 +3,8 @@
 <div class="span6 pull-right">
 	<a href="/members/add" class="btn btn-primary pull-right">Add new member</a>
 	<?php echo form_open('members/search', 'class="form-search"'); ?>
-		<input type="text" class="input-xlarge" required placeholder="Enter search string..." pattern=".{2,}" title="Minimum 2 characters">
-		<button type="submit" class="btn">Search for member </button>
+		<input type="text" name="search" class="input-xlarge" required placeholder="Enter search string..." pattern=".{2,}" title="Minimum 2 characters">
+		<button type="submit" class="btn">Search for members</button>
 	<?php echo form_close(); ?>
 </div>
 <table class="table table-striped table-condensed table-bordered">
@@ -15,13 +15,10 @@
 			<th>Name</th>
 			<th>E-mail</th>
 			<th>Mobile</th>
-			<th>Alt. Phone</th>
-			<th>Registered</th>
-			<th>Membership Due</th>
-			<th>Active</th>
-			<th>Admin</th>
-			<th>Lab Access</th>
-			<th>Fee Paid</th>
+			<th>Phone</th>
+			<th>Member Since</th>
+			<th>Administrator</th>
+			<th>Active Member</th>
 			<th>Manage</th>
 		</tr>
 	</thead>
@@ -35,16 +32,13 @@
 			<td><?php echo (!empty($member->mobile) ? '<a href="callto:'.$member->mobile.'">'.$member->mobile.'</a>' : '<em>N/A</em>'); ?></td>
 			<td><?php echo (!empty($member->phone) ? '<a href="callto:'.$member->phone.'">'.$member->phone.'</a>' : '<em>N/A</em>'); ?></td>
 			<td><?php echo date('Y-m-d', $member->registered); ?></td>
-			<td><?php echo (!empty($member->membership) ? $member->membership : '<em>N/A</em>'); ?></td>
-			<td><span class="badge<?php echo ($member->acl->active ? ' badge-success">Yes' : '">No'); ?></span></td>
-			<td><span class="badge<?php echo ($member->acl->admin ? ' badge-success">Yes' : '">No'); ?></span></td>
-			<td><span class="badge<?php echo ($member->acl->labaccess ? ' badge-success">Yes' : '">No'); ?></span></td>
-			<td><span class="badge<?php echo ($member->acl->feepaid ? ' badge-success">Yes' : '">No'); ?></span></td>
+			<td><span class="badge<?php echo (!empty($member->groups['admins']) ? ' badge-success">Yes' : '">No'); ?></span></td>
+			<td><span class="badge<?php echo (!empty($member->groups['member'.date('Y')]) ? ' badge-success">Yes' : '">No'); ?></span></td>
 			<td><a href="/members/view/<?php echo $member->id; ?>" class="btn btn-mini">View</a> <a href="/members/edit/<?php echo $member->id; ?>" class="btn btn-primary btn-mini">Edit</a></td>
 		</tr>
 	<?php } if(empty($members)) { ?>
 		<tr>
-			<td colspan="13">Sorry, couldn't find any members in the database.</td>
+			<td colspan="10">Sorry, couldn't find any members in the database.</td>
 		</tr>
 	<?php } ?>
 	</tbody>

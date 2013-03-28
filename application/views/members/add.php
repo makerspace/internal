@@ -20,14 +20,6 @@
 			</div>
 			
 			<div class="control-group">
-				<?php echo form_label('Membership Due', 'membership', array('class' => 'control-label')); ?>
-				<div class="controls">
-					<?php echo form_input('membership', set_value('membership'), 'data-date-format="yyyy-mm-dd" id="membership" class="datepicker"'); ?>
-					<span class="help-inline">Optional</span>
-				</div>
-			</div>
-			
-			<div class="control-group">
 				<?php echo form_label('Twitter', 'twitter', array('class' => 'control-label')); ?>
 				<div class="controls">
 					<div class="input-prepend">
@@ -148,10 +140,10 @@
 		<?php echo form_fieldset_close(); ?>
 	</div>
 	<div class="span6">
-		<?php echo form_fieldset('Member Access (ACL)'); ?>
+		<?php /*echo form_fieldset('Member Access (ACL)'); ?>
 			<?php foreach($this->dbconfig->acl as $key => $desc) { ?>
 				<label class="span2"><?php echo form_checkbox('acl['.$key.']', '1', set_checkbox('acl['.$key.']')) . ' ' . $desc; ?></label>
-			<?php } ?>
+			<?php } */?>
 			<div class="span6 pull-left">
 				<br>
 				<br>

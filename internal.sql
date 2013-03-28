@@ -1,16 +1,28 @@
-CREATE TABLE `acl` (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ACL ID',
-  `member_id` int(11) NOT NULL,
-  `acl` varchar(255) NOT NULL COMMENT 'Key',
-  `value` tinyint(4) NOT NULL DEFAULT '0' COMMENT 'Value',
-  PRIMARY KEY (`id`),
-  KEY `member_id` (`member_id`)
+CREATE TABLE `arsmote` (
+  `firstname` varchar(25) NOT NULL,
+  `lastname` varchar(25) NOT NULL,
+  `email` varchar(25) NOT NULL,
+  `address` varchar(25) NOT NULL,
+  `zipcode` varchar(25) NOT NULL,
+  `city` varchar(25) NOT NULL,
+  `mobile` varchar(25) NOT NULL,
+  `birthday` varchar(25) NOT NULL,
+  `payment` varchar(25) NOT NULL,
+  `date` varchar(25) NOT NULL,
+  `time` varchar(25) NOT NULL
 );
 CREATE TABLE `config` (
   `key` varchar(64) NOT NULL COMMENT 'Config key-name',
   `value` varchar(2048) DEFAULT NULL,
   `desc` varchar(255) DEFAULT NULL COMMENT 'Optional description of config',
   PRIMARY KEY (`key`)
+);
+CREATE TABLE `groups` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(64) NOT NULL,
+  `description` varchar(64) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`)
 );
 CREATE TABLE `logins` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -20,6 +32,13 @@ CREATE TABLE `logins` (
   `valid` tinyint(4) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `user_id` (`member_id`)
+);
+CREATE TABLE `member_groups` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `member_id` int(11) NOT NULL,
+  `group_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `member_id` (`member_id`,`group_id`)
 );
 CREATE TABLE `members` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -43,7 +62,6 @@ CREATE TABLE `members` (
   `birthday` date DEFAULT NULL,
   `twitter` varchar(255) DEFAULT NULL,
   `skype` varchar(255) DEFAULT NULL,
-  `membership` date DEFAULT NULL COMMENT 'Membership Due Date',
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
 );
@@ -66,7 +84,6 @@ INSERT INTO config VALUES('pop3_password', NULL, 'POP3 password for pop3_account
 INSERT INTO config VALUES('email_name', NULL, 'PHPMailer From Name');
 INSERT INTO config VALUES('email_from', NULL, 'PHPMailer From Address');
 INSERT INTO config VALUES('email_return_path', NULL, 'Used as Return-Path in PHPMailer');
-INSERT INTO config VALUES('acl', NULL, 'Array with member access levels');
 INSERT INTO config VALUES('countries', NULL, 'Countries in JSON format');
 INSERT INTO config VALUES('paypal_username', NULL, 'PayPal Live API Username');
 INSERT INTO config VALUES('paypal_password', NULL, 'PayPal Live API Password');

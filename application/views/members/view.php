@@ -18,11 +18,11 @@
 		</p>
 		
 		<br>
-		<h4>Access list (ACL) <small>Click to switch state</small></h4>
-		
-		<?php foreach($this->dbconfig->acl as $acl => $desc) { ?>
-			<a href="/members/acl_switch/<?php echo $member->id; ?>/<?php echo $acl; ?>" class="label<?php echo ($member->acl->{$acl} ? ' label-success' : ''); ?>">
-				<?php echo $desc; ?>
+		<h4>Member of Groups <small>Click to switch state</small></h4>
+			
+		<?php foreach($this->Group_model->get_all() as $row) { ?>
+			<a href="/members/group_switch/<?php echo $member->id; ?>/<?php echo $row->name; ?>" style="margin: 4px 2px;" class="btn<?php echo (!empty($member->groups[$row->name]) ? ' btn-inverse' : ''); ?>">
+				<?php echo $row->description; ?>
 			</a>
 		<?php } ?>
 	</div>
@@ -97,14 +97,6 @@
 					<strong>Member since:</strong><br>
 					<?php echo date('Y-m-d', $member->registered); ?>
 				</p>
-				
-				<?php if(!empty($member->membership)) { ?>
-				<p>
-					<strong>Membership Due:</strong><br>
-					<?php echo $member->membership; ?>
-				</p>
-
-				<?php } ?>
 			</div>
 		</div>
 	</div>

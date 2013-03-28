@@ -20,13 +20,6 @@
 			</div>
 			
 			<div class="control-group">
-				<?php echo form_label('Membership Due', 'membership', array('class' => 'control-label')); ?>
-				<div class="controls">
-					<?php echo form_input('membership', $member->membership, 'data-date-format="yyyy-mm-dd" id="membership" class="datepicker"'); ?>
-				</div>
-			</div>
-			
-			<div class="control-group">
 				<?php echo form_label('Twitter', 'twitter', array('class' => 'control-label')); ?>
 				<div class="controls">
 					<div class="input-prepend">
@@ -145,10 +138,10 @@
 		<?php echo form_fieldset_close(); ?>
 	</div>
 	<div class="span6 pull-left">
-		<?php echo form_fieldset('Member Access (ACL)'); ?>
+		<?php echo form_fieldset('Member of Groups'); ?>
 			
-			<?php foreach($this->dbconfig->acl as $key => $desc) { ?>
-				<label class="span2"><?php echo form_checkbox('acl['.$key.']', '1', (bool)$member->acl->{$key}) . ' ' . $desc; ?></label>
+			<?php foreach($this->Group_model->get_all() as $row) { ?>
+				<label class="span2"><?php echo form_checkbox('group['.$row->name.']', '1', !empty($member->groups[$row->name])) . ' ' . $row->description; ?></label>
 			<?php } ?>
 			
 			<div class="span6">
