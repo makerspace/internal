@@ -5,7 +5,7 @@ class Pass {
 	/**
 	 * Wrapper function for the PBKDF2 hashing method.
 	 */
-	public function hash($password, $salt = '', $i = 8192) {
+	public function hash($password, $salt = '', $i = 65536) {
 		
 		// Generate new salt.
 		if(empty($salt)) $salt = $this->_gen_salt();
