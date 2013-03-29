@@ -8,6 +8,7 @@
 			<th>Description</th>
 			<th>Access Levels (ACL)</th>
 			<th>Members</th>
+			<th>View</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -18,6 +19,12 @@
 			<td><?php echo $group->description; ?></td>
 			<td>Not implemented</td>
 			<td><?php echo $this->Group_model->member_count($group->id); ?></td>
+			<td><?php 
+				echo form_open('/members/search', 'class="nomargin"'); 
+				echo form_hidden('search', 'group:'.$group->name);
+				echo form_submit('submit', 'List members', 'class="btn btn-mini btn-primary"');
+				echo form_close();
+			?></td>
 		</tr>
 	<?php } if(empty($groups)) { ?>
 		<tr>

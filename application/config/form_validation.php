@@ -120,11 +120,6 @@ $config = array(
 				'label' => 'skype',
 				'rules' => 'trim|max_length[255]'
 			),
-			array(
-				'field' => 'membership',
-				'label' => 'membership due',
-				'rules' => 'trim|max_length[10]|valid_date'
-			),
 		),
 		
 		// Edit member
@@ -208,11 +203,6 @@ $config = array(
 				'field' => 'skype',
 				'label' => 'skype',
 				'rules' => 'trim|max_length[255]'
-			),
-			array(
-				'field' => 'membership',
-				'label' => 'membership due',
-				'rules' => 'trim|max_length[10]|valid_date'
 			),
 		),
 		

@@ -1,7 +1,5 @@
 <?php
 
-if($_SERVER['REMOTE_ADDR'] != '2001:16d8:ff00:8559:f52f:7e86:963c:eddc') die();
-
 /*
  *---------------------------------------------------------------
  * APPLICATION ENVIRONMENT

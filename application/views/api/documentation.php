@@ -52,8 +52,8 @@
 		<ul>
 			<li>GET /api/member/*id* - Get member by id</li>
 			<li>GET /api/member/*key*/*value* - Get member by key</li>
-			<li>POST /api/member - Add a new member</li>
-			<li>POST /api/member/*id* - Update member with id</li>
+			<li style="text-decoration: line-through;">POST /api/member - Add a new member</li>
+			<li style="text-decoration: line-through;">POST /api/member/*id* - Update member with id</li>
 		</ul>
 		
 	</div>

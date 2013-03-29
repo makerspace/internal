@@ -61,7 +61,7 @@ class Api extends CI_Controller {
 			}
 			
 			// Get member by key
-			$member = $this->Member_model->get_member($key, $value);
+			$member = $this->Member_model->get_member($key, urldecode($value));
 			
 			// Return 404 if not found
 			if(!$member) {
@@ -69,7 +69,7 @@ class Api extends CI_Controller {
 			}
 			
 			// Unset password-related fields.
-			unset($member->password, $member->reset_token, $member->reset_expire);
+			unset(/*$member->password, */$member->reset_token, $member->reset_expire);
 			
 			// Remove NULL and empty fields (incl. false).
 			$member = (object)array_filter((array)$member);
