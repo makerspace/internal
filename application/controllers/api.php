@@ -51,9 +51,13 @@ class Api extends CI_Controller {
 		}
 		
 		// Check for required fields.
-		if(!$email = $this->input->post('email') || !$password = $this->input->post('password')) {
+		if(!$email = $this->input->post('email')) {
+			$this->_status(400); // Bad Request
+		} elseif(!$password = $this->input->post('password')) {
 			$this->_status(400); // Bad Request
 		}
+		
+		
 		
 		// Try to login but don't set session.
 		$login = array('email' => $email, 'password' => $password);
@@ -268,6 +272,8 @@ class Api extends CI_Controller {
 	
 	/**
 	 * Newsletter resource.
+	 * ToDo: Should we even have this?
+	 */
 	public function newsletter() {
 	
 		// Only allow GET
@@ -279,7 +285,7 @@ class Api extends CI_Controller {
 		$this->_status(404);
 	
 	}
-	 */
+	
 
 	 
 	/**
@@ -330,12 +336,17 @@ class Api extends CI_Controller {
 		// Check result
 		if($result) {
 			
-			// Check ACL (if needed)
+			// Check API access (if needed)
 			if($check_acl) {
-				// ToDo: DO IT!!!!
+				$member = $this->Member_model->get_member('email', $email);
+				
+				// Check if member have API access
+				if(!empty($member->groups) && !empty($member->groups['api'])) {
+					return true;
+				}
+				
 			}
 			
-			return true;
 		}
 	
 		// Default to Forbidden

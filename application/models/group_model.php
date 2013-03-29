@@ -66,6 +66,7 @@ class Group_model extends CI_Model {
 		// Check if we got anything.
 		if($query->num_rows() > 0) {
 			foreach($query->result() as $row) {
+				if(in_array($row->name, array('invalidemail'))) continue;
 				$return[$row->name] = $row->name.' - '.$row->description;
 			}
 		}

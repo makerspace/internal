@@ -3,8 +3,8 @@
 <table class="table table-striped table-condensed table-bordered">
 	<thead>
 		<tr>
+			<th>ID</th>
 			<th>Name <small>(Click to edit)</small></th>
-			<th>Group ID</th>
 			<th>Description</th>
 			<th>Access Levels (ACL)</th>
 			<th>Members</th>
@@ -14,8 +14,8 @@
 	<tbody>
 	<?php foreach($groups as $group) { ?>
 		<tr>
-			<td><a href="/groups/edit/<?php echo $group->id; ?>"><?php echo $group->name; ?></a></td>
 			<td><?php echo $group->id; ?></td>
+			<td><a href="/groups/edit/<?php echo $group->id; ?>"><?php echo $group->name; ?></a></td>
 			<td><?php echo $group->description; ?></td>
 			<td>Not implemented yet</td>
 			<td><?php echo $this->Group_model->member_count($group->id); ?></td>
