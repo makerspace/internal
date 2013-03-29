@@ -33,7 +33,7 @@ CREATE TABLE `members` (
   `password` varchar(255) DEFAULT NULL,
   `reset_token` char(34) DEFAULT NULL,
   `reset_expire` int(11) DEFAULT NULL,
-  `registered` int(11) NOT NULL DEFAULT '1356994800',
+  `registered` int(11) NOT NULL,
   `last_updated` int(11) DEFAULT NULL,
   `firstname` varchar(255) DEFAULT NULL,
   `lastname` varchar(255) DEFAULT NULL,
@@ -50,7 +50,8 @@ CREATE TABLE `members` (
   `twitter` varchar(255) DEFAULT NULL,
   `skype` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `email` (`email`)
+  UNIQUE KEY `email` (`email`),
+  KEY `birthday` (`birthday`)
 );
 CREATE TABLE `newsletters` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
