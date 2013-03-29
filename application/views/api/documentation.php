@@ -15,13 +15,18 @@
 	<![endif]-->
 </head>
 <body>
-<div class="container-fluid">
-	<div class="span12">
+<div class="container">
+
+<div class="row">
+
+	<div class="span10" style="text-align: center">	
+		<a href="/"><img src="/assets/img/logo.png" alt="Stockholm Makerspace" class="logo"></a>
+	</div>
 	
-		<a href="/auth/login"><img src="/assets/img/logo.png" alt="Stockholm Makerspace" class="logo"></a>
+	<div class="span6">
 		
 		<h1>API Documentation</h1>
-		<p>REST API for Internal - Version 0.1.</p>
+		<p>REST API for Internal - Version 0.2</p>
 
 		<h3>Information</h3>
 		<p>Resources response-data is returned as JSON.<br>
@@ -37,6 +42,9 @@
 			<li>503 = Service Unavailable</li>
 		</ul>
 
+	</div>
+	
+	<div class="span6">
 
 		<h3>Public resources</h3>
 		<ul>
@@ -44,19 +52,27 @@
 			<li>GET /api/coffee</li>
 		</ul>
 
-
 		<h3>Protected resources (Requires authentication)</h3>
 		<p>Use the HTTP Headers <strong>X-Username</strong> (your e-mail address) and <strong>X-Password</strong> to authenticate.<br>
-		<em>Note: These resources might also require the "API" ACL on your account.</em></p>
+		<em>Note: These resources also requires your account to be in the the "API" group.</em></p>
 
 		<ul>
-			<li>GET /api/member/*id* - Get member by id</li>
-			<li>GET /api/member/*key*/*value* - Get member by key</li>
-			<li style="text-decoration: line-through;">POST /api/member - Add a new member</li>
-			<li style="text-decoration: line-through;">POST /api/member/*id* - Update member with id</li>
+			<li>POST /api/auth - Try authentication for member (email, password)</li>
+			<br>
+			<li>GET /api/get_member/*uid* - Get member by id</li>
+			<li>GET /api/get_member/*key*/*value* - Get member where key=value</li>
+			<li>GET /api/get_member_groups/*uid* - Get groups for member id</li>
+			<br>
+			<li>POST /api/add_member - Add a new member</li>
+			<li>POST /api/update_member/*uid* - Update member by id</li>
+			<br>
+			<li>GET /api/get_groups - Get all groups</li>
+			<li>GET /api/get_group_members/*gid* - Get members in group by group id</li>
+			
 		</ul>
 		
 	</div>
+</div>
 </div>
 </body>
 </html>
