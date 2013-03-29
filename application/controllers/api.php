@@ -15,7 +15,7 @@ class Api extends CI_Controller {
 		
 		// Check Request Method
 		if(!in_array($_SERVER['REQUEST_METHOD'], array('POST', 'GET'))) {
-			$this->_error(405); // Method not allowed
+			$this->_status(405); // Method Not Allowed
 		}
 	}
 	
@@ -26,7 +26,7 @@ class Api extends CI_Controller {
 		
 		// Only allow GET
 		if($this->input->post()) {
-			$this->_error(405);
+			$this->_status(405); // Method Not Allowed
 		}
 		
 		$this->load->view('api/documentation');
@@ -43,10 +43,35 @@ class Api extends CI_Controller {
 			
 		// Only allow POST
 		if(!$this->input->post()) {
-			$this->_error(405);
+			$this->_status(405); // Method Not Allowed
 		}
 		
-		// ToDo: Try authentication here
+		// Check for required fields.
+		if(!$email = $this->input->post('email') || !$password = $this->input->post('password')) {
+			$this->_status(400); // Bad Request
+		}
+		
+		// Try to login but don't set session.
+		$login = array('email' => $email, 'password' => $password);
+		$result = $this->Member_model->login($login, false);
+		
+		// Check result
+		if($result) {
+			// Get member
+			$member = $this->Member_model->get_member('email', $email);
+			
+			// Unset password-related fields.
+			unset($member->password, $member->reset_token, $member->reset_expire);
+			¨
+			// Remove NULL and empty fields (incl. false).
+			$member = (object)array_filter((array)$member);
+		
+			// Return member object
+			$this->_json_out($member);
+		}
+		
+		// Return 404 if not found
+		$this->_status(404); // Not Found
 		
 	}
 	 
@@ -61,7 +86,7 @@ class Api extends CI_Controller {
 			
 		// Only allow GET
 		if($this->input->post()) {
-			$this->_error(405);
+			$this->_status(405); // Method Not Allowed
 		}
 			
 		// Hack for GET /api/get_member/*id*
@@ -72,7 +97,7 @@ class Api extends CI_Controller {
 		
 		// Failsafe against empty values
 		if(empty($value)) {
-			$this->_error(400); // Bad Request
+			$this->_status(400); // Bad Request
 		}
 		
 		// Get member by key
@@ -80,7 +105,7 @@ class Api extends CI_Controller {
 		
 		// Return 404 if not found
 		if(!$member) {
-			$this->_error(404);
+			$this->_status(404); // Not found
 		}
 		
 		// Unset password-related fields.
@@ -104,16 +129,26 @@ class Api extends CI_Controller {
 			
 		// Only allow GET
 		if($this->input->post()) {
-			$this->_error(501);
+			$this->_status(405); // Method Not Allowed
 		}
 		
 		// Check member_id input
 		if(empty($member_id) || $member_id < 1000) {
-			$this->_error(400); // Bad request
+			$this->_status(400); // Bad request
 		}
 		
-		// ToDo: Check if member_id exists (try to get_member)
-		// ToDo: Get Member Groups for member
+		// Get member by key
+		$member = $this->Member_model->get_member($member_id);
+		
+		// Return 404 if not found or no groups
+		if($member && !empty($member->groups)) {
+		
+			// Return groups as JSON
+			$this->_json_out((object)$member->groups);
+			
+		}
+		
+		$this->_status(404); // Not found
 		
 	}
 	
@@ -127,11 +162,12 @@ class Api extends CI_Controller {
 			
 		// Only allow POST
 		if(!$this->input->post()) {
-			$this->_error(405);
+			$this->_status(405); // Method Not Allowed
 		}
 		
+		// ToDo: Check for required fields
 		// ToDo: Check if e-mail exits
-		// ToDo: Check all fields (validation)
+		// ToDo: Check all POST fields and remove those we don't want (validation/normalize)
 		// ToDo: Save to database
 		
 	}
@@ -146,7 +182,7 @@ class Api extends CI_Controller {
 			
 		// Only allow POST
 		if(!$this->input->post()) {
-			$this->_error(405);
+			$this->_status(405); // Method Not Allowed
 		}
 		
 		// ToDo: Check if member_id exists (try to get_member)
@@ -166,27 +202,37 @@ class Api extends CI_Controller {
 			
 		// Only allow GET
 		if($this->input->post()) {
-			$this->_error(501);
+			$this->_status(405); // Method Not Allowed
 		}
 		
-		// ToDo: Get All Groups
+		$groups = $this->Group_model->get_all();
+		
+		// Return groups as JSON
+		$this->_json_out($groups);
 		
 	}
 	
 	/**
 	 * Get Groups Members resource.
 	 */
-	public function get_group_members($group_id) {
+	public function get_group_members($group_id = 0) {
 		
 		// Require X-Username/Password auth.
 		$this->_check_authentication();
 			
 		// Only allow GET
 		if($this->input->post()) {
-			$this->_error(501);
+			$this->_status(405); // Method Not Allowed
 		}
 		
-		// ToDo: Check if group_id exists (try to get_group)
+		// Try to get group
+		$group = $this->Group_model->get_group($group_id);
+		
+		// Check if group exists
+		if(!$group) {
+			$this->_status(404); // Not Found
+		}
+		
 		// ToDo: Get members in group by id
 		
 	}
@@ -195,7 +241,7 @@ class Api extends CI_Controller {
 	 * HTCPC Protocol (RFC 2324)
 	 */
 	public function coffee() {
-		$this->_error(418, 'I\'m a teapot');
+		$this->_status(418, 'I\'m a teapot');
 	}
 	
 	
@@ -205,11 +251,11 @@ class Api extends CI_Controller {
 	
 		// Only allow GET
 		if($this->input->post()) {
-			$this->_error(501);
+			$this->_status(405); // Method Not Allowed
 		}
 		
 		// Get newsletter by id
-		$this->_error(404);
+		$this->_status(404);
 	
 	}
 	 */
@@ -224,7 +270,7 @@ class Api extends CI_Controller {
 	/**
 	 * Set HTTP Status and exit
 	 */
-	private function _error($code, $str = '') {
+	private function _status($code, $str = '') {
 		$this->output->set_status_header($code, $str);
 		exit;
 	}
@@ -253,7 +299,7 @@ class Api extends CI_Controller {
 		
 		// Check input
 		if(empty($username) || empty($password)) {
-			$this->_error(403); // Forbidden
+			$this->_status(403); // Forbidden
 		}
 		
 		
@@ -273,7 +319,7 @@ class Api extends CI_Controller {
 		}
 	
 		// Default to Forbidden
-		$this->_error(403);
+		$this->_status(403);
 		
 	}
 } 

@@ -86,14 +86,14 @@
 				<li>email - The e-mail to try to authenticate with</li>
 				<li>password - Password (sent as clear-text, not PBKDF2)</li>
 			</ul>
-			<p>Returns JSON Result: true/false</p>
+			<p>Returns member object as JSON or HTTP 404 if authentication failed.</p>
 		</div>
 		
 		<div class="span12">
 			<h3 id="api/get_member">GET /api/get_member (/*uid* and /*key*/*value)</h3>
 			<p>
 				Get member by ID. For example: <strong>/api/get_member/1000</strong> for member id 1000<br>
-				Returns member object as JSON with all avaiable fields (NULL fields are NOT included)
+				Returns member object as JSON with all avaiable fields (NULL fields are NOT included) or HTTP 404 if not found.
 			</p>
 			<p>
 				<strong>Optional:</strong> Supports key/value requests, for example: <strong>/api/get_member/email/test%40example.com</strong>
@@ -105,7 +105,7 @@
 			<h3 id="api/get_member_groups">GET /api/get_member_groups/*uid*</h3>
 			<p>
 				Get members groups by member ID. For example: <strong>/api/get_member_groups/1000</strong> for member id 1000<br>
-				Returns all members groups as JSON object.
+				Returns all members groups as JSON object or HTTP 404 if no groups exists.
 			</p>
 		</div>
 		
@@ -113,7 +113,7 @@
 			<h3 id="api/add_member">POST /api/add_member</h3>
 			<p>
 				Adds a new member to the database<br>
-				Returns full member object if succeded, or JSON result: false if unsuccessfull (for instance, if the e-mail already exists).<br><br>
+				Returns full member object if succeded or HTTP 400 if request failed (for instance, if the e-mail already exists).<br><br>
 				<strong>Required POST fields:</strong>
 			</p>
 			<ul>
@@ -142,7 +142,7 @@
 			<h3 id="api/update_member">POST /api/update_member/*uid*</h3>
 			<p>
 				Updates a existing member in the database, based upon their member ID.<br>
-				Returns full member object if succeded, or JSON result: false if unsuccessfull (for instance, if the user doesn't exists).<br><br>
+				Returns full member object if succeded or HTTP 404 if request failed (for instance, if the user doesn't exists).<br><br>
 				<strong class="span6">See <a href="#api/add_member">/api/add_member</a> for available fields in this method.<br>Please note that ALL fields are optional. If a field isn't provided, it's NOT updated.</strong>
 			</p>
 		</div>

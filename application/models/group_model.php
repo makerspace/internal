@@ -27,10 +27,16 @@ class Group_model extends CI_Model {
 		
 	}
 	
-	public function get_group_by_name($name) {
+	public function get_group($key = '', $value = '') {
+			
+		// Hack for key/value
+		if(empty($value)) {
+			$value = $key;
+			$key = 'id';
+		}
 		
-		// Get group by name
-		$query = $this->db->get_where('groups', array('name' => $name));
+		// Get group by key/value
+		$query = $this->db->get_where('groups', array($key => $value));
 	
 		// Check if we got anything.
 		if($query->num_rows() > 0) {
@@ -41,7 +47,11 @@ class Group_model extends CI_Model {
 		}
 		
 		// No results.
-		return array();
+		return (object)array();
+	}
+	
+	public function get_group_by_name($name) {
+		return $this->get_group('name', $name);
 	}
 	
 	public function newsletter_groups() {
