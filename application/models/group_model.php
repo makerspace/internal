@@ -47,10 +47,10 @@ class Group_model extends CI_Model {
 		}
 		
 		// No results.
-		return (object)array();
+		return array();
 	}
 	
-	public function get_group_by_name($name) {
+	public function get_group_by_name($name = '') {
 		return $this->get_group('name', $name);
 	}
 	
@@ -101,6 +101,9 @@ class Group_model extends CI_Model {
 			
 		// Check if we got anything.
 		if($query->num_rows() > 0) {
+			
+			// Walk the entire result and get groups :)
+			array_walk($query->result(), array($this->Member_model, '_get_groups'));
 			
 			// Return result
 			return $query->result();

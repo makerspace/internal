@@ -43,7 +43,7 @@ class Api extends CI_Controller {
 	public function auth() {
 		
 		// Require X-Email/Password auth.
-		#$this->_check_authentication();
+		$this->_check_authentication();
 			
 		// Only allow POST
 		if($_SERVER['REQUEST_METHOD'] != 'POST') {
@@ -71,6 +71,9 @@ class Api extends CI_Controller {
 			// Remove NULL and empty fields (incl. false).
 			$member = (object)array_filter((array)$member);
 		
+			// Log successful login in database
+			$this->db->insert('logins', array('member_id' => $member->id, 'ip_address' => '127.0.0.1', 'timestamp' => time(), 'valid' => 1));
+			
 			// Return member object
 			$this->_json_out($member);
 			

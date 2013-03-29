@@ -17,12 +17,12 @@
 			<td><a href="/groups/edit/<?php echo $group->id; ?>"><?php echo $group->name; ?></a></td>
 			<td><?php echo $group->id; ?></td>
 			<td><?php echo $group->description; ?></td>
-			<td>Not implemented</td>
+			<td>Not implemented yet</td>
 			<td><?php echo $this->Group_model->member_count($group->id); ?></td>
 			<td><?php 
 				echo form_open('/members/search', 'class="nomargin"'); 
 				echo form_hidden('search', 'group:'.$group->name);
-				echo form_submit('submit', 'View Members', 'class="btn btn-mini btn-primary"');
+				echo form_submit('submit', 'View Members', 'class="btn btn-small btn-primary"');
 				echo form_close();
 			?></td>
 		</tr>

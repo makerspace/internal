@@ -214,7 +214,7 @@ class Member_model extends CI_Model {
 			
 	}
 	
-	########################## Get and search members ##########################
+	########################## Get members ##########################
 	
 	public function get_member($where = '', $value = '') {
 		
@@ -274,45 +274,6 @@ class Member_model extends CI_Model {
 		return array();
 	}
 	
-	/**
-	 * Method to search for members (wildcard)
-	 * @todo Full-text search or similar? Sphinx?
-	 */
-	public function search_member($keyword) {
-	
-		// Search in these fields
-		$search_fields = array(
-			'id', 'firstname', 'lastname', 'company', 'orgno',
-			'address', 'address2', 'zipcode', 'city', 'country',
-			'mobile', 'phone', 'twitter', 'skype'
-		);
-		
-		// Search in e-mail first.
-		$this->db->like('email', $keyword);
-		
-		// Loop, cause it's easier.
-		foreach($search_fields as $field) {
-			$this->db->or_like($field, $keyword);
-		}
-		
-		// Do query
-		$query = $this->db->get('members');
-		
-		// Did we get anything?
-		if($query->num_rows() > 0) {
-			
-			// Walk the entire result and get groups :)
-			array_walk($query->result(), array($this, '_get_groups'));
-			
-			// Return matching users
-			return $query->result();
-		}
-	
-		// Nothing found
-		return array();
-	}
-	
-	
 	########################## Add and edit members ##########################
 	
 	
@@ -364,7 +325,7 @@ class Member_model extends CI_Model {
 	/**
 	 * Quick hack to get groups for a bunch of members.
 	 */
-	private function _get_groups(&$member, $index = 0) {
+	public function _get_groups(&$member, $index = 0) {
 	
 		$member->groups = $this->Group_model->member_groups($member->id);
 		

@@ -28,7 +28,11 @@ class Members extends CI_Controller {
 		// If POST is valid
 		if ($this->form_validation->run()) {
 			$keyword = $this->input->post('search');
-			$members = $this->Member_model->search_member($keyword);
+			
+			// Load search model and search!
+			$this->load->model('Search_model');
+			$members = $this->Search_model->member($keyword);
+			
 		} else {
 			$members = array();
 		}
