@@ -21,6 +21,11 @@ class Api extends CI_Controller {
 			$this->_status(405); // Method Not Allowed
 		}
 		
+		// Check if method exists
+		$method = $this->uri->segment(2);
+		if(!empty($method) && !method_exists($this, $method)) {
+			$this->_status(404); // Not Found
+		}
 	}
 	
 	/**
