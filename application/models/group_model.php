@@ -94,6 +94,24 @@ class Group_model extends CI_Model {
 		
 	}
 	
+	public function group_members($group_id = 0) {
+	
+		$this->db->select('members.*')->join('members', 'members.id = member_groups.member_id');
+		$query = $this->db->get_where('member_groups', array('group_id' => $group_id));
+			
+		// Check if we got anything.
+		if($query->num_rows() > 0) {
+			
+			// Return result
+			return $query->result();
+			
+		}
+		
+		// Nothing found.
+		return array();
+		
+	}
+	
 	public function member_of_group($member_id = 0, $group_name = '') {
 	
 		$this->db->join('groups', 'groups.id = member_groups.group_id');

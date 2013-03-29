@@ -62,7 +62,7 @@ class Api extends CI_Controller {
 			
 			// Unset password-related fields.
 			unset($member->password, $member->reset_token, $member->reset_expire);
-			¨
+			
 			// Remove NULL and empty fields (incl. false).
 			$member = (object)array_filter((array)$member);
 		
@@ -233,8 +233,14 @@ class Api extends CI_Controller {
 			$this->_status(404); // Not Found
 		}
 		
-		// ToDo: Get members in group by id
+		$members = $this->Group_model->group_members($group_id);
 		
+		if($members) {
+			// Return members as JSON
+			$this->_json_out($members);
+		}
+		
+		$this->_status(404); // Not Found
 	}
 	
 	/**
@@ -289,22 +295,21 @@ class Api extends CI_Controller {
 	}
 
 	/**
-	 * Check authentication headers (X-Username, X-Password)
+	 * Check authentication headers (X-Email, X-Password)
 	 * @using login method in member model.
 	 */
 	private function _check_authentication($check_acl = true) {
 	
-		$username = $this->input->get_request_header('X-Username');
+		$email = $this->input->get_request_header('X-Email');
 		$password = $this->input->get_request_header('X-Password');
 		
 		// Check input
-		if(empty($username) || empty($password)) {
+		if(empty($email) || empty($password)) {
 			$this->_status(403); // Forbidden
 		}
 		
-		
 		// Try to login but don't set session.
-		$login = array('email' => $username, 'password' => $password);
+		$login = array('email' => $email, 'password' => $password);
 		$result = $this->Member_model->login($login, false);
 		
 		// Check result
@@ -312,7 +317,7 @@ class Api extends CI_Controller {
 			
 			// Check ACL (if needed)
 			if($check_acl) {
-				## Here.
+				// ToDo: DO IT!!!!
 			}
 			
 			return true;

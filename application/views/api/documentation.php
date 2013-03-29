@@ -52,7 +52,7 @@
 			</ul>
 
 			<h3>Protected resources (Requires authentication)</h3>
-			<p>Use the HTTP Headers <strong>X-Username</strong> (your e-mail address) and <strong>X-Password</strong> to authenticate.<br>
+			<p>Use the HTTP Headers <strong>X-Email</strong> and <strong>X-Password</strong> to authenticate.<br>
 			<em>Note: These resources also requires your account to be in the the "API" group.</em></p>
 
 			<ul>
