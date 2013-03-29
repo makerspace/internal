@@ -25,7 +25,7 @@
 		<div class="span6">
 			
 			<h1>API Documentation</h1>
-			<p>REST API for Internal - Version 0.2</p>
+			<p>REST API for Internal - Version <?php echo $version; ?></p>
 
 			<h3>Information</h3>
 			<p>Resources response-data is returned as JSON.<br>

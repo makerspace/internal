@@ -3,12 +3,15 @@
  * REST Api Controller for Internal
  * 
  * @author Jim Nelin
+ * @version 0.2
  */
  
 class Api extends CI_Controller {
 
+	private $api_version = '0.2';
+
 	/**
-	 * Constructor
+	 * API Constructor
 	 */
 	public function  __construct() {
 		parent::__construct();
@@ -17,6 +20,7 @@ class Api extends CI_Controller {
 		if(!in_array($_SERVER['REQUEST_METHOD'], array('POST', 'GET'))) {
 			$this->_status(405); // Method Not Allowed
 		}
+		
 	}
 	
 	/**
@@ -29,7 +33,7 @@ class Api extends CI_Controller {
 			$this->_status(405); // Method Not Allowed
 		}
 		
-		$this->load->view('api/documentation');
+		$this->load->view('api/documentation', array('version' => $this->api_version));
 	
 	}
 	
@@ -38,11 +42,11 @@ class Api extends CI_Controller {
 	 */
 	public function auth() {
 		
-		// Require X-Username/Password auth.
-		$this->_check_authentication();
+		// Require X-Email/Password auth.
+		#$this->_check_authentication();
 			
 		// Only allow POST
-		if(!$this->input->post()) {
+		if($_SERVER['REQUEST_METHOD'] != 'POST') {
 			$this->_status(405); // Method Not Allowed
 		}
 		
@@ -57,6 +61,7 @@ class Api extends CI_Controller {
 		
 		// Check result
 		if($result) {
+		
 			// Get member
 			$member = $this->Member_model->get_member('email', $email);
 			
@@ -68,20 +73,22 @@ class Api extends CI_Controller {
 		
 			// Return member object
 			$this->_json_out($member);
+			
+		} else {
+		
+			// Return 404 if not found
+			$this->_status(404); // Not Found
+		
 		}
 		
-		// Return 404 if not found
-		$this->_status(404); // Not Found
-		
 	}
-	 
-	 
+	
 	/**
 	 * Get Member resource.
 	 */
 	public function get_member($key = '', $value = '') {
 		
-		// Require X-Username/Password auth.
+		// Require X-Email/Password auth.
 		$this->_check_authentication();
 			
 		// Only allow GET
@@ -95,8 +102,8 @@ class Api extends CI_Controller {
 			$key = 'id';
 		}
 		
-		// Failsafe against empty values
-		if(empty($value)) {
+		// Failsafe against empty values, invalid inputs and/or similar
+		if(empty($value) || ($key == 'id' && (!is_numeric($value) || $value < 1000))) {
 			$this->_status(400); // Bad Request
 		}
 		
@@ -124,7 +131,7 @@ class Api extends CI_Controller {
 	 */
 	public function get_member_groups($member_id = 0) {
 		
-		// Require X-Username/Password auth.
+		// Require X-Email/Password auth.
 		$this->_check_authentication();
 			
 		// Only allow GET
@@ -146,10 +153,11 @@ class Api extends CI_Controller {
 			// Return groups as JSON
 			$this->_json_out((object)$member->groups);
 			
+		} else {
+		
+			$this->_status(404); // Not found
+			
 		}
-		
-		$this->_status(404); // Not found
-		
 	}
 	
 	/**
@@ -157,11 +165,11 @@ class Api extends CI_Controller {
 	 */
 	public function add_member() {
 		
-		// Require X-Username/Password auth.
+		// Require X-Email/Password auth.
 		$this->_check_authentication();
 			
 		// Only allow POST
-		if(!$this->input->post()) {
+		if($_SERVER['REQUEST_METHOD'] != 'POST') {
 			$this->_status(405); // Method Not Allowed
 		}
 		
@@ -177,11 +185,11 @@ class Api extends CI_Controller {
 	 */
 	public function update_member($member_id = 0) {
 		
-		// Require X-Username/Password auth.
+		// Require X-Email/Password auth.
 		$this->_check_authentication();
 			
 		// Only allow POST
-		if(!$this->input->post()) {
+		if($_SERVER['REQUEST_METHOD'] != 'POST') {
 			$this->_status(405); // Method Not Allowed
 		}
 		
@@ -197,7 +205,7 @@ class Api extends CI_Controller {
 	 */
 	public function get_groups() {
 		
-		// Require X-Username/Password auth.
+		// Require X-Email/Password auth.
 		$this->_check_authentication();
 			
 		// Only allow GET
@@ -217,7 +225,7 @@ class Api extends CI_Controller {
 	 */
 	public function get_group_members($group_id = 0) {
 		
-		// Require X-Username/Password auth.
+		// Require X-Email/Password auth.
 		$this->_check_authentication();
 			
 		// Only allow GET
@@ -237,10 +245,14 @@ class Api extends CI_Controller {
 		
 		if($members) {
 			// Return members as JSON
-			$this->_json_out($members);
+			// ToDo: Remove passwords!!!
+			#$this->_json_out($members);
+		} else {
+		
+			$this->_status(404); // Not Found
+			
 		}
 		
-		$this->_status(404); // Not Found
 	}
 	
 	/**

@@ -3,7 +3,7 @@
 <table class="table table-striped table-condensed table-bordered">
 	<thead>
 		<tr>
-			<th>Name</th>
+			<th>Name <small>(Click to edit)</small></th>
 			<th>Group ID</th>
 			<th>Description</th>
 			<th>Access Levels (ACL)</th>
@@ -22,7 +22,7 @@
 			<td><?php 
 				echo form_open('/members/search', 'class="nomargin"'); 
 				echo form_hidden('search', 'group:'.$group->name);
-				echo form_submit('submit', 'List members', 'class="btn btn-mini btn-primary"');
+				echo form_submit('submit', 'View Members', 'class="btn btn-mini btn-primary"');
 				echo form_close();
 			?></td>
 		</tr>

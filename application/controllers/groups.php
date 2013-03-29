@@ -13,7 +13,7 @@ class Groups extends CI_Controller {
 	public function index() {
 		
 		$head = array(
-			'title' => 'Group management',
+			'title' => 'Group Management',
 		);
 		
 		$this->load->view('header', $head);
