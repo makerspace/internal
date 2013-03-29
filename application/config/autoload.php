@@ -64,7 +64,7 @@ $autoload['libraries'] = array('memcache', 'database', 'session', 'form_validati
 |	$autoload['helper'] = array('url', 'file');
 */
 
-$autoload['helper'] = array('makerspace', 'string', 'url', 'file');
+$autoload['helper'] = array('makerspace', 'string', 'url', 'file', 'array');
 
 
 /*

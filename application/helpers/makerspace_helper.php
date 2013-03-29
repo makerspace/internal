@@ -107,6 +107,13 @@ function when($timestamp) {
 }
 
 /**
+ * Strip whitespaces (and similar)
+ */
+function strim($str) {
+	return preg_replace('/\s+/', '', $str);
+}
+
+/**
  * Function to generate v4 UUID
  */
 function uuid() {

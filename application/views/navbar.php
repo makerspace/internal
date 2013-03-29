@@ -20,7 +20,7 @@
 				<ul class="nav">
 					<li<?php echo menu_active('members'); ?>><a href="/members">Members</a></li>
 					<li<?php echo menu_active('groups'); ?>><a href="/groups">Groups</a></li>
-					<li<?php echo menu_active('payments'); ?>><a href="/payments">Payments</a></li>
+					<li<?php echo menu_active('finance'); ?>><a href="/finance">Finance</a></li>
 					<li<?php echo menu_active('newsletter'); ?>><a href="/newsletter">Newsletter</a></li>
 					<?php if($this->Member_model->is_admin()) { ?>
 					<li<?php echo menu_active('admin'); ?>><a href="/admin">Admin</a></li>

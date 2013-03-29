@@ -1,6 +1,6 @@
 <?php
 
-class Payments extends CI_Controller {
+class Finance extends CI_Controller {
 
 	public function __construct() {
 		parent::__construct();
@@ -11,11 +11,11 @@ class Payments extends CI_Controller {
 	public function index() {
 		
 		$head = array(
-			'title' => 'Payments and Finance',
+			'title' => 'Finance',
 		);
 		
 		$this->load->view('header', $head);
-		//$this->load->view('payments/placeholder');
+		$this->load->view('finance/overview');
 		$this->load->view('footer');
 
 	}

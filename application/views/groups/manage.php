@@ -15,7 +15,7 @@
 	<?php foreach($groups as $group) { ?>
 		<tr>
 			<td><?php echo $group->id; ?></td>
-			<td><a href="/groups/edit/<?php echo $group->id; ?>"><?php echo $group->name; ?></a></td>
+			<td><a href="#NOT_IMPLEMENTED/groups/edit/<?php echo $group->id; ?>"><?php echo $group->name; ?></a></td>
 			<td><?php echo $group->description; ?></td>
 			<td>Not implemented yet</td>
 			<td><?php echo $this->Group_model->member_count($group->id); ?></td>

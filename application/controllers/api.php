@@ -80,8 +80,13 @@ class Api extends CI_Controller {
 			// Remove NULL and empty fields (incl. false).
 			$member = (object)array_filter((array)$member);
 		
+			// Try to get the real user IP
+			if(!$ip = $this->input->get_request_header('X-Real-IP')) {
+				$ip = '0.0.0.0';
+			}
+			
 			// Log successful login in database
-			$this->db->insert('logins', array('member_id' => $member->id, 'ip_address' => '127.0.0.1', 'timestamp' => time(), 'valid' => 1));
+			$this->db->insert('logins', array('member_id' => $member->id, 'ip_address' => $ip, 'timestamp' => time(), 'valid' => 1));
 			
 			// Return member object
 			$this->_json_out($member);
@@ -256,9 +261,14 @@ class Api extends CI_Controller {
 		$members = $this->Group_model->group_members($group_id);
 		
 		if($members) {
+			// Strip passwords from result.
+			
+			// Walk the entire result and get groups :)
+			array_walk($members, create_function('&$m', 'unset($m->password, $m->reset_token, $m->reset_expire); $m = (object)array_filter((array)$m);'));
+			
 			// Return members as JSON
-			// ToDo: Remove passwords!!!
-			#$this->_json_out($members);
+			$this->_json_out($members);
+			
 		} else {
 		
 			$this->_status(404); // Not Found
@@ -358,4 +368,38 @@ class Api extends CI_Controller {
 		$this->_status(403);
 		
 	}
+	
+	/**
+	 * Normalize a add_member/update_member POST request.
+	 */
+	private function _normalize($array) {
+		
+		// Allowed form fields
+		$fields = array(
+			'email', 'password', 'twitter', 'skype', 'mobile', 'phone',
+			'firstname', 'lastname', 'company', 'orgno', 'address',
+			'address2', 'zipcode', 'city', 'country', 
+		);
+		
+		// Filter out only those fields we allow
+		$data = elements($fields, $array, NULL);
+	
+		// Remove false/null/0 values
+		$data = array_filter($data);
+		
+		// Make an exception for the password field
+		if(!empty($data['password'])) {
+			
+			// Load password library
+			$this->load->library('Pass');
+			
+			// Hash the password 
+			$data['password'] = $this->pass->hash($data['password']);
+			
+		}
+		
+		return $data;
+	
+	}
+	
 } 

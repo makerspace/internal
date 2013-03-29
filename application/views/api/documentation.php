@@ -86,7 +86,10 @@
 				<li>email - The e-mail to try to authenticate with</li>
 				<li>password - Password (sent as clear-text, not PBKDF2)</li>
 			</ul>
-			<p>Returns member object as JSON or HTTP 404 if authentication failed.</p>
+			<p>
+				Returns member object as JSON or HTTP 404 if authentication failed.<br>
+				<em>Optional: Provide a X-Real-IP header for the actual user if possible, for logging purposes.</em>
+			</p>
 		</div>
 		
 		<div class="span12">

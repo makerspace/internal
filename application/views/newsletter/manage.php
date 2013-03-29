@@ -42,7 +42,7 @@ Please note that you can't change the recipients or recipient groups after you'v
 			<td><?php echo $nl->bounces; ?></td>
 			<td>
 				<?php echo anchor('newsletter/edit/'.$nl->id, 'Edit', 'class="btn btn-mini"'); ?>
-				<?php echo anchor('newsletter/view/'.$nl->id, 'View and Send', 'class="btn btn-primary btn-mini"'); ?>
+				<?php echo anchor('newsletter/view/'.$nl->id, 'View', 'class="btn btn-primary btn-mini"'); ?>
 				<?php echo anchor('newsletter/delete/'.$nl->id, 'Delete', 'class="btn btn-inverse btn-mini"'); ?>
 			</td>
 		</tr>

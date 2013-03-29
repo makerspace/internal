@@ -7,14 +7,9 @@
 	<div class="span4">
 		<h4>Member Tasks</h4>		
 		<p>
-			<a href="/pdf/membership_card/<?php echo $member->id; ?>" class="btn btn-primary">Download Membership Card <small>(as PDF)</small></a>
-		</p>
-		
-		<br>
-		<h4>Membership Fee Payment</h4>
-		<p>
-			<a href="#" class="btn">Send Fortnox Invoice</a> 
-			<a href="#" class="btn">Send PayPal Link</a> 
+			<a href="/members/membership_card/<?php echo $member->id; ?>" class="btn btn-primary">Get Membership Card <small>(as PDF)</small></a>
+		</p><p>
+			<a href="/finance/member/<?php echo $member->id; ?>" class="btn">View Transaction History</a>
 		</p>
 		
 		<br>
@@ -31,12 +26,12 @@
 		<h4>Profile</h4>
 		
 		<div class="row">
-			<div class="span2">
-				<img src="<?php echo gravatar($member->email, 160); ?>" class="img-polaroid">
+			<div class="span3">
+				<img src="<?php echo gravatar($member->email, 256); ?>" class="img-polaroid">
 				<center><small>Avatar by <a href="https://www.gravatar.com/">Gravatar</a></small></center>
 			</div>
 			
-			<div class="span3">
+			<div class="span2">
 				<p>
 					<strong>Name:</strong><br>
 					<?php echo $member->firstname; ?> <?php echo $member->lastname; ?>
@@ -85,13 +80,16 @@
 				</p>
 				<?php } ?>
 				
+				
+				<?php if(!empty($member->address) || !empty($member->zipcode) || !empty($member->city)) { ?>
 				<p>
 					<strong>Address:</strong><br>
 					<?php echo (!empty($member->address) ? $member->address . '<br>' : ''); ?>
 					<?php echo (!empty($member->address2) ? $member->address2 . '<br>' : ''); ?>
-					<?php echo $member->zipcode; ?> <?php echo $member->city; ?>
+					<?php echo (!empty($member->zipcode) ? 'SE-'.$member->zipcode : ''); ?> <?php echo (!empty($member->city) ? $member->city : ''); ?>
 					<?php echo (!empty($member->country) ? '<br>'.$this->dbconfig->countries->{$member->country} : ''); ?>
 				</p>
+				<?php } ?>
 				
 				<p>
 					<strong>Member since:</strong><br>

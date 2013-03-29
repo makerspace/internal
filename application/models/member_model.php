@@ -362,26 +362,20 @@ class Member_model extends CI_Model {
 	/**
 	 * Function to filter all field of a member array.
 	 */
-	private function _normalize($array) {
+	public function _normalize($array) {
 	
+		// Remove false/null/0 values
+		$array = array_filter($array);
+		
 		// Allowed form fields
 		$fields = array(
 			'email', 'password', 'twitter', 'skype', 'mobile', 'phone',
 			'firstname', 'lastname', 'company', 'orgno', 'address',
-			'address2', 'zipcode', 'city', 'country',
+			'address2', 'zipcode', 'city', 'country', 'birthday',
 		);
 		
 		// Filter out only those fields we allow
-		$data = array_intersect_key($array, array_flip($fields));
-		
-		// Remove false/null/0 values
-		$data = array_filter($data);
-		
-		// Add those items removed in previous step
-		$diff = array_diff_key(array_flip($fields), $data);
-		foreach($diff as $key => $val) {
-			$data[$key] = null;
-		}
+		$data = elements($fields, $array, NULL);
 		
 		// Make an exception for the password field
 		if(!empty($data['password'])) {
