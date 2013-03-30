@@ -15,15 +15,17 @@ class Member_model extends CI_Model {
 		
 		if(!$member) {
 		
-			// Log unsuccessful login to database
-			$this->db->insert('logins', array('ip_address' => ip_address(), 'timestamp' => time()));
+			// Log unsuccessful logins for sessions.
+			if($session) {
+				$this->db->insert('logins', array('ip_address' => ip_address(), 'timestamp' => time()));
+			}
 			
 			// That's a negative
 			return false;
 		}
 		
-		// Check is member is a admin or boardmember
-		if(!$this->is_boardmember($member->id) && !$this->is_admin($member->id)) {
+		// If we're going to set a session, check that member is an admin or boardmember
+		if($session && !$this->is_boardmember($member->id) && !$this->is_admin($member->id)) {
 			return false;
 		}
 		
