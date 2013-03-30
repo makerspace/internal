@@ -148,6 +148,7 @@
 			<?php foreach($this->Group_model->get_all() as $row) { ?>
 				<label class="span2"><?php echo form_checkbox('group['.$row->name.']', '1', !empty($member->groups[$row->name]), 'disabled') . ' ' . $row->description; ?></label>
 			<?php } ?>
+			
 	<?php } ?>
 	
 			<div class="span6">
