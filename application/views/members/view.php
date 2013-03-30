@@ -16,7 +16,7 @@
 		<h4>Member of Groups <small>Click to switch state</small></h4>
 			
 		<?php foreach($this->Group_model->get_all() as $row) { 
-			if($row->name == 'admins' && !$this->Group_model->member_of_group(member_id(), 'admins')) {
+			if($row->name == 'admins' && (!$this->Group_model->member_of_group(member_id(), 'admins') || $member->id == member_id())) {
 				continue;
 			}
 		?>
