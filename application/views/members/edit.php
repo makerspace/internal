@@ -7,7 +7,7 @@
 			<div class="control-group">
 				<?php echo form_label('E-mail address', 'email', array('class' => 'control-label')); ?>
 				<div class="controls">
-					<?php echo form_email('email', $member->email, 'id="email" required placeholder="email@example.com"'); ?>
+					<?php echo form_email('email', set_value('email', $member->email), 'id="email" required placeholder="email@example.com"'); ?>
 				</div>
 			</div>
 			
@@ -24,7 +24,7 @@
 				<div class="controls">
 					<div class="input-prepend">
 						<span class="add-on">@</span>
-						<?php echo form_input('twitter', $member->twitter, 'id="twitter" style="width:179px"'); ?>
+						<?php echo form_input('twitter', set_value('twitter', $member->twitter), 'id="twitter" style="width:179px"'); ?>
 					</div>
 					<span class="help-inline">Optional</span>
 				</div>
@@ -33,7 +33,7 @@
 			<div class="control-group">
 				<?php echo form_label('Skype Name', 'skype', array('class' => 'control-label')); ?>
 				<div class="controls">
-					<?php echo form_input('skype', $member->skype, 'id="skype"'); ?>
+					<?php echo form_input('skype', set_value('skype', $member->skype), 'id="skype"'); ?>
 					<span class="help-inline">Optional</span>
 				</div>
 			</div>
@@ -47,21 +47,21 @@
 				<div class="control-group">
 					<?php echo form_label('Firstname', 'firstname', array('class' => 'control-label')); ?>
 					<div class="controls">
-						<?php echo form_input('firstname', $member->firstname, 'id="firstname" required'); ?>
+						<?php echo form_input('firstname', set_value('firstname', $member->firstname), 'id="firstname" required'); ?>
 					</div>
 				</div>
 				
 				<div class="control-group">
 					<?php echo form_label('Lastname', 'lastname', array('class' => 'control-label')); ?>
 					<div class="controls">
-						<?php echo form_input('lastname', $member->lastname, 'id="lastname" required'); ?>
+						<?php echo form_input('lastname', set_value('lastname', $member->lastname), 'id="lastname" required'); ?>
 					</div>
 				</div>
 				
 				<div class="control-group">
 					<?php echo form_label('Civic Reg. Number', 'civicregno', array('class' => 'control-label')); ?>
 					<div class="controls">
-						<?php echo form_input('civicregno', $member->civicregno, 'id="civicregno" placeholder="YYYYMMDD-XXXX"'); ?>
+						<?php echo form_input('civicregno', set_value('civicregno', $member->civicregno), 'id="civicregno" placeholder="YYYYMMDD-XXXX"'); ?>
 						<span class="help-inline">Optional</span>
 					</div>
 				</div>
@@ -69,14 +69,14 @@
 				<div class="control-group">
 					<?php echo form_label('Address', 'address', array('class' => 'control-label')); ?>
 					<div class="controls">
-						<?php echo form_input('address', $member->address, 'id="address"'); ?>
+						<?php echo form_input('address', set_value('address', $member->address), 'id="address"'); ?>
 					</div>
 				</div>
 				
 				<div class="control-group">
 					<?php echo form_label('Address 2', 'address2', array('class' => 'control-label')); ?>
 					<div class="controls">
-						<?php echo form_input('address2', $member->address2, 'id="address2"'); ?>
+						<?php echo form_input('address2', set_value('address2', $member->address2), 'id="address2"'); ?>
 					<span class="help-inline">Optional</span>
 					</div>
 				</div>
@@ -84,7 +84,7 @@
 				<div class="control-group">
 					<?php echo form_label('Zip code', 'zipcode', array('class' => 'control-label')); ?>
 					<div class="controls">
-						<?php echo form_input('zipcode', $member->zipcode, 'id="zipcode" placeholder="12345"'); ?>
+						<?php echo form_input('zipcode', set_value('zipcode', $member->zipcode), 'id="zipcode" placeholder="12345"'); ?>
 						<span class="help-inline">Without spaces</span>
 					</div>
 				</div>
@@ -92,7 +92,7 @@
 				<div class="control-group">
 					<?php echo form_label('City', 'city', array('class' => 'control-label')); ?>
 					<div class="controls">
-						<?php echo form_input('city', $member->city, 'id="city"'); ?>
+						<?php echo form_input('city', set_value('city', $member->city), 'id="city"'); ?>
 					</div>
 				</div>
 				
@@ -106,7 +106,7 @@
 				<div class="control-group">
 					<?php echo form_label('Mobile', 'mobile', array('class' => 'control-label')); ?>
 					<div class="controls">
-						<?php echo form_input('mobile', $member->mobile, 'id="mobile" placeholder="+46812300000"'); ?>
+						<?php echo form_input('mobile', set_value('mobile', $member->mobile), 'id="mobile" placeholder="+46812300000"'); ?>
 						<span class="help-inline">Optional</span>
 					</div>
 				</div>
@@ -114,7 +114,7 @@
 				<div class="control-group">
 					<?php echo form_label('Alt. Phone', 'phone', array('class' => 'control-label')); ?>
 					<div class="controls">
-						<?php echo form_input('phone', $member->phone, 'id="phone" placeholder="+46812300000"'); ?>
+						<?php echo form_input('phone', set_value('phone', $member->phone), 'id="phone" placeholder="+46812300000"'); ?>
 						<span class="help-inline">Optional</span>
 					</div>
 				</div>
@@ -124,7 +124,7 @@
 				<div class="control-group">
 					<?php echo form_label('Company Name', 'company', array('class' => 'control-label')); ?>
 					<div class="controls">
-						<?php echo form_input('company', $member->company, 'id="company"'); ?>
+						<?php echo form_input('company', set_value('company', $member->company), 'id="company"'); ?>
 						<span class="help-inline">Optional</span>
 					</div>
 				</div>
@@ -132,7 +132,7 @@
 				<div class="control-group">
 					<?php echo form_label('Org. Number', 'orgno', array('class' => 'control-label')); ?>
 					<div class="controls">
-						<?php echo form_input('orgno', $member->orgno, 'id="orgno" placeholder="XXXXXX-YYYY"'); ?>
+						<?php echo form_input('orgno', set_value('orgno', $member->orgno), 'id="orgno" placeholder="XXXXXX-YYYY"'); ?>
 						<span class="help-inline">Optional</span>
 					</div>
 				</div>
