@@ -137,6 +137,7 @@ class Group_model extends CI_Model {
 			return false; // Failsafe
 		}
 		
+		// Don't allow non-admins to set admin-permissions.
 		if(!$this->Group_model->member_of_group(member_id(), 'admins') && $group_name == 'admins') {
 			return false;
 		}

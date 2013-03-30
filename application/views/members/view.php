@@ -16,6 +16,7 @@
 		<h4>Member of Groups <small>Click to switch state</small></h4>
 			
 		<?php foreach($this->Group_model->get_all() as $row) { 
+			// Don't allow non-admins to set admin-permissions - and cause of that, you shouldn't be able to remove your self as admin.
 			if($row->name == 'admins' && (!$this->Group_model->member_of_group(member_id(), 'admins') || $member->id == member_id())) {
 				continue;
 			}
