@@ -73,6 +73,13 @@
 			
 			<div class="span3">
 				
+				<?php if(!empty($member->civicregno)) { ?>
+				<p>
+					<strong>Civic Reg. Number:</strong><br>
+					<?php echo $member->civicregno; ?>
+				</p>
+				<?php } ?>
+				
 				<?php if(!empty($member->company)) { ?>
 				<p>
 					<strong>Company:</strong><br>

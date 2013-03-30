@@ -58,17 +58,9 @@
 				</div>
 				
 				<div class="control-group">
-					<?php echo form_label('Company Name', 'company', array('class' => 'control-label')); ?>
+					<?php echo form_label('Civic Reg. Number', 'civicregno', array('class' => 'control-label')); ?>
 					<div class="controls">
-						<?php echo form_input('company', set_value('company'), 'id="company"'); ?>
-						<span class="help-inline">Optional</span>
-					</div>
-				</div>
-				
-				<div class="control-group">
-					<?php echo form_label('Org. Number', 'orgno', array('class' => 'control-label')); ?>
-					<div class="controls">
-						<?php echo form_input('orgno', set_value('orgno'), 'id="orgno" placeholder="XXXXXX-YYYY"'); ?>
+						<?php echo form_input('civicregno', set_value('civicregno'), 'id="civicregno" placeholder="YYYYMMDD-XXXX"'); ?>
 						<span class="help-inline">Optional</span>
 					</div>
 				</div>
@@ -129,10 +121,20 @@
 					</div>
 				</div>
 				
+				<br>
+				
 				<div class="control-group">
-					<?php echo form_label('Birthday', 'birthday', array('class' => 'control-label')); ?>
+					<?php echo form_label('Company Name', 'company', array('class' => 'control-label')); ?>
 					<div class="controls">
-						<?php echo form_input('birthday', set_value('birthday'), 'id="birthday" data-date-format="yyyy-mm-dd" class="datepicker"'); ?>
+						<?php echo form_input('company', set_value('company'), 'id="company"'); ?>
+						<span class="help-inline">Optional</span>
+					</div>
+				</div>
+				
+				<div class="control-group">
+					<?php echo form_label('Org. Number', 'orgno', array('class' => 'control-label')); ?>
+					<div class="controls">
+						<?php echo form_input('orgno', set_value('orgno'), 'id="orgno" placeholder="XXXXXX-YYYY"'); ?>
 						<span class="help-inline">Optional</span>
 					</div>
 				</div>

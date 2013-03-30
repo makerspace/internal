@@ -371,7 +371,7 @@ class Member_model extends CI_Model {
 		$fields = array(
 			'email', 'password', 'twitter', 'skype', 'mobile', 'phone',
 			'firstname', 'lastname', 'company', 'orgno', 'address',
-			'address2', 'zipcode', 'city', 'country', 'birthday',
+			'address2', 'zipcode', 'city', 'country', 'civicregno',
 		);
 		
 		// Filter out only those fields we allow

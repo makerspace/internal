@@ -9,6 +9,20 @@
 class Api extends CI_Controller {
 
 	private $api_version = '0.2';
+	
+	// Allowed Member POST fields
+	private $allowed_member_fields = array(
+		'email', 'password', 'twitter', 'skype', 'mobile', 'phone',
+		'firstname', 'lastname', 'company', 'orgno', 'address',
+		'address2', 'zipcode', 'city', 'country', 'civicregno',
+	);
+	
+	// Required Member POST fields
+	private $required_member_fields = array(
+		'email', 'password', 'firstname', 'lastname',
+		'address', 'zipcode', 'city',
+	);
+	
 
 	/**
 	 * API Constructor
@@ -33,11 +47,10 @@ class Api extends CI_Controller {
 	 */
 	public function index() {
 		
-		// Only allow GET
-		if($this->input->post()) {
-			$this->_status(405); // Method Not Allowed
-		}
+		// Only allow GET Requests
+		$this->_check_method('GET');
 		
+		// View documentation
 		$this->load->view('api/documentation', array('version' => $this->api_version));
 	
 	}
@@ -47,13 +60,12 @@ class Api extends CI_Controller {
 	 */
 	public function auth() {
 		
+		// Only allow POST Requests
+		$this->_check_method('POST');
+		
 		// Require X-Email/Password auth.
 		$this->_check_authentication();
-			
-		// Only allow POST
-		if($_SERVER['REQUEST_METHOD'] != 'POST') {
-			$this->_status(405); // Method Not Allowed
-		}
+		
 		
 		// Check for required fields.
 		if(!$email = $this->input->post('email')) {
@@ -62,8 +74,7 @@ class Api extends CI_Controller {
 			$this->_status(400); // Bad Request
 		}
 		
-		
-		
+				
 		// Try to login but don't set session.
 		$login = array('email' => $email, 'password' => $password);
 		$result = $this->Member_model->login($login, false);
@@ -105,13 +116,11 @@ class Api extends CI_Controller {
 	 */
 	public function get_member($key = '', $value = '') {
 		
+		// Only allow GET Requests
+		$this->_check_method('GET');
+		
 		// Require X-Email/Password auth.
 		$this->_check_authentication();
-			
-		// Only allow GET
-		if($this->input->post()) {
-			$this->_status(405); // Method Not Allowed
-		}
 			
 		// Hack for GET /api/get_member/*id*
 		if(empty($value)) {
@@ -120,7 +129,7 @@ class Api extends CI_Controller {
 		}
 		
 		// Failsafe against empty values, invalid inputs and/or similar
-		if(empty($value) || ($key == 'id' && (!is_numeric($value) || $value < 1000))) {
+		if(empty($value) || ($key == 'id' && (!is_numeric($value) || $value < 1000 || $value > 10000))) {
 			$this->_status(400); // Bad Request
 		}
 		
@@ -148,16 +157,14 @@ class Api extends CI_Controller {
 	 */
 	public function get_member_groups($member_id = 0) {
 		
+		// Only allow GET Requests
+		$this->_check_method('GET');
+		
 		// Require X-Email/Password auth.
 		$this->_check_authentication();
-			
-		// Only allow GET
-		if($this->input->post()) {
-			$this->_status(405); // Method Not Allowed
-		}
 		
 		// Check member_id input
-		if(empty($member_id) || $member_id < 1000) {
+		if(empty($member_id) || !is_numeric($member_id) || $member_id < 1000 || $member_id > 10000) {
 			$this->_status(400); // Bad request
 		}
 		
@@ -181,18 +188,26 @@ class Api extends CI_Controller {
 	 * Add Member resource.
 	 */
 	public function add_member() {
+	
+		// Only allow POST Requests
+		$this->_check_method('POST');
+		
+		// Check that we got any POST-data
+		if(!$post = $this->input->post()) {			
+			$this->_status(400); // Bad Request
+		}
 		
 		// Require X-Email/Password auth.
 		$this->_check_authentication();
-			
-		// Only allow POST
-		if($_SERVER['REQUEST_METHOD'] != 'POST') {
-			$this->_status(405); // Method Not Allowed
-		}
+		
+		// Remove all POST fields that we don't want.
+		$post = $this->_filter_member($post);
 		
 		// ToDo: Check for required fields
-		// ToDo: Check if e-mail exits
-		// ToDo: Check all POST fields and remove those we don't want (validation/normalize)
+		// ToDo: Check if e-mail already is registered
+		// ToDo: Validate all POST fields.
+		// ToDo: Hash password if available
+		
 		// ToDo: Save to database
 		
 	}
@@ -202,16 +217,35 @@ class Api extends CI_Controller {
 	 */
 	public function update_member($member_id = 0) {
 		
-		// Require X-Email/Password auth.
-		$this->_check_authentication();
-			
-		// Only allow POST
-		if($_SERVER['REQUEST_METHOD'] != 'POST') {
-			$this->_status(405); // Method Not Allowed
+		// Only allow POST Requests
+		$this->_check_method('POST');
+		
+		// Check that we got any POST-data
+		if(!$post = $this->input->post()) {			
+			$this->_status(400); // Bad Request
 		}
 		
-		// ToDo: Check if member_id exists (try to get_member)
-		// ToDo: Check all POST fields and remove those we don't want (validation/normalize)
+		// Require X-Email/Password auth.
+		$this->_check_authentication();
+		
+		
+		// Check member_id input
+		if(empty($member_id) || !is_numeric($member_id) || $member_id < 1000 || $member_id > 10000) {
+			$this->_status(400); // Bad request
+		}
+		
+		// Check if member_id exists (try to get_member)
+		$result = $this->Member_model->get_member($member_id);
+		if(!$result) {
+			$this->_status(404); // Not Found
+		}
+		
+		// Remove all POST fields that we don't want.
+		$post = $this->_filter_member($post);
+		
+		// ToDo: Validate all POST fields.
+		// ToDo: Hash password if available
+		
 		// ToDo: Save to database
 		
 	}
@@ -221,14 +255,12 @@ class Api extends CI_Controller {
 	 * Get Groups resource.
 	 */
 	public function get_groups() {
+	
+		// Only allow GET Requests
+		$this->_check_method('GET');
 		
 		// Require X-Email/Password auth.
 		$this->_check_authentication();
-			
-		// Only allow GET
-		if($this->input->post()) {
-			$this->_status(405); // Method Not Allowed
-		}
 		
 		$groups = $this->Group_model->get_all();
 		
@@ -242,13 +274,11 @@ class Api extends CI_Controller {
 	 */
 	public function get_group_members($group_id = 0) {
 		
+		// Only allow GET Requests
+		$this->_check_method('GET');
+		
 		// Require X-Email/Password auth.
 		$this->_check_authentication();
-			
-		// Only allow GET
-		if($this->input->post()) {
-			$this->_status(405); // Method Not Allowed
-		}
 		
 		// Try to get group
 		$group = $this->Group_model->get_group($group_id);
@@ -291,10 +321,8 @@ class Api extends CI_Controller {
 	 */
 	public function newsletter() {
 	
-		// Only allow GET
-		if($this->input->post()) {
-			$this->_status(405); // Method Not Allowed
-		}
+		// Only allow GET Requests
+		$this->_check_method('GET');
 		
 		// Get newsletter by id
 		$this->_status(404);
@@ -308,7 +336,16 @@ class Api extends CI_Controller {
 	 ******************* PRIVATE METHODS *******************
 	 *******************************************************
 	 */
-	 
+	
+	/**
+	 * Short-cut to check HTTP Method (POST/GET)
+	 */
+	private function _check_method($method) {
+		if($_SERVER['REQUEST_METHOD'] != strtoupper($method)) {
+			$this->_status(405); // Method Not Allowed
+		}
+	}
+	
 	/**
 	 * Set HTTP Status and exit
 	 */
@@ -370,36 +407,34 @@ class Api extends CI_Controller {
 	}
 	
 	/**
-	 * Normalize a add_member/update_member POST request.
+	 * Normalize update_member requests.
 	 */
-	private function _normalize($array) {
-		
-		// Allowed form fields
-		$fields = array(
-			'email', 'password', 'twitter', 'skype', 'mobile', 'phone',
-			'firstname', 'lastname', 'company', 'orgno', 'address',
-			'address2', 'zipcode', 'city', 'country', 
-		);
+	private function _filter_member($array) {
 		
 		// Filter out only those fields we allow
-		$data = elements($fields, $array, NULL);
+		$array = elements($this->allowed_member_fields, $array, NULL);
 	
 		// Remove false/null/0 values
-		$data = array_filter($data);
+		$array = array_filter($array);
 		
-		// Make an exception for the password field
+		return $array;
+	
+	}
+	
+	private function _hash_password($array) {
+	
+		// Make an exception if the password field exists
 		if(!empty($data['password'])) {
 			
 			// Load password library
 			$this->load->library('Pass');
 			
 			// Hash the password 
-			$data['password'] = $this->pass->hash($data['password']);
+			$array['password'] = $this->pass->hash($array['password']);
 			
 		}
-		
-		return $data;
-	
+			
+		return $array;
 	}
 	
 } 

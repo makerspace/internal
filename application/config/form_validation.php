@@ -6,7 +6,7 @@ $config = array(
 			array(
 					'field' => 'email',
 					'label' => 'e-mail address',
-					'rules' => 'trim|required|max_length[255]|valid_email'
+					'rules' => 'trim|required|min_length[6]|max_length[255]|valid_email'
 			),
 			array(
 					'field' => 'password',
@@ -20,7 +20,7 @@ $config = array(
 			array(
 					'field' => 'email',
 					'label' => 'e-mail address',
-					'rules' => 'trim|required|max_length[255]|valid_email'
+					'rules' => 'trim|required|min_length[6]|max_length[255]|valid_email'
 			),
         ),
 		
@@ -48,7 +48,7 @@ $config = array(
 			array(
 				'field' => 'password',
 				'label' => 'password',
-				'rules' => 'max_length[255]'
+				'rules' => 'min_length[8]|max_length[255]'
 			),
 			array(
 				'field' => 'firstname',
@@ -68,7 +68,7 @@ $config = array(
 			array(
 				'field' => 'orgno',
 				'label' => 'orgno',
-				'rules' => 'trim|max_length[12]'
+				'rules' => 'trim|exact_length[11]'
 			),
 			array(
 				'field' => 'address',
@@ -83,7 +83,7 @@ $config = array(
 			array(
 				'field' => 'zipcode',
 				'label' => 'zipcode',
-				'rules' => 'trim|max_length[8]' // ToDo: |callback__normalize_zipcode
+				'rules' => 'trim|max_length[5]' // ToDo: |callback__normalize_zipcode
 			),
 			array(
 				'field' => 'city',
@@ -93,12 +93,12 @@ $config = array(
 			array(
 				'field' => 'country',
 				'label' => 'country',
-				'rules' => 'trim|callback__validate_country'
+				'rules' => 'trim|exact_length[2]|callback__validate_country'
 			),
 			array(
-				'field' => 'birthday',
-				'label' => 'birthday',
-				'rules' => 'trim|max_length[10]|valid_date'
+				'field' => 'civicregno',
+				'label' => 'civic registration number',
+				'rules' => 'trim|exact_length[13]' // ToDo: Validate?
 			),
 			array(
 				'field' => 'mobile',
@@ -132,7 +132,7 @@ $config = array(
 			array(
 				'field' => 'password',
 				'label' => 'password',
-				'rules' => 'max_length[255]'
+				'rules' => 'min_length[8]|max_length[255]'
 			),
 			array(
 				'field' => 'firstname',
@@ -152,7 +152,7 @@ $config = array(
 			array(
 				'field' => 'orgno',
 				'label' => 'orgno',
-				'rules' => 'trim|max_length[12]'
+				'rules' => 'trim|exact_length[11]'
 			),
 			array(
 				'field' => 'address',
@@ -167,7 +167,7 @@ $config = array(
 			array(
 				'field' => 'zipcode',
 				'label' => 'zipcode',
-				'rules' => 'trim|max_length[8]' // ToDo: |callback__normalize_zipcode
+				'rules' => 'trim|exact_length[5]' // ToDo: |callback__normalize_zipcode
 			),
 			array(
 				'field' => 'city',
@@ -177,7 +177,7 @@ $config = array(
 			array(
 				'field' => 'country',
 				'label' => 'country',
-				'rules' => 'trim|callback__validate_country'
+				'rules' => 'trim|exact_length[2]|callback__validate_country'
 			),
 			array(
 				'field' => 'mobile',
@@ -190,9 +190,9 @@ $config = array(
 				'rules' => 'trim|max_length[64]' // ToDo: |callback__normalize_phone
 			),
 			array(
-				'field' => 'birthday',
-				'label' => 'birthday',
-				'rules' => 'trim|max_length[10]|valid_date'
+				'field' => 'civicregno',
+				'label' => 'civic registration number',
+				'rules' => 'trim|exact_length[13]' // ToDo: Validate?
 			),
 			array(
 				'field' => 'twitter',
@@ -257,7 +257,7 @@ $config = array(
 			array(
 				'field' => 'search',
 				'label' => 'search',
-				'rules' => 'trim|required|min_length[2]'
+				'rules' => 'required|min_length[2]'
 			),
 		),
 

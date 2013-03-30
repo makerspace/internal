@@ -32,7 +32,7 @@
 			Standard HTTP Status Codes are used for all responses:</p>
 			<ul>
 				<li>200 = OK</li>
-				<li>201 = Resource created</li>
+				<li>201 = Created</li>
 				<li>400 = Bad Request</li>
 				<li>403 = Forbidden</li>
 				<li>404 = Not found</li>
@@ -40,7 +40,7 @@
 				<li>501 = Not Implemented</li>
 				<li>503 = Service Unavailable</li>
 			</ul>
-
+			<p>Read more on Wikipedia - <a href="https://en.wikipedia.org/wiki/List_of_HTTP_status_codes">List of HTTP status codes</a></p>
 		</div>
 		
 		<div class="span6">
@@ -73,9 +73,12 @@
 		</div>
 	</div>
 	<br>
-	<h2>Resource documentation</h2>
 	
 	<div class="row">
+		<div class="span12">
+			<hr><h2>Resource documentation</h2><hr>
+		</div>
+		
 		<div class="span12">
 			<h3 id="api/auth">POST /api/auth</h3>
 			<p>
@@ -88,18 +91,18 @@
 			</ul>
 			<p>
 				Returns member object as JSON or HTTP 404 if authentication failed.<br>
-				<em>Optional: Provide a X-Real-IP header for the actual user if possible, for logging purposes.</em>
+				<em><strong>Optional:</strong> Provide a "X-Real-IP" HTTP header for the actual user if possible, for logging purposes.</em>
 			</p>
 		</div>
 		
 		<div class="span12">
-			<h3 id="api/get_member">GET /api/get_member (/*uid* and /*key*/*value)</h3>
+			<h3 id="api/get_member">GET /api/get_member/*uid* and /*key*/*value*</h3>
 			<p>
 				Get member by ID. For example: <strong>/api/get_member/1000</strong> for member id 1000<br>
 				Returns member object as JSON with all avaiable fields (NULL fields are NOT included) or HTTP 404 if not found.
 			</p>
 			<p>
-				<strong>Optional:</strong> Supports key/value requests, for example: <strong>/api/get_member/email/test%40example.com</strong>
+				<strong>Optional:</strong> Supports key/value requests. For example: <strong>/api/get_member/email/test%40example.com</strong>
 				<br><em>Note: This requires URL-encoded special chars as above (@ = %40)</em>
 			<p>
 		</div>
@@ -121,7 +124,7 @@
 			</p>
 			<ul>
 				<li>email - The e-mail to try to authenticate with</li>
-				<li>password - Password (sent as clear-text, not PBKDF2)</li>
+				<li>password - Password (As clear-text, NOT hashed)</li>
 				<li>firstname - Members firstname</li>
 				<li>lastname - Members lastname</li>
 				<li>address - Members postal address</li>
@@ -133,9 +136,9 @@
 			</p>
 			<ul>
 				<li>address2 - Member address2 (C/O or similar)</li>
+				<li>civicregno - Members civic reg. number (Format: YYYYMMDD-XXXX)</li>
 				<li>mobile - Members mobile number</li>
 				<li>phone - Members phone number</li>
-				<li>birthday - Members birthday (YYYY-MM-DD format)</li>
 				<li>twitter - Members twitter name</li>
 				<li>skype - Members skype account</li>
 			</ul>

@@ -37,6 +37,7 @@ CREATE TABLE `members` (
   `last_updated` int(11) DEFAULT NULL,
   `firstname` varchar(255) DEFAULT NULL,
   `lastname` varchar(255) DEFAULT NULL,
+  `civicregno` char(13) DEFAULT NULL,
   `company` varchar(255) DEFAULT NULL,
   `orgno` varchar(12) DEFAULT NULL,
   `address` varchar(255) DEFAULT NULL,
@@ -46,12 +47,10 @@ CREATE TABLE `members` (
   `country` char(2) DEFAULT NULL,
   `phone` varchar(64) DEFAULT NULL,
   `mobile` varchar(64) DEFAULT NULL,
-  `birthday` date DEFAULT NULL,
   `twitter` varchar(255) DEFAULT NULL,
   `skype` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `email` (`email`),
-  KEY `birthday` (`birthday`)
+  UNIQUE KEY `email` (`email`)
 );
 CREATE TABLE `newsletters` (
   `id` int(11) NOT NULL AUTO_INCREMENT,

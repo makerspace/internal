@@ -29,7 +29,7 @@ class Search_model extends CI_Model {
 		$search_fields = array(
 			'id', 'firstname', 'lastname', 'company', 'orgno',
 			'address', 'address2', 'zipcode', 'city', 'country',
-			'mobile', 'phone', 'twitter', 'skype'
+			'mobile', 'phone', 'twitter', 'skype', 'civicregno',
 		);
 		
 		// Search in e-mail first.
