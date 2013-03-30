@@ -4,6 +4,7 @@
 		<a href="/members/edit/<?php echo $member->id; ?>" class="btn btn-primary pull-right">Change Member Information</a>
 	</div>
 	
+	<?php if($member->id != 1000) { ?>
 	<div class="span4">
 		<h4>Member Tasks</h4>		
 		<p>
@@ -11,16 +12,22 @@
 		</p><p>
 			<a href="/finance/member/<?php echo $member->id; ?>" class="btn">View Transaction History</a>
 		</p>
-		
 		<br>
 		<h4>Member of Groups <small>Click to switch state</small></h4>
 			
-		<?php foreach($this->Group_model->get_all() as $row) { ?>
+		<?php foreach($this->Group_model->get_all() as $row) { 
+			if($row->name == 'admins' && !$this->Group_model->member_of_group(member_id(), 'admins')) {
+				continue;
+			}
+		?>
 			<a href="/members/group_switch/<?php echo $member->id; ?>/<?php echo $row->name; ?>" style="margin: 4px 2px;" class="btn<?php echo (!empty($member->groups[$row->name]) ? ' btn-inverse' : ''); ?>">
 				<?php echo $row->description; ?>
 			</a>
 		<?php } ?>
 	</div>
+	<?php } else { ?>
+		<div class="span4"><br><br><p class="well lead">This is a internal member account used for API-access and similar only and shall not be used for administrative purposes.</p></div>
+	<?php } ?>
 
 	<div class="span8">
 		<h4>Profile</h4>

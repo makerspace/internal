@@ -5,7 +5,7 @@ class Debug extends CI_Controller {
 	public function __construct() {
 		parent::__construct();
 		
-		gatekeeper();
+		admin_gatekeeper();
 	}
 	
     public function index() {

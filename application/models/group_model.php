@@ -66,7 +66,7 @@ class Group_model extends CI_Model {
 		// Check if we got anything.
 		if($query->num_rows() > 0) {
 			foreach($query->result() as $row) {
-				if(in_array($row->name, array('invalidemail'))) continue;
+				if(in_array($row->name, array('invalidemail', 'admins'))) continue;
 				$return[$row->name] = $row->name.' - '.$row->description;
 			}
 		}
@@ -135,6 +135,10 @@ class Group_model extends CI_Model {
 		// Get group
 		if(!$group = $this->get_group_by_name($group_name)) {
 			return false; // Failsafe
+		}
+		
+		if(!$this->Group_model->member_of_group(member_id(), 'admins') && $group_name == 'admins') {
+			return false;
 		}
 		
 		// Check if user is already a member of this group

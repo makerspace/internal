@@ -157,7 +157,7 @@ class Members extends CI_Controller {
 		
 		if(!$return) {
 			error('Couldn\'t change the group membership!');
-			redirect();
+			redirect('/members/view/'.$member_id);
 		}
 
 		message('Membership of group successfully updated.');

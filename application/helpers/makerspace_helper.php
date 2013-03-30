@@ -16,6 +16,17 @@ function gatekeeper() {
 	}
 }
 
+function admin_gatekeeper() {
+	gatekeeper();
+	
+	$CI =& get_instance();
+	
+	if(!$CI->Group_model->member_of_group(member_id(), 'admins')) {
+		error('You have to be logged in as an administrator to access this page.');
+		redirect();
+	}
+}
+
 function no_gatekeeper() {
 	if(is_loggedin()) {
 		error('You have to be logged out to access this page.');

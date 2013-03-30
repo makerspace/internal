@@ -139,13 +139,17 @@
 				
 		<?php echo form_fieldset_close(); ?>
 	</div>
+	
 	<div class="span6 pull-left">
-		<?php echo form_fieldset('Member of Groups'); ?>
+	
+	<?php if($member->id != 1000) { ?>
+		<?php echo form_fieldset('Member of Groups <small>Not implemented yet</small>'); ?>
 			
 			<?php foreach($this->Group_model->get_all() as $row) { ?>
-				<label class="span2"><?php echo form_checkbox('group['.$row->name.']', '1', !empty($member->groups[$row->name])) . ' ' . $row->description; ?></label>
+				<label class="span2"><?php echo form_checkbox('group['.$row->name.']', '1', !empty($member->groups[$row->name]), 'disabled') . ' ' . $row->description; ?></label>
 			<?php } ?>
-			
+	<?php } ?>
+	
 			<div class="span6">
 				<br><br>
 				<button type="submit" class="btn btn-large span5 btn-info pull-left">Update Member</button>
