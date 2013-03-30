@@ -141,7 +141,7 @@ class Api extends CI_Controller {
 			$this->_status(404); // Not found
 		}
 		
-		// Unset password-related fields.
+		// Unset password-fields
 		unset($member->password, $member->reset_token, $member->reset_expire);
 		
 		// Remove NULL and empty fields (incl. false).
@@ -193,7 +193,7 @@ class Api extends CI_Controller {
 		$this->_check_method('POST');
 		
 		// Check that we got any POST-data
-		if(!$post = $this->input->post()) {			
+		if(!$post = $this->input->post()) {
 			$this->_status(400); // Bad Request
 		}
 		
@@ -203,12 +203,46 @@ class Api extends CI_Controller {
 		// Remove all POST fields that we don't want.
 		$post = $this->_filter_member($post);
 		
-		// ToDo: Check for required fields
-		// ToDo: Check if e-mail already is registered
-		// ToDo: Validate all POST fields.
-		// ToDo: Hash password if available
+		// Check after required fields
+		if(!array_keys_exist($this->required_member_fields, $post)) {
+			// ... we're missing some fields!
+			$this->_status(400); // Bad Request
+		}
 		
-		// ToDo: Save to database
+		// Check if e-mail already is registered (try to get_member)
+		$result = $this->Member_model->get_member('email', $post['email']);
+		if($result) {
+			// User already exists, abort!
+			$this->_status(409); // Conflict
+		}
+		
+		// Validate and normalize all POST fields.
+		$post = $this->_control_fields($post);
+		
+		// Something failed or was wrong...
+		// ToDo: Return WHAT was wrong.
+		if(!$post) {
+			$this->_status(400); // Bad request
+		}
+		
+		// Save to database
+		$result = $this->Member_model->add_member($post);
+		if(!$result) {
+			$this->_status(400); // Bad request
+		}
+		
+		// Get new member object
+		$member_id = $this->db->insert_id();
+		$member = $this->Member_model->get_member($member_id);
+		
+		// Unset password-fields
+		unset($member->password, $member->reset_token, $member->reset_expire);
+		
+		// Remove NULL and empty fields (incl. false).
+		$member = (object)array_filter((array)$member);
+		
+		// Return it!
+		$this->_json_out($member);
 		
 	}
 	
@@ -235,18 +269,40 @@ class Api extends CI_Controller {
 		}
 		
 		// Check if member_id exists (try to get_member)
-		$result = $this->Member_model->get_member($member_id);
-		if(!$result) {
+		$exists = $this->Member_model->get_member($member_id);
+		if(!$exists) {
 			$this->_status(404); // Not Found
 		}
 		
 		// Remove all POST fields that we don't want.
 		$post = $this->_filter_member($post);
 		
-		// ToDo: Validate all POST fields.
-		// ToDo: Hash password if available
+		// Validate and normalize all POST fields.
+		$post = $this->_control_fields($post);
 		
-		// ToDo: Save to database
+		// Something failed or was wrong...
+		// ToDo: Return WHAT was wrong.
+		if(!$post || count($post) < 1) {
+			$this->_status(400); // Bad request
+		}
+		
+		// Save to database
+		$result = $this->Member_model->update_member($member_id, $post);
+		if(!$result) {
+			$this->_status(400); // Bad request
+		}
+		
+		// Get updated member object and unset password fields.
+		$member = $this->Member_model->get_member($member_id);
+		
+		// Unset password-fields
+		unset($member->password, $member->reset_token, $member->reset_expire);
+		
+		// Remove NULL and empty fields (incl. false).
+		$member = (object)array_filter((array)$member);
+		
+		// Return it!
+		$this->_json_out($member);
 		
 	}
 	
@@ -291,10 +347,10 @@ class Api extends CI_Controller {
 		$members = $this->Group_model->group_members($group_id);
 		
 		if($members) {
-			// Strip passwords from result.
-			
-			// Walk the entire result and get groups :)
+			// Strip password-fields from result.
 			array_walk($members, create_function('&$m', 'unset($m->password, $m->reset_token, $m->reset_expire); $m = (object)array_filter((array)$m);'));
+			
+			// ToDo: Walk the entire result and get groups :)
 			
 			// Return members as JSON
 			$this->_json_out($members);
@@ -331,11 +387,115 @@ class Api extends CI_Controller {
 	
 
 	 
+	/******************************************************************/
+	/************************* PRIVATE METHODS ************************/
+	/******************************************************************/
+	
 	/**
-	 *******************************************************
-	 ******************* PRIVATE METHODS *******************
-	 *******************************************************
+	 * Validate and Normalize all POST fields.
+	 * ***ToDo** - Use Form_validation library instead!
+	 *
+	 * @return array Containing the final data or false on fail.
 	 */
+	 private function _control_fields($array) {
+				
+		// Loop through all fields.
+		foreach($array as $key => $value) {
+		
+			if($key == 'email') {
+				$array[$key] = strtolower($value);
+				
+				if(!filter_var($array[$key], FILTER_VALIDATE_EMAIL)) {
+					return false;
+				}
+				
+			} elseif($key == 'password') {
+				if(strlen($value) < 8) {
+					return false;
+				}
+				
+			} elseif($key == 'firstname') {				
+				if(strlen($value) < 2) {
+					return false;
+				}
+				
+				$array[$key] = ucfirst($value);
+			} elseif($key == 'lastname') {
+				if(strlen($value) < 2) {
+					return false;
+				}
+				
+			} elseif($key == 'company') {
+				if(strlen($value) < 2) {
+					return false;
+				}
+				
+			} elseif($key == 'orgno') {
+				$array[$key] = strim($value);
+				
+				if(strlen($array[$key]) != 11) {
+					return false;
+				}
+				
+			} elseif($key == 'address') {
+				if(strlen($value) < 3) {
+					return false;
+				}
+				
+				$array[$key] = ucfirst($value);
+			} elseif($key == 'address2') {
+				if(strlen($value) < 3) {
+					return false;
+				}
+				
+				$array[$key] = ucfirst($value);
+			} elseif($key == 'zipcode') {
+				$array[$key] = strim($value);
+				
+				if(strlen($array[$key]) != 5) {
+					return false;
+				}
+				
+			} elseif($key == 'city') {
+				if(strlen($value) < 2) {
+					return false;
+				}
+				
+				$array[$key] = ucfirst($value);
+			} elseif($key == 'country') {
+				if(strlen($value) != 2) {
+					return false;
+				}
+				
+				$array[$key] = strtoupper($value);
+			} elseif($key == 'civicregno') {
+				$array[$key] = strim($value);
+				
+				if(strlen($array[$key]) != 13) {
+					return false;
+				}
+				
+			} elseif($key == 'mobile') {
+				$array[$key] = normalize_phone($value);
+				
+				if(strlen($array[$key]) < 10) {
+					return false;
+				}
+				
+			} elseif($key == 'phone') {
+				$array[$key] = normalize_phone($value);
+				
+				if(strlen($array[$key]) < 10) {
+					return false;
+				}
+				
+			}
+			
+		}
+		
+		return $array;
+		
+	 }
 	
 	/**
 	 * Short-cut to check HTTP Method (POST/GET)
@@ -407,34 +567,23 @@ class Api extends CI_Controller {
 	}
 	
 	/**
-	 * Normalize update_member requests.
+	 * Normalize update/add_member requests.
 	 */
 	private function _filter_member($array) {
 		
 		// Filter out only those fields we allow
 		$array = elements($this->allowed_member_fields, $array, NULL);
-	
+		
+		// Trim all fields EXCEPT password
+		$temp_pass = $array['password'];
+		array_walk($array, create_function('&$val', '$val = trim($val);')); 
+		$array['password'] = $temp_pass;
+		
 		// Remove false/null/0 values
 		$array = array_filter($array);
 		
 		return $array;
 	
-	}
-	
-	private function _hash_password($array) {
-	
-		// Make an exception if the password field exists
-		if(!empty($data['password'])) {
-			
-			// Load password library
-			$this->load->library('Pass');
-			
-			// Hash the password 
-			$array['password'] = $this->pass->hash($array['password']);
-			
-		}
-			
-		return $array;
 	}
 	
 } 

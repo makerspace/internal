@@ -312,7 +312,7 @@ class Member_model extends CI_Model {
 		$data['last_updated'] = time();
 		
 		// Update member based upon id
-		$this->db->update('members', $data, array('id' => $member_id));
+		$this->db->update('members', $data, array('id' => $member_id), 1);
 		
 		// Return result
 		return (bool)$this->db->affected_rows();
@@ -363,9 +363,6 @@ class Member_model extends CI_Model {
 	 * Function to filter all field of a member array.
 	 */
 	public function _normalize($array) {
-	
-		// Remove false/null/0 values
-		$array = array_filter($array);
 		
 		// Allowed form fields
 		$fields = array(
@@ -386,14 +383,9 @@ class Member_model extends CI_Model {
 			// Hash the password 
 			$data['password'] = $this->pass->hash($data['password']);
 			
-		} else {
-			// Remove if unset
-			unset($data['password']);
 		}
-		
-		// Exception - remove groups for now.
-		// ToDo: Make it work?
-		unset($data['groups']);
+		// Remove false/null/0 values
+		$data = array_filter($data);
 		
 		return $data;
 	

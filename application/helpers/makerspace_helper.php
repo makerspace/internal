@@ -113,6 +113,24 @@ function strim($str) {
 	return preg_replace('/\s+/', '', $str);
 }
 
+function normalize_phone($str) {
+
+	$str = preg_replace('/[^\d]/', '', $str);
+
+	if($str[0] == '0') {
+		return '+46'.substr($str, 1);
+	} elseif(substr($str, 0, 1) == '46') {
+		return '+'.$str;
+	} elseif($str[0] == '7') {
+		return '+46'.$str;
+	} elseif($str[0] == '8') {
+		return '+46'.$str;
+	}
+	
+	return '+'.$str;
+	
+}
+
 
 /**
  * Check if array keys exists in array.

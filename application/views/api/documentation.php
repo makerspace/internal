@@ -33,10 +33,12 @@
 			<ul>
 				<li>200 = OK</li>
 				<li>201 = Created</li>
+				<li>202 = Accepted</li>
 				<li>400 = Bad Request</li>
 				<li>403 = Forbidden</li>
 				<li>404 = Not found</li>
 				<li>405 = Method Not Allowed</li>
+				<li>409 = Conflict (Resource already exists)</li>
 				<li>501 = Not Implemented</li>
 				<li>503 = Service Unavailable</li>
 			</ul>
@@ -91,7 +93,7 @@
 			</ul>
 			<p>
 				Returns member object as JSON or HTTP 404 if authentication failed.<br>
-				<em><strong>Optional:</strong> Provide a "X-Real-IP" HTTP header for the actual user if possible, for logging purposes.</em>
+				<em><strong>Optional:</strong> Provide a "X-Real-IP" HTTP header for the actual member if possible, for logging purposes.</em>
 			</p>
 		</div>
 		
@@ -119,7 +121,7 @@
 			<h3 id="api/add_member">POST /api/add_member</h3>
 			<p>
 				Adds a new member to the database<br>
-				Returns full member object if succeded or HTTP 400 if request failed (for instance, if the e-mail already exists).<br><br>
+				Returns full member object in JSON if successful, HTTP 401 Conflict if the member (e-mail) already exists and if there are missing fields or fields in wrong format - it returns 400 Bad Request.<br><br>
 				<strong>Required POST fields:</strong>
 			</p>
 			<ul>
@@ -148,7 +150,7 @@
 			<h3 id="api/update_member">POST /api/update_member/*uid*</h3>
 			<p>
 				Updates a existing member in the database, based upon their member ID.<br>
-				Returns full member object if succeded or HTTP 404 if request failed (for instance, if the user doesn't exists).<br><br>
+				Returns full member object in JSON if successful or HTTP 404 if request failed (for instance, if the member doesn't exists).<br>If anything else is wrong (fields format or similar), it returns HTTP 400 Bad Request.<br><br>
 				<strong class="span6">See <a href="#api/add_member">/api/add_member</a> for available fields in this method.<br>Please note that ALL fields are optional. If a field isn't provided, it's NOT updated.</strong>
 			</p>
 		</div>
