@@ -121,7 +121,7 @@
 			<h3 id="api/add_member">POST /api/add_member</h3>
 			<p>
 				Adds a new member to the database<br>
-				Returns full member object in JSON if successful, HTTP 401 Conflict if the member (e-mail) already exists and if there are missing fields or fields in wrong format - it returns 400 Bad Request.<br><br>
+				Returns full member object in JSON if successful, HTTP 409 Conflict if the member (e-mail) already exists and if there are missing fields or fields in wrong format - it returns 400 Bad Request.<br><br>
 				<strong>Required POST fields:</strong>
 			</p>
 			<ul>
