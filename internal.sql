@@ -44,7 +44,7 @@ CREATE TABLE `members` (
   `address2` varchar(255) DEFAULT NULL,
   `zipcode` int(11) DEFAULT NULL,
   `city` varchar(64) DEFAULT NULL,
-  `country` char(2) DEFAULT NULL,
+  `country` char(2) DEFAULT 'SE',
   `phone` varchar(64) DEFAULT NULL,
   `mobile` varchar(64) DEFAULT NULL,
   `twitter` varchar(255) DEFAULT NULL,
@@ -64,6 +64,17 @@ CREATE TABLE `newsletters` (
   `sent` int(11) NOT NULL DEFAULT '0',
   `bounces` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
+);
+CREATE TABLE `payments` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uuid` char(36) COLLATE utf8_unicode_ci NOT NULL,
+  `member_id` int(11) NOT NULL,
+  `type` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
+  `status` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `data` mediumtext COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uuid` (`uuid`),
+  KEY `type` (`type`)
 );
 
 INSERT INTO config VALUES('pop3_account', NULL, 'POP3 account used as Return-Path to track bounces');

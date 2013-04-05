@@ -376,6 +376,12 @@ class Member_model extends CI_Model {
 		// Filter out only those fields we allow
 		$data = elements($fields, $array, NULL);
 		
+		// Remove false/null/0 values
+		$data = array_filter($data);
+		
+		// And add those fields removed...
+		$data = elements($fields, $array, NULL);
+		
 		// Make an exception for the password field
 		if(!empty($data['password'])) {
 			
@@ -386,8 +392,6 @@ class Member_model extends CI_Model {
 			$data['password'] = $this->pass->hash($data['password']);
 			
 		}
-		// Remove false/null/0 values
-		$data = array_filter($data);
 		
 		return $data;
 	
