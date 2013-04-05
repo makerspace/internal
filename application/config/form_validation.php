@@ -127,7 +127,7 @@ $config = array(
 			array(
 				'field' => 'email',
 				'label' => 'e-mail address',
-				'rules' => 'trim|required|min_length[6]|max_length[255]|valid_email'
+				'rules' => 'trim|required|min_length[6]|max_length[255]|valid_email' // ToDo: |callback__update_email
 			),
 			array(
 				'field' => 'password',
