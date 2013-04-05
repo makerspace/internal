@@ -60,6 +60,7 @@ class Members extends CI_Controller {
 		
 		$head = array(
 			'title' => 'View Member',
+			'fullscreen' => true,
 		);
 		
 		$data = array(
@@ -172,9 +173,6 @@ class Members extends CI_Controller {
 		
 			// Get countries
 			$countries = (array)$this->dbconfig->countries;
-			
-			// Remove first item (null option)
-			$countries = array_slice($countries, 1);
 			
 			// Validate country
 			if(array_key_exists($str, $countries)) {
