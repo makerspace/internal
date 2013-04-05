@@ -89,7 +89,7 @@ class Api extends CI_Controller {
 			unset($member->password, $member->reset_token, $member->reset_expire);
 			
 			// Remove NULL and empty fields (incl. false).
-			$member = (object)array_filter((array)$member);
+			#$member = (object)array_filter((array)$member);
 		
 			// Try to get the real user IP
 			if(!$ip = $this->input->get_request_header('X-Real-IP')) {
@@ -145,7 +145,7 @@ class Api extends CI_Controller {
 		unset($member->password, $member->reset_token, $member->reset_expire);
 		
 		// Remove NULL and empty fields (incl. false).
-		$member = (object)array_filter((array)$member);
+		#$member = (object)array_filter((array)$member);
 		
 		// And return as JSON
 		$this->_json_out($member);
@@ -239,7 +239,7 @@ class Api extends CI_Controller {
 		unset($member->password, $member->reset_token, $member->reset_expire);
 		
 		// Remove NULL and empty fields (incl. false).
-		$member = (object)array_filter((array)$member);
+		#$member = (object)array_filter((array)$member);
 		
 		// Return it!
 		$this->_json_out($member);
@@ -299,7 +299,7 @@ class Api extends CI_Controller {
 		unset($member->password, $member->reset_token, $member->reset_expire);
 		
 		// Remove NULL and empty fields (incl. false).
-		$member = (object)array_filter((array)$member);
+		#$member = (object)array_filter((array)$member);
 		
 		// Return it!
 		$this->_json_out($member);
@@ -348,7 +348,7 @@ class Api extends CI_Controller {
 		
 		if($members) {
 			// Strip password-fields from result.
-			array_walk($members, create_function('&$m', 'unset($m->password, $m->reset_token, $m->reset_expire); $m = (object)array_filter((array)$m);'));
+			array_walk($members, create_function('&$m', 'unset($m->password, $m->reset_token, $m->reset_expire);')); // $m = (object)array_filter((array)$m);'));
 			
 			// ToDo: Walk the entire result and get groups :)
 			
