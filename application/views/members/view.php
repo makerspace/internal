@@ -36,7 +36,7 @@
 		<div class="row">
 			<div class="span3">
 				<img src="<?php echo gravatar($member->email, 256); ?>" class="img-polaroid">
-				<center><small>Avatar by <a href="https://www.gravatar.com/">Gravatar</a></small></center>
+				<p class="pagination-centered"><small>Avatar by <a href="https://www.gravatar.com/">Gravatar</a></small></p>
 			</div>
 			
 			<div class="span2">

@@ -60,16 +60,15 @@
 				<div class="control-group">
 					<?php echo form_label('Civic Reg. Number', 'civicregno', array('class' => 'control-label')); ?>
 					<div class="controls">
-						<?php echo form_input('civicregno', set_value('civicregno'), 'id="civicregno" placeholder="YYYYMMDD-XXXX"'); ?>
-						<span class="help-inline">Optional</span>
+						<?php echo form_input('civicregno', set_value('civicregno'), 'id="civicregno" required'); ?>
+						<span class="help-inline">YYYYMMDD-XXXX</span>
 					</div>
 				</div>
 				
 				<div class="control-group">
 					<?php echo form_label('Address', 'address', array('class' => 'control-label')); ?>
 					<div class="controls">
-						<?php echo form_input('address', set_value('address'), 'id="address"'); ?>
-						<span class="help-inline">Optional</span>
+						<?php echo form_input('address', set_value('address'), 'id="address" required'); ?>
 					</div>
 				</div>
 				
@@ -84,16 +83,15 @@
 				<div class="control-group">
 					<?php echo form_label('Zip code', 'zipcode', array('class' => 'control-label')); ?>
 					<div class="controls">
-						<?php echo form_input('zipcode', set_value('zipcode'), 'id="zipcode" placeholder="12345"'); ?>
-						<span class="help-inline">Optional - Without spaces</span>
+						<?php echo form_input('zipcode', set_value('zipcode'), 'id="zipcode" required'); ?>
+						<span class="help-inline">12345 (Without Space)</span>
 					</div>
 				</div>
 				
 				<div class="control-group">
 					<?php echo form_label('City', 'city', array('class' => 'control-label')); ?>
 					<div class="controls">
-						<?php echo form_input('city', set_value('city'), 'id="city"'); ?>
-						<span class="help-inline">Optional</span>
+						<?php echo form_input('city', set_value('city'), 'id="city" required'); ?>
 					</div>
 				</div>
 				
@@ -101,23 +99,23 @@
 					<?php echo form_label('Country', 'country', array('class' => 'control-label')); ?>
 					<div class="controls">
 						<?php echo form_dropdown('country', $this->dbconfig->countries, set_value('country'), 'id="country"'); ?>
-						<span class="help-inline">Optional</span>
 					</div>
 				</div>
 				
 				<div class="control-group">
 					<?php echo form_label('Mobile', 'mobile', array('class' => 'control-label')); ?>
 					<div class="controls">
-						<?php echo form_input('mobile', set_value('mobile'), 'id="mobile" placeholder="+46812300000"'); ?>
-						<span class="help-inline">Optional</span>
+						<?php echo form_input('mobile', set_value('mobile'), 'id="mobile" required'); ?>
+						<span class="help-inline">+46123000000</span>
 					</div>
 				</div>
 				
 				<div class="control-group">
 					<?php echo form_label('Alt. Phone', 'phone', array('class' => 'control-label')); ?>
 					<div class="controls">
-						<?php echo form_input('phone', set_value('phone'), 'id="phone" placeholder="+46812300000"'); ?>
-						<span class="help-inline">Optional</span>
+						<?php echo form_input('phone', set_value('phone'), 'id="phone"'); ?>
+						<span class="help-inline">+46123000000</span>
+
 					</div>
 				</div>
 				
@@ -134,7 +132,7 @@
 				<div class="control-group">
 					<?php echo form_label('Org. Number', 'orgno', array('class' => 'control-label')); ?>
 					<div class="controls">
-						<?php echo form_input('orgno', set_value('orgno'), 'id="orgno" placeholder="XXXXXX-YYYY"'); ?>
+						<?php echo form_input('orgno', set_value('orgno'), 'id="orgno"'); ?>
 						<span class="help-inline">Optional</span>
 					</div>
 				</div>

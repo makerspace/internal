@@ -43,7 +43,7 @@
 	</div>
 	<div class="span6 pull-right">
 		<?php echo form_fieldset('Personal Information'); ?>
-			
+
 				<div class="control-group">
 					<?php echo form_label('Firstname', 'firstname', array('class' => 'control-label')); ?>
 					<div class="controls">
@@ -61,8 +61,8 @@
 				<div class="control-group">
 					<?php echo form_label('Civic Reg. Number', 'civicregno', array('class' => 'control-label')); ?>
 					<div class="controls">
-						<?php echo form_input('civicregno', set_value('civicregno', $member->civicregno), 'id="civicregno" placeholder="YYYYMMDD-XXXX"'); ?>
-						<span class="help-inline">Optional</span>
+						<?php echo form_input('civicregno', set_value('civicregno', $member->civicregno), 'id="civicregno"'); ?>
+						<span class="help-inline">YYYYMMDD-XXXX</span>
 					</div>
 				</div>
 				
@@ -84,8 +84,8 @@
 				<div class="control-group">
 					<?php echo form_label('Zip code', 'zipcode', array('class' => 'control-label')); ?>
 					<div class="controls">
-						<?php echo form_input('zipcode', set_value('zipcode', $member->zipcode), 'id="zipcode" placeholder="12345"'); ?>
-						<span class="help-inline">Without spaces</span>
+						<?php echo form_input('zipcode', set_value('zipcode', $member->zipcode), 'id="zipcode"'); ?>
+						<span class="help-inline">12345 (Without Space)</span>
 					</div>
 				</div>
 				
@@ -106,16 +106,16 @@
 				<div class="control-group">
 					<?php echo form_label('Mobile', 'mobile', array('class' => 'control-label')); ?>
 					<div class="controls">
-						<?php echo form_input('mobile', set_value('mobile', $member->mobile), 'id="mobile" placeholder="+46812300000"'); ?>
-						<span class="help-inline">Optional</span>
+						<?php echo form_input('mobile', set_value('mobile', $member->mobile), 'id="mobile"'); ?>
+						<span class="help-inline">+46123000000</span>
 					</div>
 				</div>
 				
 				<div class="control-group">
 					<?php echo form_label('Alt. Phone', 'phone', array('class' => 'control-label')); ?>
 					<div class="controls">
-						<?php echo form_input('phone', set_value('phone', $member->phone), 'id="phone" placeholder="+46812300000"'); ?>
-						<span class="help-inline">Optional</span>
+						<?php echo form_input('phone', set_value('phone', $member->phone), 'id="phone"'); ?>
+						<span class="help-inline">+46123000000</span>
 					</div>
 				</div>
 				
@@ -132,7 +132,7 @@
 				<div class="control-group">
 					<?php echo form_label('Org. Number', 'orgno', array('class' => 'control-label')); ?>
 					<div class="controls">
-						<?php echo form_input('orgno', set_value('orgno', $member->orgno), 'id="orgno" placeholder="XXXXXX-YYYY"'); ?>
+						<?php echo form_input('orgno', set_value('orgno', $member->orgno), 'id="orgno"'); ?>
 						<span class="help-inline">Optional</span>
 					</div>
 				</div>

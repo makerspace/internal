@@ -8,10 +8,10 @@
 	<?php echo form_close(); ?>
 </div>
 
-<table class="table table-striped table-condensed table-bordered">
+<table class="table table-striped table-condensed table-bordered tablesorter">
 	<thead>
 		<tr>
-			<th>&nbsp;</th>
+			<th class="{sorter: false}">&nbsp;</th>
 			<th>ID</th>
 			<th>Name</th>
 			<th>E-mail</th>
@@ -20,7 +20,7 @@
 			<th>Member Since</th>
 			<th>Active Member</th>
 			<th>Lab Access</th>
-			<th>Manage</th>
+			<th class="{sorter: false}">Manage</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -44,5 +44,3 @@
 	<?php } ?>
 	</tbody>
 </table>
-
-<a href="/members/add" class="btn btn-primary pull-right">Add new member</a>
