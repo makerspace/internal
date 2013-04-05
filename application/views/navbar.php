@@ -4,9 +4,9 @@
 			<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
-				<span class="icon-bar"></span>
-				<span class="icon-bar"></span>
 				<?php if($this->Member_model->is_admin()) { ?>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 				<?php } ?>
@@ -20,9 +20,9 @@
 				<ul class="nav">
 					<li<?php echo menu_active('members'); ?>><a href="/members">Members</a></li>
 					<li<?php echo menu_active('groups'); ?>><a href="/groups">Groups</a></li>
+					<?php if($this->Member_model->is_admin()) { ?>
 					<li<?php echo menu_active('finance'); ?>><a href="/finance">Finance</a></li>
 					<li<?php echo menu_active('newsletter'); ?>><a href="/newsletter">Newsletter</a></li>
-					<?php if($this->Member_model->is_admin()) { ?>
 					<li<?php echo menu_active('admin'); ?>><a href="/admin">Admin</a></li>
 					<li<?php echo menu_active('debug'); ?>><a href="/debug">Debug</a></li>
 					<?php } ?>

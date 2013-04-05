@@ -15,7 +15,7 @@ Please note that you can't change the recipients or recipient groups after you'v
 
 <h3>Previous Newsletters</h3>
 <p>Use the buttons to the right to Edit, View and (Re)send previous newsletters.</p>
-<table class="table table-striped">
+<table class="table table-striped table-bordered tablesorter">
 	<thead>
 		<tr>
 			<th>Title</th>
@@ -23,7 +23,7 @@ Please note that you can't change the recipients or recipient groups after you'v
 			<th>Created</th>
 			<th>Last Updated</th>
 			<th>Status</th>
-			<th>Sent <small>(Timestamp)</small></th>
+			<th>Sent</th>
 			<th>Recipients</th>
 			<th>Bounces</th>
 			<th>Manage</th>
