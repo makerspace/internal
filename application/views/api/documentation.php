@@ -125,6 +125,7 @@
 				<strong>Required POST fields:</strong>
 			</p>
 			<ul>
+				<li>civicregno - Members civic reg. number (Format: YYYYMMDD-XXXX)</li>
 				<li>email - The e-mail to try to authenticate with</li>
 				<li>password - Password (As clear-text, NOT hashed)</li>
 				<li>firstname - Members firstname</li>
@@ -138,7 +139,6 @@
 			</p>
 			<ul>
 				<li>address2 - Member address2 (C/O or similar)</li>
-				<li>civicregno - Members civic reg. number (Format: YYYYMMDD-XXXX)</li>
 				<li>mobile - Members mobile number</li>
 				<li>phone - Members phone number</li>
 				<li>twitter - Members twitter name</li>
