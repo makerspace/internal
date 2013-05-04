@@ -1,4 +1,4 @@
-<?php echo form_open('', array('class' => 'form-signin')); ?>
+<?php echo form_open('', 'class="form-signin" autocomplete="off"'); ?>
 
 	<a href="/auth/login"><img src="/assets/img/logo.png" alt="Stockholm Makerspace" class="logo"></a>
 	
@@ -6,11 +6,11 @@
 
 	<br>
 	<label for="new_password">New password</label>
-	<?php echo form_password('password', '', 'class="input-block-level" required pattern=".{8,}" title="Minimum 8 characters"'); ?>
+	<?php echo form_password('password', '', 'class="input-block-level" required pattern=".{8,}" title="Minimum 8 characters" autocompletion="off"'); ?>
 	
 	<br>
 	<label for="new_password">Repeat new password</label>
-	<?php echo form_password('password2', '', 'class="input-block-level" required pattern=".{8,}" title="Minimum 8 characters"'); ?>
+	<?php echo form_password('password2', '', 'class="input-block-level" required pattern=".{8,}" title="Minimum 8 characters" autocompletion="off"'); ?>
 
 	<br><br>
 	

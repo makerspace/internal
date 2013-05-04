@@ -57,8 +57,11 @@ class Group_model extends CI_Model {
 	public function newsletter_groups() {
 	
 		// Get all groups
-		$this->db->select('name, description')->order_by('name');
+		$this->db->select('id, name, description')->order_by('name');
 		$query = $this->db->get('groups');
+		
+		// Ignore these member groups
+		$ignore_groups = array('invalidemail', 'admins', 'duplicatedmember', 'finance', 'api');
 		
 		// Default as empty
 		$return = array();
@@ -66,8 +69,8 @@ class Group_model extends CI_Model {
 		// Check if we got anything.
 		if($query->num_rows() > 0) {
 			foreach($query->result() as $row) {
-				if(in_array($row->name, array('invalidemail', 'admins'))) continue;
-				$return[$row->name] = $row->name.' - '.$row->description;
+				if(in_array($row->name, $ignore_groups)) continue;
+				$return[$row->id] = $row->name.' - '.$row->description;
 			}
 		}
 		
@@ -156,6 +159,20 @@ class Group_model extends CI_Model {
 		}
 	
 		return (bool)$this->db->affected_rows();
+	}
+	
+	public function add_group($group_name, $description) {
+	
+		// Must be unique
+		if($group = $this->get_group_by_name($group_name)) {
+			return false; // Failsafe
+		}
+		
+		// Add group
+		$this->db->insert('groups', array('name' => $group_name, 'description' => $description));
+		
+		return (bool)$this->db->affected_rows();
+		
 	}
 	
 }

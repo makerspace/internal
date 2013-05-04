@@ -6,7 +6,7 @@ class Newsletter extends CI_Controller {
 		parent::__construct();
 		
 		// Protect entire controller.
-		gatekeeper();
+		admin_gatekeeper();
 		
 		// Always load Newsletter model
 		$this->load->model('Newsletter_model');
@@ -45,17 +45,31 @@ class Newsletter extends CI_Controller {
 				// Get newsletter data
 				$subject = $_POST['subject'];
 				$body = $_POST['body'];
-				#alwaysempty ;) $recipient_groups = json_decode(base64_decode($this->input->post('groups')));
+				$recipient_groups = json_decode(base64_decode($this->input->post('groups')));
+				
 				
 				// Get members ids based on recipient groups
 				if(!empty($recipient_groups)) {
-					// ToDo: Here!!
+				
+					foreach($recipient_groups as $group_id) {	
+						$members = $this->Group_model->group_members($group_id);
+						
+						foreach($members as $member) {
+							$recipients[] = $member->id;
+						}
+					}
 					
 				} else {
 					// If no groups was picked, send to all (get all member ids).
 					$query = $this->db->select('id')->get('members');
-					$recipients = $query->result_array();
+					
+					foreach($query->result() as $member) {
+						$recipients[] = $member->id;
+					}
 				}
+				
+				// Make recipient list unique
+				$recipients = array_unique($recipients);
 				
 				// Save in db
 				$result = $this->Newsletter_model->create($recipients, $subject, $body);
@@ -140,6 +154,30 @@ class Newsletter extends CI_Controller {
 		$this->load->view('newsletter/edit', array('newsletter' => $newsletter));
 		$this->load->view('footer');
 	
+	}
+	
+	/**
+	 * Delete newsletter.
+	 */
+	public function delete($id = 0) {
+		
+		// Get newsletter from id
+		$newsletter = $this->Newsletter_model->get($id);
+		
+		// Failsafe
+		if(!$newsletter) {
+			error('The selected newsletter doesn\'t exist!');
+			redirect('newsletter');
+		}
+		
+		// Delete newsletter by id
+		$delete = $this->Newsletter_model->delete($id);
+		
+		if(!$delete) {
+			error('Couldn\'t delete the newsletter!');
+		}
+		
+		redirect('newsletter');
 	}
 	
 	public function test_send($id = 0) {

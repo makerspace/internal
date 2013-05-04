@@ -49,6 +49,45 @@ class Members extends CI_Controller {
 
 	}
 	
+	public function export($type = '', $id = '') {
+		gatekeeper();
+	
+		// If POST is valid - export based upon POST
+		if ($this->form_validation->run()) {
+		
+			// Load model
+			$this->load->model('Export_model');
+			
+			// Process the export based upon post
+			$this->Export_model->export_post();
+		
+		// OR by type and id
+		} elseif(in_array($type, array('group', 'member')) && !empty($id)) {
+			
+			// Load model
+			$this->load->model('Export_model');
+			
+			// ToDo: Export...
+			#$this->Export_model->export_group();
+			#$this->Export_model->export_member();
+			
+		}
+		
+		$head = array(
+			'title' => 'Export members',
+		);
+		
+		$data = array(
+			'groups' => $this->Group_model->get_all(),
+			'export_fields' => $this->Member_model->export_fields(),
+		);
+		
+		$this->load->view('header', $head);
+		$this->load->view('members/export', $data);
+		$this->load->view('footer');
+
+	}
+	
 	public function view($member_id = '') {
 		gatekeeper();
 		
@@ -60,7 +99,6 @@ class Members extends CI_Controller {
 		
 		$head = array(
 			'title' => 'View Member',
-			'fullscreen' => true,
 		);
 		
 		$data = array(

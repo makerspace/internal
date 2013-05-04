@@ -13,5 +13,23 @@ $(function(){
 		});
 	}, 4000); // 4 seconds
 	
+	// Add tablesorter
 	$("table.tablesorter").tablesorter();
+	
+	// Empty password/e-mail fields.
+	$("input[type=email], input[type=password]").attr("autocomplete","off");
+	
+	// Allow checking all/no checkboxes
+	$('.checkall').click(function () {
+		selector = $(this).data('selector');
+		$('input:checkbox[name="'+selector+'[]"]').prop("checked", true);
+		return false;
+	});
+	
+	$('.checknone').click(function () {
+		selector = $(this).data('selector');
+		$('input:checkbox[name="'+selector+'[]"]').prop("checked", false);
+		return false;
+	});
+	
 });

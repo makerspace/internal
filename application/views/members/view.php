@@ -1,37 +1,42 @@
 <div class="row">
 	<div class="span12">
-		<h2 class="pull-left">View member</h2>
+		<h3 class="pull-left">Viewing member #<?php echo $member->id; ?></h3>
 		<a href="/members/edit/<?php echo $member->id; ?>" class="btn btn-primary pull-right">Change Member Information</a>
 	</div>
 	
 	<?php if($member->id != 1000) { ?>
 	<div class="span4">
-		<h4>Member Tasks</h4>		
+		<h3>Member Tasks</h3>		
 		<p>
 			<a href="/members/membership_card/<?php echo $member->id; ?>" class="btn btn-primary">Get Membership Card <small>(as PDF)</small></a>
 		</p><p>
 			<a href="/finance/member/<?php echo $member->id; ?>" class="btn">View Transaction History</a>
 		</p>
 		<br>
-		<h4>Member of Groups <small>Click to switch state</small></h4>
-			
-		<?php foreach($this->Group_model->get_all() as $row) { 
-			// Don't allow non-admins to set admin-permissions - and cause of that, you shouldn't be able to remove your self as admin.
-			if($row->name == 'admins' && (!$this->Group_model->member_of_group(member_id(), 'admins') || $member->id == member_id())) {
-				continue;
-			}
-		?>
-			<a href="/members/group_switch/<?php echo $member->id; ?>/<?php echo $row->name; ?>" style="margin: 4px 2px;" class="btn<?php echo (!empty($member->groups[$row->name]) ? ' btn-inverse' : ''); ?>">
-				<?php echo $row->description; ?>
-			</a>
+
+		<h3>Lab access <small>NOT WORKING YET</small></h3>
+		<p>Months marked below represent those who the member have had or going to have labaccess.</p>
+		<h4>2013</h4>
+		<div class="row">
+		<?php foreach(range(1,12) as $lab2013) { ?>
+			<label class="span1"><?php echo form_checkbox('labaccess2013[]['.$lab2013.']', '1', false, 'disabled') . ' ' . date('M', strtotime('2013-'.$lab2013)); ?></label>
 		<?php } ?>
+		</div>
+
+		<h4>2014</h4>
+		<div class="row">
+		<?php foreach(range(1,12) as $lab2013) { ?>
+			<label class="span1"><?php echo form_checkbox('labaccess2014[]['.$lab2013.']', '1', false, 'disabled') . ' ' . date('M', strtotime('2013-'.$lab2013)); ?></label>
+		<?php } ?>
+		</div>
+
 	</div>
 	<?php } else { ?>
 		<div class="span4"><br><br><p class="well lead">This is a internal member account used for API-access and similar only and shall not be used for administrative purposes.</p></div>
 	<?php } ?>
 
 	<div class="span8">
-		<h4>Profile</h4>
+		<h3>Member information</h3>
 		
 		<div class="row">
 			<div class="span3">
@@ -111,6 +116,24 @@
 					<?php echo date('Y-m-d', $member->registered); ?>
 				</p>
 			</div>
+	<?php if($member->id != 1000) { ?>
+			<div class="span8">
+					<h3>Member of Groups <small>Click to switch state</small></h3>
+			
+		<?php foreach($this->Group_model->get_all() as $row) { 
+			// Don't allow non-admins to set admin-permissions - and cause of that, you shouldn't be able to remove your self as admin.
+			if($row->name == 'admins' && (!$this->Group_model->member_of_group(member_id(), 'admins') || $member->id == member_id())) {
+				continue;
+			}
+		?>
+			<a href="/members/group_switch/<?php echo $member->id; ?>/<?php echo $row->name; ?>" style="margin: 4px 3px;" class="btn <?php echo (!empty($member->groups[$row->name]) ? ' btn-inverse' : ''); ?>">
+				<?php echo $row->description; ?>
+			</a>
+		<?php } ?>
+		<br>
+
+			</div>
+	<?php } ?>
 		</div>
 	</div>
 </div>

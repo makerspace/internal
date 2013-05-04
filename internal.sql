@@ -65,16 +65,15 @@ CREATE TABLE `newsletters` (
   `bounces` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 );
-CREATE TABLE `payments` (
+CREATE TABLE `transactions` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `uuid` char(36) COLLATE utf8_unicode_ci NOT NULL,
+  `timestamp` int(11) NOT NULL,
   `member_id` int(11) NOT NULL,
-  `type` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
-  `status` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
-  `data` mediumtext COLLATE utf8_unicode_ci NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uuid` (`uuid`),
-  KEY `type` (`type`)
+  `type` varchar(64) NOT NULL,
+  `amount` int(11) NOT NULL,
+  `status` varchar(255) NOT NULL,
+  `data` mediumtext,
+  PRIMARY KEY (`id`)
 );
 
 INSERT INTO config VALUES('pop3_account', NULL, 'POP3 account used as Return-Path to track bounces');

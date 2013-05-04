@@ -260,5 +260,26 @@ $config = array(
 				'rules' => 'required|min_length[2]'
 			),
 		),
+		// Add new group
+		'groups/add_group' => array(
+			array(
+				'field' => 'name',
+				'label' => 'Name',
+				'rules' => 'required|min_length[2]|strtolower|is_unique[groups.name]'
+			),
+			array(
+				'field' => 'description',
+				'label' => 'Description',
+				'rules' => 'required|min_length[2]'
+			),
+		),
+		// Export members
+		'members/export' => array(
+			array(
+				'field' => 'fields',
+				'label' => 'select fields',
+				'rules' => 'required'
+			),
+		),
 
 );

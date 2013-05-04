@@ -8,7 +8,7 @@
 <p>Select recipients access levels below. Leave empty to send to all members.<br>
 Please note that you can't change the recipients or recipient groups after you've created a newsletter!</p>
 <?php echo form_open('/newsletter/create'); ?>
-	<?php echo form_multiselect('groups[]', $groups, '', 'class="span4" size="12"'); ?><br>
+	<?php echo form_multiselect('groups[]', $groups, '', 'class="span4" size="10"'); ?><br>
 	<?php echo form_submit('continue', 'Continue to next step', 'class="btn btn-large btn-primary"'); ?>
 <?php echo form_close(); ?>
 <br>
@@ -45,6 +45,10 @@ Please note that you can't change the recipients or recipient groups after you'v
 				<?php echo anchor('newsletter/view/'.$nl->id, 'View', 'class="btn btn-primary btn-mini"'); ?>
 				<?php echo anchor('newsletter/delete/'.$nl->id, 'Delete', 'class="btn btn-inverse btn-mini"'); ?>
 			</td>
+		</tr>
+		<?php } if(empty($newsletters)) { ?>
+		<tr>
+			<td colspan="9">No newsletters found.</td>
 		</tr>
 		<?php } ?>
 	</tbody>

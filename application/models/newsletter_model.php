@@ -38,6 +38,7 @@ class Newsletter_model extends CI_Model {
 		return false;
 		
 	}
+	
 	/**
 	 * Save updated newsletter to db.
 	 */
@@ -51,6 +52,19 @@ class Newsletter_model extends CI_Model {
 		
 		// Save to database
 		$this->db->update('newsletters', $data, array('id' => $id), 1);
+
+		// Return result
+		return (bool)$this->db->affected_rows();
+		
+	}
+	
+	/**
+	 * Delete newsletter from db.
+	 */
+	public function delete($id = 0) {
+	
+		// Delete from database
+		$this->db->delete('newsletters', array('id' => $id), 1);
 
 		// Return result
 		return (bool)$this->db->affected_rows();

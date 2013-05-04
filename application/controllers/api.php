@@ -20,7 +20,7 @@ class Api extends CI_Controller {
 	// Required Member POST fields
 	private $required_member_fields = array(
 		'email', 'password', 'firstname', 'lastname',
-		'address', 'zipcode', 'city',
+		'address', 'zipcode', 'city', 'civicregno',
 	);
 	
 
@@ -275,7 +275,7 @@ class Api extends CI_Controller {
 		}
 		
 		// Remove all POST fields that we don't want.
-		$post = $this->_filter_member($post);
+		$post = $this->_filter_member($post, false); // DO NOT remove empty fields
 		
 		// Validate and normalize all POST fields.
 		$post = $this->_control_fields($post);
@@ -469,10 +469,13 @@ class Api extends CI_Controller {
 				
 				$array[$key] = strtoupper($value);
 			} elseif($key == 'civicregno') {
-				$array[$key] = strim($value);
-				
+			
 				if(strlen($array[$key]) != 13) {
 					return false;
+				}
+				
+				if(!$this->_validate_civicregno($array[$key])) {
+				#	return false;
 				}
 				
 			} elseif($key == 'mobile') {
@@ -485,7 +488,7 @@ class Api extends CI_Controller {
 			} elseif($key == 'phone') {
 				$array[$key] = normalize_phone($value);
 				
-				if(strlen($array[$key]) < 10) {
+				if(strlen($array[$key]) < 8) {
 					return false;
 				}
 				
@@ -569,21 +572,96 @@ class Api extends CI_Controller {
 	/**
 	 * Normalize update/add_member requests.
 	 */
-	private function _filter_member($array) {
+	private function _filter_member($array, $remove_empty = true) {
 		
 		// Filter out only those fields we allow
-		$array = elements($this->allowed_member_fields, $array, NULL);
+		$data = array();
+		foreach ($this->allowed_member_fields as $field) {
+			if(array_key_exists($field, $array)) {
+				if(empty($array[$field])) {
+					$data[$field] = NULL;
+				} else {
+					$data[$field] = $array[$field];
+				}
+			}
+		}
 		
 		// Trim all fields EXCEPT password
-		$temp_pass = $array['password'];
-		array_walk($array, create_function('&$val', '$val = trim($val);')); 
-		$array['password'] = $temp_pass;
+		if(!empty($data['password'])) {
+			// Store temporarly
+			$temp_pass = $data['password'];
+		}
 		
-		// Remove false/null/0 values
-		$array = array_filter($array);
+		array_walk($data, create_function('&$val', '$val = trim($val);'));
 		
-		return $array;
+		// Restore original password field
+		if(!empty($data['password'])) {
+			$data['password'] = $temp_pass;
+		}
+		
+		if($remove_empty) {
+			// Remove false/null/0 values
+			$data = array_filter($data);
+		}
+		
+		return $data;
 	
 	}
+	
+	/**
+	 * Validates a Swedish "personnummer" (social security number) or "samordningsnummer" (co-ordination number for non citizens)
+	 */
+	private function _validate_civicregno($data) {
+			// Strip all non digits
+			$data = preg_replace('/[^0-9]/s', '', $data);
+
+			// Make sure there is 10 digits (strip 12 down to 10)
+			if(!preg_match("/([0-9]{0,2})([0-9]{10})/", $data, $m))
+			{
+					return false;
+			}
+			$year = $m[1];
+			$data = $m[2];
+
+			// Validate the date
+			list($y, $m, $d, $x1, $x2) = str_split($data, 2);
+			if(!checkdate($m, $d, $y))
+			{
+					// If the date does not validate, try subtracting 60 from the day too see if it is an Swedish "samordningsnummer"
+					$d -= 60;
+					$data = "$y$m$d$x1$x2";
+					if(!checkdate($m, $d, $y))
+					{
+							return false;
+					}
+			}
+
+			// Validate the control digit
+			$sum = 0;
+			foreach(str_split($data) as $i => $number)
+			{
+					if($i % 2 == 1)
+					{
+							$sum += $number;
+					}
+					else
+					{
+							$sum += $number * 2;
+							if(($number * 2)  > 9)
+							{
+									$sum -= 9;
+							}
+					}
+			}
+
+			// If the sum is dividable with 10 the control number is correct
+			// Return the formatted number
+			if(($sum % 10) == 0) {
+					return $year.preg_replace("/([0-9]{6})([0-9]{4})/", "$1-$2", $data);
+			} else {
+					return false;
+			}
+	}
+
 	
 } 

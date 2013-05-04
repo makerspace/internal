@@ -1,4 +1,4 @@
-<?php echo form_open('auth/forgot', array('class' => 'form-signin')); ?>
+<?php echo form_open('auth/forgot', 'class="form-signin" autocomplete="off"'); ?>
 
 	<a href="/auth/login"><img src="/assets/img/logo.png" alt="Stockholm Makerspace" class="logo"></a>
 	

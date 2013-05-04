@@ -67,3 +67,14 @@ table.tablesorter th.headerSortUp  {
 table.tablesorter th.headerSortUp  {
 	background-image: url("../img/asc.gif") !important;
 }
+
+.icon-female {
+	margin-left: 4px;
+	background-image: url("../img/glyphicons-female.png");
+	background-position: 0;
+}
+.icon-male {
+	margin-left: 4px;
+	background-image: url("../img/glyphicons-male.png");
+	background-position: 0;
+}

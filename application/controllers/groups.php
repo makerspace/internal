@@ -21,4 +21,28 @@ class Groups extends CI_Controller {
 		$this->load->view('footer');
 
 	}
+	
+	public function add_group() {
+	
+		// Form validation
+		if ($this->form_validation->run('groups/add_group')) {
+		
+			$name = $this->input->post('name');
+			$description = $this->input->post('description');
+			
+			$result = $this->Group_model->add_group($name, $description);
+			
+			if($result) {
+				message('Group successfully added!');
+			} else {
+				error('Couldn\'t add group, please try again');
+			}
+		
+		} else {
+			error('Couldn\'t add group, please try again');
+		}
+		
+		redirect('groups');
+	
+	}
 }

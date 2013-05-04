@@ -308,8 +308,8 @@ class Member_model extends CI_Model {
 	public function update_member($member_id, $data) {
 		
 		// Normalize the member-array.
-		$data = $this->_normalize($data);
-		
+		$data = $this->_normalize($data, false); // DO NOT remove missing fields.
+ 		
 		// Add last_updated field
 		$data['last_updated'] = time();
 		
@@ -360,37 +360,64 @@ class Member_model extends CI_Model {
 	
 	
 	########################## Other methods ##########################
-	 
+	
+	// ToDo: Clean up these two functions and move the array(s) to the class scope.
+	
+	/**
+	 * Returns fields allowed for export
+	 **/
+	public function export_fields() {
+	
+		$allowed_fields = array(
+			'id', 'email', 'firstname', 'lastname', 'civicregno',
+			'address', 'address2', 'zipcode', 'city', 'country', 
+			'mobile', 'phone', 'twitter', 'skype', 
+			'company', 'orgno',
+		);
+		
+		return $allowed_fields;
+	}
+	
 	/**
 	 * Function to filter all field of a member array.
 	 */
-	public function _normalize($array) {
+	public function _normalize($array, $remove_empty = true) {
 		
 		// Allowed form fields
-		$fields = array(
+		$allowed_fields = array(
 			'email', 'password', 'twitter', 'skype', 'mobile', 'phone',
 			'firstname', 'lastname', 'company', 'orgno', 'address',
 			'address2', 'zipcode', 'city', 'country', 'civicregno',
 		);
 		
-		// Filter out only those fields we allow
-		$data = elements($fields, $array, NULL);
-		
-		// Remove false/null/0 values
-		$data = array_filter($data);
-		
-		// And add those fields removed...
-		$data = elements($fields, $array, NULL);
-		
 		// Make an exception for the password field
-		if(!empty($data['password'])) {
-			
+		if(!empty($array['password'])) {
+		
 			// Load password library
 			$this->load->library('Pass');
 			
 			// Hash the password 
-			$data['password'] = $this->pass->hash($data['password']);
+			$array['password'] = $this->pass->hash($array['password']);
 			
+		} else {
+			unset($array['password']);
+		}
+		
+		// Filter out only those fields we allow
+		$data = array();
+		foreach ($allowed_fields as $field) {
+			if(array_key_exists($field, $array)) {
+				if(empty($array[$field])) {
+					$data[$field] = NULL;
+				} else {
+					$data[$field] = $array[$field];
+				}
+			}
+		}
+		
+		if($remove_empty) {
+			// Remove false/null/0 values
+			$data = array_filter($data);
 		}
 		
 		return $data;
