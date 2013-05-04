@@ -1,5 +1,6 @@
 Internal.makerspace.se
 ======================
+*** HIGHLY BETA *** Do not use in production.
 
 Internal system for member management, access control, payments and invoices, newsletters and similar.
 
