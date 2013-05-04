@@ -31,7 +31,8 @@
 			<legend>Select export filetype</legend>
 				<?php echo form_submit('export[csv]', 'Download as CSV', 'class="btn btn-large"'); ?> &nbsp; 
 				<?php echo form_submit('export[json]', 'Download as JSON', 'class="btn btn-large"'); ?> &nbsp; 
-				<?php echo form_submit('export[xml]', 'Download as XML', 'class="btn btn-large"'); ?>
+				<?php echo form_submit('export[xml]', 'Download as XML', 'class="btn btn-large"'); ?> &nbsp; 
+				<?php echo form_submit('export[pdf]', 'Download as PDF', 'class="btn btn-large"'); ?>
 		</div>
 			
 	</div>

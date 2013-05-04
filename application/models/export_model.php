@@ -123,6 +123,35 @@ class Export_model extends CI_Model {
 			// Generate json from result
 			$export = json_encode($result->result());
 		
+		// Or do we want PDF?
+		} elseif($filetype == 'pdf') {
+		
+			// Include mPDF
+			require_once(APPPATH."third_party/mPDF/mpdf.php");
+		
+			// Load table lib included in CI.
+			$this->load->library('table');
+			
+			// Set template
+			$template = array ('table_open'  => '<table class="table table-bordered">');
+			$this->table->set_template($template); 
+			
+			// Fenerate a HTML-table from result
+			$html = $this->table->generate($result);
+			
+			// Secondly, make it into a PDF.
+			$mpdf = new mPDF('c', 'A4-L');
+			
+			// Add PDF-table CSS
+			$mpdf->WriteHTML(file_get_contents(FCPATH.'/assets/css/pdf-table.css'), 1);
+			
+			// Add table
+			$mpdf->WriteHTML($html);
+			
+			// Export as everything else.
+			$export = $mpdf->Output('', 'S');
+			
+		
 		// FATAL ERROR, Unsupported filetype!
 		} else {
 			error('Unknown export format/submission, please try again.');

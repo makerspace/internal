@@ -369,7 +369,7 @@ class Member_model extends CI_Model {
 	public function export_fields() {
 	
 		$allowed_fields = array(
-			'id', 'email', 'firstname', 'lastname', 'civicregno',
+			'id', 'firstname', 'lastname', 'email', 'civicregno',
 			'address', 'address2', 'zipcode', 'city', 'country', 
 			'mobile', 'phone', 'twitter', 'skype', 
 			'company', 'orgno',

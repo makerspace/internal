@@ -198,10 +198,14 @@ function gravatar($email, $size = 32, $rating = 'pg', $default = 'mm') {
 /**
  * Menu helper
  */
-function menu_active($controller) {
+function menu_active($controller, $method = '') {
 	
 	$CI =& get_instance();
 	
+	// The time is like 07:32 and i'm tired as fuck, can't get this to work... some other day perhaps.
+	#if($CI->router->fetch_class() == $controller && $CI->router->fetch_method() == $method) {
+	#	return ' class="active"';
+	#} else 
 	if($CI->router->fetch_class() == $controller) {
 		return ' class="active"';
 	}
