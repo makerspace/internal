@@ -7,6 +7,7 @@
 			<th>Name <!--<small>(Click to edit)</small>--></th>
 			<th>Description</th>
 			<!--<th class="{sorter: false}">Access Levels (ACL)</th>-->
+			<th>Is Workgroup</th>
 			<th>Members</th>
 			<th class="{sorter: false}">View</th>
 		</tr>
@@ -18,7 +19,7 @@
 			<!--<td><a href="/groups/edit/<?php echo $group->id; ?>"><?php echo $group->name; ?></a></td>-->
 			<td><?php echo $group->name; ?></td>
 			<td><?php echo $group->description; ?></td>
-			<!--<td><small>Not implemented (yet)</small></td>-->
+			<td><span class="badge<?php echo ($group->workgroup ? ' badge-success">Yes': '">No'); ?></span></td>
 			<td><?php echo $this->Group_model->member_count($group->id); ?></td>
 			<td><?php 
 				echo form_open('/members/search', 'class="nomargin"'); 

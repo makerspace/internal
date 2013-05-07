@@ -19,14 +19,14 @@
 		<h4>2013</h4>
 		<div class="row">
 		<?php foreach(range(1,12) as $lab2013) { ?>
-			<label class="span1"><?php echo form_checkbox('labaccess2013[]['.$lab2013.']', '1', false, 'disabled') . ' ' . date('M', strtotime('2013-'.$lab2013)); ?></label>
+			<label class="span1"><?php echo form_checkbox('labaccess2013['.$lab2013.']', '1', false, 'disabled') . ' ' . date('M', strtotime('2013-'.$lab2013)); ?></label>
 		<?php } ?>
 		</div>
 
 		<h4>2014</h4>
 		<div class="row">
 		<?php foreach(range(1,12) as $lab2013) { ?>
-			<label class="span1"><?php echo form_checkbox('labaccess2014[]['.$lab2013.']', '1', false, 'disabled') . ' ' . date('M', strtotime('2013-'.$lab2013)); ?></label>
+			<label class="span1"><?php echo form_checkbox('labaccess2014['.$lab2013.']', '1', false, 'disabled') . ' ' . date('M', strtotime('2013-'.$lab2013)); ?></label>
 		<?php } ?>
 		</div>
 

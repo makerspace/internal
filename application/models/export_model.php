@@ -12,6 +12,8 @@ class Export_model extends CI_Model {
 		
 		// Get posted data
 		$post_fields = $this->input->post('fields');
+		$order_by = $this->input->post('order_by');
+		$sort = $this->input->post('sort');
 		$post_groups = $this->input->post('groups');
 		$filetype = key($this->input->post('export'));
 		
@@ -31,6 +33,16 @@ class Export_model extends CI_Model {
 			redirect('members/export');
 		} 
 		
+		// Security for order_by
+		if(!array_key_exists($order_by, array_flip($allowed_fields))) {
+			$order_by = 'id';
+		}
+		
+		// Set ordering direction
+		if($sort != 'desc') {
+			$sort = 'asc';
+		}
+		
 		// Now, select them.
 		foreach($fields as $field) {
 			$this->db->select('members.'.$field);
@@ -47,7 +59,7 @@ class Export_model extends CI_Model {
 			$this->db->where_in('member_groups.group_id', array_values($post_groups));
 			
 			// Order by member id
-			$this->db->order_by('members.id'); 
+			$this->db->order_by('members.'.$order_by, $sort); 
 			
 			// Get, distinct
 			$this->db->distinct();
@@ -57,7 +69,7 @@ class Export_model extends CI_Model {
 		} else {
 		
 			// Order by member id
-			$this->db->order_by('members.id'); 
+			$this->db->order_by('members.'.$order_by, $sort); 
 		
 			// Get all members
 			$result = $this->db->get('members');
@@ -138,6 +150,7 @@ class Export_model extends CI_Model {
 			
 			// Fenerate a HTML-table from result
 			$html = $this->table->generate($result);
+			$html = str_replace('thead>', 'tbody>', $html);
 			
 			// Secondly, make it into a PDF.
 			$mpdf = new mPDF('c', 'A4-L');

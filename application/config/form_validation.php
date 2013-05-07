@@ -280,6 +280,16 @@ $config = array(
 				'label' => 'select fields',
 				'rules' => 'required'
 			),
+			array(
+				'field' => 'order_by',
+				'label' => 'order by',
+				'rules' => 'trim|required'
+			),
+			array(
+				'field' => 'sort',
+				'label' => 'sort',
+				'rules' => 'trim|required'
+			),
 		),
 
 );

@@ -10,23 +10,29 @@
 	<?php echo form_open(); ?>
 	
 		<div class="span6">
-			<legend>Only export these groups <small>(Select <a href="#" class="checkall" data-selector="groups">All</a> / <a href="#" class="checknone" data-selector="groups">None</a>)</legend>
-			
+			<legend>Only export these groups <small>(Select <a href="#" class="checkall" data-selector="groups">All</a> / <a href="#" class="checknone" data-selector="groups">None</a>)</small></legend>
+			<div class="row">
 			<?php foreach($groups as $group) { ?>
-				<label class="span2"><?php echo form_checkbox('groups[]', $group->id, false) . ' ' . $group->description; ?></label>
+				<label class="span3"><?php echo form_checkbox('groups[]', $group->id, false) . ' ' . $group->description; ?></label>
 			<?php } ?>
+			</div><br>
 		</div>
 		
 		<div class="span6">
-			<legend>Fields to include in the export <small>(Select <a href="#" class="checkall" data-selector="fields">All</a> / <a href="#" class="checknone" data-selector="fields">None</a>)</legend>
+			<legend>Fields to include in the export <small>(Select <a href="#" class="checkall" data-selector="fields">All</a> / <a href="#" class="checknone" data-selector="fields">None</a>)</small></legend>
 			
 			<?php foreach($export_fields as $field) { ?>
 				<label class="span2"><?php echo form_checkbox('fields[]', $field, true) . ' <span class="muted">Field:</span> ' . $field; ?></label>
 			<?php } ?>
 		</div>
 		
-		<br>
-			
+		<div class="span6">
+			<br>
+			<legend>Order by field</legend>
+			Order By: <?php echo form_dropdown('order_by', array_combine($export_fields, $export_fields), 'id', 'class="span2"'); ?>
+			 Sort: <?php echo form_dropdown('sort', array('asc' => 'Ascending', 'desc' => 'Descending'), 'asc', 'class="span2"'); ?>
+		</div>
+		
 		<div class="span12">
 			<legend>Select export filetype</legend>
 				<?php echo form_submit('export[csv]', 'Download as CSV', 'class="btn btn-large"'); ?> &nbsp; 
