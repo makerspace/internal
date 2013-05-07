@@ -257,7 +257,7 @@ $config = array(
 			array(
 				'field' => 'search',
 				'label' => 'search',
-				'rules' => 'required|min_length[2]'
+				'rules' => 'trim|required|min_length[2]'
 			),
 		),
 		// Add new group
@@ -265,12 +265,12 @@ $config = array(
 			array(
 				'field' => 'name',
 				'label' => 'Name',
-				'rules' => 'required|min_length[2]|strtolower|is_unique[groups.name]'
+				'rules' => 'trim|required|min_length[2]|strtolower|is_unique[groups.name]'
 			),
 			array(
 				'field' => 'description',
 				'label' => 'Description',
-				'rules' => 'required|min_length[2]'
+				'rules' => 'trim|required|min_length[2]'
 			),
 		),
 		// Export members
