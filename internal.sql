@@ -8,6 +8,8 @@ CREATE TABLE `groups` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(64) NOT NULL,
   `description` varchar(64) DEFAULT NULL,
+  `workgroup` tinyint(4) NOT NULL DEFAULT '0',
+  `roles` text,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
 );
