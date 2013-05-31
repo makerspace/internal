@@ -54,30 +54,6 @@ class Group_model extends CI_Model {
 		return $this->get_group('name', $name);
 	}
 	
-	public function newsletter_groups() {
-	
-		// Get all groups
-		$this->db->select('id, name, description')->order_by('name');
-		$query = $this->db->get('groups');
-		
-		// Ignore these member groups
-		$ignore_groups = array('invalidemail', 'admins', 'duplicatedmember', 'finance', 'api');
-		
-		// Default as empty
-		$return = array();
-		
-		// Check if we got anything.
-		if($query->num_rows() > 0) {
-			foreach($query->result() as $row) {
-				if(in_array($row->name, $ignore_groups)) continue;
-				$return[$row->id] = $row->name.' - '.$row->description;
-			}
-		}
-		
-		return $return;
-		
-	}
-	
 	public function member_groups($member_id = 0) {
 	
 		$this->db->select('groups.name')->join('groups', 'groups.id = member_groups.group_id');

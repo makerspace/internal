@@ -371,22 +371,6 @@ class Api extends CI_Controller {
 	}
 	
 	
-	/**
-	 * Newsletter resource.
-	 * ToDo: Should we even have this?
-	 */
-	public function newsletter() {
-	
-		// Only allow GET Requests
-		$this->_check_method('GET');
-		
-		// Get newsletter by id
-		$this->_status(404);
-	
-	}
-	
-
-	 
 	/******************************************************************/
 	/************************* PRIVATE METHODS ************************/
 	/******************************************************************/

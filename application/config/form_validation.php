@@ -196,20 +196,6 @@ $config = array(
 			),
 		),
 		
-		// Create/edit newsletter
-		'newsletter/validate' => array(
-			array(
-				'field' => 'subject',
-				'label' => 'newsletter subject',
-				'rules' => 'trim|required|min_length[10]|max_length[255]'
-			),
-			array(
-				'field' => 'body',
-				'label' => 'newsletter body',
-				'rules' => 'trim|required|min_length[50]'
-			),
-		),
-		
 		// Admin - add config
 		'admin/add_config' => array(
 			array(

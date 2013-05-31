@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+w<!DOCTYPE html>
 <html lang="en">
 <head>
 	<meta charset="utf-8">
@@ -49,7 +49,6 @@
 
 			<h3>Public resources</h3>
 			<ul>
-				<!--<li>GET /api/newsletter/*id* - Get newsletter by id</li>-->
 				<li>GET /api/coffee</li>
 			</ul>
 
