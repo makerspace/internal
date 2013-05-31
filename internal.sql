@@ -27,7 +27,33 @@ CREATE TABLE `member_groups` (
   `member_id` int(11) NOT NULL,
   `group_id` int(11) NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `member_groups` (`member_id`,`group_id`)
+  KEY `member_groups` (`member_id`,`group_id`),
+  KEY `group_id` (`group_id`),
+  CONSTRAINT `member_groups_ibfk_2` FOREIGN KEY (`member_id`) REFERENCES `members` (`id`),
+  CONSTRAINT `member_groups_ibfk_1` FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`)
+);
+CREATE TABLE `member_rfid` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `member_id` int(11) NOT NULL,
+  `tagid` varchar(255) NOT NULL,
+  `active` tinyint(4) NOT NULL,
+  `added` int(11) NOT NULL COMMENT 'Timestamp',
+  `last_modified` tinyint(4) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `tagid` (`tagid`),
+  KEY `member_id` (`member_id`),
+  CONSTRAINT `member_rfid_ibfk_1` FOREIGN KEY (`member_id`) REFERENCES `members` (`id`)
+);
+CREATE TABLE `member_ssh` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `member_id` int(11) NOT NULL,
+  `pubkey` text NOT NULL,
+  `active` tinyint(4) NOT NULL,
+  `added` int(11) NOT NULL COMMENT 'Timestamp',
+  `last_modified` tinyint(4) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `member_id` (`member_id`),
+  CONSTRAINT `member_ssh_ibfk_1` FOREIGN KEY (`member_id`) REFERENCES `members` (`id`)
 );
 CREATE TABLE `members` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -48,24 +74,10 @@ CREATE TABLE `members` (
   `city` varchar(64) DEFAULT NULL,
   `country` char(2) DEFAULT 'SE',
   `phone` varchar(64) DEFAULT NULL,
-  `mobile` varchar(64) DEFAULT NULL,
   `twitter` varchar(255) DEFAULT NULL,
   `skype` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
-);
-CREATE TABLE `newsletters` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `created_by` int(11) NOT NULL COMMENT 'Member ID',
-  `recipients` text NOT NULL COMMENT 'Array of Member IDs in JSON',
-  `subject` varchar(255) NOT NULL,
-  `body` mediumtext NOT NULL COMMENT 'E-mail body',
-  `created` int(11) NOT NULL COMMENT 'Timestamp',
-  `last_updated` int(11) NOT NULL COMMENT 'Timestamp',
-  `sent_timestamp` int(11) DEFAULT NULL COMMENT 'When the newsletter was sent',
-  `sent` int(11) NOT NULL DEFAULT '0',
-  `bounces` int(11) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`)
 );
 CREATE TABLE `transactions` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
