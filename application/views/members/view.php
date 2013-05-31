@@ -55,16 +55,9 @@
 					<a href="mailto:<?php echo $member->email; ?>"><?php echo $member->email; ?></a>
 				</p>
 				
-				<?php if(!empty($member->mobile)) { ?>
-				<p>
-					<strong>Mobile:</strong><br>
-					<a href="callto:<?php echo $member->mobile; ?>"><?php echo $member->mobile; ?></a>
-				</p>
-				<?php } ?>
-				
 				<?php if(!empty($member->phone)) { ?>
 				<p>
-					<strong>Alt. Phone:</strong><br>
+					<strong>Phone:</strong><br>
 					<a href="callto:<?php echo $member->phone; ?>"><?php echo $member->phone; ?></a>
 				</p>
 				

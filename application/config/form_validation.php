@@ -101,12 +101,7 @@ $config = array(
 				'rules' => 'trim|exact_length[13]' // ToDo: Validate?
 			),
 			array(
-				'field' => 'mobile',
-				'label' => 'mobile',
-				'rules' => 'trim|max_length[64]' // ToDo: |callback__normalize_phone
-			),
-			array(
-				'field' => 'alt. phone',
+				'field' => 'phone',
 				'label' => 'phone',
 				'rules' => 'trim|max_length[64]' // ToDo: |callback__normalize_phone
 			),
@@ -180,12 +175,7 @@ $config = array(
 				'rules' => 'trim|exact_length[2]|callback__validate_country'
 			),
 			array(
-				'field' => 'mobile',
-				'label' => 'mobile',
-				'rules' => 'trim|max_length[64]' // ToDo: |callback__normalize_phone
-			),
-			array(
-				'field' => 'alt. phone',
+				'field' => 'phone',
 				'label' => 'phone',
 				'rules' => 'trim|max_length[64]' // ToDo: |callback__normalize_phone
 			),

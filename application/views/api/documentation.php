@@ -139,7 +139,6 @@
 			</p>
 			<ul>
 				<li>address2 - Member address2 (C/O or similar)</li>
-				<li>mobile - Members mobile number</li>
 				<li>phone - Members phone number</li>
 				<li>twitter - Members twitter name</li>
 				<li>skype - Members skype account</li>

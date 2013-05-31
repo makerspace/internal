@@ -8,11 +8,11 @@
  
 class Api extends CI_Controller {
 
-	private $api_version = '0.2';
+	private $api_version = '0.3/2013-05-25';
 	
 	// Allowed Member POST fields
 	private $allowed_member_fields = array(
-		'email', 'password', 'twitter', 'skype', 'mobile', 'phone',
+		'email', 'password', 'twitter', 'skype', 'phone',
 		'firstname', 'lastname', 'company', 'orgno', 'address',
 		'address2', 'zipcode', 'city', 'country', 'civicregno',
 	);
@@ -476,13 +476,6 @@ class Api extends CI_Controller {
 				
 				if(!$this->_validate_civicregno($array[$key])) {
 				#	return false;
-				}
-				
-			} elseif($key == 'mobile') {
-				$array[$key] = normalize_phone($value);
-				
-				if(strlen($array[$key]) < 10) {
-					return false;
 				}
 				
 			} elseif($key == 'phone') {

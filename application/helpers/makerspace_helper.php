@@ -125,7 +125,10 @@ function strim($str) {
 }
 
 function normalize_phone($str) {
-
+	
+	// failsafe against non-phone numbers
+	if(!is_numeric($str)) return $str;
+	
 	$str = preg_replace('/[^\d]/', '', $str);
 
 	if($str[0] == '0') {

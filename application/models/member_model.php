@@ -371,7 +371,7 @@ class Member_model extends CI_Model {
 		$allowed_fields = array(
 			'id', 'firstname', 'lastname', 'email', 'civicregno',
 			'address', 'address2', 'zipcode', 'city', 'country', 
-			'mobile', 'phone', 'twitter', 'skype', 
+			'phone', 'twitter', 'skype', 
 			'company', 'orgno',
 		);
 		
@@ -385,7 +385,7 @@ class Member_model extends CI_Model {
 		
 		// Allowed form fields
 		$allowed_fields = array(
-			'email', 'password', 'twitter', 'skype', 'mobile', 'phone',
+			'email', 'password', 'twitter', 'skype', 'phone',
 			'firstname', 'lastname', 'company', 'orgno', 'address',
 			'address2', 'zipcode', 'city', 'country', 'civicregno',
 		);

@@ -15,8 +15,7 @@
 			<th>ID</th>
 			<th>Name</th>
 			<th>E-mail</th>
-			<th>Mobile</th>
-			<th>Alt. Phone</th>
+			<th>Phone</th>
 			<th>Member Since</th>
 			<th>Active Member</th>
 			<th>Lab Access</th>
@@ -30,7 +29,6 @@
 			<td><a href="/members/view/<?php echo $member->id; ?>"><?php echo $member->id; ?></a></td>
 			<td><?php echo $member->firstname . ' ' . $member->lastname; ?></td>
 			<td><a href="mailto:<?php echo $member->email; ?>"><?php echo $member->email; ?></a></td>
-			<td><?php echo (!empty($member->mobile) ? '<a href="callto:'.$member->mobile.'">'.$member->mobile.'</a>' : '<em>N/A</em>'); ?></td>
 			<td><?php echo (!empty($member->phone) ? '<a href="callto:'.$member->phone.'">'.$member->phone.'</a>' : '<em>N/A</em>'); ?></td>
 			<td><?php echo date('Y-m-d', $member->registered); ?></td>
 			<td><span class="badge<?php echo (!empty($member->groups['member'.date('Y')]) ? ' badge-success">Yes' : '">No'); ?></span></td>

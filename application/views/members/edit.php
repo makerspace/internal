@@ -104,15 +104,7 @@
 				</div>
 				
 				<div class="control-group">
-					<?php echo form_label('Mobile', 'mobile', array('class' => 'control-label')); ?>
-					<div class="controls">
-						<?php echo form_input('mobile', set_value('mobile', $member->mobile), 'id="mobile"'); ?>
-						<span class="help-inline">+46123000000</span>
-					</div>
-				</div>
-				
-				<div class="control-group">
-					<?php echo form_label('Alt. Phone', 'phone', array('class' => 'control-label')); ?>
+					<?php echo form_label('Phone number', 'phone', array('class' => 'control-label')); ?>
 					<div class="controls">
 						<?php echo form_input('phone', set_value('phone', $member->phone), 'id="phone"'); ?>
 						<span class="help-inline">+46123000000</span>

@@ -29,14 +29,20 @@ class Search_model extends CI_Model {
 		$search_fields = array(
 			'id', 'firstname', 'lastname', 'company', 'orgno',
 			'address', 'address2', 'zipcode', 'city', 'country',
-			'mobile', 'phone', 'twitter', 'skype', 'civicregno',
+			'phone', 'twitter', 'skype', 'civicregno',
 		);
 		
 		// Search in e-mail first.
 		$this->db->like('email', $keyword);
 		
+		// Hack to be able to search for fullnames
+		$this->db->or_like('CONCAT_WS(\' \', firstname, lastname)', $keyword, 'both', false);
+		
 		// Loop, cause it's easier.
 		foreach($search_fields as $field) {
+			if($field == 'phone') {
+				$keyword = normalize_phone($keyword);
+			}
 			$this->db->or_like($field, $keyword);
 		}
 		
