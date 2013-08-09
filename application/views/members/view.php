@@ -7,7 +7,7 @@
 	<?php if($member->id != 1000) { ?>
 	<div class="span4">
 		<h3>Member Tasks</h3>		
-		<p>
+		<!--<p>
 			<a href="/members/membership_card/<?php echo $member->id; ?>" class="btn btn-primary">Get Membership Card <small>(as PDF)</small></a>
 		</p><p>
 			<a href="/finance/member/<?php echo $member->id; ?>" class="btn">View Transaction History</a>
@@ -28,7 +28,7 @@
 		<?php foreach(range(1,12) as $lab2013) { ?>
 			<label class="span1"><?php echo form_checkbox('labaccess2014['.$lab2013.']', '1', false, 'disabled') . ' ' . date('M', strtotime('2013-'.$lab2013)); ?></label>
 		<?php } ?>
-		</div>
+		</div>-->
 
 	</div>
 	<?php } else { ?>

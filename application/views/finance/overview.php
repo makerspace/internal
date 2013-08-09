@@ -24,8 +24,8 @@
 			<td><?php echo $trans->type; ?></td>
 			<td><?php echo $trans->status; ?></td>
 			<td><?php echo $trans->amount; ?> SEK</td>
-			<td><?php echo (!empty($trans->data) ? json_decode($trans->data)->months : ''); ?></td>
-			<td><?php echo $trans->data; ?></td>
+			<td><?php echo ((!empty($trans->data) && $trans->data != 'null') ? json_decode($trans->data)->months : ''); ?></td>
+			<td><?php echo ((!empty($trans->data) && $trans->data != 'null') ? $trans->data : ''); ?></td>
 			<td><a href="#" class="btn btn-mini disabled">N/A</a></td>
 		</tr>
 	<?php } if(empty($transactions)) { ?>

@@ -137,6 +137,68 @@ class Group_model extends CI_Model {
 		return (bool)$this->db->affected_rows();
 	}
 	
+	public function add_to_group($member_id = 0, $group_name = '') {
+		
+		// Get member
+		if(!$member = $this->Member_model->get_member($member_id)) {
+			return false; // Failsafe
+		}
+		
+		// Don't allow changing the admins-group or api.
+		if($group_name == 'admins' || $group_name == 'api') {
+			return false;
+		}
+		
+		// Get group
+		if(!$group = $this->get_group_by_name($group_name)) {
+			return false; // Failsafe
+		}
+		
+		// Check so user isn't already a member of this group
+		if(empty($member->groups[$group->name])) {
+		
+			// Add member to group
+			$this->db->insert('member_groups', array('member_id' => $member->id, 'group_id' => $group->id));
+			
+		} else {
+			return false;
+		}
+	
+		return (bool)$this->db->affected_rows();
+	}
+	
+	
+	public function remove_from_group($member_id = 0, $group_name = '') {
+		
+		// Get member
+		if(!$member = $this->Member_model->get_member($member_id)) {
+			return false; // Failsafe
+		}
+		
+		// Don't allow changing the admins-group or api.
+		if($group_name == 'admins' || $group_name == 'api') {
+			return false;
+		}
+		
+		// Get group
+		if(!$group = $this->get_group_by_name($group_name)) {
+			return false; // Failsafe
+		}
+		
+		// Check if user is a member of this group
+		if(!empty($member->groups[$group->name])) {
+		
+		
+			// Remove member from group
+			$this->db->delete('member_groups', array('member_id' => $member->id, 'group_id' => $group->id));
+				
+		} else {
+			return false;
+		}
+	
+		return (bool)$this->db->affected_rows();
+	}
+	
 	public function add_group($group_name, $description) {
 	
 		// Must be unique

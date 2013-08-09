@@ -295,8 +295,30 @@ class Member_model extends CI_Model {
 		// Add to database
 		$this->db->insert('members', $data);
 		
-		// Return result
-		return (bool)$this->db->affected_rows();
+		// Database result
+		$dbresult = (bool)$this->db->affected_rows();
+		
+		// Return false if failed.
+		if(!$dbresult) return false;
+		
+		// Get member id
+		$member_id = $this->db->insert_id();
+		
+		// Add to mailchimp list
+		$mc_config = array(
+			'apikey' => $this->dbconfig->mailchimp_api,
+			'secure' => true,
+		);
+		$this->load->library('MCAPI', $mc_config, 'mailchimp');
+		
+		// Get mailchimp list ID from db
+		$list = $this->dbconfig->mailchimp_list;
+		
+		// Add member to mailchimp list.
+		$mcresult = $this->mailchimp->listSubscribe($list, $data['email'], array('MEMID' => $member_id, 'FNAME' => $data['firstname'], 'LNAME' => $data['lastname']), 'html', false);
+		
+		// Return true
+		return true;
 		
 	}
 	
@@ -305,7 +327,7 @@ class Member_model extends CI_Model {
 	 *
 	 * ToDo: Validate all fields somewhere central!
 	 */
-	public function update_member($member_id, $data) {
+	public function update_member($member_id, $data) {		
 		
 		// Normalize the member-array.
 		$data = $this->_normalize($data, false); // DO NOT remove missing fields.
@@ -313,14 +335,45 @@ class Member_model extends CI_Model {
 		// Add last_updated field
 		$data['last_updated'] = time();
 		
+		
+		// Get current user to be able to update mailchimp
+		$member = $this->get_member($member_id);
+		
 		// Update member based upon id
 		$this->db->update('members', $data, array('id' => $member_id), 1);
 		
-		// Return result
-		return (bool)$this->db->affected_rows();
+		// Database result
+		$dbresult = (bool)$this->db->affected_rows();
+		
+		// Return false if failed.
+		if(!$dbresult) return false;
+		
+		// Add to mailchimp list
+		$mc_config = array(
+			'apikey' => $this->dbconfig->mailchimp_api,
+			'secure' => true,
+		);
+		$this->load->library('MCAPI', $mc_config, 'mailchimp');
+		
+		// Get mailchimp list ID from db
+		$list = $this->dbconfig->mailchimp_list;
+		
+		// Update member in mailchimp list.
+		$mcresult = $this->mailchimp->listUpdateMember($list, $member->email, array('EMAIL' => $data['email'], 'FNAME' => $data['firstname'], 'LNAME' => $data['lastname']), 'html', false);
+		
+		// Return true
+		return true;
 		
 	}
 	
+	/**
+	 * Method for DELETING an member and *ALL* data related to him/her!
+	 */
+	public function delete_member($member_id) {
+		
+		// fix the forgin records jine!
+		
+	}
 	
 	########################## Member Group functions ##########################
 	

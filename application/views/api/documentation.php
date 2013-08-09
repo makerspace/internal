@@ -68,6 +68,9 @@ w<!DOCTYPE html>
 				<br>
 				<li>GET <a href="#api/get_groups">/api/get_groups</a> - Get all groups</li>
 				<li>GET <a href="#api/get_group_members">/api/get_group_members/*gid*</a> - Get members in group by group id</li>
+				<br>
+				<li>GET <a href="#api/add_to_group">/api/add_to_group/*uid*/*group_name*</a> - Add a member to the specified group</li>
+				<li>GET <a href="#api/remove_from_group">/api/remove_from_group/*uid*/*group_name*</a> - Remove a member from the specified group</li>
 				
 			</ul>
 			
@@ -117,6 +120,38 @@ w<!DOCTYPE html>
 		</div>
 		
 		<div class="span12">
+			<h3 id="api/get_groups">GET /api/get_groups</h3>
+			<p>
+				Gets all available groups.<br>
+				Returns a list of all groups names, their description and id as an JSON object.
+			</p>
+		</div>
+		
+		<div class="span12">
+			<h3 id="api/get_group_members">GET /api/get_group_members/*gid*</h3>
+			<p>
+				Get a list of all members in a group, by the group id.<br>
+				Returns list of all member id's in the group.
+			</p>
+		</div>
+		
+		<div class="span12">
+			<h3 id="api/add_to_group">GET /api/add_to_group/*uid*/*group_name*</h3>
+			<p>
+				Add a members to a group by their member ID (*uid*). For example: <strong>/api/add_to_group/1000/labaccess</strong> adds member id 1000 to the group "labaccess"<br>
+				Returns HTTP 200 (Ok) on success and HTTP 400 (Bad request) if the request failed (if the user already was in that group or similar).
+			</p>
+		</div>
+		
+		<div class="span12">
+			<h3 id="api/remove_from_group">GET /api/remove_from_group/*uid*/*group_name*</h3>
+			<p>
+				Removes a members from a group by their member ID. For example: <strong>/api/remove_from_group/1000/labaccess</strong> removes member id 1000 from the group "labaccess"<br>
+				Returns HTTP 200 (Ok) on success and HTTP 400 (Bad request) if the request failed (if the user already was in that group or similar).
+			</p>
+		</div>
+		
+		<div class="span12">
 			<h3 id="api/add_member">POST /api/add_member</h3>
 			<p>
 				Adds a new member to the database<br>
@@ -150,22 +185,6 @@ w<!DOCTYPE html>
 				Updates a existing member in the database, based upon their member ID.<br>
 				Returns full member object in JSON if successful or HTTP 404 if request failed (for instance, if the member doesn't exists).<br>If anything else is wrong (fields format or similar), it returns HTTP 400 Bad Request.<br><br>
 				<strong class="span6">See <a href="#api/add_member">/api/add_member</a> for available fields in this method.<br>Please note that ALL fields are optional. If a field isn't provided, it's NOT updated.</strong>
-			</p>
-		</div>
-		
-		<div class="span12">
-			<h3 id="api/get_groups">GET /api/get_groups</h3>
-			<p>
-				Gets all available groups.<br>
-				Returns a list of all groups names, their description and id as an JSON object.
-			</p>
-		</div>
-		
-		<div class="span12">
-			<h3 id="api/get_group_members">GET /api/get_group_members/*gid*</h3>
-			<p>
-				Get a list of all members in a group, by the group id.<br>
-				Returns list of all member id's in the group.
 			</p>
 		</div>
 		

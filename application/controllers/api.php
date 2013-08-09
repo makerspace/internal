@@ -8,7 +8,7 @@
  
 class Api extends CI_Controller {
 
-	private $api_version = '0.3/2013-05-25';
+	private $api_version = '0.4/2013-06-11';
 	
 	// Allowed Member POST fields
 	private $allowed_member_fields = array(
@@ -359,6 +359,56 @@ class Api extends CI_Controller {
 		
 			$this->_status(404); // Not Found
 			
+		}
+		
+	}
+	
+	/**
+	 * Add a specific user to a group by name.
+	 */
+	public function add_to_group($member_id = 0, $group_name = '') {
+	
+		// Only allow GET Requests
+		$this->_check_method('GET');
+		
+		// Require X-Email/Password auth.
+		$this->_check_authentication();
+	
+		// Some input validation anyway...
+		$group_name = trim(strtolower($group_name));
+		$member_id = (int)$member_id;
+		
+		$result = $this->Group_model->add_to_group($member_id, $group_name);
+		
+		if($result) {
+			$this->_status(200); // Ok
+		} else {
+			$this->_status(400); // Bad Request
+		}
+		
+	}
+	
+	/**
+	 * Remove a specific user from a group by name.
+	 */
+	public function remove_from_group($member_id = 0, $group_name = '') {
+	
+		// Only allow GET Requests
+		$this->_check_method('GET');
+		
+		// Require X-Email/Password auth.
+		$this->_check_authentication();
+	
+		// Some input validation anyway...
+		$group_name = trim(strtolower($group_name));
+		$member_id = (int)$member_id;
+		
+		$result = $this->Group_model->remove_from_group($member_id, $group_name);
+		
+		if($result) {
+			$this->_status(200); // Ok
+		} else {
+			$this->_status(400); // Bad Request
 		}
 		
 	}
