@@ -401,7 +401,7 @@ class Member_model extends CI_Model {
 		// Failsafe
 		if(empty($member_id)) $member_id = member_id();
 		
-		return $this->Group_model->member_of_group($member_id, 'boardmember'.date('Y'));
+		return $this->Group_model->member_of_group($member_id, 'boardmember2015');
 	}
 	
 	public function is_admin($member_id = '') {
