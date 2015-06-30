@@ -26,7 +26,11 @@
 	<tbody>
 	<?php foreach($members as $member) { ?>
 		<tr>
-			<td class="avatar"><img src="<?php echo gravatar($member->email, 22); ?>"></td>
+			<td class="avatar">
+				<?php /*
+				<img src="<?php echo gravatar($member->email, 22); ?>">
+				*/ ?>
+			</td>
 			<td><a href="/members/view/<?php echo $member->id; ?>"><?php echo $member->id; ?></a></td>
 			<td><?php echo $member->firstname . ' ' . $member->lastname; ?></td>
 			<td><a href="mailto:<?php echo $member->email; ?>"><?php echo $member->email; ?></a></td>
