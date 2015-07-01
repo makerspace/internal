@@ -1,0 +1,47 @@
+Förberedelser:
+	Skapa URL schema + URL router
+
+
+	Graf över olika system och hur de hänger ihop
+
+Tasks:
+	Script för att generera testdata
+	SEB importer
+		Damma av script för att importera kontoutdrag från SEB
+		Skall köra en import av endast den datan som är ny
+		Få igång även med bankgiro?
+	PayPal importer
+		Importera transaktionshistorik från PayPal
+	Stripe importer
+	Tictail importer
+	Nyckelhantering
+		En databas över samtliga nycklar som är utlämnade
+		En nyckel har en koppling till medlem
+		En medlen kan ha flera nycklar
+		Visa lista på alla nycklar (Filtrering: Samtliga, endast aktiva, endast passerat slutdautm, endast sådana som aldrig har aktiverats)
+		En separat tabell håller koll på giltighetstiderna. Man skapar en rad med ett start och ett slutdatum. Dessa datum gäller för för alla nycklar den personen har.
+		En rad i giltighetstabellen skall ha en koppling till en monetär transaktion
+		Man ska kunna göra undantag och aktivera nycklar utan monetär transaktion. Dessa ska synad i en separat lista och ha en kommentar om varför de är aktiva utan betalning (Till exempel styrelse, städare, hantverkare eller andra med förtroendeuppdrag)
+	Monetära transaktioner
+		En monetär transaktion kan ha en koppling till en användare
+		Transaktioner som nyligen importeras saknar koppling
+		Lista på samtliga transaktioner med olika filtreringsalternativ (PayPal/Strip, datum, koppling till medlem, etc)
+	Ekonomi
+		En monetär transaktion skall ha en koppling till en post i bokföringen. Vi kommer inte bygga någon bokföring i detta system inom en snar framtid. Däremot skulle det underlätta rejält med en kopplingstabell där man kan ange ett referensnummer för att hänvisa till en verifikation i det externa bokföringsprogrammet.
+	Uppdatera gamla internal
+		Eventuellt görs det databasändringar. Uppdatera Internal V1 så att det fungerar med den nya databasen
+
+Tasks low prio:
+	Medlemshantering
+	Grupphantering
+	Export av data
+	Mail
+		Gör det möjligt att skriva ett mail direkt i Internal och sedan skicka det till en grupp, eller ett par utvalda användare, genom mailchimp eller annan extern leverantör (för att minimera risk att fastna i spamfilter). Detta skulle behövas för att skicka påminnelser för medlemsavgift etc.
+	Dokumentarkiv
+		Ett superenkelt dokumentarkiv som fungerar som så att man laddar upp filer och sorterar in manuellt via FTP. Ett PHP-script läser denna katalogstruktur och skapar en sida där man kan klicka runt. Självklart med automatiskt generering av thumbnails från bilder och pdf.
+	Config
+		Bygg ett gränssnitt som gör det möjligt att redigera config-tabellen direkt från webben
+	Kioskdator för nyckelutlämning
+		Vi bygger ett gränssnitt som är lämpligt för att någon förtroendevald ska få åtkomst endast till de funktioner och data som krävs för att lämna ut en nyckel till en medlem.
+	Inloggning via klientcertifikat
+	Inloggning via YubiKey

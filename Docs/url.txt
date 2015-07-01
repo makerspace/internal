@@ -1,0 +1,61 @@
+Medlemshantering
+	Lista
+	Lägg till
+	Sök
+
+Nyckelhantering
+	Visa nycklar (Samtliga, aktiva, inaktiva)
+	Visa förändringar
+
+Ekonomi
+	Kontoutdrag
+		Stripe
+		Paypal
+		Payson
+		SEB
+
+
+member/list
+	En tabell med information om samtliga användare
+
+member/add
+	Ett formulär för att lägga till användare + nyckel
+
+member/{id}/view
+	Visa en användares profil + nycklar + monetära transaktioner
+
+member/{id}/edit
+	Redigera användare + nyckel
+
+member/search
+	Sök på namn, medlemsnummer, e-post etc
+
+member/export
+	Exportera json/xml/whatever med användare
+
+key/list
+	Visa samtliga nycklar, oberoende status. Även aktiv labbtid på de som finns.
+
+key/list/active
+	Visa endast aktiva nycklar
+
+key/list/inactive
+	Visa endast inaktiva nycklar
+
+key/list/changes
+	Visa förändringar för en given period
+
+key/export
+	Exportera databas i lämpligt format för att importeras passersystem. Även exportera förändringar per period.
+
+economy/overview
+	Översikt över ekonomin
+
+economy/account
+	Visa vilka konton som det finns kontoutdrag för samt aktuellt saldo
+
+economy/account/stripe
+economy/account/paypal
+economy/account/payson
+economy/account/seb
+	Visa kontoutdrag för givet konto
