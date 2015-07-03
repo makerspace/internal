@@ -5,13 +5,25 @@ source /vagrant/setup/config.sh
 # Remove nginx default vhost
 if [ -f /etc/nginx/sites-enabled/default ];
 then
-	rm /etc/nginx/sites-enabled/default
+	sudo rm /etc/nginx/sites-enabled/default
 fi
 
-# Setup the nginx configuration file
+# Setup nginx configuration
+sudo rm /etc/nginx/nginx.conf
+sudo cp /vagrant/configs/nginx.conf /etc/nginx/
+sudo chown root:root /etc/nginx/nginx.conf
+sudo chmod 644 /etc/nginx/nginx.conf
+
+# Setup php fpm pool
+sudo rm /etc/php5/fpm/pool.d/www.conf
+sudo cp /vagrant/configs/www.conf /etc/php5/fpm/pool.d/
+sudo chown root:root /etc/php5/fpm/pool.d/www.conf
+sudo chmod 644 /etc/php5/fpm/pool.d/www.conf
+
+# Setup the nginx vhost configuration file
 if [ ! -f /etc/nginx/sites-enabled/internal.dev.conf ];
 then
-	ln -s /vagrant/configs/internal.dev.conf /etc/nginx/sites-enabled/
+	sudo ln -s /vagrant/configs/internal.dev.conf /etc/nginx/sites-enabled/
 fi
 
 # Create a MySQL database and import content
@@ -29,5 +41,6 @@ then
 	touch /var/log/databasesetup
 fi
 
-# Reload nginx
-service nginx reload
+# Reload nginx and php5-fpm
+sudo service nginx restart
+sudo service php5-fpm restart
