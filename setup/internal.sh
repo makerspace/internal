@@ -31,7 +31,7 @@ if [ ! -f /var/log/databasesetup ];
 then
 	mysql -uroot -p$MYSQL_ROOT_PASSWORD < /vagrant/database/pre-install.sql
 
-	if [ ! -f /vagrant/database/database.sql ];
+	if [ -f /vagrant/database/database.sql ];
 	then
 		mysql -uroot -p$MYSQL_ROOT_PASSWORD $MYSQL_DB < /vagrant/database/database.sql
 	fi

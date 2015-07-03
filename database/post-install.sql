@@ -1,1 +1,1 @@
-USE `internal.dev`;
+USE `internal`;
