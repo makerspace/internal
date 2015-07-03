@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Internal v2.0 todo</title>
+</head>
+<body>
+
+<div id="content">
+	<h1>Todo-list</h1>
+	<p>Dessa task är sorterade efter prioritet. Viktigast högst upp.</p>
+
+	<div class="task">
+		<h2>Skapa testdata</h2>
+		<p>För att kunna arbeta vettigt med systemet behöver vi data att lägga in i systemet för att testa med. Vi kan dessvärre inte jobba med den "riktiga" databasen, då den innehåller känsliga personuppgifter</p>
+		<p>Vi behöver data till följande:</p>
+		<ul>
+			<li>Påhittade medlemmar (members-tabellen)</li>
+			<li>Påhittade banktransaktioner (SEB)</li>
+			<li>Påhittade bankgirotransaktioner</li>
+			<li>Påhittade PayPal-transaktioner</li>
+			<li>Påhittade Stripe-transaktioner</li>
+		</ul>
+	</div>
+
+	<div class="task">
+		<h2>Nyckelhantering</h2>
+		<p></p>
+		<ul>
+			<li>En databas över samtliga nycklar som är utlämnade</li>
+			<li>En nyckel har en koppling till medlem</li>
+			<li>En medlen kan ha flera nycklar</li>
+			<li>Visa lista på alla nycklar (Filtrering: Samtliga, endast aktiva, endast passerat slutdautm, endast sådana som aldrig har aktiverats)</li>
+			<li>En separat tabell håller koll på giltighetstiderna. Man skapar en rad med ett start och ett slutdatum. Dessa datum gäller för för alla nycklar den personen har.</li>
+			<li>En rad i giltighetstabellen skall ha en koppling till en monetär transaktion</li>
+			<li>Man ska kunna göra undantag och aktivera nycklar utan monetär transaktion. Dessa ska synad i en separat lista och ha en kommentar om varför de är aktiva utan betalning (Till exempel styrelse, städare, hantverkare eller andra med förtroendeuppdrag)</li>
+		</ul>
+	</div>
+
+	<div class="task">
+		<h2>SEB-import</h2>
+		<p>Det finns dett påbörjat script för att importera *.csv-filer exporterade från SEB's internetbank. Detta script behöver byggas klart så att importen fungerar och är tillförlitlig.</p>
+		<ul>
+			<li>Bygg ett formulär där man kan ladda upp en fil</li>
+			<li>Denna fil splittas sedan upp till en array (med befintligt script)</li>
+			<li>En kontroll görs mot databasen för att se vilken data som är ny (matchat mot datum + transaktions-ID från banken).</li>
+			<li>De rader som är nya petas in in en JSON-array som skickas till frontend</li>
+			<li>Användaren får godkänna att dessa rader stoppas in i databasen</li>
+			<li>När användaren godkänner skickas en JSON-array tillbaka, allting i denna array läggs in i databasen</li>
+		</ul>
+	</div>
+
+	<div class="task">
+		<h2>PayPal-import</h2>
+		<p>Vi behöver importera transaktionshistorik från PayPal. Delar från scriptet ovan kan återanvändas, men denna process skall vara helt automatiserad och inte ha något användargränssnitt (om möjligt).</p>
+		<ul>
+			<li>Klura ut hur PayPal's API fungerar och hur vi får ut data</li>
+			<li>Bygga ett script som hämtar data och petar in i en array</li>
+			<li>Kolla vad i denna array som ej finns i nuvarande databas</li>
+			<li>Stoppa in all ny data i databasen (transaction-tabellen)</li>
+		</ul>
+	</div>
+
+	<div class="task">
+		<h2>Stripe importer</h2>
+		<p>Samma som ovan, fast för Stripe</p>
+	</div>
+
+	<div class="task">
+		<h2>Bankgiro-import</h2>
+		<p>Klura ut hur man parse:ar ut Bankgiro-data från SEB's internetbank. Det verkar inte finnas någon exportfunktion för detta, så vi får nog köra lite regular expressions mot en *.html-fil.</p>
+	</div>
+
+	<div class="task">
+		<h2>Tictail import</h2>
+		<p>På något vis skulle vi även vilja importera orderhistorik från Tictail (vår webshop). Det är nog en bra ide att bygga en databaslayout som är en stadig grund som vi kan bygga en egen webshop på, och sen försöka få till så att vi kan importera data från Tictail. Vi kommer inte automatiskt kunna matcha användare mot medlemsdatabasen, men det bör gå att manuellt göra denna koppling och gärna med automatiska förslag baserat på E-post eller telefonnummer.</p>
+	</div>
+
+	<div class="task">
+		<h2></h2>
+		<p></p>
+	</div>
+
+	<div class="task">
+		<h2></h2>
+		<p></p>
+	</div>
+
+	<div class="task">
+		<h2></h2>
+		<p></p>
+	</div>
+
+	<div class="task">
+		<h2></h2>
+		<p></p>
+	</div>
+</div>
+
+</body>
+</html>

@@ -1,27 +1,14 @@
 Förberedelser:
-	Skapa URL schema + URL router
+	Skapa URL schema + URL router + controllers
 
-
-	Graf över olika system och hur de hänger ihop
+	Bygga UIkit gränssnitt för monetära transaktioner
+	Bygga React-gränssnitt för transaktioner
+	Integrera med Backbone
+	Bygga backend i Laravel
+	Mecka ihop allt ovan
+	Städa koden, dokumentera och använda som mall för övriga funktioner
 
 Tasks:
-	Script för att generera testdata
-	SEB importer
-		Damma av script för att importera kontoutdrag från SEB
-		Skall köra en import av endast den datan som är ny
-		Få igång även med bankgiro?
-	PayPal importer
-		Importera transaktionshistorik från PayPal
-	Stripe importer
-	Tictail importer
-	Nyckelhantering
-		En databas över samtliga nycklar som är utlämnade
-		En nyckel har en koppling till medlem
-		En medlen kan ha flera nycklar
-		Visa lista på alla nycklar (Filtrering: Samtliga, endast aktiva, endast passerat slutdautm, endast sådana som aldrig har aktiverats)
-		En separat tabell håller koll på giltighetstiderna. Man skapar en rad med ett start och ett slutdatum. Dessa datum gäller för för alla nycklar den personen har.
-		En rad i giltighetstabellen skall ha en koppling till en monetär transaktion
-		Man ska kunna göra undantag och aktivera nycklar utan monetär transaktion. Dessa ska synad i en separat lista och ha en kommentar om varför de är aktiva utan betalning (Till exempel styrelse, städare, hantverkare eller andra med förtroendeuppdrag)
 	Monetära transaktioner
 		En monetär transaktion kan ha en koppling till en användare
 		Transaktioner som nyligen importeras saknar koppling
