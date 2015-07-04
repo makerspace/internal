@@ -25,4 +25,5 @@ Vagrant.configure(2) do |config|
   config.vm.provision :shell, :path => "setup/apacheAndPhp.sh"
   config.vm.provision :shell, :path => "setup/other.sh"
   config.vm.provision :shell, :path => "setup/internal.sh"
+  config.vm.provision :shell, :path => "setup/python.sh"
 end

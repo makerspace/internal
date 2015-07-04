@@ -93,3 +93,10 @@ Remove a virtual machine (Warning: all files in the virtual machine, except thos
 SSH in to the virtual machine
 
 `vagrant ssh`
+
+
+Generating test data
+=====================
+There is an ongoing effort to generate plausible test data for the mysql database (since we cannot use production data). This is implemented as a bunch of Python scripts. To populate your database, SSH to the virtual machine, navigate to /vagrant/database/generate and run
+
+`python generate_testdata.py`
