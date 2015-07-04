@@ -25,7 +25,8 @@
 			{target: '/v1/groups/', text: "Groups", external: true},
 			{target: 'labaccess', text: "Lab Access"},
 			{target: 'economy', text: "Economy"},
-			{target: '/v1/members/export/', text: "Export", external: true}
+			{target: '/v1/members/export/', text: "Export", external: true},
+			{target: 'statistics', text: "Statistics"}
 		]
 	});
 
