@@ -15,7 +15,7 @@
 	var keys = new Backbone.Collection([
 		{key: 0, name: 'Jan Jansson', expires: new Date()},
 		{key: 1, name: 'Michel Michellin', expires: new Date()}
-		]);
+	]);
 
 
 	var nav = new Backbone.Model({
@@ -31,7 +31,6 @@
 	});
 
 	var App = React.createClass({
-		mixins: [Backbone.React.Component.mixin],
 		render: function () {
 			return (
 				<div>
@@ -39,7 +38,7 @@
 					<SideNav model={nav}/>
 					<div className="uk-container uk-container-center uk-margin-top">
 						<div className="uk-grid">
-							<RouteHandler model={keyHeaders} collection={keys}/>
+							<RouteHandler />
 						</div>
 					</div>
 				</div>
@@ -50,10 +49,7 @@
 	var LabAccess = React.createClass({
 		render: function () {
 			return (
-				<div className="uk-width-1-1">
-					<h1>Lab access editor</h1>
-					<p>Remove the members you dislike.</p>
-				</div>
+					<LabAccessTable model={keyHeaders} collection={keys} />
 				);
 		}
 	});
@@ -83,7 +79,6 @@
 
 	var routes = (
 		<Route name="app" path="/" handler={App}>
-			<Route name="keys" handler={Keys}/>
 			<Route name="labaccess" handler={LabAccess}/>
 			<Route name="economy" handler={Economy}/>
 			<Route name="statistics" handler={Statistics}/>

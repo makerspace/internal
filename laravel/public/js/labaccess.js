@@ -1,5 +1,5 @@
 
-var Keys = React.createClass({
+var LabAccessTable = React.createClass({
     mixins: [Backbone.React.Component.mixin],
 
     renderHeader: function (header, i) {

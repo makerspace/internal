@@ -19,7 +19,9 @@ var NavItem = React.createClass({
 	render: function () {
 		if (this.props.navItem.external) {
 			return (
-					<li><a href={this.props.navItem.target}>{this.props.navItem.text}</a></li>
+					<li>
+						<a href={this.props.navItem.target}>{this.props.navItem.text}</a>
+					</li>
 				);
 		} else {
 			var className = this.getActiveState() ? this.getActiveClassName() : null;
@@ -43,8 +45,8 @@ var Nav = React.createClass({
 				<div className="uk-container uk-container-center">
 				<Link to="app" className="uk-navbar-brand">{this.state.model.brand}</Link>
 				<ul className="uk-navbar-nav uk-hidden-small uk-navbar-attached">
-					{this.state.model.navItems.map(function (navItem) {
-						return (<NavItem navItem={navItem} />);
+					{this.state.model.navItems.map(function (navItem, i) {
+						return (<NavItem navItem={navItem} key={i} />);
 					})}
 				</ul>
 					<div className="uk-navbar-flip">
@@ -64,8 +66,8 @@ var SideNav = React.createClass({
 				<div className="uk-offcanvas-bar">
 					<ul className="uk-nav uk-nav-offcanvas" data-uk-nav>
 						<li><Link to="app">{this.state.model.brand}</Link></li>
-						{this.state.model.navItems.map(function (navItem) {
-							return (<NavItem navItem={navItem} />);
+						{this.state.model.navItems.map(function (navItem, i) {
+							return (<NavItem navItem={navItem} key={i} />);
 						})}
 					</ul>
 				</div>
