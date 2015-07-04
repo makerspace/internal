@@ -2,6 +2,12 @@
 var Keys = React.createClass({
     mixins: [Backbone.React.Component.mixin],
 
+    renderHeader: function (header, i) {
+    	return (
+    		<th key={i}>{header}</th>
+    	);
+    },
+
 	renderRow: function (row, i) {
 		return (
 	        <tr key={i}>
@@ -15,15 +21,13 @@ var Keys = React.createClass({
   render: function () {
     return (
       <div className="uk-width-1-1">
-        <h1>Key editor</h1>
-        <p>Edit keys, denounce foes!</p>
+        <h1>{this.state.model.title}</h1>
+        <p>{this.state.model.blurb}</p>
         <table className="uk-table uk-table-striped uk-table-hover">
-		    <caption>Editor for keys</caption>
+		    <caption>{this.state.model.caption}</caption>
 		    <thead>
 		        <tr>
-		            <th>#</th>
-		            <th>Name</th>
-		            <th>Expires</th>
+		        	{this.state.model.headers.map(this.renderHeader)}
 		        </tr>
 		    </thead>
 		    <tbody>
