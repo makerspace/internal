@@ -16,6 +16,8 @@ Route::get("/", function ()
     return view("app");
 });
 
+// TODO: All URL's except those below should be routed to the index page
+
 Route::group(array("prefix" => "api/v2"), function()
 {
 	Route::resource("member",  "V2\Member@get");
