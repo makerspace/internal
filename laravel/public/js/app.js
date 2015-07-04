@@ -17,62 +17,29 @@
 		{key: 1, name: 'Michel Michellin', expires: new Date()}
 		]);
 
+
+	var nav = new Backbone.Model({
+		brand: "Makerspace Internal v2",
+		navItems: [
+			{target: '/v1/members/', text: "Members", external: true},
+			{target: '/v1/groups/', text: "Groups", external: true},
+			{target: 'labaccess', text: "Lab Access"},
+			{target: 'economy', text: "Economy"},
+			{target: '/v1/members/export/', text: "Export", external: true}
+		]
+	});
+
 	var App = React.createClass({
 		mixins: [Backbone.React.Component.mixin],
 		render: function () {
 			return (
 				<div>
-					<Nav/>
-					<SideNav/>
+					<Nav model={nav}/>
+					<SideNav model={nav}/>
 					<div className="uk-container uk-container-center uk-margin-top">
 						<div className="uk-grid">
 							<RouteHandler model={keyHeaders} collection={keys}/>
 						</div>
-					</div>
-				</div>
-				);
-		}
-	});
-
-
-	var Nav = React.createClass({
-		render: function () {
-			return (
-				<nav className="uk-navbar">
-					<div className="uk-container uk-container-center">
-					<Link to="app" className="uk-navbar-brand">Makerspace Internal</Link>
-					<ul className="uk-navbar-nav uk-hidden-small uk-navbar-attached">
-						<li><a href="/v1/members/">Members</a></li>
-						<li><a href="/v1/members/">Groups</a></li>
-						<li><Link to="keys">Keys</Link></li>
-						<li><Link to="labaccess">Lab Access</Link></li>
-						<li><Link to="economy">Economy</Link></li>
-						<li><a href="/v1/members/export/">Export</a></li>
-					</ul>
-						<div className="uk-navbar-flip">
-							<a className="uk-navbar-toggle uk-visible-small" data-uk-offcanvas="{target:'#sidenav'}"></a>
-						</div>
-					</div>
-				</nav>
-				);
-		}
-	});
-
-	var SideNav = React.createClass({
-		render: function () {
-			return (
-				<div id="sidenav" className="uk-offcanvas">
-					<div className="uk-offcanvas-bar">
-						<ul className="uk-nav uk-nav-offcanvas" data-uk-nav>
-							<li><Link to="app">Makerspace Internal</Link></li>
-							<li><a href="/v1/members/">Members</a></li>
-							<li><a href="/v1/groups/">Groups</a></li>
-							<li><Link to="keys">Keys</Link></li>
-							<li><Link to="labaccess">Lab Access</Link></li>
-							<li><Link to="economy">Economy</Link></li>
-							<li><Link to="statistics">Statistics</Link></li>
-							<li><a href="/v1/members/export/">Export</a></li>
-						</ul>
 					</div>
 				</div>
 				);

@@ -19,6 +19,7 @@
 	<script src="/js/libs/uikit.min.js"></script>
 	<script src="/js/libs/pagination.js"></script>
 
+	<script src="/js/nav.js" type="text/jsx"></script>
 	<script src="/js/keys.js" type="text/jsx"></script>
 	<script src="/js/economy.js" type="text/jsx"></script>
 	<script src="/js/app.js" type="text/jsx"></script>
