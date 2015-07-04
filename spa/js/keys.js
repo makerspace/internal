@@ -1,4 +1,17 @@
+
 var Keys = React.createClass({
+    mixins: [Backbone.React.Component.mixin],
+
+	renderRow: function (row, i) {
+		return (
+	        <tr key={i}>
+	            <td>{row.key}</td>
+	            <td>{row.name}</td>
+	            <td>{row.expires.toJSON()}</td>
+	        </tr>
+		);
+	},
+
   render: function () {
     return (
       <div className="uk-width-1-1">
@@ -11,22 +24,10 @@ var Keys = React.createClass({
 		            <th>#</th>
 		            <th>Name</th>
 		            <th>Expires</th>
-		            <th>Color</th>
 		        </tr>
 		    </thead>
 		    <tbody>
-		        <tr>
-		            <td>1</td>
-		            <td>3</td>
-		            <td>2</td>
-		            <td>1</td>
-		        </tr>
-		        <tr>
-		            <td>1</td>
-		            <td>1</td>
-		            <td>1</td>
-		            <td>1</td>
-		        </tr>
+		    	{this.state.collection.map(this.renderRow)}
 		    </tbody>
 		</table>
       </div>

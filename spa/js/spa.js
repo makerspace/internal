@@ -5,7 +5,13 @@ var Route = Router.Route;
 var RouteHandler = Router.RouteHandler;
 
 
+var keys = new Backbone.Collection([
+  {key: 0, name: 'Jan Jansson', expires: new Date()},
+  {key: 1, name: 'Michel Michellin', expires: new Date()}
+]);
+
 var App = React.createClass({
+    mixins: [Backbone.React.Component.mixin],
   render: function () {
     return (
       <div>
@@ -13,7 +19,7 @@ var App = React.createClass({
         <SideNav/>
         <div className="uk-container uk-container-center uk-margin-top">
           <div className="uk-grid">
-            <RouteHandler/>
+            <RouteHandler collection={keys}/>
           </div>
         </div>
       </div>
@@ -88,7 +94,6 @@ var routes = (
   </Route>
 );
 
-
 Router.run(routes, Router.HashLocation, function (Handler) {
-  React.render(<Handler/>, document.body);
+  React.render(<Handler />, document.body);
 });
