@@ -5,9 +5,9 @@ This is a membership administration platform for Makerspace's.
 We are upgrading to version 2. All the old stuff are in the v1 directory. The new stuff will be in v2. Under the migration phase both version will be used at the same time. When the migration is done the v1 version will be removed.
 
 
-This system does the following
-==============================
-Well, the v2 system does nothing so far. v1 does only membership management.
+Key features
+============
+Well, the v2 system does nothing so far. We are working activley on it and will release a beta version this summer. v1 does only membership management.
 
 Membership management
 ---------------------
@@ -46,25 +46,32 @@ All development is, preferably, done in a virtual machine. You run this virtual 
 First of all you need to download and install Vagrant and Virtualbox.
 
 In Linux you can just open the terminal and type:
-# sudo apt-get update
-# sudo apt-get install vagrant virtualbox
+
+`sudo apt-get update`
+
+`sudo apt-get install vagrant virtualbox`
 
 If you're on any other operating system you should go to:
 https://www.vagrantup.com/downloads.html
 https://www.virtualbox.org/wiki/Downloads
 
 Next step is to clone this repository. Go to a terminal, navigate to the directory where you want to put the code, and type:
-# git clone https://github.com/makerspace/internal
+
+`git clone https://github.com/makerspace/internal`
 
 Now you have everything you need to create a new virtual machine. In the terminal you should type:
-# vagrant up
+
+`vagrant up`
+
 The installation process will take a few minutes on a fast computer.
 
 Your machine will be up and running and have the IP 192.168.32.10. It is recomended that you modify your /etc/hosts to add a hostname that points to this IP.
-# sudo echo "192.168.32.10 internal.dev " >> /etc/hosts
+
+`sudo echo "192.168.32.10 internal.dev " >> /etc/hosts`
 
 To log in to the virtual machine type:
-# vagrant ssh
+
+`vagrant ssh`
 
 You will find a directory /vagrant which is actually shared with the host computer. Everything that is valuable should be kept in this directory, which means it will also be in the GIT repository. Be aware that if you `rm -rf /*` all your files will be gone, because /vagrant is removed.
 
@@ -72,13 +79,17 @@ You will find a directory /vagrant which is actually shared with the host comput
 Vagrant cheat sheet
 ------------------
 Create a new virtual machine
-# vagrant up
+
+`vagrant up`
 
 Shut down a virtual machine
-# vagrant halt
+
+`vagrant halt`
 
 Remove a virtual machine (Warning: all files in the virtual machine, except those in /vargant, will be removed)
-# vagrant destroy
+
+`vagrant destroy`
 
 SSH in to the virtual machine
-# vagrant ssh
+
+`vagrant ssh`
