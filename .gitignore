@@ -1,3 +1,5 @@
 .vagrant
 database/database.mwb.bak
 .DS_STORE
+*.swp
+*.pyc
