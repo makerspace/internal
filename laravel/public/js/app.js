@@ -7,16 +7,41 @@
 
 	var keyHeaders = new Backbone.Model({
 		title: "Lab Access",
-		headers: ["#", "Name", "Expiry Date"],
+		headers: ["Member #", "End date", "Description"],
 		blurb: "Wherein the keys are edited and henceforth accessed.",
 		caption: "Change keys"
 	});
 
-	var keys = new Backbone.Collection([
-		{key: 0, name: 'Jan Jansson', expires: new Date()},
-		{key: 1, name: 'Michel Michellin', expires: new Date()}
+	var LabAccessModel = Backbone.Model.extend({
+		defaults: {
+			member_id: 0,
+			date_start: null,
+			duration: 0,
+			description: ""
+		},
+		parse: function (response, options) {
+			return {
+				member_id: response.member_id,
+				date_end: new Date(response.date_start.getTime() + duration),
+				description: response.description
+			}
+		}
+	});
+
+	var LabAccesses = Backbone.Collection.extend({
+		model: LabAccessModel,
+		url: "/api/v2/labaccess",
+		parse: function (response, options) {
+			return response.data;
+		}
+	});
+
+	var keys = new LabAccesses([
+		new LabAccessModel({member_id: 1023, date_end: new Date()}),
+		new LabAccessModel({member_id: 1653, date_end: new Date(), description: "Temp"})
 	]);
 
+	//keys.fetch();
 
 	var nav = new Backbone.Model({
 		brand: "Makerspace Internal v2",
