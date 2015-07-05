@@ -68,8 +68,8 @@ def make_address2(force, firstnames, lastnames):
         return None
 
 class Member:
-    created = None
-    updated = None
+    created_at = None
+    updated_at = None
     email = None
     password = None
     firstname = None
@@ -109,8 +109,8 @@ def generate(db, count):
         is_female = random.random() < 0.5
 
         member = Member()
-        member.created = common.get_random_datetime(datetime.datetime(2013,1,1), datetime.datetime.now())
-        member.updated = common.get_random_datetime(member.created, datetime.datetime.now())
+        member.created_at = common.get_random_datetime(datetime.datetime(2013,1,1), datetime.datetime.now())
+        member.updated_at = common.get_random_datetime(member.created_at, datetime.datetime.now())
         member.email = common.get_short_unique_string() + '@test.makerspace.se'
         if is_female:
             member.firstname = common.get_random_item(firstnames_female).strip()
