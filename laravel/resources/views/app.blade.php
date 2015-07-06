@@ -14,9 +14,13 @@
 	<script src="/js/libs/underscore.js"></script>
 	<script src="/js/libs/backbone.js"></script>
 	<script src="/js/libs/backbone-react-component.js"></script>
+	<script src="/js/libs/backbone.paginator.js"></script>
+
 	<script src="/js/libs/uikit.min.js"></script>
+	<script src="/js/libs/pagination.js"></script>
 
 	<script src="/js/keys.js" type="text/jsx"></script>
+	<script src="/js/economy.js" type="text/jsx"></script>
 	<script src="/js/app.js" type="text/jsx"></script>
 
 	<link rel="stylesheet" href="/css/uikit.min.css" />

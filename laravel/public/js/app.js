@@ -46,7 +46,7 @@
 						<li><a href="/v1/members/">Groups</a></li>
 						<li><Link to="keys">Keys</Link></li>
 						<li><Link to="labaccess">Lab Access</Link></li>
-						<li><Link to="finance">Finance</Link></li>
+						<li><Link to="economy">Economy</Link></li>
 						<li><a href="/v1/members/export/">Export</a></li>
 					</ul>
 						<div className="uk-navbar-flip">
@@ -69,7 +69,7 @@
 							<li><a href="/v1/groups/">Groups</a></li>
 							<li><Link to="keys">Keys</Link></li>
 							<li><Link to="labaccess">Lab Access</Link></li>
-							<li><Link to="finance">Finance</Link></li>
+							<li><Link to="economy">Economy</Link></li>
 							<li><Link to="statistics">Statistics</Link></li>
 							<li><a href="/v1/members/export/">Export</a></li>
 						</ul>
@@ -101,17 +101,6 @@
 		}
 	});
 
-	var Finance = React.createClass({
-		render: function () {
-			return (
-				<div className="uk-width-1-1">
-					<h1>Money money</h1>
-					<p>Remove the stats you dislike.</p>
-				</div>
-				);
-		}
-	});
-
 	var Dashboard = React.createClass({
 		render: function () {
 			return (
@@ -128,7 +117,7 @@
 		<Route name="app" path="/" handler={App}>
 			<Route name="keys" handler={Keys}/>
 			<Route name="labaccess" handler={LabAccess}/>
-			<Route name="finance" handler={Finance}/>
+			<Route name="economy" handler={Economy}/>
 			<Route name="statistics" handler={Statistics}/>
 			<DefaultRoute handler={Dashboard}/>
 		</Route>
