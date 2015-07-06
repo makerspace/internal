@@ -11,7 +11,7 @@ use App\Models\AccountingInstruction;
 
 class Economy extends Controller
 {
-	function import()
+	function importSeb()
 	{
 		$s = new EconomyParserSEB();
 		$data = file_get_contents("/vagrant/Bokföring/Kontohändelser.csv");

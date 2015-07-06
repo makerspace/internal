@@ -24,6 +24,7 @@ Route::group(array("prefix" => "api/v2"), function()
 	
 	Route::group(array("prefix" => "accounting"), function()
 	{
+		Route::resource("import",       "V2\Economy@importSeb");
 		Route::resource("instructions", "V2\Economy@getInstructions");
 	});
 
