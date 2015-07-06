@@ -21,6 +21,11 @@ Route::get("/", function ()
 Route::group(array("prefix" => "api/v2"), function()
 {
 	Route::resource("member",  "V2\Member@get");
-	Route::resource("economy", "V2\Economy@get");
+	
+	Route::group(array("prefix" => "accounting"), function()
+	{
+		Route::resource("instructions", "V2\Economy@getInstructions");
+	});
+
 	Route::resource("labaccess", "V2\Labaccess@get");
 });
