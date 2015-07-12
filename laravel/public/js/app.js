@@ -7,72 +7,64 @@
 
 	var keyHeaders = new Backbone.Model({
 		title: "Lab Access",
-		headers: ["#", "Name", "Expiry Date"],
+		headers: ["Member #", "End date", "Description"],
 		blurb: "Wherein the keys are edited and henceforth accessed.",
 		caption: "Change keys"
 	});
 
-	var keys = new Backbone.Collection([
-		{key: 0, name: 'Jan Jansson', expires: new Date()},
-		{key: 1, name: 'Michel Michellin', expires: new Date()}
-		]);
+	var LabAccessModel = Backbone.Model.extend({
+		defaults: {
+			member_id: 0,
+			date_start: null,
+			duration: 0,
+			description: ""
+		},
+		parse: function (response, options) {
+			return {
+				member_id: response.member_id,
+				date_end: new Date(response.date_start.getTime() + duration),
+				description: response.description
+			}
+		}
+	});
+
+	var LabAccesses = Backbone.Collection.extend({
+		model: LabAccessModel,
+		url: "/api/v2/labaccess",
+		parse: function (response, options) {
+			return response.data;
+		}
+	});
+
+	var keys = new LabAccesses([
+		new LabAccessModel({member_id: 1023, date_end: new Date()}),
+		new LabAccessModel({member_id: 1653, date_end: new Date(), description: "Temp"})
+	]);
+
+	//keys.fetch();
+
+	var nav = new Backbone.Model({
+		brand: "Makerspace Internal v2",
+		navItems: [
+			{target: '/v1/members/', text: "Members", external: true},
+			{target: '/v1/groups/', text: "Groups", external: true},
+			{target: 'labaccess', text: "Lab Access"},
+			{target: 'economy', text: "Economy"},
+			{target: '/v1/members/export/', text: "Export", external: true},
+			{target: 'statistics', text: "Statistics"}
+		]
+	});
 
 	var App = React.createClass({
-		mixins: [Backbone.React.Component.mixin],
 		render: function () {
 			return (
 				<div>
-					<Nav/>
-					<SideNav/>
+					<Nav model={nav}/>
+					<SideNav model={nav}/>
 					<div className="uk-container uk-container-center uk-margin-top">
 						<div className="uk-grid">
-							<RouteHandler model={keyHeaders} collection={keys}/>
+							<RouteHandler />
 						</div>
-					</div>
-				</div>
-				);
-		}
-	});
-
-
-	var Nav = React.createClass({
-		render: function () {
-			return (
-				<nav className="uk-navbar">
-					<div className="uk-container uk-container-center">
-					<Link to="app" className="uk-navbar-brand">Makerspace Internal</Link>
-					<ul className="uk-navbar-nav uk-hidden-small uk-navbar-attached">
-						<li><a href="/v1/members/">Members</a></li>
-						<li><a href="/v1/members/">Groups</a></li>
-						<li><Link to="keys">Keys</Link></li>
-						<li><Link to="labaccess">Lab Access</Link></li>
-						<li><Link to="economy">Economy</Link></li>
-						<li><a href="/v1/members/export/">Export</a></li>
-					</ul>
-						<div className="uk-navbar-flip">
-							<a className="uk-navbar-toggle uk-visible-small" data-uk-offcanvas="{target:'#sidenav'}"></a>
-						</div>
-					</div>
-				</nav>
-				);
-		}
-	});
-
-	var SideNav = React.createClass({
-		render: function () {
-			return (
-				<div id="sidenav" className="uk-offcanvas">
-					<div className="uk-offcanvas-bar">
-						<ul className="uk-nav uk-nav-offcanvas" data-uk-nav>
-							<li><Link to="app">Makerspace Internal</Link></li>
-							<li><a href="/v1/members/">Members</a></li>
-							<li><a href="/v1/groups/">Groups</a></li>
-							<li><Link to="keys">Keys</Link></li>
-							<li><Link to="labaccess">Lab Access</Link></li>
-							<li><Link to="economy">Economy</Link></li>
-							<li><Link to="statistics">Statistics</Link></li>
-							<li><a href="/v1/members/export/">Export</a></li>
-						</ul>
 					</div>
 				</div>
 				);
@@ -82,10 +74,7 @@
 	var LabAccess = React.createClass({
 		render: function () {
 			return (
-				<div className="uk-width-1-1">
-					<h1>Lab access editor</h1>
-					<p>Remove the members you dislike.</p>
-				</div>
+					<LabAccessTable model={keyHeaders} collection={keys} />
 				);
 		}
 	});
@@ -115,7 +104,6 @@
 
 	var routes = (
 		<Route name="app" path="/" handler={App}>
-			<Route name="keys" handler={Keys}/>
 			<Route name="labaccess" handler={LabAccess}/>
 			<Route name="economy" handler={Economy}/>
 			<Route name="statistics" handler={Statistics}/>

@@ -1,5 +1,5 @@
 
-var Keys = React.createClass({
+var LabAccessTable = React.createClass({
     mixins: [Backbone.React.Component.mixin],
 
     renderHeader: function (header, i) {
@@ -11,9 +11,9 @@ var Keys = React.createClass({
 	renderRow: function (row, i) {
 		return (
 	        <tr key={i}>
-	            <td>{row.key}</td>
-	            <td>{row.name}</td>
-	            <td>{row.expires.toJSON()}</td>
+	            <td>{row.member_id}</td>
+	            <td>{row.date_end.toJSON()}</td>
+	            <td>{row.description}</td>
 	        </tr>
 		);
 	},
