@@ -1,0 +1,148 @@
+#%RAML 0.8
+title: Internal API v1.0
+version: 2
+baseUri: http://127.0.0.1:8080/api/v2/
+
+# Todo:
+#   Labaccess / prenumerationer
+#   Economy import
+
+traits:
+  - paged:
+      queryParameters:
+        page:
+          description: The number of the page to load
+          type: integer
+        per_page:
+          description: The number of entities per page
+          type: integer
+  - secured:
+      queryParameters:
+        access_token:
+          description: The token to get authorized
+          type: string
+
+/economy:
+  is: [ secured ]
+  /account:
+    description: Manage accounting accounts
+    get:
+      is: [ paged ]
+      description: This call returns an list of all accounts
+    post:
+      description: Creates a new account
+      queryParameters:
+        account_number:
+          description: Account number
+          type: integer
+          required: true
+          example: 3890
+        title:
+          description: Account title
+          type: string
+          required: true
+          example: Medlemsintäkter
+        description:
+          description: Account description
+          type: string
+          example: Innehåller endast medlemsavgifter för årsmedlemskap
+    /{account_id}:
+      description: Returns an invidual account
+      get:
+        description: Returns an account specified by account_id
+      put:
+        description: Updates an account specified by account_id
+        queryParameters:
+          account_number:
+            description: Account number
+            type: integer
+            example: 3890
+          title:
+            description: Account title
+            type: string
+            example: Medlemsintäkter
+          description:
+            description: Account description
+            type: string
+            example: Innehåller endast medlemsavgifter för årsmedlemskap
+      delete:
+        description: Deletes an account specified by account_id
+
+  /costcenter:
+    is: [ paged ]
+    description: Manage cost centers
+    get:
+      description: Returns a list of all cost centers
+    /{costcenter_id}:
+      description: Manage a single cost center
+      get:
+        description: Returns a single cost center
+      put:
+        description: Updates a cost center
+      delete:
+        description: Deletes a cost center
+
+  /instruction:
+    is: [ paged ]
+    description: Manage accounting instructions
+    get:
+      description: Returns a list of all accounting instructions
+      queryParameters:
+        account_id:
+          description: Filter instruction with a transaction to or from the specified account_id
+          type: integer
+    /{instruction_id}:
+      description: Manage a single accounting instructions
+      get:
+        description: Returns a single accounting instructions
+      put:
+        description: Updates a accounting instructions
+      delete:
+        description: Deletes a accounting instructions
+
+  /transaction:
+    is: [ paged ]
+    description: Manage accounting transactions
+    get:
+      description: Returns a list of all accounting transactions
+      queryParameters:
+        account_id:
+          description: Filter transactions to or from the specified account_id
+          type: integer
+    /{instruction_id}:
+      description: Manage a single accounting transactions
+      get:
+        description: Returns a single accounting transactions
+      put:
+        description: Updates a accounting transactions
+      delete:
+        description: Deletes a accounting transactions
+
+  /invoice:
+    is: [ paged ]
+    description: Manage invoices
+    get:
+      description: Returns a list of all invoices
+    /{invoice_id}:
+      description: Manage a single invoice
+      get:
+        description: Returns an invoice
+      put:
+        description: Updates an invoice
+      delete:
+        description: Deletes an invoice
+
+
+
+/member:
+  description: Manage single member accounts
+  get:
+    description: Returns a list of all members
+  /{member_id}:
+    description: Manage a single member
+    get:
+      description: Returns a single member
+    put:
+      description: Updates a member
+    delete:
+      description: Deletes a member
