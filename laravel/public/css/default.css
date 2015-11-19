@@ -1,0 +1,45 @@
+/* Loading React application */
+.loading-application {
+	margin: 0 auto;
+	border: 1px solid #000;
+	width: 200px;
+	text-align: center;
+	margin-top: 50%;
+}
+
+/* Loading data from REST API into collection or model */
+.loadingOverlay {
+	position: absolute;
+	top: 0;
+	height: 100%;
+	width: 100%;
+	font-size: 1.5em;
+	background-color: rgba(0, 0, 0, 0.05);
+	text-align: center;
+	border-radius: 3px;
+	animation: fadein 0.3s;
+}
+
+.loadingOverlay .loadingWrapper {
+	position: relative;
+	top: 50%;
+}
+
+@keyframes fadein {
+	from { opacity: 0; }
+	to   { opacity: 1; }
+}
+
+@keyframes fadein2 {
+	from { filter: blur(0px); }
+	to   { filter: blur(1px); }
+}
+
+.loadingOverlay span {
+	color: steelblue;
+}
+
+.backboneTableLoading tbody {
+	animation: fadein2 0.3s;
+	filter: blur(1px);
+}
