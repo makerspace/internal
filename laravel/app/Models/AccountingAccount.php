@@ -11,7 +11,8 @@ class AccountingAccount extends Model
 	 *
 	 * @var string
 	 */
-	protected $table = 'accounting_accounts';
+	protected $table = "entity";
+	protected $relations = array("accounting_account");
 
 	/**
 	 * The attributes that are mass assignable.
@@ -19,13 +20,17 @@ class AccountingAccount extends Model
 	 * @var array
 	 */
 	protected $fillable = [
-		'account_id',
-		'title',
-		'description',
+		'account_number',
+//		'title',
+//		'description',
 	];
 
-	public function AccountingInstructions()
+//	protected $with = array("transactions");
+
+/*
+	public function transactions()
 	{
-		return $this->belongsToMany('App\Models\AccountingInstruction');
+		return $this->hasMany("App\Models\AccountingTransaction");
 	}
+*/
 }

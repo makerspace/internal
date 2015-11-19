@@ -11,7 +11,7 @@ class AccountingInstruction extends Model
 	 *
 	 * @var string
 	 */
-	protected $table = 'accounting_instructions';
+	protected $table = 'accounting_instruction';
 
 	/**
 	 * The attributes that are mass assignable.
@@ -24,9 +24,12 @@ class AccountingInstruction extends Model
 		'external_id',
 		'external_date',
 		'external_text',
+		'external_data',
 		'data',
 		'accounting_verification_series_id'
 	];
+
+//	protected $with = array('Transactions');
 
 	/**
 	 * The attributes excluded from the model's JSON form.
@@ -39,4 +42,11 @@ class AccountingInstruction extends Model
 	{
 		return $this->hasMany('App\Models\AccountingTransaction');
 	}
+/*
+	protected function getDateFormat()
+	{
+//		return \DateTime::ISO8601;//"Y-m-dTH:i:sZ";
+		return "Y-m-d\TH:i:s";
+	}
+	*/
 }

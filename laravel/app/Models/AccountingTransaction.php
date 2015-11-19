@@ -11,7 +11,7 @@ class AccountingTransaction extends Model
 	 *
 	 * @var string
 	 */
-	protected $table = 'accounting_transactions';
+	protected $table = 'accounting_transaction';
 
 	/**
 	 * The attributes that are mass assignable.
@@ -27,6 +27,8 @@ class AccountingTransaction extends Model
 		'description',
 	];
 
+	protected $with = array('Account');
+
 	/**
 	 * The attributes excluded from the model's JSON form.
 	 *
@@ -34,15 +36,13 @@ class AccountingTransaction extends Model
 	 */
 //	protected $hidden = ['password', 'remember_token'];
 
-/*
-	public function Transactions()
+	public function Account()
 	{
-		return $this->hasMany('EconomyAccountingTransaction');
+		return $this->belongsTo("App\Models\AccountingAccount", "account_id");
 	}
-*/
 
-	public function Instruction()
+	public function instruction()
 	{
-		return $this->belongsToOne('App\Models\AccountingInstruction');
+		return $this->belongsTo("App\Models\AccountingInstruction", "accounting_instruction_id");
 	}
 }

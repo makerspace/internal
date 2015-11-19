@@ -70,19 +70,19 @@ class EconomyParserSEB implements EconomyParser
 			$db_id = "seb_" . $date_accounting . "_" . $id;
 
 			// TODO: Check if it already is in the database
-			// SELECT 
+			// SELECT * FROM accounting_instruction WHERE external_id = 
 
 			// Create a new accounting instruction
 			$instruction = new AccountingInstruction();
 //			$instruction->id            = $date_accounting . $id; // The "Verifikationsdatum" provided by SEB is not unique per row. I *GUESS* that a combination of date and their id will be unique per row.
-//			$instruction->date          = date("c");              // Date when adding to the accounting
-			$instruction->external_date = $date_accounting;       // We use "Bokföringsdatum" as date
-			$instruction->external_id   = $id;
-			$instruction->external_text = $description;
-			$instruction->title         = $description;
-			$instruction->data          = serialize($row);
+			$instruction->accounting_date = $date_accounting;
+			$instruction->external_date   = $date_accounting;
+			$instruction->external_id     = $id;
+			$instruction->external_text   = $description;
+			$instruction->external_data   = serialize($row);
+			$instruction->title           = $description;
+			$instruction->amount          = 123;
 //			$instruction->verification_number = null;
-//			$instruction->external_text = $description;
 //			$instruction->accounting_category_id = null;
 //			$instruction->accounting_verification_series_id = null;
 			$instruction->save();
@@ -125,14 +125,8 @@ class EconomyParserSEB implements EconomyParser
 
 			// Save transactions
 			$instruction->Transactions()->saveMany($transactions);
-
-			// Add the transaction to an array
-//			$transactions[] = $t;
 		}
 
-		// Debugging
-//		print_r($transactions);
-
-		return $transactions;
+		return true;
 	}
 }
