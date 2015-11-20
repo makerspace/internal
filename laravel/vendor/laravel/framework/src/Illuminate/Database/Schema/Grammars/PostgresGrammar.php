@@ -53,7 +53,11 @@ class PostgresGrammar extends Grammar
     {
         $columns = implode(', ', $this->getColumns($blueprint));
 
-        return 'create table '.$this->wrapTable($blueprint)." ($columns)";
+        $sql = $blueprint->temporary ? 'create temporary' : 'create';
+
+        $sql .= ' table '.$this->wrapTable($blueprint)." ($columns)";
+
+        return $sql;
     }
 
     /**
@@ -502,6 +506,17 @@ class PostgresGrammar extends Grammar
     }
 
     /**
+     * Create the column definition for a uuid type.
+     *
+     * @param  \Illuminate\Support\Fluent  $column
+     * @return string
+     */
+    protected function typeUuid(Fluent $column)
+    {
+        return 'uuid';
+    }
+
+    /**
      * Get the SQL for a nullable column modifier.
      *
      * @param  \Illuminate\Database\Schema\Blueprint  $blueprint
@@ -522,7 +537,7 @@ class PostgresGrammar extends Grammar
      */
     protected function modifyDefault(Blueprint $blueprint, Fluent $column)
     {
-        if (!is_null($column->default)) {
+        if (! is_null($column->default)) {
             return ' default '.$this->getDefaultValue($column->default);
         }
     }

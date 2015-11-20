@@ -11,7 +11,7 @@
 /**
  * Runner for PHPT test cases.
  *
- * @since      Class available since Release 3.1.4
+ * @since Class available since Release 3.1.4
  */
 class PHPUnit_Extensions_PhptTestCase implements PHPUnit_Framework_Test, PHPUnit_Framework_SelfDescribing
 {
@@ -50,7 +50,8 @@ class PHPUnit_Extensions_PhptTestCase implements PHPUnit_Framework_Test, PHPUnit
     /**
      * Constructs a test case with the given filename.
      *
-     * @param  string                      $filename
+     * @param string $filename
+     *
      * @throws PHPUnit_Framework_Exception
      */
     public function __construct($filename)
@@ -84,7 +85,8 @@ class PHPUnit_Extensions_PhptTestCase implements PHPUnit_Framework_Test, PHPUnit
     /**
      * Runs a test and collects its result in a TestResult instance.
      *
-     * @param  PHPUnit_Framework_TestResult $result
+     * @param PHPUnit_Framework_TestResult $result
+     *
      * @return PHPUnit_Framework_TestResult
      */
     public function run(PHPUnit_Framework_TestResult $result = null)
@@ -177,6 +179,7 @@ class PHPUnit_Extensions_PhptTestCase implements PHPUnit_Framework_Test, PHPUnit
 
     /**
      * @return array
+     *
      * @throws PHPUnit_Framework_Exception
      */
     private function parse()
@@ -205,7 +208,8 @@ class PHPUnit_Extensions_PhptTestCase implements PHPUnit_Framework_Test, PHPUnit
     }
 
     /**
-     * @param  string $code
+     * @param string $code
+     *
      * @return string
      */
     private function render($code)
@@ -227,6 +231,7 @@ class PHPUnit_Extensions_PhptTestCase implements PHPUnit_Framework_Test, PHPUnit
      * Parse --INI-- section key value pairs and return as array.
      *
      * @param string
+     *
      * @return array
      */
     protected function parseIniSection($content)

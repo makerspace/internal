@@ -164,7 +164,7 @@ class SymfonyStyle extends OutputStyle
      */
     public function success($message)
     {
-        $this->block($message, 'OK', 'fg=white;bg=green', ' ', true);
+        $this->block($message, 'OK', 'fg=black;bg=green', ' ', true);
     }
 
     /**
@@ -379,7 +379,7 @@ class SymfonyStyle extends OutputStyle
     {
         $chars = substr(str_replace(PHP_EOL, "\n", $this->bufferedOutput->fetch()), -2);
 
-        if (false === $chars) {
+        if (!isset($chars[0])) {
             return $this->newLine(); //empty history, so we should start with a new line.
         }
         //Prepend new line for each non LF chars (This means no blank line was output before)

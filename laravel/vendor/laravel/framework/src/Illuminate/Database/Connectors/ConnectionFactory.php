@@ -98,6 +98,12 @@ class ConnectionFactory
     {
         $readConfig = $this->getReadWriteConfig($config, 'read');
 
+        if (isset($readConfig['host']) && is_array($readConfig['host'])) {
+            $readConfig['host'] = count($readConfig['host']) > 1
+                ? $readConfig['host'][array_rand($readConfig['host'])]
+                : $readConfig['host'][0];
+        }
+
         return $this->mergeReadWriteConfig($config, $readConfig);
     }
 
@@ -164,7 +170,7 @@ class ConnectionFactory
      */
     public function createConnector(array $config)
     {
-        if (!isset($config['driver'])) {
+        if (! isset($config['driver'])) {
             throw new InvalidArgumentException('A driver must be specified.');
         }
 

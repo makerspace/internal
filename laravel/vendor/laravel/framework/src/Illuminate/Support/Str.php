@@ -166,7 +166,7 @@ class Str
      */
     public static function lower($value)
     {
-        return mb_strtolower($value);
+        return mb_strtolower($value, 'UTF-8');
     }
 
     /**
@@ -181,7 +181,7 @@ class Str
     {
         preg_match('/^\s*+(?:\S++\s*+){1,'.$words.'}/u', $value, $matches);
 
-        if (!isset($matches[0]) || strlen($value) === strlen($matches[0])) {
+        if (! isset($matches[0]) || strlen($value) === strlen($matches[0])) {
             return $value;
         }
 
@@ -245,15 +245,16 @@ class Str
      */
     public static function randomBytes($length = 16)
     {
-        if (function_exists('random_bytes')) {
+        if (PHP_MAJOR_VERSION >= 7 || defined('RANDOM_COMPAT_READ_BUFFER')) {
             $bytes = random_bytes($length);
         } elseif (function_exists('openssl_random_pseudo_bytes')) {
             $bytes = openssl_random_pseudo_bytes($length, $strong);
+
             if ($bytes === false || $strong === false) {
                 throw new RuntimeException('Unable to generate random string.');
             }
         } else {
-            throw new RuntimeException('OpenSSL extension is required for PHP 5 users.');
+            throw new RuntimeException('OpenSSL extension or paragonie/random_compat is required for PHP 5 users.');
         }
 
         return $bytes;
@@ -287,11 +288,11 @@ class Str
      */
     public static function equals($knownString, $userInput)
     {
-        if (!is_string($knownString)) {
+        if (! is_string($knownString)) {
             $knownString = (string) $knownString;
         }
 
-        if (!is_string($userInput)) {
+        if (! is_string($userInput)) {
             $userInput = (string) $userInput;
         }
 
@@ -299,9 +300,9 @@ class Str
             return hash_equals($knownString, $userInput);
         }
 
-        $knownLength = mb_strlen($knownString);
+        $knownLength = mb_strlen($knownString, '8bit');
 
-        if (mb_strlen($userInput) !== $knownLength) {
+        if (mb_strlen($userInput, '8bit') !== $knownLength) {
             return false;
         }
 
@@ -322,7 +323,7 @@ class Str
      */
     public static function upper($value)
     {
-        return mb_strtoupper($value);
+        return mb_strtoupper($value, 'UTF-8');
     }
 
     /**
@@ -387,7 +388,9 @@ class Str
             return static::$snakeCache[$key];
         }
 
-        if (!ctype_lower($value)) {
+        if (! ctype_lower($value)) {
+            $value = preg_replace('/\s+/', '', $value);
+
             $value = strtolower(preg_replace('/(.)(?=[A-Z])/', '$1'.$delimiter, $value));
         }
 
@@ -429,5 +432,29 @@ class Str
         $value = ucwords(str_replace(['-', '_'], ' ', $value));
 
         return static::$studlyCache[$key] = str_replace(' ', '', $value);
+    }
+
+    /**
+     * Returns the portion of string specified by the start and length parameters.
+     *
+     * @param  string  $string
+     * @param  int  $start
+     * @param  int|null  $length
+     * @return string
+     */
+    public static function substr($string, $start, $length = null)
+    {
+        return mb_substr($string, $start, $length, 'UTF-8');
+    }
+
+    /**
+     * Make a string's first character uppercase.
+     *
+     * @param  string  $string
+     * @return string
+     */
+    public static function ucfirst($string)
+    {
+        return static::upper(static::substr($string, 0, 1)).static::substr($string, 1);
     }
 }

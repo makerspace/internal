@@ -124,8 +124,8 @@ class Request extends SymfonyRequest implements ArrayAccess
      * Get a segment from the URI (1 based index).
      *
      * @param  int  $index
-     * @param  mixed  $default
-     * @return string
+     * @param  string|null  $default
+     * @return string|null
      */
     public function segment($index, $default = null)
     {
@@ -224,7 +224,7 @@ class Request extends SymfonyRequest implements ArrayAccess
         $input = $this->all();
 
         foreach ($keys as $value) {
-            if (!array_key_exists($value, $input)) {
+            if (! array_key_exists($value, $input)) {
                 return false;
             }
         }
@@ -263,7 +263,7 @@ class Request extends SymfonyRequest implements ArrayAccess
 
         $boolOrArray = is_bool($value) || is_array($value);
 
-        return !$boolOrArray && trim((string) $value) === '';
+        return ! $boolOrArray && trim((string) $value) === '';
     }
 
     /**
@@ -280,7 +280,7 @@ class Request extends SymfonyRequest implements ArrayAccess
      * Retrieve an input item from the request.
      *
      * @param  string  $key
-     * @param  mixed   $default
+     * @param  string|array|null  $default
      * @return string|array
      */
     public function input($key = null, $default = null)
@@ -314,7 +314,7 @@ class Request extends SymfonyRequest implements ArrayAccess
     /**
      * Get all of the input except for a specified array of items.
      *
-     * @param  array  $keys
+     * @param  array|mixed  $keys
      * @return array
      */
     public function except($keys)
@@ -332,7 +332,7 @@ class Request extends SymfonyRequest implements ArrayAccess
      * Retrieve a query string item from the request.
      *
      * @param  string  $key
-     * @param  mixed   $default
+     * @param  string|array|null  $default
      * @return string|array
      */
     public function query($key = null, $default = null)
@@ -348,14 +348,14 @@ class Request extends SymfonyRequest implements ArrayAccess
      */
     public function hasCookie($key)
     {
-        return !is_null($this->cookie($key));
+        return ! is_null($this->cookie($key));
     }
 
     /**
      * Retrieve a cookie from the request.
      *
      * @param  string  $key
-     * @param  mixed   $default
+     * @param  string|array|null  $default
      * @return string|array
      */
     public function cookie($key = null, $default = null)
@@ -367,8 +367,8 @@ class Request extends SymfonyRequest implements ArrayAccess
      * Retrieve a file from the request.
      *
      * @param  string  $key
-     * @param  mixed   $default
-     * @return \Symfony\Component\HttpFoundation\File\UploadedFile|array
+     * @param  mixed  $default
+     * @return \Symfony\Component\HttpFoundation\File\UploadedFile|array|null
      */
     public function file($key = null, $default = null)
     {
@@ -383,7 +383,7 @@ class Request extends SymfonyRequest implements ArrayAccess
      */
     public function hasFile($key)
     {
-        if (!is_array($files = $this->file($key))) {
+        if (! is_array($files = $this->file($key))) {
             $files = [$files];
         }
 
@@ -411,7 +411,7 @@ class Request extends SymfonyRequest implements ArrayAccess
      * Retrieve a header from the request.
      *
      * @param  string  $key
-     * @param  mixed   $default
+     * @param  string|array|null  $default
      * @return string|array
      */
     public function header($key = null, $default = null)
@@ -423,7 +423,7 @@ class Request extends SymfonyRequest implements ArrayAccess
      * Retrieve a server variable from the request.
      *
      * @param  string  $key
-     * @param  mixed   $default
+     * @param  string|array|null  $default
      * @return string|array
      */
     public function server($key = null, $default = null)
@@ -435,8 +435,8 @@ class Request extends SymfonyRequest implements ArrayAccess
      * Retrieve an old input item.
      *
      * @param  string  $key
-     * @param  mixed   $default
-     * @return mixed
+     * @param  string|array|null  $default
+     * @return string|array
      */
     public function old($key = null, $default = null)
     {
@@ -452,7 +452,7 @@ class Request extends SymfonyRequest implements ArrayAccess
      */
     public function flash($filter = null, $keys = [])
     {
-        $flash = (!is_null($filter)) ? $this->$filter($keys) : $this->input();
+        $flash = (! is_null($filter)) ? $this->$filter($keys) : $this->input();
 
         $this->session()->flashInput($flash);
     }
@@ -460,7 +460,7 @@ class Request extends SymfonyRequest implements ArrayAccess
     /**
      * Flash only some of the input to the session.
      *
-     * @param  mixed  string
+     * @param  array|mixed  $keys
      * @return void
      */
     public function flashOnly($keys)
@@ -473,7 +473,7 @@ class Request extends SymfonyRequest implements ArrayAccess
     /**
      * Flash only some of the input to the session.
      *
-     * @param  mixed  string
+     * @param  array|mixed  $keys
      * @return void
      */
     public function flashExcept($keys)
@@ -498,7 +498,7 @@ class Request extends SymfonyRequest implements ArrayAccess
      *
      * @param  string  $source
      * @param  string  $key
-     * @param  mixed   $default
+     * @param  string|array|null  $default
      * @return string|array
      */
     protected function retrieveItem($source, $key, $default)
@@ -541,7 +541,7 @@ class Request extends SymfonyRequest implements ArrayAccess
      */
     public function json($key = null, $default = null)
     {
-        if (!isset($this->json)) {
+        if (! isset($this->json)) {
             $this->json = new ParameterBag((array) json_decode($this->getContent(), true));
         }
 
@@ -569,6 +569,8 @@ class Request extends SymfonyRequest implements ArrayAccess
     /**
      * Determine if the given content types match.
      *
+     * @param  string  $actual
+     * @param  string  $type
      * @return bool
      */
     public static function matchesType($actual, $type)
@@ -630,13 +632,44 @@ class Request extends SymfonyRequest implements ArrayAccess
             }
 
             foreach ($types as $type) {
-                if ($this->matchesType($accept, $type) || $accept === strtok('/', $type).'/*') {
+                if ($this->matchesType($accept, $type) || $accept === strtok($type, '/').'/*') {
                     return true;
                 }
             }
         }
 
         return false;
+    }
+
+    /**
+     * Return the most suitable content type from the given array based on content negotiation.
+     *
+     * @param  string|array  $contentTypes
+     * @return string|null
+     */
+    public function prefers($contentTypes)
+    {
+        $accepts = $this->getAcceptableContentTypes();
+
+        $contentTypes = (array) $contentTypes;
+
+        foreach ($accepts as $accept) {
+            if (in_array($accept, ['*/*', '*'])) {
+                return $contentTypes[0];
+            }
+
+            foreach ($contentTypes as $contentType) {
+                $type = $contentType;
+
+                if (! is_null($mimeType = $this->getMimeType($contentType))) {
+                    $type = $mimeType;
+                }
+
+                if ($this->matchesType($type, $accept) || $accept === strtok($type, '/').'/*') {
+                    return $contentType;
+                }
+            }
+        }
     }
 
     /**
@@ -721,7 +754,7 @@ class Request extends SymfonyRequest implements ArrayAccess
      */
     public function session()
     {
-        if (!$this->hasSession()) {
+        if (! $this->hasSession()) {
             throw new RuntimeException('Session store not set on request.');
         }
 
@@ -741,14 +774,18 @@ class Request extends SymfonyRequest implements ArrayAccess
     /**
      * Get the route handling the request.
      *
-     * @return \Illuminate\Routing\Route|null
+     * @param string|null $param
+     *
+     * @return \Illuminate\Routing\Route|object|string
      */
-    public function route()
+    public function route($param = null)
     {
-        if (func_num_args() == 1) {
-            return $this->route()->parameter(func_get_arg(0));
+        $route = call_user_func($this->getRouteResolver());
+
+        if (is_null($route) || is_null($param)) {
+            return $route;
         } else {
-            return call_user_func($this->getRouteResolver());
+            return $route->parameter($param);
         }
     }
 
@@ -844,6 +881,17 @@ class Request extends SymfonyRequest implements ArrayAccess
     }
 
     /**
+     * Check if an input element is set on the request.
+     *
+     * @param  string  $key
+     * @return bool
+     */
+    public function __isset($key)
+    {
+        return ! is_null($this->__get($key));
+    }
+
+    /**
      * Get an input element from the request.
      *
      * @param  string  $key
@@ -855,8 +903,8 @@ class Request extends SymfonyRequest implements ArrayAccess
 
         if (array_key_exists($key, $all)) {
             return $all[$key];
-        } elseif (!is_null($this->route())) {
-            return $this->route()->parameter($key);
+        } else {
+            return $this->route($key);
         }
     }
 }

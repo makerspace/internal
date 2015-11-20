@@ -2,10 +2,19 @@
 
 namespace Illuminate\Foundation\Console;
 
+use PhpParser\Lexer;
+use PhpParser\Parser;
+use ClassPreloader\Factory;
 use Illuminate\Console\Command;
+use ClassPreloader\ClassPreloader;
 use Illuminate\Foundation\Composer;
-use ClassPreloader\Command\PreCompileCommand;
+use ClassPreloader\Parser\DirVisitor;
+use ClassPreloader\Parser\FileVisitor;
+use ClassPreloader\Parser\NodeTraverser;
+use ClassPreloader\Exceptions\SkipFileException;
 use Symfony\Component\Console\Input\InputOption;
+use PhpParser\PrettyPrinter\Standard as PrettyPrinter;
+use ClassPreloader\Exceptions\VisitorExceptionInterface;
 
 class OptimizeCommand extends Command
 {
@@ -58,9 +67,8 @@ class OptimizeCommand extends Command
             $this->composer->dumpOptimized();
         }
 
-        if ($this->option('force') || !$this->laravel['config']['app.debug']) {
+        if ($this->option('force') || ! $this->laravel['config']['app.debug']) {
             $this->info('Compiling common classes');
-
             $this->compileClasses();
         } else {
             $this->call('clear-compiled');
@@ -74,14 +82,40 @@ class OptimizeCommand extends Command
      */
     protected function compileClasses()
     {
-        $this->registerClassPreloaderCommand();
+        $preloader = $this->getClassPreloader();
 
-        $this->callSilent('compile', [
-            '--config' => implode(',', $this->getClassFiles()),
-            '--output' => $this->laravel->getCachedCompilePath(),
-            '--strip_comments' => 1,
-            '--skip_dir_file' => (bool) $this->option('portable'),
-        ]);
+        $handle = $preloader->prepareOutput($this->laravel->getCachedCompilePath());
+
+        foreach ($this->getClassFiles() as $file) {
+            try {
+                fwrite($handle, $preloader->getCode($file, false)."\n");
+            } catch (SkipFileException $ex) {
+                // Class Preloader 2.x
+            } catch (VisitorExceptionInterface $e) {
+                // Class Preloader 3.x
+            }
+        }
+
+        fclose($handle);
+    }
+
+    /**
+     * Get the class preloader used by the command.
+     *
+     * @return \ClassPreloader\ClassPreloader
+     */
+    protected function getClassPreloader()
+    {
+        // Class Preloader 3.x
+        if (class_exists(Factory::class)) {
+            return (new Factory)->create(['skip' => true]);
+        }
+
+        $traverser = new NodeTraverser;
+        $traverser->addVisitor(new DirVisitor(true));
+        $traverser->addVisitor(new FileVisitor(true));
+
+        return new ClassPreloader(new PrettyPrinter, new Parser(new Lexer), $traverser);
     }
 
     /**
@@ -95,23 +129,13 @@ class OptimizeCommand extends Command
 
         $core = require __DIR__.'/Optimize/config.php';
 
-        $files = array_merge($core, $this->laravel['config']->get('compile.files', []));
+        $files = array_merge($core, $app['config']->get('compile.files', []));
 
-        foreach ($this->laravel['config']->get('compile.providers', []) as $provider) {
+        foreach ($app['config']->get('compile.providers', []) as $provider) {
             $files = array_merge($files, forward_static_call([$provider, 'compiles']));
         }
 
-        return $files;
-    }
-
-    /**
-     * Register the pre-compiler command instance with Artisan.
-     *
-     * @return void
-     */
-    protected function registerClassPreloaderCommand()
-    {
-        $this->getApplication()->add(new PreCompileCommand);
+        return array_map('realpath', $files);
     }
 
     /**
@@ -125,8 +149,6 @@ class OptimizeCommand extends Command
             ['force', null, InputOption::VALUE_NONE, 'Force the compiled class file to be written.'],
 
             ['psr', null, InputOption::VALUE_NONE, 'Do not optimize Composer dump-autoload.'],
-
-            ['portable', null, InputOption::VALUE_NONE, 'Skip files with __DIR__ or __FILE__ to make the cache portable.'],
         ];
     }
 }

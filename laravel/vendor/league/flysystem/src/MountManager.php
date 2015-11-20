@@ -134,7 +134,7 @@ class MountManager
             throw new InvalidArgumentException('First argument should be a string');
         }
 
-        if (! preg_match('#^[a-zA-Z0-9]+\:\/\/.*#', $path)) {
+        if (! preg_match('#^.+\:\/\/.*#', $path)) {
             throw new InvalidArgumentException('No prefix detected in path: '.$path);
         }
 
@@ -229,6 +229,7 @@ class MountManager
      *
      * @param $from
      * @param $to
+     *
      * @return bool
      */
     public function move($from, $to)
@@ -248,6 +249,7 @@ class MountManager
      * @param $method
      * @param $arguments
      * @param $prefix
+     *
      * @return mixed
      */
     public function invokePluginOnFilesystem($method, $arguments, $prefix)

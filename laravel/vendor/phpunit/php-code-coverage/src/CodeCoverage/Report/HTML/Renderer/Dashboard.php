@@ -92,7 +92,7 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Dashboard extends PHP_CodeCoverage_R
         }
 
         return array(
-            'class' => json_encode($result['class']),
+            'class'  => json_encode($result['class']),
             'method' => json_encode($result['method'])
         );
     }
@@ -161,7 +161,7 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Dashboard extends PHP_CodeCoverage_R
         }
 
         return array(
-            'class' => json_encode(array_values($result['class'])),
+            'class'  => json_encode(array_values($result['class'])),
             'method' => json_encode(array_values($result['method']))
         );
     }
@@ -213,7 +213,7 @@ class PHP_CodeCoverage_Report_HTML_Renderer_Dashboard extends PHP_CodeCoverage_R
             list($class, $method) = explode('::', $methodName);
 
             $result['method'] .= sprintf(
-                '       <tr><td><a href="%s"><abbr title="%s">%s</a></a></td><td class="text-right">%d%%</td></tr>' . "\n",
+                '       <tr><td><a href="%s"><abbr title="%s">%s</abbr></a></td><td class="text-right">%d%%</td></tr>' . "\n",
                 str_replace($baseLink, '', $classes[$class]['methods'][$method]['link']),
                 $methodName,
                 $method,

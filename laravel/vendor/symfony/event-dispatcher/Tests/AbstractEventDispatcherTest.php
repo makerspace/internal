@@ -12,6 +12,7 @@
 namespace Symfony\Component\EventDispatcher\Tests;
 
 use Symfony\Component\EventDispatcher\Event;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 abstract class AbstractEventDispatcherTest extends \PHPUnit_Framework_TestCase
@@ -126,8 +127,6 @@ abstract class AbstractEventDispatcherTest extends \PHPUnit_Framework_TestCase
      */
     public function testLegacyDispatch()
     {
-        $this->iniSet('error_reporting', -1 & ~E_USER_DEPRECATED);
-
         $event = new Event();
         $return = $this->dispatcher->dispatch(self::preFoo, $event);
         $this->assertEquals('pre.foo', $event->getName());
@@ -137,7 +136,7 @@ abstract class AbstractEventDispatcherTest extends \PHPUnit_Framework_TestCase
     {
         $invoked = 0;
         $listener = function () use (&$invoked) {
-            $invoked++;
+            ++$invoked;
         };
         $this->dispatcher->addListener('pre.foo', $listener);
         $this->dispatcher->addListener('post.foo', $listener);
@@ -255,8 +254,6 @@ abstract class AbstractEventDispatcherTest extends \PHPUnit_Framework_TestCase
      */
     public function testLegacyEventReceivesTheDispatcherInstance()
     {
-        $this->iniSet('error_reporting', -1 & ~E_USER_DEPRECATED);
-
         $dispatcher = null;
         $this->dispatcher->addListener('test', function ($event) use (&$dispatcher) {
             $dispatcher = $event->getDispatcher();
