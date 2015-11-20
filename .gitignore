@@ -5,3 +5,4 @@ database/database.mwb.bak
 *.pyc
 Bokföring
 Internal.sublime-workspace
+laravel/storage
