@@ -1,0 +1,2 @@
+#!/bin/bash
+docker run --name=internal -e VIRTUAL_HOST=internal.dev.makerspace.se -v $(pwd)/laravel:/var/www/html -d makerspace/docker-webserver:0.1
