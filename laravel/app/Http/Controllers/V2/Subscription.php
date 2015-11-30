@@ -4,14 +4,14 @@ namespace App\Http\Controllers\V2;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Response;
-use App\Models\Labaccess as LabaccessModel;
+use App\Models\Subscription as SubscriptionModel;
 
-class Labaccess extends Controller
+class Subscription extends Controller
 {
-	function get()
+	function list()
 	{
 		return Response()->json(array(
-			'data' => LabaccessModel::all(),
+			'data' => SubscriptionModel::all(),
 		));
 	}
 }

@@ -7,7 +7,7 @@ use Illuminate\Http\Response;
 
 class Member extends Controller
 {
-	function getMember()
+	function read()
 	{
 		return [
 			"member_id" => 27,
@@ -20,12 +20,12 @@ class Member extends Controller
 		];
 	}
 
-	function listMembers()
+	function list()
 	{
 		return [
-			$this->getMember(),
-			$this->getMember(),
-			$this->getMember(),
+			$this->read(),
+			$this->read(),
+			$this->read(),
 		];
 	}
 }

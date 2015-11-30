@@ -4,14 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Labaccess extends Model
+class Subscription extends Model
 {
 	/**
 	 * The database table used by the model.
 	 *
 	 * @var string
 	 */
-	protected $table = 'labaccess';
+	protected $table = 'subscription';
 
 	/**
 	 * The attributes that are mass assignable.

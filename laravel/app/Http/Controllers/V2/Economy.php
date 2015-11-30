@@ -16,6 +16,9 @@ use DB;
 
 class Economy extends Controller
 {
+	/**
+	 *
+	 */
 	function test(Request $request)
 	{
 //		$data = AccountingInstruction::find(50);
@@ -25,13 +28,15 @@ class Economy extends Controller
 //		echo "<pre>";
 //print_r($data);
 		return $data;
-		
 
 //		print_r(AccountingInstruction::with("Posts")->where("accounting_transaction.accounting_account_id", 1), true);
 
 		return [];
 	}
 
+	/**
+	 *
+	 */
 	function importSeb()
 	{
 		$s = new EconomyParserSEB();
@@ -41,11 +46,11 @@ class Economy extends Controller
 		echo "<pre>";
 		print_r($data);
 	}
-	
+
 	/**
 	 *
 	 */
-	function getInstructions(Request $request)
+	function instructionList(Request $request)
 	{
 		$per_page = $request->input("per_page");
 		if(empty($per_page))
@@ -74,7 +79,10 @@ class Economy extends Controller
 		return $data->toJson();
 	}
 
-	function getInstruction(Request $request, $id)
+	/**
+	 *
+	 */
+	function instructionRead(Request $request, $id)
 	{
 		// Use model
 		$data = DB::table("entity")
@@ -108,7 +116,7 @@ class Economy extends Controller
 	/**
 	 * Returns a list of accounts
 	 */
-	function getAccounts(Request $request)
+	function accountList(Request $request)
 	{
 		return DB::table("entity")
 			->join("accounting_account", "accounting_account.entity_id", "=", "entity.entity_id")
@@ -146,6 +154,9 @@ class Economy extends Controller
 		}
 	}
 
+	/**
+	 *
+	 */
 	function accountCreate(Request $request)
 	{
 		return [
@@ -156,22 +167,34 @@ class Economy extends Controller
 		];
 	}
 
+	/**
+	 *
+	 */
 	function accountUpdate(Request $request)
 	{
 		return '{"status": "updated"}';
 	}
 
+	/**
+	 *
+	 */
 	function accountDelete(Request $request)
 	{
 		return '{"status": "deleted"}';
 	}
 
-	function getTransactions(Request $request)
+	/**
+	 *
+	 */
+	function transactionList(Request $request)
 	{
 
 	}
 
-	function getTransaction(Request $request, $id)
+	/**
+	 *
+	 */
+	function transactionRead(Request $request, $id)
 	{
 		// Get an list with id's of all accounting instructions which have a transaction to this account
 		$instructions = DB::table("entity")
@@ -218,7 +241,10 @@ class Economy extends Controller
 			*/
 	}
 
-	function getCostCenters(Request $request)
+	/**
+	 *
+	 */
+	function CostcenterList(Request $request)
 	{
 		// TODO: DEBUG: Generate an "500 internal server error"
 		sleep(2);
@@ -227,7 +253,10 @@ class Economy extends Controller
 		return [];
 	}
 
-	function getCostCenter(Request $request, $id)
+	/**
+	 *
+	 */
+	function CostcenterRead(Request $request, $id)
 	{
 		return [];
 	}
