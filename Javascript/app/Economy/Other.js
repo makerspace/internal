@@ -91,17 +91,14 @@ var Currency = React.createClass({
 		});
 
 		var value = formatter.format(this.props.value);
-		return (<span>{value} SEK</span>);
+		return (<span>{value} {this.props.currency}</span>);
 	},
 });
 
 var DateField = React.createClass({
 	render: function()
 	{
-		// TODO: We should output ISO8601 timestamps in the API
-		var iso8601 = this.props.date.replace(" ", "T");
-
-		var str = new Intl.DateTimeFormat('sv-SE').format(Date.parse(iso8601));
+		var str = new Intl.DateTimeFormat('sv-SE').format(Date.parse(this.props.date));
 		return (<span>{str}</span>);
 	},
 });
