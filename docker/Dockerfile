@@ -12,6 +12,10 @@ RUN rm /usr/local/etc/php-fpm.conf
 COPY conf/php-fpm.conf /usr/local/etc/php-fpm.conf
 COPY conf/php-fpm-www.conf /etc/php-fpm.d/www.conf
 
+# Install PDO
+RUN	docker-php-ext-configure pdo_mysql &&
+	docker-php-ext-install pdo_mysql
+
 EXPOSE 80
 #VOLUME ["/var/www/html"]
 
