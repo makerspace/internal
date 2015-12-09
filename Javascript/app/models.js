@@ -96,8 +96,7 @@ var InvoiceModel = Backbone.Model.extend({
 		your_reference: "",
 		our_reference: "",
 		address: "",
-		accounting_transaction: [],
-		instructions: [],
+		posts: [],
 	},
 });
 
