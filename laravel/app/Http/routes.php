@@ -23,61 +23,65 @@ Route::group(array("prefix" => "api/v2"), function()
 	Route::   get("test",  "V2\Economy@test");  // Get model
 
 	// Members
-	Route::   get("member",      "V2\Member@list");   // Get collection
-	Route::  post("member/{id}", "V2\Member@create"); // Model: Create
+	Route::   get("member",      "V2\Member@getAll"); // Get collection
+	Route::  post("member",      "V2\Member@create"); // Model: Create
 	Route::   get("member/{id}", "V2\Member@read");   // Model: Read
 	Route::   put("member/{id}", "V2\Member@update"); // Model: Update
 	Route::delete("member/{id}", "V2\Member@delete"); // Model: Delete
 
+	// Subscriptions
+	Route::   get("subscription",      "V2\Subscription@getAll"); // Get collection
+	Route::  post("subscription",      "V2\Subscription@create"); // Model: Create
+	Route::   get("subscription/{id}", "V2\Subscription@read");   // Model: Read
+	Route::   put("subscription/{id}", "V2\Subscription@update"); // Model: Update
+	Route::delete("subscription/{id}", "V2\Subscription@delete"); // Model: Delete
+
+	// Import
+	Route::group(array("prefix" => "import"), function()
+	{
+		Route::   get("seb",       "V2\Economy@importSeb");
+		Route::   get("tictail",   "V2\ImportTictail@import");
+	});
+
 	// Economy
 	Route::group(array("prefix" => "economy"), function()
 	{
-		// Import / export
-		Route::   get("import",       "V2\Economy@importSeb");
-
 		// Transactions
-		Route::   get("transaction",      "V2\Economy@transactionList");   // Get collection
-		Route::  post("transaction/{id}", "V2\Economy@transactionCreate"); // Model: Create
-		Route::   get("transaction/{id}", "V2\Economy@transactionRead");   // Model: Read
-		Route::   put("transaction/{id}", "V2\Economy@transactionUpdate"); // Model: Update
-		Route::delete("transaction/{id}", "V2\Economy@transactionDelete"); // Model: Delete
+		Route::   get("transaction",      "V2\EconomyTransactions@list"); // Get collection
+		Route::  post("transaction",      "V2\EconomyTransactions@create"); // Model: Create
+		Route::   get("transaction/{id}", "V2\EconomyTransactions@read");   // Model: Read
+		Route::   put("transaction/{id}", "V2\EconomyTransactions@update"); // Model: Update
+		Route::delete("transaction/{id}", "V2\EconomyTransactions@delete"); // Model: Delete
 
 		// Instructions
-		Route::   get("instruction",      "V2\Economy@instructionList"); // Get collection
-		Route::  post("instruction/{id}", "V2\Economy@instructionRead"); // Model: Create
-		Route::   get("instruction/{id}", "V2\Economy@instructionRead"); // Model: Read
-		Route::   put("instruction/{id}", "V2\Economy@instructionRead"); // Model: Update
-		Route::delete("instruction/{id}", "V2\Economy@instructionRead"); // Model: Delete
+		Route::   get("instruction",      "V2\EconomyInstruction@list");     // Get collection
+		Route::  post("instruction",      "V2\EconomyInstruction@create");   // Model: Create
+		Route::   get("instruction/{id}", "V2\EconomyInstruction@read");     // Model: Read
+		Route::   put("instruction/{id}", "V2\EconomyInstruction@update");   // Model: Update
+		Route::delete("instruction/{id}", "V2\EconomyInstruction@delete");   // Model: Delete
 
 		// Accounts
-		Route::   get("account",          "V2\Economy@accountList");   // Get collection
-		Route::  post("account",          "V2\Economy@accountCreate"); // Model: Create
-		Route::   get("account/{id}",     "V2\Economy@accountRead");   // Model: Read
-		Route::   put("account/{id}",     "V2\Economy@accountUpdate"); // Model: Update
-		Route::delete("account/{id}",     "V2\Economy@accountDelete"); // Model: Delete
+		Route::   get("account",          "V2\EconomyAccount@list");   // Get collection
+		Route::  post("account",          "V2\EconomyAccount@create"); // Model: Create
+		Route::   get("account/{id}",     "V2\EconomyAccount@read");   // Model: Read
+		Route::   put("account/{id}",     "V2\EconomyAccount@update"); // Model: Update
+		Route::delete("account/{id}",     "V2\EconomyAccount@delete"); // Model: Delete
 
 		// Invoices
-		Route::   get("invoice",          "V2\InvoiceController@invoiceList");   // Get collection
-		Route::  post("invoice/{id}",     "V2\InvoiceController@invoiceCreate"); // Model: Create
-		Route::   get("invoice/{id}",     "V2\InvoiceController@invoiceRead");   // Model: Read
-		Route::   put("invoice/{id}",     "V2\InvoiceController@invoiceUpdate"); // Model: Update
-		Route::delete("invoice/{id}",     "V2\InvoiceController@invoiceDelete"); // Model: Delete
-		Route::   get("invoice/export",   "V2\InvoiceController@exportInvoice"); // Export *.odt
+		Route::   get("invoice",             "V2\InvoiceController@list");   // Get collection
+		Route::  post("invoice",             "V2\InvoiceController@create"); // Model: Create
+		Route::   get("invoice/{id}",        "V2\InvoiceController@read");   // Model: Read
+		Route::   put("invoice/{id}",        "V2\InvoiceController@update"); // Model: Update
+		Route::delete("invoice/{id}",        "V2\InvoiceController@delete"); // Model: Delete
+		Route::   get("invoice/{id}/export", "V2\InvoiceController@export"); // Export *.odt
 
 		// Cost centers
-		Route::   get("costcenter",       "V2\Economy@getCostcenterList");       // Get collection
-		Route::  post("costcenter/{id}",  "V2\Economy@getCostcenterCreate");     // Model: Create
-		Route::   get("costcenter/{id}",  "V2\Economy@getCostcenterRead");       // Model: Read
-		Route::   put("costcenter/{id}",  "V2\Economy@getCostcenterUpdate");     // Model: Update
-		Route::delete("costcenter/{id}",  "V2\Economy@getCostcenterDelete");     // Model: Delete
+		Route::   get("costcenter",       "V2\EconomyCostcenter@list");   // Get collection
+		Route::  post("costcenter",       "V2\EconomyCostcenter@create"); // Model: Create
+		Route::   get("costcenter/{id}",  "V2\EconomyCostcenter@read");   // Model: Read
+		Route::   put("costcenter/{id}",  "V2\EconomyCostcenter@update"); // Model: Update
+		Route::delete("costcenter/{id}",  "V2\EconomyCostcenter@delete"); // Model: Delete
 	});
-
-	// Subscriptions
-	Route::   get("subscription", "V2\Subscription@get");    // Get collection
-	Route::  post("subscription", "V2\Subscription@create"); // Model: Create
-	Route::   get("subscription", "V2\Subscription@read");   // Model: Read
-	Route::   put("subscription", "V2\Subscription@update"); // Model: Update
-	Route::delete("subscription", "V2\Subscription@delete"); // Model: Delete
 });
 
 // Everything else should load the single page app

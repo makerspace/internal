@@ -1,27 +1,24 @@
 <?php
-
 namespace App\Http\Controllers\V2;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Response;
-use App\Models\Subscription as SubscriptionModel;
-
-class Subscription extends Controller
+class EconomyCostcenter extends Controller
 {
 	/**
 	 *
 	 */
-	function list()
+	function list(Request $request)
 	{
-		return Response()->json(array(
-			'data' => SubscriptionModel::all(),
-		));
+		// TODO: DEBUG: Generate an "500 internal server error"
+		sleep(2);
+		$x = 9 / 0;
+
+		return ['error' => 'not implemented'];
 	}
 
 	/**
 	 *
 	 */
-	function create(Request $request)
+	function create(Request $request, $id)
 	{
 		return ['error' => 'not implemented'];
 	}

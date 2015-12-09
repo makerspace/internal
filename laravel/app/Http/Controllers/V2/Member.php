@@ -3,11 +3,35 @@
 namespace App\Http\Controllers\V2;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class Member extends Controller
 {
-	function read()
+	/**
+	 *
+	 */
+	function list(Request $request)
+	{
+		return [
+			$this->read($request, 1),
+			$this->read($request, 2),
+			$this->read($request, 3),
+		];
+	}
+
+	/**
+	 *
+	 */
+	function create(Request $request)
+	{
+		return ['error' => 'not implemented'];
+	}
+
+	/**
+	 *
+	 */
+	function read(Request $request, $id)
 	{
 		return [
 			"member_id" => 27,
@@ -20,12 +44,19 @@ class Member extends Controller
 		];
 	}
 
-	function list()
+	/**
+	 *
+	 */
+	function update(Request $request, $id)
 	{
-		return [
-			$this->read(),
-			$this->read(),
-			$this->read(),
-		];
+		return ['error' => 'not implemented'];
+	}
+
+	/**
+	 *
+	 */
+	function delete(Request $request, $id)
+	{
+		return ['error' => 'not implemented'];
 	}
 }

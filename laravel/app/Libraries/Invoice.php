@@ -27,15 +27,18 @@ class Invoice
 		$invoice['priceVat']       = 0;
 		$invoice['priceGross']     = 0;
 
+		$invoice['date_invoice'] = date("Y-m-d", strtotime($invoice["date_invoice"]));
+		$invoice['date_expiry']  = date("Y-m-d", strtotime($invoice["date_invoice"] . '+' . $invoice["conditions"] . "days"));
+
 		foreach($invoice["posts"] as &$article)
 		{
 			$vat = $article['vat'] / 100;
 			$article['priceNet']      = $article['price'];
 			$article['priceVat']      = $article['price'] * $vat;
-			$article['priceGross']    = $article['price'] * (1+$vat);
+			$article['priceGross']    = $article['price'] * (1 + $vat);
 			$article['priceSumNet']   = $article['price'] * $article['amount'];
 			$article['priceSumVat']   = $article['price'] * $article['amount'] * $vat;
-			$article['priceSumGross'] = $article['price'] * $article['amount'] * (1+$vat);
+			$article['priceSumGross'] = $article['price'] * $article['amount'] * (1 + $vat);
 
 			$invoice['priceNet']   += $article['priceSumNet'];
 			$invoice['priceVat']   += $article['priceSumVat'];
@@ -54,9 +57,6 @@ class Invoice
 
 	function Generate($invoice)
 	{
-		$invoice['date_invoice'] = date("Y-m-d", strtotime($invoice["date_invoice"]));
-		$invoice['date_expiry']  = date("Y-m-d", strtotime($invoice["date_invoice"] . '+' . $invoice["conditions"] . "days"));
-
 		// TODO: Hardcoded path
 //		$odf = new Odf(dirname(__FILE__)."/invoice.odt"); //, array('PATH_TO_TMP' => '/tmp/')
 		$odf = new InvoiceTemplate("/vagrant/laravel/invoice/invoice.odt");
