@@ -40448,7 +40448,8 @@
 				'span',
 				null,
 				value,
-				' SEK'
+				' ',
+				this.props.currency
 			);
 		}
 	});
@@ -40457,10 +40458,7 @@
 		displayName: 'DateField',
 
 		render: function render() {
-			// TODO: We should output ISO8601 timestamps in the API
-			var iso8601 = this.props.date.replace(" ", "T");
-
-			var str = new Intl.DateTimeFormat('sv-SE').format(Date.parse(iso8601));
+			var str = new Intl.DateTimeFormat('sv-SE').format(Date.parse(this.props.date));
 			return _react2['default'].createElement(
 				'span',
 				null,
@@ -42600,8 +42598,7 @@
 			your_reference: "",
 			our_reference: "",
 			address: "",
-			accounting_transaction: [],
-			instructions: []
+			posts: []
 		}
 	});
 
@@ -45545,12 +45542,7 @@
 				_react2['default'].createElement(
 					'th',
 					null,
-					'Er referens'
-				),
-				_react2['default'].createElement(
-					'th',
-					null,
-					'Vår referens'
+					'Referens'
 				),
 				_react2['default'].createElement(
 					'th',
@@ -45566,6 +45558,10 @@
 		},
 
 		renderRow: function renderRow(row, i) {
+			if (row.status == "unpaid") {
+				row.status = "Obetald";
+			}
+
 			return _react2['default'].createElement(
 				'tr',
 				{ key: i },
@@ -45586,12 +45582,7 @@
 				_react2['default'].createElement(
 					'td',
 					null,
-					row.recipient
-				),
-				_react2['default'].createElement(
-					'td',
-					null,
-					row.our_reference
+					row.title
 				),
 				_react2['default'].createElement(
 					'td',
@@ -45601,7 +45592,7 @@
 				_react2['default'].createElement(
 					'td',
 					{ className: 'uk-text-right' },
-					_react2['default'].createElement(_Other.Currency, { value: row.priceGross })
+					_react2['default'].createElement(_Other.Currency, { value: row._total, currency: row.currency })
 				),
 				_react2['default'].createElement(
 					'td',
@@ -45618,81 +45609,279 @@
 		mixins: [Backbone.React.Component.mixin],
 
 		render: function render() {
-			return _react2['default'].createElement(
-				'div',
-				null,
-				_react2['default'].createElement(
-					'dl',
+			if (this.state.model.posts.length == 0) {
+				var content = _react2['default'].createElement(
+					'tr',
 					null,
 					_react2['default'].createElement(
-						'dt',
-						null,
-						'#'
+						'td',
+						{ colSpan: '4' },
+						_react2['default'].createElement(
+							'em',
+							null,
+							'Denna faktura saknar innehåll'
+						)
+					)
+				);
+			} else {
+				var currency = this.state.model.currency;
+				var content = this.state.model.posts.map(function (row, i) {
+					// row.weight
+					// row.type
+
+					if (row.vat === null) {
+						row.vat = "0%";
+					}
+
+					return _react2['default'].createElement(
+						'tr',
+						{ key: i },
+						_react2['default'].createElement(
+							'td',
+							null,
+							row.title
+						),
+						_react2['default'].createElement(
+							'td',
+							{ className: 'uk-text-right' },
+							_react2['default'].createElement(_Other.Currency, { value: row.price, currency: currency })
+						),
+						_react2['default'].createElement(
+							'td',
+							{ className: 'uk-text-right' },
+							row.amount,
+							' ',
+							row.unit
+						),
+						_react2['default'].createElement(
+							'td',
+							{ className: 'uk-text-right' },
+							_react2['default'].createElement(_Other.Currency, { value: row._total, currency: currency })
+						),
+						_react2['default'].createElement(
+							'td',
+							{ className: 'uk-text-right' },
+							row.vat
+						)
+					);
+				});
+			}
+
+			return _react2['default'].createElement(
+				'div',
+				{ className: 'invoice' },
+				_react2['default'].createElement(
+					'a',
+					{ href: "/api/v2/economy/invoice/" + this.state.model.invoice_number + "/export" },
+					'Exportera *.ODT'
+				),
+				_react2['default'].createElement(
+					'div',
+					{ className: 'uk-grid' },
+					_react2['default'].createElement(
+						'div',
+						{ className: 'uk-width-1-3 box' },
+						_react2['default'].createElement(
+							'div',
+							{ className: 'title' },
+							'Mottagare'
+						),
+						_react2['default'].createElement(
+							'div',
+							{ className: 'data' },
+							this.state.model.title
+						)
 					),
 					_react2['default'].createElement(
-						'dd',
-						null,
-						this.state.model.invoice_number
+						'div',
+						{ className: 'uk-width-1-3 box' },
+						_react2['default'].createElement(
+							'div',
+							{ className: 'title' },
+							'Belopp'
+						),
+						_react2['default'].createElement(
+							'div',
+							{ className: 'data' },
+							_react2['default'].createElement(_Other.Currency, { value: this.state.model._total, currency: currency })
+						)
 					),
 					_react2['default'].createElement(
-						'dt',
-						null,
-						'Förfallodatum'
+						'div',
+						{ className: 'uk-width-1-3 box' },
+						_react2['default'].createElement(
+							'div',
+							{ className: 'title' },
+							'Status'
+						),
+						_react2['default'].createElement(
+							'div',
+							{ className: 'data' },
+							this.state.model.status
+						)
 					),
 					_react2['default'].createElement(
-						'dd',
-						null,
-						this.state.model.date_expiry
+						'div',
+						{ className: 'uk-width-1-3 box' },
+						_react2['default'].createElement(
+							'div',
+							{ className: 'title' },
+							'Er referens'
+						),
+						_react2['default'].createElement(
+							'div',
+							{ className: 'data' },
+							this.state.model.your_reference
+						)
 					),
 					_react2['default'].createElement(
-						'dt',
-						null,
-						'Mottagare'
+						'div',
+						{ className: 'uk-width-1-3 box' },
+						_react2['default'].createElement(
+							'div',
+							{ className: 'title' },
+							'Fakturadatum'
+						),
+						_react2['default'].createElement(
+							'div',
+							{ className: 'data' },
+							this.state.model.date_invoice
+						)
 					),
 					_react2['default'].createElement(
-						'dd',
-						null,
-						this.state.model.recipient
+						'div',
+						{ className: 'uk-width-1-3 box' },
+						_react2['default'].createElement(
+							'div',
+							{ className: 'title' },
+							'Fakturanummer'
+						),
+						_react2['default'].createElement(
+							'div',
+							{ className: 'data' },
+							this.state.model.invoice_number
+						)
 					),
 					_react2['default'].createElement(
-						'dt',
-						null,
-						'Er referens'
+						'div',
+						{ className: 'uk-width-1-3 box' },
+						_react2['default'].createElement(
+							'div',
+							{ className: 'title' },
+							'Vår referens'
+						),
+						_react2['default'].createElement(
+							'div',
+							{ className: 'data' },
+							this.state.model.our_reference
+						)
 					),
 					_react2['default'].createElement(
-						'dd',
-						null,
-						this.state.model.your_reference
+						'div',
+						{ className: 'uk-width-1-3 box' },
+						_react2['default'].createElement(
+							'div',
+							{ className: 'title' },
+							'Förfallodatum'
+						),
+						_react2['default'].createElement(
+							'div',
+							{ className: 'data' },
+							this.state.model.date_expiry
+						)
 					),
 					_react2['default'].createElement(
-						'dt',
-						null,
-						'Vår referens'
+						'div',
+						{ className: 'uk-width-1-3 box' },
+						_react2['default'].createElement(
+							'div',
+							{ className: 'title' },
+							'Betalningsvillkor'
+						),
+						_react2['default'].createElement(
+							'div',
+							{ className: 'data' },
+							this.state.model.conditions,
+							' dagar'
+						)
+					)
+				),
+				_react2['default'].createElement(
+					'div',
+					{ className: 'box' },
+					_react2['default'].createElement(
+						'div',
+						{ className: 'title' },
+						'Kommentar'
 					),
 					_react2['default'].createElement(
-						'dd',
-						null,
-						this.state.model.our_reference
+						'div',
+						{ className: 'data' },
+						_react2['default'].createElement(
+							'pre',
+							null,
+							this.state.model.description
+						)
+					)
+				),
+				_react2['default'].createElement(
+					'div',
+					{ className: 'box' },
+					_react2['default'].createElement(
+						'div',
+						{ className: 'title' },
+						'Adress'
 					),
 					_react2['default'].createElement(
-						'dt',
+						'div',
+						{ className: 'data' },
+						_react2['default'].createElement(
+							'pre',
+							null,
+							this.state.model.address
+						)
+					)
+				),
+				_react2['default'].createElement(
+					'table',
+					{ className: 'uk-table uk-table-striped' },
+					_react2['default'].createElement(
+						'thead',
 						null,
-						'Belopp'
+						_react2['default'].createElement(
+							'tr',
+							null,
+							_react2['default'].createElement(
+								'th',
+								null,
+								'Titel'
+							),
+							_react2['default'].createElement(
+								'th',
+								{ className: 'uk-text-right' },
+								'Pris'
+							),
+							_react2['default'].createElement(
+								'th',
+								{ className: 'uk-text-right' },
+								'Antal'
+							),
+							_react2['default'].createElement(
+								'th',
+								{ className: 'uk-text-right' },
+								'Totalt'
+							),
+							_react2['default'].createElement(
+								'th',
+								{ className: 'uk-text-right' },
+								'MOMS'
+							)
+						)
 					),
 					_react2['default'].createElement(
-						'dd',
+						'tbody',
 						null,
-						this.state.model.amount
-					),
-					_react2['default'].createElement(
-						'dt',
-						null,
-						'Status'
-					),
-					_react2['default'].createElement(
-						'dd',
-						null,
-						this.state.model.status
+						content
 					)
 				)
 			);
