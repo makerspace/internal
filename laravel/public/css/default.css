@@ -43,3 +43,15 @@
 	animation: fadein2 0.3s;
 	filter: blur(1px);
 }
+
+.invoice .box {
+/*	border: 1px solid #000;*/
+}
+
+.invoice .title {
+	font-weight: bold;
+	font-size: 0.9em;
+}
+
+.invoice .data {
+}
