@@ -40298,7 +40298,7 @@
 		displayName: 'MasterLedgerHandler',
 
 		getInitialState: function getInitialState() {
-			var accounts = new _models.AccountCollection();
+			var accounts = new _models.MasterledgerCollection();
 			accounts.fetch();
 
 			return {
@@ -40439,11 +40439,11 @@
 	   style: 'currency',
 	   currency: 'SEK',
 	   */
-				minimumFractionDigits: 0,
-				maximumFractionDigits: 0
+				minimumFractionDigits: 2,
+				maximumFractionDigits: 2
 			});
 
-			var value = formatter.format(this.props.value);
+			var value = formatter.format(this.props.value / 100);
 			return _react2['default'].createElement(
 				'span',
 				null,
@@ -42509,7 +42509,7 @@
 	var _backbonePaginator2 = _interopRequireDefault(_backbonePaginator);
 
 	var InstructionModel = _backbone2['default'].Model.extend({
-		urlRoot: "/api/v2/economy/instruction",
+		urlRoot: "/api/v2/economy/2015/instruction",
 
 		defaults: {
 			verification_number: 0,
@@ -42525,7 +42525,7 @@
 	});
 
 	var InstructionCollection = _backbonePaginator2['default'].extend({
-		url: "/api/v2/economy/instruction", //?account_id=2999
+		url: "/api/v2/economy/2015/instruction", //?account_id=2999
 
 		parseRecords: function parseRecords(resp, options) {
 			return resp.data;
@@ -42533,13 +42533,17 @@
 	});
 
 	var TransactionCollection = _backbone2['default'].Collection.extend({
+		initialize: function initialize(models, options) {
+			this.id = options.id;
+		},
+
 		url: function url() {
-			return "/api/v2/economy/transaction/1930";
+			return "/api/v2/economy/2015/transaction/" + this.id;
 		} });
 
 	//?account_id=1930",//TODO
 	var CostCenterModel = _backbone2['default'].Model.extend({
-		urlRoot: "/api/v2/economy/costcenter",
+		urlRoot: "/api/v2/economy/2015/costcenter",
 
 		defaults: {
 			//		verification_number: 0,
@@ -42557,7 +42561,7 @@
 	posts: []
 	*/
 	var CostCenterCollection = _backbonePaginator2['default'].extend({
-		url: "/api/v2/economy/costcenter"
+		url: "/api/v2/economy/2015/costcenter"
 
 	});
 
@@ -42568,7 +42572,7 @@
 		}
 	*/
 	var AccountModel = _backbone2['default'].Model.extend({
-		urlRoot: "/api/v2/economy/account",
+		urlRoot: "/api/v2/economy/2015/account",
 
 		defaults: {
 			created_at: "0000-00-00 00:00:00",
@@ -42583,11 +42587,16 @@
 
 	var AccountCollection = _backbone2['default'].Collection.extend({
 		model: AccountModel,
-		url: "/api/v2/economy/account"
+		url: "/api/v2/economy/2015/account"
+	});
+
+	var MasterledgerCollection = _backbone2['default'].Collection.extend({
+		model: AccountModel,
+		url: "/api/v2/economy/2015/masterledger"
 	});
 
 	var InvoiceModel = _backbone2['default'].Model.extend({
-		urlRoot: "/api/v2/economy/invoice",
+		urlRoot: "/api/v2/economy/2015/invoice",
 
 		defaults: {
 			created_at: "0000-00-00 00:00:00",
@@ -42604,7 +42613,7 @@
 
 	var InvoiceCollection = _backbone2['default'].Collection.extend({
 		model: InvoiceModel,
-		url: "/api/v2/economy/invoice"
+		url: "/api/v2/economy/2015/invoice"
 	});
 
 	var LabAccessModel = _backbone2['default'].Model.extend({
@@ -42654,6 +42663,7 @@
 		InstructionCollection: InstructionCollection,
 		AccountModel: AccountModel,
 		AccountCollection: AccountCollection,
+		MasterledgerCollection: MasterledgerCollection,
 		InvoiceModel: InvoiceModel,
 		InvoiceCollection: InvoiceCollection,
 		LabAccessModel: LabAccessModel,
@@ -44831,7 +44841,7 @@
 
 			// TODO: Filter on account
 
-			var transactions = new _models.TransactionCollection();
+			var transactions = new _models.TransactionCollection(null, { id: id });
 			transactions.fetch();
 
 			/*
@@ -45137,7 +45147,7 @@
 				_react2['default'].createElement(
 					'th',
 					null,
-					'Beskrivning'
+					'Transaktion'
 				),
 				_react2['default'].createElement(
 					'th',
@@ -45175,7 +45185,7 @@
 				_react2['default'].createElement(
 					'td',
 					{ className: 'uk-text-right' },
-					_react2['default'].createElement(_Other.Currency, { value: row.balance })
+					_react2['default'].createElement(_Other.Currency, { value: row.balance, currency: 'SEK' })
 				)
 			)
 
