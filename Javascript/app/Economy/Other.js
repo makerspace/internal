@@ -1,13 +1,13 @@
 import React from 'react'
 import BackboneReact from 'backbone-react-component'
-import { AccountModel, AccountCollection } from '../models'
+import { AccountModel, AccountCollection, MasterledgerCollection } from '../models'
 import { Link } from 'react-router'
 import { BackboneTable } from '../BackboneTable'
 
 var MasterLedgerHandler = React.createClass({
 	getInitialState: function()
 	{
-		var accounts = new AccountCollection();
+		var accounts = new MasterledgerCollection();
 		accounts.fetch();
 
 		return {
@@ -86,11 +86,11 @@ var Currency = React.createClass({
 			style: 'currency',
 			currency: 'SEK',
 			*/
-			minimumFractionDigits: 0,
-			maximumFractionDigits: 0,
+			minimumFractionDigits: 2,
+			maximumFractionDigits: 2,
 		});
 
-		var value = formatter.format(this.props.value);
+		var value = formatter.format(this.props.value / 100);
 		return (<span>{value} {this.props.currency}</span>);
 	},
 });

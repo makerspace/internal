@@ -41,7 +41,7 @@ var EconomyAccountHandler = React.createClass({
 		// TODO: Filter on account
 
 
-		var transactions = new TransactionCollection();
+		var transactions = new TransactionCollection(null, {id: id});
 		transactions.fetch();
 
 /*
@@ -244,7 +244,7 @@ var EconomyAccountTransactions = React.createClass({
 			<tr>
 				<th>Bokföringsdatum</th>
 				<th>Verifikation</th>
-				<th>Beskrivning</th>
+				<th>Transaktion</th>
 				<th className="uk-text-right">Belopp</th>
 			</tr>
 		);
@@ -257,7 +257,7 @@ var EconomyAccountTransactions = React.createClass({
 				<td><DateField date={row.accounting_date}/></td>
 				<td><Link to={"/economy/instruction/" + row.instruction_number}>{row.instruction_number} {row.instruction_title}</Link></td>
 				<td>{row.transaction_title}</td>
-				<td className="uk-text-right"><Currency value={row.balance} /></td>
+				<td className="uk-text-right"><Currency value={row.balance} currency="SEK" /></td>
 			</tr>
 
 			/*

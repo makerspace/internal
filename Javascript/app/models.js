@@ -2,7 +2,7 @@ import Backbone from 'backbone'
 import PageableCollection from 'backbone.paginator'
 
 var InstructionModel = Backbone.Model.extend({
-	urlRoot: "/api/v2/economy/instruction",
+	urlRoot: "/api/v2/economy/2015/instruction",
 
 	defaults: {
 		verification_number: 0,
@@ -19,7 +19,7 @@ var InstructionModel = Backbone.Model.extend({
 
 var InstructionCollection = PageableCollection.extend(
 {
-	url: "/api/v2/economy/instruction",//?account_id=2999
+	url: "/api/v2/economy/2015/instruction",//?account_id=2999
 
 	parseRecords: function(resp, options)
 	{
@@ -29,14 +29,19 @@ var InstructionCollection = PageableCollection.extend(
 
 var TransactionCollection = Backbone.Collection.extend(
 {
+	initialize: function(models, options)
+	{
+		this.id = options.id;
+	},
+
 	url: function()
 	{
-		return "/api/v2/economy/transaction/1930"
+		return "/api/v2/economy/2015/transaction/" + this.id;
 	},//?account_id=1930",//TODO
 });
 
 var CostCenterModel = Backbone.Model.extend({
-	urlRoot: "/api/v2/economy/costcenter",
+	urlRoot: "/api/v2/economy/2015/costcenter",
 
 	defaults: {
 //		verification_number: 0,
@@ -55,7 +60,7 @@ var CostCenterModel = Backbone.Model.extend({
 
 var CostCenterCollection = PageableCollection.extend(
 {
-	url: "/api/v2/economy/costcenter",
+	url: "/api/v2/economy/2015/costcenter",
 
 /*	
 	parseRecords: function(resp, options)
@@ -66,7 +71,7 @@ var CostCenterCollection = PageableCollection.extend(
 });
 
 var AccountModel = Backbone.Model.extend({
-	urlRoot: "/api/v2/economy/account",
+	urlRoot: "/api/v2/economy/2015/account",
 
 	defaults: {
 		created_at: "0000-00-00 00:00:00",
@@ -81,11 +86,16 @@ var AccountModel = Backbone.Model.extend({
 
 var AccountCollection = Backbone.Collection.extend({
 	model: AccountModel,
-	url: "/api/v2/economy/account",
+	url: "/api/v2/economy/2015/account",
+});
+
+var MasterledgerCollection = Backbone.Collection.extend({
+	model: AccountModel,
+	url: "/api/v2/economy/2015/masterledger",
 });
 
 var InvoiceModel = Backbone.Model.extend({
-	urlRoot: "/api/v2/economy/invoice",
+	urlRoot: "/api/v2/economy/2015/invoice",
 
 	defaults: {
 		created_at: "0000-00-00 00:00:00",
@@ -102,7 +112,7 @@ var InvoiceModel = Backbone.Model.extend({
 
 var InvoiceCollection = Backbone.Collection.extend({
 	model: InvoiceModel,
-	url: "/api/v2/economy/invoice",
+	url: "/api/v2/economy/2015/invoice",
 });
 
 var LabAccessModel = Backbone.Model.extend({
@@ -152,6 +162,7 @@ module.exports = {
 	InstructionCollection,
 	AccountModel,
 	AccountCollection,
+	MasterledgerCollection,
 	InvoiceModel,
 	InvoiceCollection,
 	LabAccessModel,
