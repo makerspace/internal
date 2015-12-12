@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use DB;
@@ -13,12 +12,13 @@ class Entity
 	protected $sort = null;
 	protected $join = null;
 	protected $columns = [
-		"entity.entity_id",
-		"DATE_FORMAT(entity.created_at, '%Y-%m-%dT%H:%i:%sZ') AS created_at",
-		"DATE_FORMAT(entity.updated_at, '%Y-%m-%dT%H:%i:%sZ') AS updated_at",
-		"entity.title",
-		"entity.description",
+		"entity.entity_id"   => "entity.entity_id",
+		"entity.created_at"  => "DATE_FORMAT(entity.created_at, '%Y-%m-%dT%H:%i:%sZ') AS created_at",
+		"entity.updated_at"  => "DATE_FORMAT(entity.updated_at, '%Y-%m-%dT%H:%i:%sZ') AS updated_at",
+		"entity.title"       => "entity.title",
+		"entity.description" => "entity.description",
 	];
+	protected $data = [];
 
 	/**
 	 * Constructor
@@ -33,7 +33,7 @@ class Entity
 	 *
 	 * Create an instance of the class and call the function non-static
 	 */
-	public static function list($filter = null)
+	public static function list($filter = [])
 	{
 		return (new static())->_list($filter);
 	}
@@ -41,7 +41,7 @@ class Entity
 	/**
 	 * Same as above, but called non-statically
 	 */
-	public function _list($filter = null)
+	protected function _list($filter = [])
 	{
 		return $this->_buildLoadQuery()->get();
 	}
@@ -49,9 +49,9 @@ class Entity
 	/**
 	 *
 	 */
-	protected function _buildLoadQuery()
+	protected function _buildLoadQuery($show_deleted = false)
 	{
-		// Get all invoices
+		// Get all entities
 		$query = DB::table("entity");
 
 		// Join data table
@@ -66,8 +66,17 @@ class Entity
 			$query = $query->selectRaw($column);
 		}
 
-		// Do not show soft deleted entities
-		$query = $query->whereNull("entity.deleted_at");
+		// Show deleted entities or not?
+		if($show_deleted === true)
+		{
+			// Include the deleted_at column in output only when we show deleted content
+			$this->columns[] = "entity.deleted_at";
+		}
+		else
+		{
+			// The deleted_at should be null, which means it is not yet deleted
+			$query = $query->whereNull("entity.deleted_at");
+		}
 
 		// Sort result
 		if($this->sort !== null)
@@ -75,6 +84,7 @@ class Entity
 			$query = $query->orderBy($this->sort[0], $this->sort[1]);
 		}
 
+		// Return the query
 		return $query;
 	}
 
@@ -91,7 +101,7 @@ class Entity
 	/**
 	 *
 	 */
-	public function _load($entity_id, $show_deleted = false)
+	protected function _load($entity_id, $show_deleted = false)
 	{
 		return
 			// Build base query
@@ -108,9 +118,36 @@ class Entity
 	/**
 	 * Save an entity
 	 */
-	function save()
+	public function save()
 	{
-		// TODO
+		// Insert into entity table
+		$this->id = DB::table("entity")->insertGetId([
+			"type"        => $this->join,
+			"description" => $this->data["description"] ?? null,
+			"title"       => $this->data["title"]       ?? null,
+			"created_at"  => date("c"),
+		]);
+
+
+		// Get the data to insert into the relation table
+		$inserts = [];
+		foreach($this->columns as $name => $query)
+		{
+			list($table, $column) = explode(".", $name);
+			if($table == $this->join && array_key_exists($column, $this->data))
+			{
+				$inserts[$column] = $this->data[$column];
+			}
+		}
+
+		// Create a row in the relation table
+		if(!empty($inserts))
+		{
+			$inserts["entity_id"] = $this->id;
+			DB::table($this->join)->insert($inserts);
+		}
+
+		return true;
 	}
 
 	/**
@@ -140,5 +177,50 @@ class Entity
 				->where("entity_id", $entity_id)
 				->update(["deleted_at" => date("c")]);
 		}
+	}
+
+	/**
+	 *
+	 */
+	public function __get($name)
+	{
+		if(array_key_exists($name, $this->data))
+		{
+			return $this->data[$name];
+		}
+
+		$trace = debug_backtrace();
+		trigger_error(
+			'Undefined property via __get(): ' . $name .
+			' in ' . $trace[0]['file'] .
+			' on line ' . $trace[0]['line'],
+			E_USER_NOTICE);
+		return null;
+	}
+
+	/**
+	 *
+	 */
+	public function __set($name, $value)
+	{
+		$this->data[$name] = $value;
+	}
+
+	/**
+	 *
+	 */
+	public function __isset($name)
+	{
+		return isset($this->data[$name]);
+	}
+
+	/**
+	 * Convert the entity into an array
+	 */
+	public function toArray()
+	{
+		$x = $this->data;
+		$x["entity_id"] = $this->id;
+		return $x;
 	}
 }

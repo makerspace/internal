@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\V2;
 
 use App\Http\Controllers\Controller;
@@ -13,10 +12,19 @@ class Member extends Controller
 	 */
 	function list(Request $request)
 	{
-		return [
+		$per_page = 100;
+		$data = [
 			$this->read($request, 1),
 			$this->read($request, 2),
 			$this->read($request, 3),
+		];
+
+		// Return json array
+		return [
+			"per_page"  => $per_page,
+			"total"     => 2,
+			"last_page" => 1,
+			"data"      => $data,
 		];
 	}
 

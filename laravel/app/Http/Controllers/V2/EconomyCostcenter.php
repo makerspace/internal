@@ -1,13 +1,24 @@
 <?php
 namespace App\Http\Controllers\V2;
 
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+
 class EconomyCostcenter extends Controller
 {
 	/**
 	 *
 	 */
-	function list(Request $request)
+	function list(Request $request, $accountingperiod)
 	{
+		// Check that the specified accounting period exists
+		$x = $this->_accountingPeriodOrFail($accountingperiod);
+		if(null !== $x)
+		{
+			return $x;
+		}
+
 		// TODO: DEBUG: Generate an "500 internal server error"
 		sleep(2);
 		$x = 9 / 0;
@@ -18,7 +29,7 @@ class EconomyCostcenter extends Controller
 	/**
 	 *
 	 */
-	function create(Request $request, $id)
+	function create(Request $request, $accountingperiod, $id)
 	{
 		return ['error' => 'not implemented'];
 	}
@@ -26,7 +37,7 @@ class EconomyCostcenter extends Controller
 	/**
 	 *
 	 */
-	function read(Request $request, $id)
+	function read(Request $request, $accountingperiod, $id)
 	{
 		return ['error' => 'not implemented'];
 	}
@@ -34,7 +45,7 @@ class EconomyCostcenter extends Controller
 	/**
 	 *
 	 */
-	function update(Request $request, $id)
+	function update(Request $request, $accountingperiod, $id)
 	{
 		return ['error' => 'not implemented'];
 	}
@@ -42,7 +53,7 @@ class EconomyCostcenter extends Controller
 	/**
 	 *
 	 */
-	function delete(Request $request, $id)
+	function delete(Request $request, $accountingperiod, $id)
 	{
 		return ['error' => 'not implemented'];
 	}

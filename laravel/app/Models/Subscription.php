@@ -1,29 +1,23 @@
 <?php
-
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Models\Entity;
 
-class Subscription extends Model
+/**
+ *
+ */
+class Subscription extends Entity
 {
-	/**
-	 * The database table used by the model.
-	 *
-	 * @var string
-	 */
-	protected $table = 'subscription';
-
-	/**
-	 * The attributes that are mass assignable.
-	 *
-	 * @var array
-	 */
-	protected $fillable = ['member_id', 'date_start', 'duration', 'description'];
-
-	/**
-	 * The attributes excluded from the model's JSON form.
-	 *
-	 * @var array
-	 */
-//	protected $hidden = ['password', 'remember_token'];
+	protected $join = "subscription";
+	protected $columns = [
+		"entity.entity_id"        => "entity.entity_id",
+		"entity.created_at"       => "DATE_FORMAT(entity.created_at, '%Y-%m-%dT%H:%i:%sZ') AS created_at",
+		"entity.updated_at"       => "DATE_FORMAT(entity.updated_at, '%Y-%m-%dT%H:%i:%sZ') AS updated_at",
+		"entity.title"            => "entity.title",
+		"entity.description"      => "entity.description",
+		"subscription.member_id"  => "subscription.member_id",
+		"subscription.date_start" => "subscription.date_start",
+		"subscription.duration"   => "subscription.duration",
+	];
+//	protected $sort = ["invoice_number", "desc"];
 }

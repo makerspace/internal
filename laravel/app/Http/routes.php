@@ -44,7 +44,7 @@ Route::group(array("prefix" => "api/v2"), function()
 	});
 
 	// Economy
-	Route::group(array("prefix" => "economy"), function()
+	Route::group(array("prefix" => "economy/{accountingperiod}"), function()
 	{
 		// Transactions
 		Route::   get("transaction",      "V2\EconomyTransactions@list"); // Get collection
@@ -61,11 +61,12 @@ Route::group(array("prefix" => "api/v2"), function()
 		Route::delete("instruction/{id}", "V2\EconomyInstruction@delete");   // Model: Delete
 
 		// Accounts
-		Route::   get("account",          "V2\EconomyAccount@list");   // Get collection
-		Route::  post("account",          "V2\EconomyAccount@create"); // Model: Create
-		Route::   get("account/{id}",     "V2\EconomyAccount@read");   // Model: Read
-		Route::   put("account/{id}",     "V2\EconomyAccount@update"); // Model: Update
-		Route::delete("account/{id}",     "V2\EconomyAccount@delete"); // Model: Delete
+		Route::   get("masterledger",     "V2\EconomyAccount@masterledger"); // Get collection
+		Route::   get("account",          "V2\EconomyAccount@list");         // Get collection
+		Route::  post("account",          "V2\EconomyAccount@create");       // Model: Create
+		Route::   get("account/{id}",     "V2\EconomyAccount@read");         // Model: Read
+		Route::   put("account/{id}",     "V2\EconomyAccount@update");       // Model: Update
+		Route::delete("account/{id}",     "V2\EconomyAccount@delete");       // Model: Delete
 
 		// Invoices
 		Route::   get("invoice",             "V2\InvoiceController@list");   // Get collection

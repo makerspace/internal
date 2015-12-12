@@ -1,12 +1,33 @@
 <?php
 namespace App\Http\Controllers\V2;
 
-class EconomyTransactions
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+
+use DB;
+
+class EconomyTransactions extends Controller
 {
 	/**
 	 *
 	 */
-	function list(Request $request)
+	function list(Request $request, $accountingperiod)
+	{
+		// Check that the specified accounting period exists
+		$x = $this->_accountingPeriodOrFail($accountingperiod);
+		if(null !== $x)
+		{
+			return $x;
+		}
+
+		return ['error' => 'not implemented'];
+	}
+
+	/**
+	 *
+	 */
+	function create(Request $request, $accountingperiod)
 	{
 		return ['error' => 'not implemented'];
 	}
@@ -14,15 +35,7 @@ class EconomyTransactions
 	/**
 	 *
 	 */
-	function create(Request $request)
-	{
-		return ['error' => 'not implemented'];
-	}
-
-	/**
-	 *
-	 */
-	function read(Request $request, $id)
+	function read(Request $request, $accountingperiod, $id)
 	{
 		// Get an list with id's of all accounting instructions which have a transaction to this account
 		$instructions = DB::table("entity")
@@ -72,7 +85,7 @@ class EconomyTransactions
 	/**
 	 *
 	 */
-	function update(Request $request, $id)
+	function update(Request $request, $accountingperiod, $id)
 	{
 		return ['error' => 'not implemented'];
 	}
@@ -80,7 +93,7 @@ class EconomyTransactions
 	/**
 	 *
 	 */
-	function delete(Request $request, $id)
+	function delete(Request $request, $accountingperiod, $id)
 	{
 		return ['error' => 'not implemented'];
 	}

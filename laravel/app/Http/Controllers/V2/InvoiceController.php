@@ -1,33 +1,54 @@
 <?php
-
 namespace App\Http\Controllers\V2;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
-use App\Libraries\Invoice as InvoiceExporter;
-
 use DB;
-
+use App\Libraries\Invoice as InvoiceExporter;
 use App\Models\Invoice;
+use App\Traits\AccountingPeriod;
 
 class InvoiceController extends Controller
 {
+	use AccountingPeriod;
+
 	/**
 	 *
 	 */
-	function list(Request $request)
+	function list(Request $request, $accountingperiod)
 	{
-		return Invoice::list();
+		// Check that the specified accounting period exists
+		$x = $this->_accountingPeriodOrFail($accountingperiod);
+		if(null !== $x)
+		{
+			return $x;
+		}
+
+		// Return result
+		return Invoice::list([
+			["accountingperiod", "=", $accountingperiod],
+		]);
 	}
+
+
 
 	/**
 	 * @todo Error handling: We need to check that all queries were executed
 	 */
-	function create(Request $request)
+	function create(Request $request, $accountingperiod)
 	{
 		$json = $request->json()->all();
+
+		// Get id of accounting period
+		$accountingperiod_id = $this->_getAccountingPeriodId($accountingperiod);
+		if(null === $accountingperiod_id)
+		{
+			return Response()->json([
+				"message" => "Could not find the specified accounting period",
+			], 404);
+		}
 
 		// Check / generate invoice number
 		if(!empty($json["invoice_number"]))
@@ -48,55 +69,42 @@ class InvoiceController extends Controller
 			$invoice_number = $this->_getNextInvoiceNumber();
 		}
 
-		// Insert into entity
-		$entity_id = DB::table("entity")->insertGetId([
-			"type"        => "invoice",
-			"description" => $json["description"] ?? null,
-			"title"       => $json["title"]       ?? null,
-			"created_at"  => date("c"),
-		]);
+		// Create new entity
+		$entity = new Invoice;
+		$entity->title             = $json["title"];
+		$entity->description       = $json["description"]    ?? null;
+		$entity->invoice_number    = $invoice_number;
+		$entity->date_invoice      = $json["date_invoice"]   ?? null; // A invoice number of null means the invoice have no assigned invoice number yet and therefore is temporary
+		$entity->conditions        = $json["conditions"]     ?? 30; // TODO: Should be read from a configuration file?
+		$entity->our_reference     = $json["our_reference"]  ?? null;
+		$entity->your_reference    = $json["your_reference"] ?? null;
+		$entity->address           = $json["address"]        ?? null;
+		$entity->status            = $json["status"]         ?? "created";
+		$entity->accounting_period = $accountingperiod_id;
+		$entity->posts             = $json["posts"];
 
-		// Insert invoice
-		DB::table("invoice")->insert([
-			"entity_id"      => $entity_id,
-			"invoice_number" => $invoice_number,
-			"date_invoice"   => $json["date_invoice"]   ?? null, // A invoice number of null means the invoice have no assigned invoice number yet and therefore is temporary
-			"conditions"     => $json["conditions"]     ?? 30, // TODO: Should be read from a configuration file?
-			"our_reference"  => $json["our_reference"]  ?? null,
-			"your_reference" => $json["your_reference"] ?? null,
-			"address"        => $json["address"]        ?? null,
-			"status"         => $json["status"]         ?? "created",
-		]);
+		$result = $entity->save();
 
-		// Insert posts
-		if(!empty($json["posts"]))
-		{
-			foreach($json["posts"] as $i => $post)
-			{
-				DB::table("invoice_post")->insert([
-					"entity_id" => $entity_id,
-					"weight"    => $post["weight"] ?? ($i * 10),
-					"type"      => $post["type"]   ?? "article",
-					"title"     => $post["title"]  ?? "",
-					"price"     => $post["price"]  ?? 0,
-					"vat"       => $post["vat"]    ?? null,
-					"amount"    => $post["amount"] ?? 1,
-					"unit"      => $post["unit"]   ?? "st",
-				]);
-			}
-		}
-
-		// Return the id of the inserted invoice
-		// TODO: Return invoice object
-		return ["invoice_created" => $entity_id];
+		// TODO: Standariezed output
+		return [
+			"status" => "created",
+			"entity" => $entity->toArray(),
+		];
 	}
 
 	/**
 	 * @todo Accounting period
 	 * @todo Behörighetskontroll
 	 */
-	function read(Request $request, $invoice_number)
+	function read(Request $request, $accountingperiod, $invoice_number)
 	{
+		// Check that the specified accounting period exists
+		$x = $this->_accountingPeriodOrFail($accountingperiod);
+		if(null !== $x)
+		{
+			return $x;
+		}
+
 		// Load the invoice
 		$invoice = Invoice::loadByInvoiceNumber($invoice_number);
 
@@ -104,7 +112,7 @@ class InvoiceController extends Controller
 		if(false === $invoice)
 		{
 			return Response()->json([
-				"message" => "No invoice with specified invoice number in the selected accounting period",
+				"message" => "No invoice with specified invoice number",
 			], 404);
 		}
 		else
@@ -116,7 +124,7 @@ class InvoiceController extends Controller
 	/**
 	 * @todo Not implemented yet
 	 */
-	function update(Request $request, $id)
+	function update(Request $request, $accountingperiod, $id)
 	{
 		return ["error" => "not implemented"];
 	}
@@ -124,7 +132,7 @@ class InvoiceController extends Controller
 	/**
 	 * Delete an invoice
 	 */
-	function delete(Request $request, $id)
+	function delete(Request $request, $accountingperiod, $id)
 	{
 		$entity = Entity::delete($id);
 	}
@@ -134,7 +142,7 @@ class InvoiceController extends Controller
 	 * @todo Should store files in another directory
 	 * @todo No hardcoded id
 	 */
-	function export(Request $request, $invoice_number)
+	function export(Request $request, $accountingperiod, $invoice_number)
 	{
 		// Load invoice
 		$invoice = Invoice::loadByInvoiceNumber($invoice_number);
