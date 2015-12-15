@@ -83,7 +83,14 @@ class CurlBrowser
 		curl_setopt($this->curl_handle, CURLOPT_POSTFIELDS, $data);
 
 		// Execute the request
-		$this->html = curl_exec($this->curl_handle);
+		try
+		{
+			$this->html = curl_exec($this->curl_handle);
+		}
+		catch(Exception $e)
+		{
+			echo "Error: ".$e->GetMessage()."\n";
+		}
 
 		// Check HTTP status code
 		$this->_checkStatusCode();
