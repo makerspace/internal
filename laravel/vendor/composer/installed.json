@@ -3041,5 +3041,42 @@
             "testing",
             "tests"
         ]
+    },
+    {
+        "name": "cybermonde/odtphp",
+        "version": "v1.7",
+        "version_normalized": "1.7.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/cybermonde/odtphp.git",
+            "reference": "23aba70923ca3c07af15a5600f4072751c1b4a36"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/cybermonde/odtphp/zipball/23aba70923ca3c07af15a5600f4072751c1b4a36",
+            "reference": "23aba70923ca3c07af15a5600f4072751c1b4a36",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.2.4"
+        },
+        "time": "2015-06-02 07:28:25",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "classmap": [
+                "library"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "GPL"
+        ],
+        "description": "ODT document generator",
+        "homepage": "https://github.com/cybermonde/odtphp",
+        "keywords": [
+            "odt",
+            "php"
+        ]
     }
 ]
