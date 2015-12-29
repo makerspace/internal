@@ -26,20 +26,23 @@ class TransactionClassifier
 				$match &= preg_match("/{$rule->match->text}/", $data["text"]);
 				$m = true;
 			}
+
 			// Match reference number
-			else if(isset($rule->match->reference))
+			if(isset($rule->match->reference))
 			{
-				$match &= preg_match("/{$rule->match->reference}/", $data["verif"]);
+				$match &= preg_match("/{$rule->match->reference}/", $data["reference"]);
 				$m = true;
 			}
+
 			// Match to_account
-			else if(isset($rule->match->to_account) && isset($data["metadata"]["to"]["account"]))
+			if(isset($rule->match->to_account) && isset($data["metadata"]["to"]["account"]))
 			{
 				$match &= preg_match("/{$rule->match->to_account}/", $data["metadata"]["to"]["account"]);
 				$m = true;
 			}
+
 			// Match amount
-			else if(isset($rule->match->amount))
+			if(isset($rule->match->amount))
 			{
 				$match &= ($rule->match->amount == $data["amount"]);
 				$m = true;

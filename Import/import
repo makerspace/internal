@@ -1,0 +1,129 @@
+#!/usr/bin/env php7.0
+<?php
+
+require("../laravel/app/Libraries/CurlBrowser.php");
+use App\Libraries\CurlBrowser;
+
+if($argc == 1)
+{
+	echo 
+		"Usage: $argv[0]\n" .
+		"  --accounts      Import accounting accounts\n" .
+		"  --instructions  Import accounting instructions\n" .
+		"  --invoices      Import invoices\n";
+}
+else
+{
+	$importer = new Importer;
+
+	for($i = 1; $i <= count($argv); $i++)
+	{
+		$arg = $argv[$i];
+		@list($key, $value) = explode("=", $arg);
+		switch($key)
+		{
+			case "--accounts":
+				echo "Parsing --accounts\n";
+				$i++;
+				for(; $i < count($argv); $i++)
+				{
+					if(substr($argv[$i], 0, 2) !== "--")
+					{
+						$file = $argv[$i];
+						$importer->Import("account", 2015, $file);
+					}
+					else
+					{
+						$i--;
+						break;
+					}
+				}
+				break;
+
+			case "--instructions":
+				echo "Parsing --instructions\n";
+				$i++;
+				for(; $i < count($argv); $i++)
+				{
+					if(substr($argv[$i], 0, 2) !== "--")
+					{
+						$file = $argv[$i];
+						$importer->Import("instruction", 2015, $file);
+					}
+					else
+					{
+						$i--;
+						break;
+					}
+				}
+				break;
+
+			case "--invoices":
+				echo "Parsing --invoices\n";
+				$i++;
+				for(; $i < count($argv); $i++)
+				{
+					if(substr($argv[$i], 0, 2) !== "--")
+					{
+						$file = $argv[$i];
+						$importer->Import("invoice", 2015, $file);
+					}
+					else
+					{
+						$i--;
+						break;
+					}
+				}
+				break;
+
+			default:
+				die("Error: Unknown argument: {$arg}\n");
+		}
+	}
+}
+
+class Importer
+{
+	protected $curl;
+
+	public function __construct()
+	{
+		$this->curl = new CurlBrowser;
+	}
+
+	function Import($type, $period, $file)
+	{
+		if(!file_exists($file))
+		{
+			die("Error: File does not exist: $file\n");
+		}
+		echo " * {$file}\t";
+		$data = json_decode(file_get_contents($file));
+
+		switch($type)
+		{
+			case "account":
+				$url = "http://internal.dev/api/v2/economy/{$period}/account";
+				break;
+
+			case "instruction":
+				$url = "http://internal.dev/api/v2/economy/{$period}/instruction";
+				break;
+
+			case "invoice":
+				$url = "http://internal.dev/api/v2/economy/{$period}/invoice";
+				break;
+		}
+
+		$this->curl->Post($url, $data, true);
+
+		if($this->curl->StatusCode() == 200)
+		{
+			echo "OK\n";
+		}
+		else
+		{
+			echo "Error\n";
+		}
+	}
+}

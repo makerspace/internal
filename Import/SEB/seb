@@ -1,0 +1,231 @@
+#!/usr/bin/env php7.0
+<?php
+
+require("EconomyParserSEBHTML.php");
+require("Classifier.php");
+
+/*
+./data
+./data/instructions
+./data/accounthistory
+*/
+
+// Default state of arguments
+$download  = false;
+$expand    = false;
+$all_pages = false;
+$sync      = false;
+$rules     = false;
+
+if($argc == 1)
+{
+	echo 
+		"Usage: $argv[0]\n" .
+		"  --download=[num]  Download the account history from the internet bank\n\n" .
+		"  --expand          Expand the 'Show more' buttons and include in the account history when downloading file\n" .
+		"  --all-pages       Download all pages in account history. Default is to only download first page.\n\n" .
+		"  --file=[name]     Load the account history from a *.html file\n\n" .
+		"  --sync            Process the account history and create new accounting instructions\n" .
+		"  --rules=[file]    Load a *.json file with rules for the classifier\n";
+}
+else
+{
+	array_shift($argv);
+	foreach($argv as $arg)
+	{
+		@list($key, $value) = explode("=", $arg);
+		switch($key)
+		{
+			case "--download":
+				$download = $value;
+				if(empty($download))
+				{
+					die("Error: No civic reg no specified in --download=[num]\n");
+				}
+				break;
+
+			case "--expand":
+				$expand = true;
+				break;
+
+			case "--all-pages":
+				$all_pages = true;
+				break;
+
+			case "--file":
+				$file = $value;
+				if(empty($file))
+				{
+					die("Error: No file name specified in --file=[name]\n");
+				}
+				if(!file_exists($file))
+				{
+					die("Error: $file does not exist\n");
+				}
+				break;
+
+			case "--rules":
+				$rules = $value;
+				if(empty($rules))
+				{
+					die("Error: No file name specified in --rules=[name]\n");
+				}
+				if(!file_exists($rules))
+				{
+					die("Error: $rules does not exist\n");
+				}
+				break;
+
+			case "--sync":
+				$sync = true;
+				break;
+
+			default:
+				die("Error: Unknown argument: {$arg}\n");
+		}
+	}
+}
+
+// Check that there is no illegal combination of arguments
+if(($expand || $all_pages) && empty($download))
+{
+	die("Error: --expand and --all-pages can only be used in combination with --download\n");
+}
+if(!empty($file) && !empty($download))
+{
+	die("Error: You cannot specify both --download and --file\n");
+}
+if(empty($download) && empty($file))
+{
+	die("Error: You need to specify either --download or --file\n");
+}
+
+
+try
+{
+	$seb = new EconomyParserSEBHTML();
+
+	if(!empty($file) && empty($download))
+	{
+		// Load a saved account history from a *.html
+		echo "Loading transactions from $file\n";
+		$seb->LoadTransactionFile($file);
+	}
+	else if(empty($file) && !empty($download))
+	{
+		//  Download account history and save to file
+		echo "Logging in with $download\n";
+
+		// Login with mobile BankID
+		$seb->Login($download);
+
+		// Download account history
+		$data = $seb->GetAccountHistory();
+
+		// TODO: Process --all-pages
+
+		// If the --expand options is provided we need to click all the "Show more" buttons before saving the html file
+		if($expand)
+		{
+			echo "Expanding account history\n";
+
+			// Find all "Show more" buttons on transactions and go through them
+			foreach($seb->getShowMoreButtons() as $fold_id)
+			{
+				// TODO: Debugging
+				echo "Processing fold $fold_id\n";
+
+				// This sends an request to the server to expand the "Show more" section
+				// The expand will be permanent for this session
+				$seb->GetAccountHistoryMetadata($fold_id);
+
+				// Save the metadata to a file
+//				$seb->SaveTransactionFile("./data/{$date}/fold_{$fold_id}.html");
+			}
+		}
+
+		$date = date("Y-m-d_H:i:s");
+		$seb->SaveTransactionFile("./data/{$date}.html");
+		echo "Saved account history to ./data/{$date}.html\n";
+
+	}
+
+	if($sync)
+	{
+		echo "Syncing accounting instructions\n";
+
+		// Parse data
+		$data = $seb->AccountHistory();
+
+		// Startup classifier
+		$x = new TransactionClassifier;
+
+		// Go through the account history
+		foreach($data as $row)
+		{
+			$rule = $x->MatchRule($row);
+			if($rule !== false)
+			{
+				$instruction = [
+					"title"              => $rule->title,
+//					"instruction_number" => uniqid(), // TODO: For debugging
+					"accounting_date"    => $row["date1"],
+//					"external_id"        => $row["date1"]."_seb_".substr(md5($row["total"]), 0, 8),
+					"external_id"        => $row["date1"]."_seb_".$row["total"],
+					"importer"           => "seb-importer-v0.1",
+					"transactions" => [
+						[
+							"title"          => "",
+							"account_number" => "1930",
+							"amount"         => $row["amount"],
+						],
+						[
+							"title"          => "",
+							"account_number" => $rule->account,
+							"amount"         => -$row["amount"],
+						],
+					],
+				];
+			}
+			else
+			{
+				$instruction = [
+					"title"              => $row["text"],
+//					"instruction_number" => uniqid(), // TODO: For debugging
+					"accounting_date"    => $row["date1"],
+					"external_id"        => $row["date1"]."_seb_".$row["total"],
+					"importer"           => "seb-importer-v0.1",
+					"transactions" => [
+						[
+							"title"          => "",
+							"account_number" => "1930",
+							"amount"         => $row["amount"],
+						],
+						[
+							"title"          => "",
+							"account_number" => "2999",
+							"amount"         => -$row["amount"],
+						],
+					],
+				];
+			}
+
+			$file = "./data/instructions/{$instruction["external_id"]}.json";
+			if(file_exists($file))
+			{
+				echo "File doeas already exist: {$file}\n";
+//				print_r($instruction);
+			}
+			else
+			{
+				echo "File does not exist, creating: {$file}\n";
+				$json = json_encode($instruction, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+				file_put_contents($file, $json);
+			}
+		}
+	}
+}
+catch(Exception $e)
+{
+	echo "ERROR: {$e->GetMessage()}\n";
+}

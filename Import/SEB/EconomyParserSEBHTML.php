@@ -5,110 +5,40 @@
  */
 define("URL_LOGIN", "https://foretag.ib.seb.se/kgb/api/auth/coll");
 
+/**
+ * Requirements
+ */
+require("../../laravel/app/Libraries/CurlBrowser.php");
+use App\Libraries\CurlBrowser;
 
 /**
- * Download an parses data from Bankgirot
+ * Download an parses data from SEB företagsbank
  */
 class EconomyParserSEBHTML
 {
-	var $cookie = [];
 	var $html;
-	var $html_index;
-	var $debug = false;
-
-	/**
-	 * Set common parameters for cURL
-	 */
-	function curl_common($curl_handle)
-	{
-		curl_setopt($curl_handle, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($curl_handle, CURLOPT_COOKIEFILE, "cookiefile.txt");
-		curl_setopt($curl_handle, CURLOPT_COOKIEJAR, "cookiefile.txt");
-		curl_setopt($curl_handle, CURLOPT_USERAGENT, "User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:38.0) Gecko/20100101 Firefox/38.0");
-
-		if($this->debug === true)
-		{
-			curl_setopt($curl_handle, CURLOPT_VERBOSE, true);
-			curl_setopt($curl_handle, CURLOPT_HEADER, true);
-		}
-	}
-
-	/**
-	 *
-	 */
-	function _curlDownload($url)
-	{
-		$curl_handle = curl_init($url);
-		$this->curl_common($curl_handle);
-		$html = curl_exec($curl_handle);
-
-		// Check HTTP status code
-		$http_code = curl_getinfo($curl_handle, CURLINFO_HTTP_CODE);
-		if($http_code != 200)
-		{
-			echo "$html";
-			throw(new Exception("Did not receive a 200 OK from server while trying to downloading data."));
-		}
-
-		curl_close($curl_handle);
-
-		return $html;
-	}
-
-	/**
-	 *
-	 */
-	function _curlPost($url, $data)
-	{
-		$curl_handle = curl_init($url);
-		$this->curl_common($curl_handle);
-
-		curl_setopt($curl_handle, CURLOPT_POST, true);
-		curl_setopt($curl_handle, CURLOPT_POSTFIELDS, http_build_query($data, "", "&"));
-
-		$html = curl_exec($curl_handle);
-
-		// Check HTTP status code
-		$http_code = curl_getinfo($curl_handle, CURLINFO_HTTP_CODE);
-		if($http_code != 200)
-		{
-			throw(new Exception("Did not receive a 200 OK from server while trying to downloading data."));
-		}
-
-		curl_close($curl_handle);
-
-		return $html;
-	}
+	var $verbose = 1;
 
 	/**
 	 * Post the login form
 	 */
-	function Login($civicregno)
+	public function Login($civicregno)
 	{
-		$post["WA1"] = $civicregno;
-		$post["WA2"] = "6";
-		$post["WA3"] = "";
-		$post["WA4"] = "";
+		// Get cookie
+		$x = new CurlBrowser;
+		$x->Get("https://foretag.ib.seb.se/kgb/1000/1000/kgb1020.aspx");
+		$x->Destroy();
 
 		// Logga in med mobilt bankid
-		$curl_handle = curl_init(URL_LOGIN);
-		$this->curl_common($curl_handle);
-		curl_setopt($curl_handle, CURLOPT_POST, true);
-		curl_setopt($curl_handle, CURLOPT_POSTFIELDS, http_build_query($post, "", "&"));
-		$html = curl_exec($curl_handle);
-
-
-		// Check HTTP return code
-		$http_code = curl_getinfo($curl_handle, CURLINFO_HTTP_CODE);
-		if($http_code != 200)
-		{
-			throw(new Exception("Did not receive a 200 OK from server while trying to downloading data."));
-		}
-
-		curl_close($curl_handle);
-
-		$json = json_decode($html);
-		print_r($json);
+		$x = new CurlBrowser;
+		$x->Post(URL_LOGIN, [
+			"WA1" => $civicregno,
+			"WA2" => "6",
+			"WA3" => "",
+			"WA4" => "",
+		]);
+		$json = $x->GetJson();
+		$x->Destroy();
 
 		// Poll until we get a result that is not "Pending"
 		echo "Started BankID poll\n";
@@ -119,84 +49,70 @@ class EconomyParserSEBHTML
 			echo "Polling BankID\n";
 			$result = $this->_pollBankId($civicregno, $json->OrderReference);
 			$status = $result->Status;
-			echo "Received Status=$status\n";
+
+			$this->log("Received Status=$status", 2);
 		}
 
 		if($status == "R")
 		{
-			echo "OK!\n";
+			$this->Log("OK!", 2);
 		}
 		else
 		{
-			die("Expected status to be R\n");
+			die("Expected status to be R, server sent {$status}\n");
 		}
+
+		$this->Log("OK, processing with login.", 2);
 
 		// Process with login
-		echo "OK, processing with login.\n";
-		$curl_handle = curl_init("https://foretag.ib.seb.se/nauth2/Authentication/Auth?SEB_Referer=/427/m3e");
-		$this->curl_common($curl_handle);
-		curl_setopt($curl_handle, CURLOPT_FOLLOWLOCATION, true);
-		curl_setopt($curl_handle, CURLOPT_POST, true);
-		curl_setopt($curl_handle, CURLOPT_POSTFIELDS, http_build_query($post, "", "&"));
+		$x = new CurlBrowser;
+		$x->Post("https://foretag.ib.seb.se/nauth2/Authentication/Auth?SEB_Referer=/427/m3e", [
 
-		$html = curl_exec($curl_handle);
-
-		// Check HTTP status code
-		$http_code = curl_getinfo($curl_handle, CURLINFO_HTTP_CODE);
-		if($http_code != 200)
-		{
-			throw(new Exception("Did not receive a 200 OK from server while trying to downloading data."));
-		}
-
-		curl_close($curl_handle);
+			"WA1" => $civicregno,
+			"WA2" => "6",
+			"WA3" => "",
+			"WA4" => "",
+		]);
+		$x->Destroy();
 
 
-		$curl_handle = curl_init("https://foretag.ib.seb.se/kgb/1000/1000/kgb1010.aspx?M1=SHOW");
-		$this->curl_common($curl_handle);
-		curl_setopt($curl_handle, CURLOPT_FOLLOWLOCATION, true);
+		// TODO: Ifall resultatet blir att den laddar "GET /kgb/kgb1065.htm" har något gått fel
+		// https://foretag.ib.seb.se/kgb/kgb1060.htm = Ej inloggad
 
-		$html = curl_exec($curl_handle);
+		// TODO: Betyder ett resultat av kgb1009.aspx att inloggning lyckades?
 
-		// Check HTTP status code
-		$http_code = curl_getinfo($curl_handle, CURLINFO_HTTP_CODE);
-		if($http_code != 200)
-		{
-			throw(new Exception("Did not receive a 200 OK from server while trying to downloading data."));
-		}
+		$x = new CurlBrowser;
+		$x->Get("https://foretag.ib.seb.se/kgb/1000/1000/kgb1010.aspx?M1=SHOW");
+		$x->Destroy();
 
-		curl_close($curl_handle);
-
-		echo "Successfully logged in?\n";
+		$this->Log("Successfully logged in");
 
 		return true;
 	}
 
 	/**
-	 *
-	 */
-	function _pollBankId($civicregno, $token)
-	{
-		$post = [];
-		$post["WA1"] = $civicregno;
-		$post["WA2"] = "6";
-		$post["WA3"] = $token;
-		$post["WA4"] = "C";
-
-		$curl_handle = curl_init(URL_LOGIN);
-		$this->curl_common($curl_handle);
-		curl_setopt($curl_handle, CURLOPT_POST, true);
-		curl_setopt($curl_handle, CURLOPT_POSTFIELDS, http_build_query($post, "", "&"));
-		$html = curl_exec($curl_handle);
-
-		return json_decode($html);
-	}
-
-	/**
 	 * Download the account history, parse and return an array
 	 */
-	function GetAccountHistory()
+	public function DownloadAccountHistory($next = false)
 	{
-		$this->html = $this->_curlDownload("https://foretag.ib.seb.se/kgb/1000/1100/kgb1102.aspx?P1=11010011&P2=8");
+		$x = new CurlBrowser;
+
+		if($next == true)
+		{
+			// Get the form and trigger the "Ytterligare kontohändelser" button
+			$form = $this->_parseForm();
+			$form["__EVENTTARGET"] = 'IKFMaster$MainPlaceHolder$lnk_Next';
+			$form["__EVENTARGUMENT"] = "";
+			$x->Post("https://foretag.ib.seb.se/kgb/1000/1100/kgb1102.aspx?P1=11010011&P2=8", $form);
+		}
+		else
+		{
+			// Just download the first page
+			$x->Get("https://foretag.ib.seb.se/kgb/1000/1100/kgb1102.aspx?P1=11010011&P2=8");
+		}
+
+		$x->Destroy();
+		$this->html = $x->html;
 	}
 
 	/**
@@ -204,40 +120,25 @@ class EconomyParserSEBHTML
 	 *
 	 * The state of each "Show more" seems to be cached on the server, so we can click all those buttons before parsing the account history
 	 */
-	function GetAccountHistoryMetadata($transaction)
+	function DownloadAccountHistoryMetadata($transaction)
 	{
-		$form = $this->ParseForm();
+		$form = $this->_parseForm();
 
+		// Trigger click of the "Show more"
 		$form['IKFMaster$MainPlaceHolder$repAccountActivitiesInlan$ctl'.$transaction.'$BTN_INFO.x'] = 5;
 		$form['IKFMaster$MainPlaceHolder$repAccountActivitiesInlan$ctl'.$transaction.'$BTN_INFO.y'] = 5;
 
-		$curl_handle = curl_init("https://foretag.ib.seb.se/kgb/1000/1100/kgb1102.aspx?P1=11010011&P2=8");
-		$this->curl_common($curl_handle);
-
-		curl_setopt($curl_handle, CURLOPT_POST, true);
-		curl_setopt($curl_handle, CURLOPT_POSTFIELDS, http_build_query($form, "", "&"));
-		curl_setopt($curl_handle, CURLOPT_REFERER, "https://foretag.ib.seb.se/kgb/1000/1100/kgb1102.aspx?P1=11010011&P2=8");
-
-		$html = curl_exec($curl_handle);
-
-		// Check HTTP status code
-		$http_code = curl_getinfo($curl_handle, CURLINFO_HTTP_CODE);
-		if($http_code != 200)
-		{
-			throw(new Exception("Did not receive a 200 OK from server while trying to downloading data."));
-		}
-
-		curl_close($curl_handle);
-
-		$this->html = $html;
+		// Post the form
+		$x = new CurlBrowser;
+		$x->Post("https://foretag.ib.seb.se/kgb/1000/1100/kgb1102.aspx?P1=11010011&P2=8", $form);
+		$this->html = $x->html;
 	}
-
 
 	/**
 	 * The account history have a "Show more" button which provide us with more information.
 	 * This function returns the id's of all those buttons.
 	 */
-	function GetFoldable()
+	function getShowMoreButtons()
 	{
 		$page = new DOMDocument();
 		@$page->loadHTML($this->html);
@@ -266,7 +167,7 @@ class EconomyParserSEBHTML
 	 * Parameters:
 	 *   $file  The input file with HTML data
 	 */
-	function LoadTransactionFile($file)
+	public function LoadTransactionFile($file)
 	{
 		$this->html = file_get_contents($file);
 	}
@@ -277,16 +178,241 @@ class EconomyParserSEBHTML
 	 * Parameters:
 	 *   $file  The output file where the HTML should be put
 	 */
-	function SaveTransactionFile($file)
+	public function SaveTransactionFile($file)
 	{
 		file_put_contents($file, $this->html);
 	}
 
 	/**
+	 * Download the account history, parse data and return as array
+	 */
+	public function GetAccountHistory($next = false)
+	{
+		$this->DownloadAccountHistory($next);
+		return $this->ParseAccountHistory();
+	}
+
+	/**
 	 *
 	 */
-	function ParseForm()
+	public function GetTransaction($id)
 	{
+		$buttons = $this->getShowMoreButtons();
+
+		// Check if the transaction have a "Show more" button and click
+		if(in_array($id, $buttons))
+		{
+			echo "OK, Show more\n";
+			$this->DownloadAccountHistoryMetadata($id);
+		}
+
+		// Parse the account history (Including metadata from "Show more")
+		echo "Parsing account history\n";
+		$data = $this->ParseAccountHistory();
+
+		// Return row from account history
+		return $data[$id];
+	}
+
+	/**
+	 * Parse the account history HTML and return an array
+	 */
+	public function ParseAccountHistory()
+	{
+		$page = new DOMDocument();
+		@$page->loadHTML($this->html);
+		$xpath = new DOMXPath($page);
+
+		// Get the table with the transactions
+		$table = $xpath->query("//div[@id='IKFMaster_MainPlaceHolder_pnlActivitiesInlan']/table");
+
+		// Get all <tr>'s with transactions, except the first one, which is a header
+		$rows = $xpath->query("tr[@class='oddrow nodivider']", $table[0]);
+
+		// Loop through the rows and extract data
+		$data = [];
+		foreach($rows as $i => $elem)
+		{
+			// The "Show more" form is always there, but not always visible.
+			$showMoreForm = $xpath->query("td/input", $elem)[0];
+
+			// We use it to get the id of the row
+			$id = $this->_parseId($showMoreForm->getAttribute("name"));
+
+			// Check if the "Show more" is clickable or not
+			$isMore = $showMoreForm->getAttribute("class") == "collapsibleArrowVisible";
+
+			// Get the columns (<td>)
+			$cols = $xpath->query("td", $elem);
+			{
+				$data[$id] = array(
+					'date1'     => trim($cols[1]->textContent), // Bokföringsdatum
+					'date2'     => trim($cols[2]->textContent), // Valutadatum
+					'reference' => trim($cols[3]->textContent), // Verifikationsnummer
+					'text'      => trim($cols[4]->textContent), // Text/mottagare
+					'amount'    => $this->_parseCurrency(($cols[5]->textContent)), // Belopp
+					'total'     => $this->_parseCurrency(($cols[6]->textContent)), // Saldo
+				);
+			}
+
+			if($isMore)
+			{
+				$data[$id]["metadata"] = [];
+
+				// Get the key-value <table> in the following <tr>, which contains the data of the "Show more"
+				$groups = $xpath->query("following-sibling::tr[1]//table[@class='key-value-table']", $elem);
+				foreach($groups as $group)
+				{
+					$elements = $xpath->query("tr[position()!=1]", $group);
+					foreach($elements as $element)
+					{
+						$td = $xpath->query("td", $element);
+
+						$key   = substr($td[0]->textContent, 0, -1);
+						$value = $td[1]->textContent;
+						if(!empty($value))
+						{
+							// From account
+							if($key == "Från konto")
+							{
+								$data[$id]["metadata"]["from"]["account"] = $value;
+							}
+
+							else if($key == "Egen notering")
+							{
+								$data[$id]["metadata"]["note"] = $value;
+							}
+
+							else if($key == "Namn och adress")
+							{
+								$data[$id]["metadata"]["_{$key}"] = $value;
+							}
+							else if($key == "Krediterat belopp")
+							{
+								$data[$id]["metadata"]["_{$key}"] = $value;
+							}
+							else if($key == "")
+							{
+								$data[$id]["metadata"]["_{$key}"] = $value;
+							}
+							else if($key == "")
+							{
+								$data[$id]["metadata"]["_{$key}"] = $value;
+							}
+
+							// To account
+							else if($key == "Till konto")
+							{
+								$data[$id]["metadata"]["to"]["type"] = "account";
+								$data[$id]["metadata"]["to"]["account"] = $value;
+							}
+							else if($key == "Text på mottagarens avi")
+							{
+								$data[$id]["metadata"]["to"]["message"] = $value;
+							}
+							else if($key == "Bank")
+							{
+								$data[$id]["metadata"]["to"]["bank"] = $value;
+							}
+
+
+							// Bankgiro / Plusgiro
+							else if($key == "Pg-nummer")
+							{
+								$data[$id]["metadata"]["to"]["type"] = "plusgiro";
+								$data[$id]["metadata"]["to"]["account"] = $value;
+							}
+							else if($key == "Bg-nummer")
+							{
+								$data[$id]["metadata"]["to"]["type"] = "bankgiro";
+								$data[$id]["metadata"]["to"]["account"] = $value;
+							}
+							else if($key == "Namn")
+							{
+								$data[$id]["metadata"]["to"]["name"] = $value;
+							}
+							else if($key == "Mottagaren tillhanda")
+							{
+								$data[$id]["metadata"]["to"]["received"] = $value;
+							}
+							else if($key == "OCR/Meddelande")
+							{
+								$data[$id]["metadata"]["to"]["message"] = $value;
+							}
+
+							// Exchange stuff
+							else if($key == "Valutakurs")
+							{
+								$data[$id]["metadata"]["exchange"]["valutakurs"] = $this->_parseCurrency($value);
+							}
+							else if($key == "Utländskt belopp")
+							{
+								list($currency, $amount) = explode(" ", $value);
+								$data[$id]["metadata"]["exchange"]["original_currency"] = $currency;
+								$data[$id]["metadata"]["exchange"]["original_amount"] = $this->_parseCurrency($amount);
+							}
+							else if($key == "Valutaväxlingspåslag")
+							{
+								$data[$id]["metadata"]["exchange"]["Valutaväxlingspåslag"] = $value;
+							}
+							else if($key == "Köpdag")
+							{
+								$data[$id]["metadata"]["exchange"]["date"] = $value;
+							}
+
+							// Ignore
+							else if(
+								   $key == "Verifikationsnummer"
+								|| $key == "Belopp"
+								|| $key == "Kategori"
+								|| $key == "Bokförings- och valutadag"
+								|| $key == "Text på kontoutdrag"
+								|| $key == "Överföringsdatum"
+								|| trim($key) == "Belopp i SEK"
+
+								// Kortbetalningar, i princip samma som på kontoutdrag
+								|| $key == "Text"
+								|| $key == "Inköpsställe"
+							){}
+
+							// Save all other data
+							else
+							{
+								$data[$id]["metadata"]["_{$key}"] = $value;
+		//						die("$key = $value\n");
+							}
+						}
+					}
+				}
+			}
+		}
+
+		return $data;
+	}
+
+
+	/**
+	 *
+	 */
+	protected function _pollBankId($civicregno, $token)
+	{
+		$x = new CurlBrowser;
+		$x->Post(URL_LOGIN, [
+			"WA1" => $civicregno,
+			"WA2" => "6",
+			"WA3" => $token,
+			"WA4" => "C",
+		]);
+		$x->Destroy();
+		return $x->GetJson();
+	}
+
+	/**
+	 * Parse the form and get all <input type="hidden">
+	 */
+	protected function _parseForm()
+	{
+		// Parse the form
 		$page = new DOMDocument();
 		@$page->loadHTML($this->html);
 		$xpath = new DOMXPath($page);
@@ -297,268 +423,20 @@ class EconomyParserSEBHTML
 		{
 			if($element->getAttribute("type") == "image" || $element->getAttribute("type") == "submit")
 			{
-
 			}
 			else
 			{
 				$form[$element->getAttribute("name")] = $element->getAttribute("value");
 			}
 		}
+
 		return $form;
-	}
-
-	/**
-	 * Parse the account history HTML and return an array
-	 */
-	function ParseAccountHistory()
-	{
-		$page = new DOMDocument();
-		@$page->loadHTML($this->html);
-		$xpath = new DOMXPath($page);
-
-		// Get the table with the transactions
-		$table = $xpath->query("//div[@id='IKFMaster_MainPlaceHolder_pnlActivitiesInlan']/table");
-
-		// Get all <tr>'s except the first one, which is a header
-		$rows = $xpath->query("tr[@class='oddrow nodivider']", $table[0]);
-
-		// Loop through the rows and extract data
-		$data = [];
-		foreach($rows as $i => $elem)
-		{
-			// Get input
-			$parent = $xpath->query("td/input", $elem);
-
-			// Read id
-			$id = $this->_parseId($parent[0]->getAttribute("name"));
-
-			// Get the columns (<td>)
-			$cols = $xpath->query("td", $elem);
-			{
-				$data[$id] = array(
-					'date1'    => trim($cols[1]->textContent), // Bokföringsdatum
-					'date2'    => trim($cols[2]->textContent), // Valutadatum
-					'verif'    => trim($cols[3]->textContent), // Verifikationsnummer
-					'text'     => trim($cols[4]->textContent), // Text/mottagare
-					'amount'   => $this->_parseCurrency(($cols[5]->textContent)), // Belopp
-					'total'    => $this->_parseCurrency(($cols[6]->textContent)), // Saldo
-				);
-			}
-		}
-
-		return $data;
-	}
-
-	/**
-	 *
-	 */
-	function ParseAccountHistoryMetadata()
-	{
-//		$this->html = iconv("UTF-8", "ISO-8859-1", $this->html);
-
-		$page = new DOMDocument();
-		@$page->loadHTML($this->html);
-		$xpath = new DOMXPath($page);
-
-		$transactions = [];
-		$groups = $xpath->query("//table[@class='key-value-table']");
-		foreach($groups as $group)
-		{
-			// Get parent div
-			$parent = $xpath->query("../div", $group);
-			if(empty($parent)) { die(":(\n"); }
-
-			// Read id
-			$id = $this->_parseId($parent[0]->getAttribute("id"));
-
-			$elements = $xpath->query("tr[position()!=1]", $group);
-			$metadata = [];
-			foreach($elements as $element)
-			{
-				$td = $xpath->query("td", $element);
-
-				$key   = substr($td[0]->textContent, 0, -1);
-				$value = $td[1]->textContent;
-				if(!empty($value))
-				{
-					// From account
-					if($key == "Från konto")
-					{
-						$metadata["from"]["account"] = $value;
-					}
-
-					else if($key == "Egen notering")
-					{
-						$metadata["note"] = $value;
-					}
-
-					else if($key == "Namn och adress")
-					{
-						$metadata["_{$key}"] = $value;
-					}
-					else if($key == "Krediterat belopp")
-					{
-						$metadata["_{$key}"] = $value;
-					}
-					else if($key == "")
-					{
-						$metadata["_{$key}"] = $value;
-					}
-					else if($key == "")
-					{
-						$metadata["_{$key}"] = $value;
-					}
-
-					// To account
-					else if($key == "Till konto")
-					{
-						$metadata["to"]["type"] = "account";
-						$metadata["to"]["account"] = $value;
-					}
-					else if($key == "Text på mottagarens avi")
-					{
-						$metadata["to"]["message"] = $value;
-					}
-					else if($key == "Bank")
-					{
-						$metadata["to"]["bank"] = $value;
-					}
-
-
-					// Bankgiro / Plusgiro
-					else if($key == "Pg-nummer")
-					{
-						$metadata["to"]["type"] = "plusgiro";
-						$metadata["to"]["account"] = $value;
-					}
-					else if($key == "Bg-nummer")
-					{
-						$metadata["to"]["type"] = "bankgiro";
-						$metadata["to"]["account"] = $value;
-					}
-					else if($key == "Namn")
-					{
-						$metadata["to"]["name"] = $value;
-					}
-					else if($key == "Mottagaren tillhanda")
-					{
-						$metadata["to"]["received"] = $value;
-					}
-					else if($key == "OCR/Meddelande")
-					{
-						$metadata["to"]["message"] = $value;
-					}
-
-					// Exchange stuff
-					else if($key == "Valutakurs")
-					{
-						$metadata["exchange"]["valutakurs"] = $this->_parseCurrency($value);
-					}
-					else if($key == "Utländskt belopp")
-					{
-						list($currency, $amount) = explode(" ", $value);
-						$metadata["exchange"]["original_currency"] = $currency;
-						$metadata["exchange"]["original_amount"] = $this->_parseCurrency($amount);
-					}
-					else if($key == "Valutaväxlingspåslag")
-					{
-						$metadata["exchange"]["Valutaväxlingspåslag"] = $value;
-					}
-					else if($key == "Köpdag")
-					{
-						$metadata["exchange"]["date"] = $value;
-					}
-
-					// Ignore
-					else if(
-						   $key == "Verifikationsnummer"
-						|| $key == "Belopp"
-						|| $key == "Kategori"
-						|| $key == "Bokförings- och valutadag"
-						|| $key == "Text på kontoutdrag"
-						|| $key == "Överföringsdatum"
-						|| trim($key) == "Belopp i SEK"
-
-						// Kortbetalningar, i princip samma som på kontoutdrag
-						|| $key == "Text"
-						|| $key == "Inköpsställe"
-					)
-					{
-					}
-
-					// Save all other data
-					else
-					{
-						$metadata["_{$key}"] = $value;
-//						die("$key = $value\n");
-					}
-				}
-			}
-			$transactions[$id] = $metadata;
-		}
-
-		return $transactions;
-	}
-
-	/**
-	 * Download the complete account history, including the "Show more" data.
-	 *
-	 * A *.html file is saved for each HTTP request.
-	 * The file saved at the end is probably the one wou need.
-	 */
-	function SaveAccountHistoryRaw()
-	{
-		// Create a new directory
-		$date = date("Y-m-d_H:i:s");
-		mkdir("./data/{$date}");
-
-		$data = $this->GetAccountHistory();
-		$this->SaveTransactionFile("./data/{$date}/accounthistory.html");
-
-		// Find all "show more" buttons on transactions and go through them
-		$foldable = $this->getFoldable();
-		foreach($foldable as $fold_id)
-		{
-			// TODO: Debugging
-			echo "Processing fold $fold_id\n";
-
-			// This sends an request to the server to expand the "Show more" section
-			// The expand will be permanent for this session
-			$this->GetAccountHistoryMetadata($fold_id);
-
-			// Save the metadata to a file
-			$this->SaveTransactionFile("./data/{$date}/fold_{$fold_id}.html");
-		}
-
-		return $date;
-	}
-
-	/**
-	 * Compose a complete account history as an array
-	 */
-	function AccountHistory()
-	{
-		// Parse data
-		$data = $this->ParseAccountHistory();
-		$metadata = $this->ParseAccountHistoryMetadata();
-
-		// Go through the account history and append data from each "Show more" section
-		foreach($data as $i => &$row)
-		{
-			// Only if there is a "Show more" section
-			if(array_key_exists($i, $metadata))
-			{
-				$data[$i]["metadata"] = $metadata[$i];
-			}
-		}
-
-		return $data;
 	}
 
 	/**
 	 * Parse the currency and make an integer of it
 	 */
-	function _parseCurrency($input)
+	protected function _parseCurrency($input)
 	{
 		// Trim
 		$input = trim($input);
@@ -581,16 +459,25 @@ class EconomyParserSEBHTML
 		// Round to non decimal number
 //		$input = round($input);
 
-//		return preg_replace("/[^0-9]/", "", $input);
 		return $input;
 	}
 
 	/**
 	 *
 	 */
-	function _parseId($input)
+	protected function _parseId($input)
 	{
 		preg_match("/ctl(\d+)/", $input, $matches);
 		return $matches[1];
+	}
+
+
+	protected function Log($message, $verbose_level = 1)
+	{
+		if($this->verbose >= $verbose_level)
+		{
+			$date = date("c");
+			echo "[{$date}] {$message}\n";
+		}
 	}
 }
