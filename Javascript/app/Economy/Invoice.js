@@ -153,7 +153,7 @@ var Invoice = React.createClass({
 
 		return (
 			<div className="invoice">
-				<a href={"/api/v2/economy/invoice/" + this.state.model.invoice_number + "/export"}>Exportera *.ODT</a>
+				<a href={"/api/v2/economy/2015/invoice/" + this.state.model.invoice_number + "/export"}>Exportera *.ODT</a>
 
 				<div className="uk-grid">
 					<div className="uk-width-1-3 box">

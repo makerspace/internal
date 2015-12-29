@@ -148,7 +148,7 @@ class InvoiceController extends Controller
 		$invoice = Invoice::loadByInvoiceNumber($invoice_number);
 
 		// Calculate metadata
-		$invoiceExporter = new InvoiceExporter();
+		$invoiceExporter = new InvoiceExporter("/var/www/html/invoice/invoice.odt"); // TODO: Hardcoded path
 		$invoice = $invoiceExporter->CalculateMetadata($invoice);
 
 		// Generate ODT
@@ -156,8 +156,7 @@ class InvoiceController extends Controller
 		$invoiceExporter->Generate($invoice);
 
 		// Send the file to browser
-		header("Content-type: application/vnd.oasis.opendocument.text");
-		echo file_get_contents("/vagrant/temp/invoice.odt");
+		$invoiceExporter->Send();
 
 		// Convert to PDF
 //		$invoiceExporter->exportPdf();
