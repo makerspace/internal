@@ -40347,11 +40347,6 @@
 				),
 				_react2['default'].createElement(
 					'th',
-					null,
-					'Beskrivning'
-				),
-				_react2['default'].createElement(
-					'th',
 					{ className: 'uk-text-right' },
 					'Kontobalans'
 				)
@@ -40375,11 +40370,6 @@
 					'td',
 					null,
 					row.title
-				),
-				_react2['default'].createElement(
-					'td',
-					null,
-					row.description
 				),
 				_react2['default'].createElement(
 					'td',
@@ -42520,7 +42510,8 @@
 			importer: "",
 			description: "",
 			amount: 0,
-			transactions: []
+			transactions: [],
+			files: []
 		}
 	});
 
@@ -44448,6 +44439,54 @@
 
 			var title = this.state.model.instruction_number === null ? 'Preliminär verifikation' : 'Verifikation ' + this.state.model.instruction_number;
 
+			if (this.state.model.files.length == 0) {
+				var files = _react2['default'].createElement(
+					'tr',
+					null,
+					_react2['default'].createElement(
+						'td',
+						{ colSpan: '4' },
+						_react2['default'].createElement(
+							'em',
+							null,
+							'Det finns inga filer kopplade till denna verifikation'
+						)
+					)
+				);
+			} else {
+				var _this = this;
+				var files = this.state.model.files.map(function (file, i) {
+					/*
+	    if(instruction.title.length == 0)
+	    {
+	    	instruction.title = <em>Rubrik saknas</em>
+	    }
+	    return (
+	    	<tr key={i}>
+	    		<td>{instruction.verification_number}</td>
+	    		<td><DateField date={instruction.accounting_date}/></td>
+	    		<td><Link to={"/economy/instruction/" + instruction.id}>{instruction.title}</Link></td>
+	    		<td>{instruction.description}</td>
+	    		<td className="uk-text-right"><Currency value={instruction.amount} /></td>
+	    	</tr>
+	    );
+	    */
+					return _react2['default'].createElement(
+						'tr',
+						{ key: i },
+						_react2['default'].createElement(
+							'td',
+							null,
+							_react2['default'].createElement(
+								'a',
+								{ href: "/api/v2/economy/2015/file/" + _this.state.model.external_id + "/" + file },
+								file
+							)
+						)
+					);
+				});
+			}
+
 			return _react2['default'].createElement(
 				'div',
 				null,
@@ -44653,6 +44692,28 @@
 						'tbody',
 						null,
 						content
+					)
+				),
+				_react2['default'].createElement(
+					'table',
+					{ className: 'uk-table' },
+					_react2['default'].createElement(
+						'thead',
+						null,
+						_react2['default'].createElement(
+							'tr',
+							null,
+							_react2['default'].createElement(
+								'th',
+								null,
+								'Filnamn'
+							)
+						)
+					),
+					_react2['default'].createElement(
+						'tbody',
+						null,
+						files
 					)
 				)
 			);
@@ -45126,7 +45187,7 @@
 
 		getInitialState: function getInitialState() {
 			return {
-				columns: 5
+				columns: 6
 			};
 		},
 
@@ -45153,11 +45214,22 @@
 					'th',
 					{ className: 'uk-text-right' },
 					'Belopp'
-				)
+				),
+				_react2['default'].createElement(
+					'th',
+					{ className: 'uk-text-right' },
+					'Saldo'
+				),
+				_react2['default'].createElement('th', null)
 			);
 		},
 
 		renderRow: function renderRow(row, i) {
+			if (typeof row.files != "undefined") {
+				var icon = _react2['default'].createElement('i', { className: 'uk-icon-file' });
+			} else {
+				var icon = "";
+			}
 			return _react2['default'].createElement(
 				'tr',
 				{ key: i },
@@ -45185,7 +45257,17 @@
 				_react2['default'].createElement(
 					'td',
 					{ className: 'uk-text-right' },
+					_react2['default'].createElement(_Other.Currency, { value: row.amount, currency: 'SEK' })
+				),
+				_react2['default'].createElement(
+					'td',
+					{ className: 'uk-text-right' },
 					_react2['default'].createElement(_Other.Currency, { value: row.balance, currency: 'SEK' })
+				),
+				_react2['default'].createElement(
+					'td',
+					null,
+					icon
 				)
 			)
 
@@ -45205,43 +45287,46 @@
 
 	/*
 	var EconomyAccountTransactions = React.createClass({
-	mixins: [Backbone.React.Component.mixin],
-	render: function()
-	{
-	if(this.state.collection.length == 0)
-	{
-		var content = <tr><td colSpan="4"><em>Det finns inga verifikationer som bokför något på detta konto</em></td></tr>;
-	}
-	else
-	{
-		var content = this.state.collection.map(function (instruction, i)
+		mixins: [Backbone.React.Component.mixin],
+
+		render: function()
 		{
-			if(instruction.title.length == 0)
+			if(this.state.collection.length == 0)
 			{
-				instruction.title = <em>Rubrik saknas</em>
+				var content = <tr><td colSpan="4"><em>Det finns inga verifikationer som bokför något på detta konto</em></td></tr>;
 			}
+			else
+			{
+				var content = this.state.collection.map(function (instruction, i)
+				{
+					if(instruction.title.length == 0)
+					{
+						instruction.title = <em>Rubrik saknas</em>
+					}
+					return (
+						<tr key={i}>
+							<td>{instruction.verification_number}</td>
+							<td><DateField date={instruction.accounting_date}/></td>
+							<td><Link to={"/economy/instruction/" + instruction.id}>{instruction.title}</Link></td>
+							<td>{instruction.description}</td>
+							<td className="uk-text-right"><Currency value={instruction.amount} /></td>
+						</tr>
+					);
+				})
+			}
+
 			return (
-				<tr key={i}>
-					<td>{instruction.verification_number}</td>
-					<td><DateField date={instruction.accounting_date}/></td>
-					<td><Link to={"/economy/instruction/" + instruction.id}>{instruction.title}</Link></td>
-					<td>{instruction.description}</td>
-					<td className="uk-text-right"><Currency value={instruction.amount} /></td>
-				</tr>
+				<table className="uk-table">
+					<thead>
+
+					</thead>
+					<tbody>
+						{content}
+					</tbody>
+				</table>
 			);
-		})
-	}
-		return (
-		<table className="uk-table">
-			<thead>
-				</thead>
-			<tbody>
-				{content}
-			</tbody>
-		</table>
-	);
-	return <p>instructions</p>
-	},
+			return <p>instructions</p>
+		},
 	});
 	*/
 
@@ -45682,7 +45767,7 @@
 				{ className: 'invoice' },
 				_react2['default'].createElement(
 					'a',
-					{ href: "/api/v2/economy/invoice/" + this.state.model.invoice_number + "/export" },
+					{ href: "/api/v2/economy/2015/invoice/" + this.state.model.invoice_number + "/export" },
 					'Exportera *.ODT'
 				),
 				_react2['default'].createElement(
