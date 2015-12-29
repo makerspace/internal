@@ -13,7 +13,8 @@ var InstructionModel = Backbone.Model.extend({
 		importer: "",
 		description: "",
 		amount: 0,
-		transactions: []
+		transactions: [],
+		files: [],
 	},
 });
 
