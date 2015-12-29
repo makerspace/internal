@@ -1,6 +1,19 @@
 #!/usr/bin/env php7.0
 <?php
 
+///////////////////////////////////////////////////////////////////////////////
+// Configuration
+///////////////////////////////////////////////////////////////////////////////
+
+define("CONFIG_ACCOUNT_BANK",  1930);
+define("CONFIG_ACCOUNT_OTHER", 2999);
+
+
+///////////////////////////////////////////////////////////////////////////////
+// DO NOT EDIT ANYTHING BELOW THIS LINE
+///////////////////////////////////////////////////////////////////////////////
+
+
 require("EconomyParserSEBHTML.php");
 require("Classifier.php");
 
@@ -11,21 +24,29 @@ require("Classifier.php");
 */
 
 // Default state of arguments
-$download  = false;
-$expand    = false;
-$all_pages = false;
-$sync      = false;
-$rules     = false;
+$civicregno     = false;
+$download       = false;
+$downloadexpand = false;
+$all_pages      = false;
+$file           = false;
+$sync           = false;
+$rules          = false;
+
 
 if($argc == 1)
 {
 	echo 
 		"Usage: $argv[0]\n" .
-		"  --download=[num]  Download the account history from the internet bank\n\n" .
-		"  --expand          Expand the 'Show more' buttons and include in the account history when downloading file\n" .
-		"  --all-pages       Download all pages in account history. Default is to only download first page.\n\n" .
-		"  --file=[name]     Load the account history from a *.html file\n\n" .
-		"  --sync            Process the account history and create new accounting instructions\n" .
+		"  --civicregno=[num]  Specify the civic reg no used to log in to the bank\n\n" .
+
+		"  --download        Download the account history from the internet bank\n" .
+		"  --downloadexpand  Download the account history from the internet bank, expand all 'Show more' buttons\n" .
+		"  --all             Download all pages in account history. Default is to only download first page.\n" .
+
+		"  --file=[name]     Load the account history from a *.html file and sync\n\n" .
+
+		"  --sync            Process the account history and create new accounting instructions\n\n" .
+
 		"  --rules=[file]    Load a *.json file with rules for the classifier\n";
 }
 else
@@ -36,19 +57,22 @@ else
 		@list($key, $value) = explode("=", $arg);
 		switch($key)
 		{
-			case "--download":
-				$download = $value;
-				if(empty($download))
+			case "--civicregno":
+				$civicregno = $value;
+				if(empty($civicregno))
 				{
-					die("Error: No civic reg no specified in --download=[num]\n");
+					die("Error: No civic reg no specified in --civicregno=[num]\n");
 				}
 				break;
 
-			case "--expand":
-				$expand = true;
+			case "--download":
+				$download = true;
+
+			case "--downloadexpand":
+				$downloadexpand = true;
 				break;
 
-			case "--all-pages":
+			case "--all":
 				$all_pages = true;
 				break;
 
@@ -64,6 +88,10 @@ else
 				}
 				break;
 
+			case "--sync":
+				$sync = true;
+				break;
+
 			case "--rules":
 				$rules = $value;
 				if(empty($rules))
@@ -76,16 +104,38 @@ else
 				}
 				break;
 
-			case "--sync":
-				$sync = true;
-				break;
-
 			default:
 				die("Error: Unknown argument: {$arg}\n");
 		}
 	}
 }
 
+if($download)
+{
+	$x = new SebSync;
+	$x->Download($civicregno, $all_pages);
+}
+else if($downloadexpand)
+{
+	$x = new SebSync;
+	$x->DownloadExpand($civicregno, $all_pages);
+}
+else if($sync)
+{
+	$x = new SebSync;
+	$x->DownloadSync($civicregno, $all_pages);
+}
+else if(!empty($file))
+{
+	$x = new SebSync;
+	$x->LoadSync($file);
+}
+else
+{
+	die("Error: Invalid combination of arguments\n");
+}
+
+/*
 // Check that there is no illegal combination of arguments
 if(($expand || $all_pages) && empty($download))
 {
@@ -103,129 +153,289 @@ if(empty($download) && empty($file))
 
 try
 {
-	$seb = new EconomyParserSEBHTML();
-
 	if(!empty($file) && empty($download))
 	{
-		// Load a saved account history from a *.html
-		echo "Loading transactions from $file\n";
-		$seb->LoadTransactionFile($file);
 	}
 	else if(empty($file) && !empty($download))
 	{
-		//  Download account history and save to file
-		echo "Logging in with $download\n";
-
-		// Login with mobile BankID
-		$seb->Login($download);
-
-		// Download account history
-		$data = $seb->GetAccountHistory();
-
-		// TODO: Process --all-pages
-
-		// If the --expand options is provided we need to click all the "Show more" buttons before saving the html file
-		if($expand)
-		{
-			echo "Expanding account history\n";
-
-			// Find all "Show more" buttons on transactions and go through them
-			foreach($seb->getShowMoreButtons() as $fold_id)
-			{
-				// TODO: Debugging
-				echo "Processing fold $fold_id\n";
-
-				// This sends an request to the server to expand the "Show more" section
-				// The expand will be permanent for this session
-				$seb->GetAccountHistoryMetadata($fold_id);
-
-				// Save the metadata to a file
-//				$seb->SaveTransactionFile("./data/{$date}/fold_{$fold_id}.html");
-			}
-		}
-
-		$date = date("Y-m-d_H:i:s");
-		$seb->SaveTransactionFile("./data/{$date}.html");
-		echo "Saved account history to ./data/{$date}.html\n";
-
-	}
-
-	if($sync)
-	{
-		echo "Syncing accounting instructions\n";
-
-		// Parse data
-		$data = $seb->AccountHistory();
-
-		// Startup classifier
-		$x = new TransactionClassifier;
-
-		// Go through the account history
-		foreach($data as $row)
-		{
-			$rule = $x->MatchRule($row);
-			if($rule !== false)
-			{
-				$instruction = [
-					"title"              => $rule->title,
-//					"instruction_number" => uniqid(), // TODO: For debugging
-					"accounting_date"    => $row["date1"],
-//					"external_id"        => $row["date1"]."_seb_".substr(md5($row["total"]), 0, 8),
-					"external_id"        => $row["date1"]."_seb_".$row["total"],
-					"importer"           => "seb-importer-v0.1",
-					"transactions" => [
-						[
-							"title"          => "",
-							"account_number" => "1930",
-							"amount"         => $row["amount"],
-						],
-						[
-							"title"          => "",
-							"account_number" => $rule->account,
-							"amount"         => -$row["amount"],
-						],
-					],
-				];
-			}
-			else
-			{
-				$instruction = [
-					"title"              => $row["text"],
-//					"instruction_number" => uniqid(), // TODO: For debugging
-					"accounting_date"    => $row["date1"],
-					"external_id"        => $row["date1"]."_seb_".$row["total"],
-					"importer"           => "seb-importer-v0.1",
-					"transactions" => [
-						[
-							"title"          => "",
-							"account_number" => "1930",
-							"amount"         => $row["amount"],
-						],
-						[
-							"title"          => "",
-							"account_number" => "2999",
-							"amount"         => -$row["amount"],
-						],
-					],
-				];
-			}
-
-			$file = "./data/instructions/{$instruction["external_id"]}.json";
-			if(file_exists($file))
-			{
-				echo "File doeas already exist: {$file}\n";
-//				print_r($instruction);
-			}
-			else
-			{
-				echo "File does not exist, creating: {$file}\n";
-				$json = json_encode($instruction, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-				file_put_contents($file, $json);
-			}
-		}
 	}
 }
 catch(Exception $e)
 {
 	echo "ERROR: {$e->GetMessage()}\n";
+}
+*/
+
+class SebSync
+{
+	protected $ignore = [];
+	protected $classifier;
+	protected $seb;
+
+	public function __construct()
+	{
+		// Load ignore list
+		if(file_exists("ignore.json"))
+		{
+			$raw = file_get_contents("ignore.json");
+			$this->ignore = json_decode($raw);
+		}
+
+		// Start up the transaction classifier
+		$this->classifier = new TransactionClassifier;
+
+		// Wrapper for the bank "API"
+		$this->seb = new EconomyParserSEBHTML();
+	}
+
+	/**
+	 * Download the account history and save to file
+	 */
+	// TODO: Process all pages
+	public function Download($civicregno, $all_pages = false)
+	{
+		//  Download account history and save to file
+		echo "Logging in with $civicregno\n";
+
+		// Login with mobile BankID
+		$this->seb->Login($civicregno);
+
+		// Download account history
+		$this->seb->DownloadAccountHistory();
+
+		// Save the raw *.html file
+		$date = date("Y-m-d_H:i:s");
+		$this->seb->SaveTransactionFile("./data/{$date}.html");
+		echo "Saved account history to ./data/{$date}.html\n";
+	}
+
+	/**
+	 * Download all pages of the account history and save to separate files
+	 */
+	public function DownloadAll($civicregno)
+	{
+		//  Download account history and save to file
+		echo "Logging in with $civicregno\n";
+
+		// Login with mobile BankID
+		$this->seb->Login($civicregno);
+
+		// Download account history
+		$this->seb->DownloadAccountHistory();
+
+		// Process --all-pages
+		$done = false;
+		$first = true;
+		while($done === false)
+		{
+			// Get next page and loop
+			$this->seb->DownloadAccountHistory($first);
+
+			// Save the raw *.html file
+			$date = date("Y-m-d_H:i:s");
+			$this->seb->SaveTransactionFile("./data/{$date}.html");
+			echo "Saved account history to ./data/{$date}.html\n";
+
+			// TODO: Only once
+			if($first === true)
+			{
+				echo "Ok, do it again\n";
+				$first = false;
+			}
+			else
+			{
+				echo "Posted once, exiting\n";
+				break;
+			}
+		}
+	}
+
+	public function DownloadExpand()
+	{
+/*
+		// If the --expand options is provided we need to click all the "Show more" buttons before saving the html file
+		echo "Expanding account history\n";
+
+		// Find all "Show more" buttons on transactions and go through them
+		foreach($this->seb->getShowMoreButtons() as $fold_id)
+		{
+			// TODO: Debugging
+			echo "Processing fold $fold_id\n";
+
+			// This sends an request to the server to expand the "Show more" section
+			// The expand will be permanent for this session
+			$this->seb->DownloadAccountHistoryMetadata($fold_id);
+
+			// Save the metadata to a file
+//			$this->seb->SaveTransactionFile("./data/{$date}/fold_{$fold_id}.html");
+		}
+*/
+	}
+
+	public function DownloadExpandAll()
+	{
+		
+	}
+
+	/**
+	 * Load the first page of account history
+	 * See what transactions need to be synced
+	 * Download meta data for those transactions (if any)
+	 * Save to accounting instruction file
+	 */
+	public function DownloadSync($civicregno)
+	{
+			//  Download account history and save to file
+			echo "Logging in with $civicregno\n";
+
+			// Login with mobile BankID
+			$this->seb->Login($civicregno);
+
+			// Download account history and parse
+			$data = $this->seb->GetAccountHistory();
+
+			// Go through the account history
+			foreach($data as $id => $row)
+			{
+				$external_id = $this->_getExternalId($row);
+				if($this->_needSync($external_id))
+				{
+					$transaction = $this->seb->GetTransaction($id);
+					print_r($transaction);
+					$this->_saveTransaction($transaction);
+				}
+			}
+
+	}
+
+	/**
+	 * Same as above, but does get all pages and not just the first one
+	 */
+	public function DownloadSyncAll()
+	{
+
+	}
+
+	/**
+	 *
+	 */
+	public function LoadSync($file)
+	{
+		// Load a saved account history from a *.html
+		echo "Loading transactions from $file\n";
+		$this->seb->LoadTransactionFile($file);
+
+		// Parse data
+		echo "Syncing accounting instructions\n";
+		$data = $this->seb->ParseAccountHistory();
+
+		// Go through the account history
+		foreach($data as $row)
+		{
+			$external_id = $this->_getExternalId($row);
+			if($this->_needSync($external_id))
+			{
+//				$transaction = $seb->GetTransaction($id);
+//				$this->_saveTransaction($transaction);
+			}
+		}
+
+	}
+
+	/**
+	 * Check if the transaction is already synced or not, and sync
+	 */
+	protected function _saveTransaction($row)
+	{
+		// Use the transaction classifier to match the row with rule
+		$rule = $this->classifier->MatchRule($row);
+		if($rule !== false)
+		{
+			$instruction = [
+				"title"              => $rule->title,
+				"accounting_date"    => $row["date1"],
+				"external_id"        => $this->_getExternalId($row),
+				"importer"           => "seb-importer-v0.1",
+				"transactions" => [
+					[
+						"title"          => "",
+						"account_number" => CONFIG_ACCOUNT_BANK,
+						"amount"         => $row["amount"],
+					],
+					[
+						"title"          => "",
+						"account_number" => $rule->account,
+						"amount"         => -$row["amount"],
+					],
+				],
+			];
+		}
+		else
+		{
+			$instruction = [
+				"title"              => $row["text"],
+				"accounting_date"    => $row["date1"],
+				"external_id"        => $this->_getExternalId($row),
+				"importer"           => "seb-importer-v0.1",
+				"transactions" => [
+					[
+						"title"          => "",
+						"account_number" => CONFIG_ACCOUNT_BANK,
+						"amount"         => $row["amount"],
+					],
+					[
+						"title"          => "",
+						"account_number" => CONFIG_ACCOUNT_OTHER,
+						"amount"         => -$row["amount"],
+					],
+				],
+			];
+		}
+
+		// Save the accounting instruction file
+		// TODO: Path
+		$file = "./data/instructions/{$instruction["external_id"]}.json";
+		echo "Creating file: {$file}\n";
+		$json = json_encode($instruction, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+		file_put_contents($file, $json);
+
+		// Add to ignore list
+		$this->_addToIgnoreList($instruction["external_id"]);
+	}
+
+	/**
+	 * Try to compose a transaction unique "external id"
+	 */
+	protected function _getExternalId($row)
+	{
+		return $row["date1"]."_seb_".$row["total"];
+	}
+
+	/**
+	 * Figure out whetever a transaction need to be synced
+	 */
+	protected function _needSync($id)
+	{
+		// Check if the transaction is already synced or not
+		if(in_array($id, $this->ignore))
+		{
+			echo "Transaction is in ignorelist: {$id}\n";
+			return false;
+		}
+		else
+		{
+			echo "Transaction needs sync: {$id}\n";
+			return true;
+		}
+	}
+
+	/**
+	 * Save the ignore list currently in memory
+	 */
+	protected function _addToIgnoreList($id)
+	{
+		$this->ignore[] = $id;
+		$json = json_encode($this->ignore, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+		file_put_contents("ignore.json", $json);
+	}
 }
