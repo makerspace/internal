@@ -113,6 +113,17 @@ class EconomyInstruction extends Controller
 		// Load the instruction
 		$data = AccountingInstruction::load($id);
 
+		// Append files ("Verifikat")
+		$data["files"] = [];
+		$dir = "/var/www/html/vouchers/{$data["external_id"]}";
+		if(file_exists($dir))
+		{
+			foreach(glob("{$dir}/*") as $file)
+			{
+				$data["files"][] = basename($file);
+			}
+		}
+
 		// Generate an error if there is no such instruction
 		if(false === $data)
 		{

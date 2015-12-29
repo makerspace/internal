@@ -46,6 +46,9 @@ Route::group(array("prefix" => "api/v2"), function()
 	// Economy
 	Route::group(array("prefix" => "economy/{accountingperiod}"), function()
 	{
+		// Files / vouchers
+		Route::   get("file/{external_id}/{filename}", "V2\Economy@file"); // Get collection
+
 		// Transactions
 		Route::   get("transaction",      "V2\EconomyTransactions@list"); // Get collection
 		Route::  post("transaction",      "V2\EconomyTransactions@create"); // Model: Create
