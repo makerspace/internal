@@ -89,7 +89,6 @@ var EconomyAccountHandler = React.createClass({
 				<h2>Konto</h2>
 				<EconomyAccount model={this.state.account_model} />
 				<EconomyAccountTransactions collection={this.state.transaction_collection} />
-
 			</div>
 		);
 	},
@@ -234,7 +233,7 @@ var EconomyAccountTransactions = React.createClass({
 	getInitialState: function()
 	{
 		return {
-			columns: 5,
+			columns: 6,
 		};
 	},
 
@@ -246,18 +245,30 @@ var EconomyAccountTransactions = React.createClass({
 				<th>Verifikation</th>
 				<th>Transaktion</th>
 				<th className="uk-text-right">Belopp</th>
+				<th className="uk-text-right">Saldo</th>
+				<th></th>
 			</tr>
 		);
 	},
 
 	renderRow: function (row, i)
 	{
+		if(typeof row.files != "undefined")
+		{
+			var icon = <i className="uk-icon-file"></i>;
+		}
+		else
+		{
+			var icon = "";
+		}
 		return (
 			<tr key={i}>
 				<td><DateField date={row.accounting_date}/></td>
 				<td><Link to={"/economy/instruction/" + row.instruction_number}>{row.instruction_number} {row.instruction_title}</Link></td>
 				<td>{row.transaction_title}</td>
+				<td className="uk-text-right"><Currency value={row.amount} currency="SEK" /></td>
 				<td className="uk-text-right"><Currency value={row.balance} currency="SEK" /></td>
+				<td>{icon}</td>
 			</tr>
 
 			/*
@@ -274,7 +285,7 @@ var EconomyAccountTransactions = React.createClass({
 	},
 });
 
-		/*
+/*
 var EconomyAccountTransactions = React.createClass({
 	mixins: [Backbone.React.Component.mixin],
 

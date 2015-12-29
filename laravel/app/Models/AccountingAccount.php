@@ -44,16 +44,32 @@ class AccountingAccount extends Entity
 					->leftJoin("accounting_period", "accounting_period.entity_id", "=", "accounting_account.accounting_period")
 					->where("accounting_period.name", $filter[1], $filter[2]);
 			}
-			// Filter on balance
+			// Filter on account balance
 			else if("balance" == $filter[0])
 			{
 				$query = $query->having("balance", $filter[1], $filter[2]);
 			}
-
+			// Filter on number of transactions
+			else if("transactions" == $filter[0])
+			{
+				$query = $query->selectRaw("COUNT(accounting_transaction.entity_id) AS num_transactions");
+				$query = $query->having("num_transactions", $filter[1], $filter[2]);
+			}
 		}
 
+		$data = $query->get();
+		/*
+		foreach($data as &$row)
+		{
+//			if(file_exists())
+			{
+				$row->files = "meep";
+			}
+		}
+		*/
+
 		// Return result
-		return $query->get();
+		return $data;
 	}
 
 	/**

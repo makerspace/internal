@@ -42,7 +42,6 @@ var EconomyAccounts = React.createClass({
 			<tr>
 				<th>#</th>
 				<th>Konto</th>
-				<th>Beskrivning</th>
 				<th className="uk-text-right">Kontobalans</th>
 			</tr>
 		);
@@ -54,7 +53,6 @@ var EconomyAccounts = React.createClass({
 			<tr key={i}>
 				<td><Link to={"/economy/account/" + row.account_number}>{row.account_number}</Link></td>
 				<td>{row.title}</td>
-				<td>{row.description}</td>
 				<td className="uk-text-right"><Currency value={row.balance} /></td>
 			</tr>
 		);

@@ -29,7 +29,7 @@ class EconomyAccount extends Controller
 		// Return all account that have a balance not equal to 0
 		return AccountingAccount::list(
 			[
-				["balance", "!=", 0],
+				["transactions", ">", 0],
 				["accountingperiod", "=", $accountingperiod],
 			]
 		);
