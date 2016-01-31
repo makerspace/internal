@@ -5,6 +5,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
+use App\Models\Member as MemberModel;
+
+
 class Member extends Controller
 {
 	/**
@@ -13,19 +16,16 @@ class Member extends Controller
 	function list(Request $request)
 	{
 		$per_page = 100;
-		$data = [
-			$this->read($request, 1),
-			$this->read($request, 2),
-			$this->read($request, 3),
-		];
+
+		$data = MemberModel::list();
 
 		// Return json array
-		return [
+		return Response()->json([
 			"per_page"  => $per_page,
 			"total"     => 2,
 			"last_page" => 1,
 			"data"      => $data,
-		];
+		]);
 	}
 
 	/**
@@ -33,23 +33,69 @@ class Member extends Controller
 	 */
 	function create(Request $request)
 	{
-		return ['error' => 'not implemented'];
+		$json = $request->json()->all();
+
+		// TODO: Require E-mail?
+
+		// Create a unique member number if not specified
+		if(!empty($json["member_number"]))
+		{
+			$member_number = $json["member_number"];
+		}
+		else
+		{
+			$member_number = uniqid();
+		}
+
+		// Create new member
+		$entity = new MemberModel;
+//		$entity->title         = $json["title"];
+//		$entity->description   = $json["description"]    ?? null;
+		$entity->member_number = $member_number;
+		$entity->email         = $json["email"];
+		$entity->password      = $json["password"]   ?? null;
+		$entity->firstname     = $json["firstname"]  ?? null;
+		$entity->lastname      = $json["lastname"]   ?? null;
+		$entity->civicregno    = $json["civicregno"] ?? null;
+		$entity->company       = $json["company"]    ?? null;
+		$entity->orgno         = $json["orgno"]      ?? null;
+		$entity->address       = $json["address"]    ?? null;
+		$entity->address2      = $json["address2"]   ?? null;
+		$entity->zipcode       = $json["zipcode"]    ?? null;
+		$entity->city          = $json["city"]       ?? null;
+		$entity->country       = $json["country"]    ?? "SE";
+		$entity->phone         = $json["phone"]      ?? null;
+
+		$result = $entity->save();
+
+		// TODO: Standariezed output
+		return [
+			"status" => "created",
+			"entity" => $entity->toArray(),
+		];
 	}
 
 	/**
 	 *
 	 */
-	function read(Request $request, $id)
+	function read(Request $request, $member_number)
 	{
-		return [
-			"member_id" => 27,
-			"member_number" => 1234,
-			"firstname" => "Nisse",
-			"lastname" => "Olsson",
-			"email" => "hej@olsson.se",
-			"created_at" => "2015-01-01 01:15:00",
-			"updated_at" => "2015-02-18 17:53:00",
-		];
+		// Load the invoice
+		$member = MemberModel::load([
+			"member_number" => $member_number
+		]);
+
+		// Generate an error if there is no such member
+		if(false === $member)
+		{
+			return Response()->json([
+				"message" => "No member with specified member number",
+			], 404);
+		}
+		else
+		{
+			return $member;
+		}
 	}
 
 	/**
@@ -65,6 +111,6 @@ class Member extends Controller
 	 */
 	function delete(Request $request, $id)
 	{
-		return ['error' => 'not implemented'];
+		$entity = Entity::delete($id);
 	}
 }

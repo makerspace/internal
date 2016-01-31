@@ -7,12 +7,59 @@ import { BackboneTable } from './BackboneTable'
 var MembersHandler = React.createClass({
 	getInitialState: function()
 	{
-		var members = new MemberCollection();
+		var _this = this;
+
+		var Members = MemberCollection.extend({
+			state:
+			{
+				pageSize: 15 // TODO
+			},
+
+			parseState: function(resp, queryParams, state, options)
+			{
+				// If the paginator is already set up we need to update the parameters and rerender it
+				if(typeof _this.pagination != "undefined")
+				{
+					_this.pagination.pages = resp.last_page;
+					_this.pagination.render();
+				}
+
+				// Otherwise we just save the parameters to be used when initializing the paginator
+				_this.setState({
+					totalRecords: resp.total,
+					totalPages:   resp.last_page,
+					pageSize:     resp.per_page,
+				});
+			},
+		});
+
+		var members = new Members();
 		members.fetch();
 
 		return {
-			collection: members
+			collection: members,
 		};
+	},
+
+	componentDidMount: function()
+	{
+		var _this = this;
+		window.requestAnimationFrame(function()
+		{
+			console.log("requestAnimationFrame");
+			var node = _this.getDOMNode();
+			if(node !== undefined)
+			{
+				_this.pagination = UIkit.pagination(_this.refs.pag.getDOMNode(), {
+					items:       _this.state.totalRecords,
+					itemsOnPage: _this.state.pageSize,
+				});
+
+				$('.uk-pagination').on('select.uk.pagination', function(e, pageIndex){
+					_this.state.collection.getPage(pageIndex + 1);
+				});
+			}
+		});
 	},
 
 	render: function()
@@ -22,6 +69,9 @@ var MembersHandler = React.createClass({
 				<h2>Medlemmar</h2>
 				<p>På denna sida ser du en lista på samtliga medlemmar.</p>
 				<Members collection={this.state.collection} />
+				<ul ref="pag" className="uk-pagination">
+					<li className=""><a><i className="uk-icon-angle-double-left"></i></a></li>
+				</ul>
 			</div>
 		);
 	}
@@ -59,7 +109,7 @@ var Members = React.createClass({
 	{
 		return (
 			<tr>
-				<td><Link to={"/member/" + row.member_id}>{row.member_id}</Link></td>
+				<td><Link to={"/member/" + row.member_number}>{row.member_number}</Link></td>
 				<td>-</td>
 				<td>{row.firstname}</td>
 				<td>{row.lastname}</td>
@@ -67,7 +117,6 @@ var Members = React.createClass({
 				<td>{row.created_at}</td>
 				<td>x</td>
 				<td>x</td>
-				<td className="uk-text-right"><a href="#" className="uk-icon-remove uk-icon-hover"> Ta bort</a> <a href="#" className="uk-icon-cog uk-icon-hover"> Redigera</a></td>
 			</tr>
 		);
 	},
@@ -93,6 +142,25 @@ var Members = React.createClass({
 var Member = React.createClass({
 	mixins: [Backbone.React.Component.mixin],
 
+	componentDidMount: function()
+	{
+		// Ugly way to get the switcher javascript working
+		$.UIkit.init();
+
+		var _this = this;
+		$("[data-uk-switcher]").on("show.uk.switcher", function(event, area) {
+			if(area.context.id == "member_keys")
+			{
+				if(!this.keys_synced)
+				{
+					// Get the RFID keys associated with the member
+					_this.state.model.keys.fetch();
+					this.keys_synced = true;
+				}
+			}
+		});
+	},
+
 	render: function()
 	{
 		return (
@@ -100,11 +168,11 @@ var Member = React.createClass({
 				<h2>{this.state.model.firstname} {this.state.model.lastname} #{this.state.model.member_number}</h2>
 
 				<ul className="uk-tab" data-uk-switcher="{connect:'#my-id'}">
-					<li><a href="">Personuppgifter</a></li>
-					<li><a href="">Transaktioner</a></li>
-					<li><a href="">Nycklar</a></li>
-					<li><a href="">Prenumerationer</a></li>
-					<li><a href="">Grupper</a></li>
+					<li id="member_info"><a href="">Personuppgifter</a></li>
+					<li id="member_transactions"><a href="">Transaktioner</a></li>
+					<li id="member_keys"><a href="">Nycklar</a></li>
+					<li id="member_labaccess"><a href="">Prenumerationer</a></li>
+					<li id="member_groups"><a href="">Grupper</a></li>
 				</ul>
 
 				<ul id="my-id" className="uk-switcher">
@@ -162,24 +230,7 @@ var Member = React.createClass({
 					</li>
 
 					<li>
-						<table className="uk-table uk-table-striped uk-table-hover">
-							<thead>
-								<tr>
-									<th>Id</th>
-									<th>Startdatum</th>
-									<th>Slutdatum</th>
-									<th></th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td>000031961352</td>
-									<td>2013-11-27 00:00:00</td>
-									<td>2016-02-12 23:59:59</td>
-									<td className="uk-text-right"><a href="#" className="uk-icon-remove uk-icon-hover"> Ta bort</a> <a href="#" className="uk-icon-cog uk-icon-hover"> Redigera</a></td>
-								</tr>
-							</tbody>
-						</table>
+						<MemberKeys collection={this.state.model.keys} />
 					</li>
 
 					<li>
@@ -232,6 +283,43 @@ var Member = React.createClass({
 	},
 });
 
+var MemberKeys = React.createClass({
+	mixins: [Backbone.React.Component.mixin, BackboneTable],
+
+	getInitialState: function()
+	{
+		return {
+			columns: 5,
+		};
+	},
+
+	renderRow: function(row, i)
+	{
+		return (
+			<tr>
+				<td>{row.tagid}</td>
+				<td>{row.active}</td>
+				<td>{row.title}</td>
+				<td>{row.description}</td>
+				<td className="uk-text-right"><a href="#" className="uk-icon-remove uk-icon-hover"> Ta bort</a> <a href="#" className="uk-icon-cog uk-icon-hover"> Redigera</a></td>
+			</tr>
+		);
+	},
+
+	renderHeader: function()
+	{
+		return (
+			<tr>
+				<th>RFID</th>
+				<th>Aktiv</th>
+				<th>Titel</th>
+				<th>Beskrivning</th>
+				<th></th>
+			</tr>
+		);
+	},
+});
+
 var MemberAddHandler = React.createClass({
 	getInitialState: function()
 	{
@@ -247,4 +335,4 @@ var MemberAddHandler = React.createClass({
 	},
 });
 
-module.exports = { MemberHandler, MembersHandler, MemberAddHandler }
+module.exports = { MemberHandler, MembersHandler, MemberKeys, MemberAddHandler }
