@@ -1,6 +1,8 @@
 #!/usr/bin/env php7.0
 <?php
 
+define("ACCOUNTING_YEAR", 2015);
+
 require("../laravel/app/Libraries/CurlBrowser.php");
 use App\Libraries\CurlBrowser;
 
@@ -10,6 +12,8 @@ if($argc == 1)
 		"Usage: $argv[0]\n" .
 		"  --accounts      Import accounting accounts\n" .
 		"  --instructions  Import accounting instructions\n" .
+		"  --members       Import members\n" .
+		"  --keys          Import RFID keys" .
 		"  --invoices      Import invoices\n";
 }
 else
@@ -30,7 +34,7 @@ else
 					if(substr($argv[$i], 0, 2) !== "--")
 					{
 						$file = $argv[$i];
-						$importer->Import("account", 2015, $file);
+						$importer->Import("account", ACCOUNTING_YEAR, $file);
 					}
 					else
 					{
@@ -48,7 +52,43 @@ else
 					if(substr($argv[$i], 0, 2) !== "--")
 					{
 						$file = $argv[$i];
-						$importer->Import("instruction", 2015, $file);
+						$importer->Import("instruction", ACCOUNTING_YEAR, $file);
+					}
+					else
+					{
+						$i--;
+						break;
+					}
+				}
+				break;
+
+			case "--members":
+				echo "Parsing --members\n";
+				$i++;
+				for(; $i < count($argv); $i++)
+				{
+					if(substr($argv[$i], 0, 2) !== "--")
+					{
+						$file = $argv[$i];
+						$importer->ImportMember($file);
+					}
+					else
+					{
+						$i--;
+						break;
+					}
+				}
+				break;
+
+			case "--keys":
+				echo "Parsing --keys\n";
+				$i++;
+				for(; $i < count($argv); $i++)
+				{
+					if(substr($argv[$i], 0, 2) !== "--")
+					{
+						$file = $argv[$i];
+						$importer->ImportKey($file);
 					}
 					else
 					{
@@ -66,7 +106,7 @@ else
 					if(substr($argv[$i], 0, 2) !== "--")
 					{
 						$file = $argv[$i];
-						$importer->Import("invoice", 2015, $file);
+						$importer->Import("invoice", ACCOUNTING_YEAR, $file);
 					}
 					else
 					{
@@ -124,6 +164,59 @@ class Importer
 		else
 		{
 			echo "Error\n";
+			echo $this->curl->html;
+			print_r($this->curl->GetJson());
+			die();
+		}
+	}
+
+	function ImportMember($file)
+	{
+		if(!file_exists($file))
+		{
+			die("Error: File does not exist: $file\n");
+		}
+		echo " * {$file}\t";
+		$data = json_decode(file_get_contents($file));
+
+		$url = "http://internal.dev/api/v2/member";
+
+		$this->curl->Post($url, $data, true);
+
+		if($this->curl->StatusCode() == 200)
+		{
+			echo "OK\n";
+		}
+		else
+		{
+			echo "Error\n";
+		}
+	}
+
+	function ImportKey($file)
+	{
+		if(!file_exists($file))
+		{
+			die("Error: File does not exist: $file\n");
+		}
+		echo " * {$file}\t";
+		$data = json_decode(file_get_contents($file));
+
+		$url = "http://internal.dev/api/v2/rfid";
+
+		$this->curl->Post($url, $data, true);
+
+		if($this->curl->StatusCode() == 200)
+		{
+			echo "OK\n";
+			echo $this->curl->html;
+			print_r($this->curl->GetJson());
+		}
+		else
+		{
+			echo "Error\n";
+			echo $this->curl->html;
+			print_r($this->curl->GetJson());
 		}
 	}
 }
