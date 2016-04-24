@@ -22,6 +22,14 @@ import {
 } from './Economy/Account'
 
 import {
+	EconomyValuationSheetHandler,
+} from './Economy/ValuationSheet'
+
+import {
+	EconomyResultReportHandler,
+} from './Economy/ResultReport'
+
+import {
 	EconomyCostCentersHandler,
 	EconomyCostCenterHandler,
 } from './Economy/CostCenter'
@@ -128,6 +136,14 @@ var nav = new Backbone.Model({
 					],
 				},
 				{
+					text: "Balansrapport",
+					target: "/economy/valuationsheet",
+				},
+				{
+					text: "Resultatrapport",
+					target: "/economy/resultreport",
+				},
+				{
 					text: "Kostnadsställen",
 					target: "/economy/costcenter",
 				},
@@ -228,6 +244,9 @@ React.render((
 				<Route path="instruction"      component={EconomyAccountingInstructionsHandler} />
 				<Route path="instruction/:id"  component={EconomyAccountingInstructionHandler} />
 				<Route path="instruction/:id/import" component={EconomyAccountingInstructionImportHandler} />
+
+				<Route path="valuationsheet"   component={EconomyValuationSheetHandler} />
+				<Route path="resultreport"     component={EconomyResultReportHandler} />
 
 				<Route path="costcenter"       component={EconomyCostCentersHandler} />
 				<Route path="costcenter/:id"   component={EconomyCostCenterHandler} />
