@@ -55,9 +55,32 @@ class AccountingAccount extends Entity
 				$query = $query->selectRaw("COUNT(accounting_transaction.entity_id) AS num_transactions");
 				$query = $query->having("num_transactions", $filter[1], $filter[2]);
 			}
+			// Filter on account_number
+			else if("account_number" == $filter[0])
+			{
+				$query = $query->where("accounting_account.account_number", $filter[1], $filter[2]);
+			}
 		}
 
+		// Get result from database
 		$data = $query->get();
+
+		// Get ingoing balance
+		foreach($data as &$row)
+		{
+			// Instruction with number 0 is always ingoing balance
+			$ingoing = AccountingInstruction::load(0);
+			$row->balance_in = 0;
+			foreach($ingoing["transactions"] as $balance)
+			{
+				if($balance->account_number == $row->account_number)
+				{
+					$row->balance_in = $balance->balance;
+				}
+			}
+		}
+		unset($row);
+
 		/*
 		foreach($data as &$row)
 		{
