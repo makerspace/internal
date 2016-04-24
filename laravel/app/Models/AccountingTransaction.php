@@ -95,10 +95,13 @@ class AccountingTransaction extends Entity
 				$row->instruction_number = "entity:".$row->entity_id;
 			}
 */
-			$dir = "/var/www/html/vouchers/{$row->extid}";
-			if(file_exists($dir))
+			if(!empty($row->extid))
 			{
-				$row->files = "x";
+				$dir = "/var/www/html/vouchers/{$row->extid}";
+				if(file_exists($dir))
+				{
+					$row->files = "x";
+				}
 			}
 
 			$balance += $row->amount;
