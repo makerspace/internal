@@ -70,7 +70,7 @@ class Entity
 		if($show_deleted === true)
 		{
 			// Include the deleted_at column in output only when we show deleted content
-			$this->columns[] = "entity.deleted_at";
+			$this->columns["entity.deleted_at"] = "entity.deleted_at";
 		}
 		else
 		{
@@ -93,26 +93,45 @@ class Entity
 	 *
 	 * Create an instance of the class and call the function non-static
 	 */
-	public static function load($entity_id, $show_deleted = false)
+	public static function load($parameters, $show_deleted = false)
 	{
-		return (new static())->_load($entity_id, $show_deleted);
+		return (new static())->_load($parameters, $show_deleted);
 	}
 
 	/**
 	 *
 	 */
-	protected function _load($entity_id, $show_deleted = false)
+	protected function _load($parameters, $show_deleted = false)
 	{
-		return
+		// Filter in arbitrary parameters
+		if(is_array($parameters))
+		{
+			// A type filter should create a SQL join
+			if(array_key_exists("type", $parameters))
+			{
+				$this->join = $parameters["type"];
+				unset($parameters["type"]);
+			}
+
 			// Build base query
-			$this->_buildLoadQuery()
+			$query = $this->_buildLoadQuery();
 
-			// Filter on entity id
-			->where("entity.entity_id", "=", $entity_id)
+			// Filter on content of $parameters
+			foreach($parameters as $key => $value)
+			{
+				$query = $query->where($key, "=", $value);
+			}
 
-			// Get result
-			->first();
-
+			// Return result
+			return $query->first();
+		}
+		// Filter on entity_id
+		else
+		{
+			return $this->_buildLoadQuery()
+					->where("entity.entity_id", "=", $parameters)
+					->first();
+		}
 	}
 
 	/**
@@ -222,5 +241,54 @@ class Entity
 		$x = $this->data;
 		$x["entity_id"] = $this->id;
 		return $x;
+	}
+
+	/**
+	 * Validate the data based on the filters in $this->validation
+	 */
+	public function validate()
+	{
+		$errors = [];
+
+		// Go through the filters
+		foreach($this->validation as $field => $rules)
+		{
+			// Do not apply a filter if the key does not exist
+			if(!array_key_exists($field, $this->data))
+			{
+				continue;
+			}
+
+			// Each field can have multiple rules
+			foreach($rules as $rule)
+			{
+				if($rule == "unique")
+				{
+					// Check if there is anything in the database
+					$result = Entity::load([
+						"type" => $this->join,
+						$field => $this->data[$field]
+					]);
+
+					// Return error if there is
+					if(!empty($result))
+					{
+						$errors[] = [$field => "Is not unique"];
+					}
+				}
+				else if($rule == "required")
+				{
+					if(empty($this->data[$field]))
+					{
+						$errors = [$field => "Is empty"];
+					}
+				}
+				else
+				{
+					die("Unknown rule");
+				}
+			}
+		}
+		return $errors;
 	}
 }
