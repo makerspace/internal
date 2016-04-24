@@ -39,9 +39,7 @@ class AccountingInstruction extends Entity
 		"accounting_instruction.accounting_period"              => "accounting_instruction.accounting_period",
 	];
 
-	// TODO: Should be ordered by instruction_number desc
-	protected $sort = ["accounting_instruction.accounting_date", "desc"];
-//	protected $sort = ["accounting_instruction.instruction_number", "desc"];
+	protected $sort = ["accounting_instruction.instruction_number", "desc"];
 
 	/**
 	 *
