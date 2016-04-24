@@ -12,14 +12,6 @@ class Economy extends Controller
 	/**
 	 *
 	 */
-	function test(Request $request)
-	{
-		return [];
-	}
-
-	/**
-	 *
-	 */
 	public function file(Request $request, $accountingperiod, $external_id, $file)
 	{
 //		echo "$accountingperiod {$external_id} $file";
