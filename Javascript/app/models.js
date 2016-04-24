@@ -140,22 +140,58 @@ var LabAccessCollection = Backbone.Collection.extend({
 	}
 });
 
+var RfidModel = Backbone.Model.extend({
+	urlRoot: "/api/v2/member",
+	defaults: {
+		created_at: "0000-00-00 00:00:00",
+		updated_at: "0000-00-00 00:00:00",
+		tagid: null,
+		active: 1,
+		title: "",
+		description: "",
+	},
+});
+
+var RfidCollection = PageableCollection.extend({
+	model: RfidModel,
+	url: "/api/v2/rfid",
+	
+	parseRecords: function(resp, options)
+	{
+		return resp.data;
+	}
+	
+});
+
 var MemberModel = Backbone.Model.extend({
 	urlRoot: "/api/v2/member",
 	defaults: {
+		created_at: "0000-00-00 00:00:00",
+		updated_at: "0000-00-00 00:00:00",
 		member_id: 0,
 		member_number: null,
 		firstname: "",
 		lastname: "",
 		email: "",
-		created_at: "0000-00-00 00:00:00",
-		updated_at: "0000-00-00 00:00:00",
+		keys: new RfidCollection(),
+	},
+	initialize: function(options)
+	{
+		// TODO
+		if(false)
+		{
+			this.attributes.keys.fetch();
+		}
 	},
 });
 
-var MemberCollection = Backbone.Collection.extend({
+var MemberCollection = PageableCollection.extend({
 	model: MemberModel,
 	url: "/api/v2/member",
+	parseRecords: function(resp, options)
+	{
+		return resp.data;
+	}
 });
 
 module.exports = {
