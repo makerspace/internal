@@ -20,21 +20,32 @@ header('Access-Control-Allow-Origin: *');
 // API version 2
 Route::group(array("prefix" => "api/v2"), function()
 {
-	Route::   get("test",  "V2\Economy@test");  // Get model
+	// Debugging
+	Route::   get("debug/test",                      "V2\Debug@test");
+	Route::   get("debug/updateinstructionnumbers",  "V2\Debug@UpdateInstructionNumbers");
+	Route::   get("debug/unbalanced",                "V2\Debug@Unbalanced");
+	Route::   get("debug/cleardatabase",             "V2\Debug@ClearDatabase");
 
 	// Members
-	Route::   get("member",      "V2\Member@getAll"); // Get collection
+	Route::   get("member",      "V2\Member@list");   // Get collection
 	Route::  post("member",      "V2\Member@create"); // Model: Create
 	Route::   get("member/{id}", "V2\Member@read");   // Model: Read
 	Route::   put("member/{id}", "V2\Member@update"); // Model: Update
 	Route::delete("member/{id}", "V2\Member@delete"); // Model: Delete
 
 	// Subscriptions
-	Route::   get("subscription",      "V2\Subscription@getAll"); // Get collection
+	Route::   get("subscription",      "V2\Subscription@list");   // Get collection
 	Route::  post("subscription",      "V2\Subscription@create"); // Model: Create
 	Route::   get("subscription/{id}", "V2\Subscription@read");   // Model: Read
 	Route::   put("subscription/{id}", "V2\Subscription@update"); // Model: Update
 	Route::delete("subscription/{id}", "V2\Subscription@delete"); // Model: Delete
+
+	// RFID keys
+	Route::   get("rfid",      "V2\Rfid@list");   // Get collection
+	Route::  post("rfid",      "V2\Rfid@create"); // Model: Create
+	Route::   get("rfid/{id}", "V2\Rfid@read");   // Model: Read
+	Route::   put("rfid/{id}", "V2\Rfid@update"); // Model: Update
+	Route::delete("rfid/{id}", "V2\Rfid@delete"); // Model: Delete
 
 	// Import
 	Route::group(array("prefix" => "import"), function()
@@ -50,7 +61,7 @@ Route::group(array("prefix" => "api/v2"), function()
 		Route::   get("file/{external_id}/{filename}", "V2\Economy@file"); // Get collection
 
 		// Transactions
-		Route::   get("transaction",      "V2\EconomyTransactions@list"); // Get collection
+		Route::   get("transaction",      "V2\EconomyTransactions@list");   // Get collection
 		Route::  post("transaction",      "V2\EconomyTransactions@create"); // Model: Create
 		Route::   get("transaction/{id}", "V2\EconomyTransactions@read");   // Model: Read
 		Route::   put("transaction/{id}", "V2\EconomyTransactions@update"); // Model: Update
@@ -85,6 +96,10 @@ Route::group(array("prefix" => "api/v2"), function()
 		Route::   get("costcenter/{id}",  "V2\EconomyCostcenter@read");   // Model: Read
 		Route::   put("costcenter/{id}",  "V2\EconomyCostcenter@update"); // Model: Update
 		Route::delete("costcenter/{id}",  "V2\EconomyCostcenter@delete"); // Model: Delete
+
+		// Reports
+		Route::   get("valuationsheet",   "V2\EconomyReport@valuationSheet"); // Get collection
+		Route::   get("resultreport",     "V2\EconomyReport@resultReport");   // Get collection
 	});
 });
 
