@@ -115,12 +115,15 @@ class EconomyInstruction extends Controller
 
 		// Append files ("Verifikat")
 		$data["files"] = [];
-		$dir = "/var/www/html/vouchers/{$data["external_id"]}";
-		if(file_exists($dir))
+		if(!empty($data["external_id"]))
 		{
-			foreach(glob("{$dir}/*") as $file)
+			$dir = "/var/www/html/vouchers/{$data["external_id"]}";
+			if(file_exists($dir))
 			{
-				$data["files"][] = basename($file);
+				foreach(glob("{$dir}/*") as $file)
+				{
+					$data["files"][] = basename($file);
+				}
 			}
 		}
 
