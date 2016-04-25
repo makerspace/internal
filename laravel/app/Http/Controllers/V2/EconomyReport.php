@@ -182,7 +182,7 @@ class EconomyReport extends Controller
 							"accountfilter" => [
 								"from" => 8999,
 								"to"   => 8999,
-								"mul"  => -1,
+								"mul"  => 1,
 							],
 						],
 					],
