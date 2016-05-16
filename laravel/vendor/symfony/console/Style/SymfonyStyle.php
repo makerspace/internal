@@ -17,6 +17,7 @@ use Symfony\Component\Console\Helper\Helper;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Helper\SymfonyQuestionHelper;
 use Symfony\Component\Console\Helper\Table;
+use Symfony\Component\Console\Helper\TableCell;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -204,7 +205,16 @@ class SymfonyStyle extends OutputStyle
      */
     public function table(array $headers, array $rows)
     {
-        $headers = array_map(function ($value) { return sprintf('<info>%s</>', $value); }, $headers);
+        array_walk_recursive($headers, function (&$value) {
+            if ($value instanceof TableCell) {
+                $value = new TableCell(sprintf('<info>%s</>', $value), array(
+                    'colspan' => $value->getColspan(),
+                    'rowspan' => $value->getRowspan(),
+                ));
+            } else {
+                $value = sprintf('<info>%s</>', $value);
+            }
+        });
 
         $table = new Table($this);
         $table->setHeaders($headers);
@@ -294,7 +304,7 @@ class SymfonyStyle extends OutputStyle
     {
         $progressBar = parent::createProgressBar($max);
 
-        if ('\\' === DIRECTORY_SEPARATOR) {
+        if ('\\' !== DIRECTORY_SEPARATOR) {
             $progressBar->setEmptyBarCharacter('░'); // light shade character \u2591
             $progressBar->setProgressCharacter('');
             $progressBar->setBarCharacter('▓'); // dark shade character \u2593

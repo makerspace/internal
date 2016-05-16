@@ -85,6 +85,8 @@ class BroadcastManager implements FactoryContract
      *
      * @param  string  $name
      * @return \Illuminate\Contracts\Broadcasting\Broadcaster
+     *
+     * @throws \InvalidArgumentException
      */
     protected function resolve($name)
     {
@@ -97,7 +99,13 @@ class BroadcastManager implements FactoryContract
         if (isset($this->customCreators[$config['driver']])) {
             return $this->callCustomCreator($config);
         } else {
-            return $this->{'create'.ucfirst($config['driver']).'Driver'}($config);
+            $driverMethod = 'create'.ucfirst($config['driver']).'Driver';
+
+            if (method_exists($this, $driverMethod)) {
+                return $this->{$driverMethod}($config);
+            } else {
+                throw new InvalidArgumentException("Driver [{$config['driver']}] not supported.");
+            }
         }
     }
 

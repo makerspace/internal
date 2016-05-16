@@ -141,7 +141,9 @@ class Request extends SymfonyRequest implements ArrayAccess
     {
         $segments = explode('/', $this->path());
 
-        return array_values(array_filter($segments, function ($v) { return $v != ''; }));
+        return array_values(array_filter($segments, function ($v) {
+            return $v != '';
+        }));
     }
 
     /**
@@ -581,11 +583,7 @@ class Request extends SymfonyRequest implements ArrayAccess
 
         $split = explode('/', $actual);
 
-        if (isset($split[1]) && preg_match('/'.$split[0].'\/.+\+'.$split[1].'/', $type)) {
-            return true;
-        }
-
-        return false;
+        return isset($split[1]) && preg_match('#'.preg_quote($split[0], '#').'/.+\+'.preg_quote($split[1], '#').'#', $type);
     }
 
     /**
@@ -595,7 +593,7 @@ class Request extends SymfonyRequest implements ArrayAccess
      */
     public function isJson()
     {
-        return Str::contains($this->header('CONTENT_TYPE'), '/json');
+        return Str::contains($this->header('CONTENT_TYPE'), ['/json', '+json']);
     }
 
     /**
@@ -607,7 +605,7 @@ class Request extends SymfonyRequest implements ArrayAccess
     {
         $acceptable = $this->getAcceptableContentTypes();
 
-        return isset($acceptable[0]) && $acceptable[0] === 'application/json';
+        return isset($acceptable[0]) && Str::contains($acceptable[0], ['/json', '+json']);
     }
 
     /**
@@ -796,7 +794,9 @@ class Request extends SymfonyRequest implements ArrayAccess
      */
     public function getUserResolver()
     {
-        return $this->userResolver ?: function () {};
+        return $this->userResolver ?: function () {
+            //
+        };
     }
 
     /**
@@ -819,7 +819,9 @@ class Request extends SymfonyRequest implements ArrayAccess
      */
     public function getRouteResolver()
     {
-        return $this->routeResolver ?: function () {};
+        return $this->routeResolver ?: function () {
+            //
+        };
     }
 
     /**
