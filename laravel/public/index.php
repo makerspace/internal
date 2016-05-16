@@ -1,9 +1,5 @@
 <?php
 
-function mb_internal_encoding(){}
-function mb_strlen($a){return strlen($a);}
-
-
 /**
  * Laravel - A PHP Framework For Web Artisans
  *
