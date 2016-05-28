@@ -124,9 +124,22 @@ var Pagination = React.createClass({
 	},
 });
 
+var EconomyDebugHandler = React.createClass({
+	render: function ()
+	{
+
+		return (
+			<div className="uk-width-1-1">
+				<h1>Debug</h1>
+			</div>
+		);
+	}
+});
+
 module.exports = {
 	EconomyOverviewHandler,
 	MasterLedgerHandler,
 	Currency,
 	DateField,
+	EconomyDebugHandler,
 }
