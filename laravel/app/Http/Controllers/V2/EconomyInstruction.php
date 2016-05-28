@@ -24,27 +24,21 @@ class EconomyInstruction extends Controller
 			return $x;
 		}
 
-		// Pagination
-		$per_page = $request->input("per_page");
-		if(empty($per_page))
-		{
-			$per_page = 20;
-		}
-
-		// Paginate the data
-//		$data = $rows->paginate($per_page);
-
-		$data = AccountingInstruction::list([
+		$result = AccountingInstruction::list([
 			["accountingperiod", "=", $accountingperiod],
+//			["has_voucher", "=", true],
 		]);
 
+		// Pagination
+		$per_page = (int)($request->get("per_page") ?? 25);
+
 		// Return json array
-		return [
+		return Response()->json([
 			"per_page"  => $per_page,
-			"total"     => 2,
-			"last_page" => 1,
-			"data"      => $data,
-		];
+			"last_page" => ceil($result["count"] / $per_page),
+			"total"     => $result["count"],
+			"data"      => $result["data"],
+		]);
 	}
 
 	/**

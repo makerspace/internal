@@ -84,6 +84,11 @@ class AccountingTransaction extends Entity
 		// TODO: This should not be used, sorting should be done via instruction number
 		$query = $query->orderBy("accounting_instruction.accounting_date", "asc");
 
+		// Paginate
+		$per_page = 10; // TODO
+		$query->paginate($per_page);
+
+		// Get result
 		$result = $query->get();
 		$data = [];
 		$balance = 0;
@@ -108,7 +113,13 @@ class AccountingTransaction extends Entity
 			$row->balance = $balance;
 			$data[] = $row;
 		}
-		return $data;
+//		return $data;
+
+//print_r($data);
+		return [
+			"data"  => $data,
+			"count" => $query->count(),
+		];
 	}
 }
 

@@ -53,6 +53,10 @@ class Invoice extends Entity
 			}
 		}
 
+		// Paginate
+		$per_page = 10; // TODO
+		$query->paginate($per_page);
+
 		// Get result
 		$invoices = $query->get();
 
@@ -63,7 +67,10 @@ class Invoice extends Entity
 			$invoice->date_expiry = $this->_calculateExpiryDate($invoice);
 		}
 
-		return $invoices;
+		return [
+			"data"  => $invoices,
+			"count" => $query->count(),
+		];
 	}
 
 	/**

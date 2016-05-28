@@ -15,16 +15,17 @@ class Member extends Controller
 	 */
 	function list(Request $request)
 	{
-		$per_page = 100;
+		// TODO
+		$per_page = (int)$request->get("per_page") ?? 25;
 
-		$data = MemberModel::list();
+		$result = MemberModel::list();
 
 		// Return json array
 		return Response()->json([
+			"total"     => $result->count(),
 			"per_page"  => $per_page,
-			"total"     => 2,
-			"last_page" => 1,
-			"data"      => $data,
+			"last_page" => ceil($result->count() / $per_page),
+			"data"      => $result->get(),
 		]);
 	}
 
@@ -68,7 +69,7 @@ class Member extends Controller
 
 		$result = $entity->save();
 
-		// TODO: Standariezed output
+		// TODO: Standarized output
 		return [
 			"status" => "created",
 			"entity" => $entity->toArray(),

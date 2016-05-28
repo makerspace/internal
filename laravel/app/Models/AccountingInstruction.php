@@ -49,8 +49,6 @@ class AccountingInstruction extends Entity
 		// Build base query
 		$query = $this->_buildLoadQuery();
 
-//		$filter["account_id"] = 1930;
-
 		// Go through filters
 		foreach($filters as $filter)
 		{
@@ -69,12 +67,66 @@ class AccountingInstruction extends Entity
 					->join("accounting_account", "accounting_account.entity_id", "=", "accounting_transaction.accounting_account")
 					->where("accounting_account.account_number", $filter[1], $filter[2]);
 			}
+			else if("has_voucher" == $filter[0])
+			{
+				$filter_vouchers = $filter[2];
+			}
 		}
 
 		// Get the balance
-//		$query->selectRaw("(SELECT SUM(amount) FROM accounting_transaction WHERE amount > 0 AND accounting_instruction = entity.entity_id) AS balance");
+		$query->selectRaw("(SELECT SUM(amount) FROM accounting_transaction WHERE amount > 0 AND accounting_instruction = entity.entity_id) AS balance");
 
-		return $query->get();
+		// Paginate
+		$per_page = 10; // TODO
+		$query->paginate($per_page);
+
+		// Run the MySQL query
+		$data = $query->get();
+
+		// Indicate if the instruction has attached vouchers or not
+		foreach($data as $id => &$row)
+		{
+//			// Append files ("Verifikat")
+//			$row->files = [];
+			if(!empty($row->external_id))
+			{
+				$dir = "/var/www/html/vouchers/{$row->external_id}";
+				if(file_exists($dir))
+				{
+					$row->has_vouchers = true;
+/*
+					foreach(glob("{$dir}/*") as $file)
+					{
+						$row->files[] = basename($file);
+					}
+*/
+					// Apply filter: Remove all instructions with a voucher
+					if(!empty($filter_vouchers) && $filter_vouchers === false)
+					{
+						unset($data[$id]);
+					}
+				}
+			}
+			else
+			{
+				$row->has_vouchers = false;
+
+				// Apply filter: Remove all instructions with a voucher
+				if(!empty($filter_vouchers) && $filter_vouchers === true)
+				{
+					unset($data[$id]);
+				}
+			}
+		}
+		unset($row);
+
+		// If we removed rows in the foreach above the indexing will be wrong, so we need to remove all keys.
+		$data = array_values($data);
+
+		return [
+			"data"  => $data,
+			"count" => $query->count(),
+		];
 	}
 
 	/*

@@ -62,6 +62,10 @@ class AccountingAccount extends Entity
 			}
 		}
 
+		// Paginate
+		$per_page = 10; // TODO
+		$query->paginate($per_page);
+
 		// Get result from database
 		$data = $query->get();
 

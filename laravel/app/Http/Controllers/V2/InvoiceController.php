@@ -26,13 +26,22 @@ class InvoiceController extends Controller
 			return $x;
 		}
 
+		// TODO
+		$per_page = (int)$request->get("per_page") ?? 10;
+
 		// Return result
-		return Invoice::list([
+		$result = Invoice::list([
 			["accountingperiod", "=", $accountingperiod],
 		]);
+
+		// Return json array
+		return Response()->json([
+			"total"     => $result["count"],
+			"per_page"  => $per_page,
+			"last_page" => ceil($result["count"] / $per_page),
+			"data"      => $result["data"],
+		]);
 	}
-
-
 
 	/**
 	 * @todo Error handling: We need to check that all queries were executed

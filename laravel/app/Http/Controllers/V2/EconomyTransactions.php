@@ -47,8 +47,7 @@ class EconomyTransactions extends Controller
 			return $x;
 		}
 
-		// Load the transactions
-		$data = AccountingTransaction::list(
+		$result = AccountingTransaction::list(
 			[
 				["account_number", "=", $account_number],
 				["accountingperiod", "=", $accountingperiod],
@@ -56,7 +55,7 @@ class EconomyTransactions extends Controller
 		);
 
 		// Generate an error if there is no such instruction
-		if(false === $data)
+		if(count($result["data"]) == 0)
 		{
 			return Response()->json([
 				"message" => "No transactions found",
@@ -64,7 +63,16 @@ class EconomyTransactions extends Controller
 		}
 		else
 		{
-			return $data;
+			// Pagination
+			$per_page = (int)($request->get("per_page") ?? 25);
+
+			// Return json array
+			return Response()->json([
+				"per_page"  => $per_page,
+				"last_page" => ceil($result["count"] / $per_page),
+				"total"     => $result["count"],
+				"data"      => $result["data"],
+			]);
 		}
 	}
 

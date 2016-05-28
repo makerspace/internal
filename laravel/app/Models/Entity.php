@@ -43,7 +43,7 @@ class Entity
 	 */
 	protected function _list($filter = [])
 	{
-		return $this->_buildLoadQuery()->get();
+		return $this->_buildLoadQuery();
 	}
 
 	/**
