@@ -37,7 +37,7 @@ var EconomyResultReportHandler = React.createClass({
 			function (row, i)
 			{
 				return (
-					<tbody key={i}>
+					[
 						<tr>
 							<td colSpan={depth}>
 								&nbsp;
@@ -46,9 +46,9 @@ var EconomyResultReportHandler = React.createClass({
 								<h2 style={{"marginBottom": 0}}>{row.title}</h2>
 								<div style={{"borderTop": "1px solid #666"}}></div>
 							</td>
-						</tr>
+						</tr>,
 
-						{(() => {
+						(() => {
 							if(typeof row.children != "undefined" && row.children.length > 0)
 							{
 								return _this.renderRecursive(row.children, depth+1);
@@ -87,7 +87,7 @@ var EconomyResultReportHandler = React.createClass({
 									);
 								}
 							}
-						})()}
+						})(),
 
 						<tr>
 							<td colSpan={depth}>
@@ -99,7 +99,7 @@ var EconomyResultReportHandler = React.createClass({
 							<td style={{"borderTop": "1px solid #666"}} className="uk-text-right"><Currency value={row.balance_period} /></td>
 							<td style={{"borderTop": "1px solid #666"}} className="uk-text-right"><Currency value={0} /></td>
 						</tr>
-					</tbody>
+					]
 				);
 			}
 		);
@@ -133,13 +133,14 @@ var EconomyResultReportHandler = React.createClass({
 								<td className="uk-text-right">Period fg. år</td>
 							</tr>
 						</thead>
-
-						{this.renderRecursive(this.state.data.children)}
-						<tr>
-							<td style={{"borderTop": "1px solid #666"}} colSpan="5">Beräknat resultat</td>
-							<td style={{"borderTop": "1px solid #666"}} className="uk-text-right"><Currency value={this.state.data.balance_period} /></td>
-							<td style={{"borderTop": "1px solid #666"}} className="uk-text-right"><Currency value={this.state.data.balance_out} /></td>
-						</tr>
+						<tbody>
+							{this.renderRecursive(this.state.data.children)}
+							<tr>
+								<td style={{"borderTop": "1px solid #666"}} colSpan="5">Beräknat resultat</td>
+								<td style={{"borderTop": "1px solid #666"}} className="uk-text-right"><Currency value={this.state.data.balance_period} /></td>
+								<td style={{"borderTop": "1px solid #666"}} className="uk-text-right"><Currency value={this.state.data.balance_out} /></td>
+							</tr>
+						</tbody>
 					</table>
 
 				</div>

@@ -37,7 +37,7 @@ var EconomyValuationSheetHandler = React.createClass({
 			function (row, i)
 			{
 				return (
-					<tbody key={i}>
+					[
 						<tr>
 							<td colSpan={depth}>
 								&nbsp;
@@ -46,9 +46,9 @@ var EconomyValuationSheetHandler = React.createClass({
 								<h2 style={{"marginBottom": 0}}>{row.title}</h2>
 								<div style={{"borderTop": "1px solid #666"}}></div>
 							</td>
-						</tr>
+						</tr>,
 
-						{(() => {
+						(() => {
 							if(typeof row.children != "undefined" && row.children.length > 0)
 							{
 								return _this.renderRecursive(row.children, depth+1);
@@ -88,7 +88,7 @@ var EconomyValuationSheetHandler = React.createClass({
 									);
 								}
 							}
-						})()}
+						})(),
 
 						<tr>
 							<td colSpan={depth}>
@@ -101,7 +101,7 @@ var EconomyValuationSheetHandler = React.createClass({
 							<td style={{"borderTop": "1px solid #666"}} className="uk-text-right"><Currency value={row.balance_period} /></td>
 							<td style={{"borderTop": "1px solid #666"}} className="uk-text-right"><Currency value={row.balance_out} /></td>
 						</tr>
-					</tbody>
+					]
 				);
 			}
 		);
@@ -136,14 +136,15 @@ var EconomyValuationSheetHandler = React.createClass({
 								<td className="uk-text-right">Utg saldo</td>
 							</tr>
 						</thead>
-
-						{this.renderRecursive(this.state.data.children)}
-						<tr>
-							<td style={{"borderTop": "1px solid #666"}} colSpan="5">Beräknat resultat</td>
-							<td style={{"borderTop": "1px solid #666"}} className="uk-text-right"><Currency value={this.state.data.balance_in} /></td>
-							<td style={{"borderTop": "1px solid #666"}} className="uk-text-right"><Currency value={this.state.data.balance_period} /></td>
-							<td style={{"borderTop": "1px solid #666"}} className="uk-text-right"><Currency value={this.state.data.balance_out} /></td>
-						</tr>
+						<tbody>
+							{this.renderRecursive(this.state.data.children)}
+							<tr>
+								<td style={{"borderTop": "1px solid #666"}} colSpan="5">Beräknat resultat</td>
+								<td style={{"borderTop": "1px solid #666"}} className="uk-text-right"><Currency value={this.state.data.balance_in} /></td>
+								<td style={{"borderTop": "1px solid #666"}} className="uk-text-right"><Currency value={this.state.data.balance_period} /></td>
+								<td style={{"borderTop": "1px solid #666"}} className="uk-text-right"><Currency value={this.state.data.balance_out} /></td>
+							</tr>
+						</tbody>
 					</table>
 
 				</div>
