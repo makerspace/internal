@@ -1,9 +1,16 @@
 import React from 'react'
 import BackboneReact from 'backbone-react-component'
-import { AccountModel, AccountCollection, TransactionCollection } from '../models'
+import {
+	AccountModel,
+	AccountCollection,
+	TransactionCollection
+} from '../models'
 import { Link } from 'react-router'
 import { Currency, DateField } from './Other'
-import { BackboneTable } from '../BackboneTable'
+import {
+	BackboneTable,
+	PaginatedDataTable
+} from '../BackboneTable'
 
 import { EconomyAccountingInstructionList } from './Instruction'
 
@@ -30,69 +37,39 @@ var EconomyAccountsHandler = React.createClass({
 	},
 });
 
-var EconomyAccountHandler = React.createClass({
-	getInitialState: function()
+class EconomyAccountHandler extends PaginatedDataTable
+{
+	constructor(props)
 	{
+		super(props);
+
+		// Get account id
 		var id = this.props.params.id;
 
+		// Load account model
 		var account = new AccountModel({id: id});
 		account.fetch();
 
 		// TODO: Filter on account
 
-
-		var transactions = new TransactionCollection(null, {id: id});
-		transactions.fetch();
-
-/*
-		var _this = this;
-
-		var Instructions = InstructionCollection.extend({
-			state:
-			{
-				pageSize: 15 // TODO
-			},
-
-			parseState: function(resp, queryParams, state, options)
-			{
-				/*
-				// If the paginator is already set up we need to update the parameters and rerender it
-				if(typeof _this.pagination != "undefined")
-				{
-					_this.pagination.pages = resp.last_page;
-					_this.pagination.render();
-				}
-				*
-
-				// Otherwise we just save the parameters to be used when initializing the paginator
-				_this.setState({
-					totalRecords: resp.total,
-					totalPages:   resp.last_page,
-					pageSize:     resp.per_page,
-				});
-			},
-		});
-		var instructions = new Instructions();
-		instructions.fetch();
-*/
-
-		return {
+		this.state = {
 			account_model: account,
-			transaction_collection: transactions,
+			transaction_collection: this.createPaginatedCollection(TransactionCollection, {id: id}),
 		};
-	},
+	}
 
-	render: function()
+	render()
 	{
 		return (
 			<div>
 				<h2>Konto</h2>
 				<EconomyAccount model={this.state.account_model} />
 				<EconomyAccountTransactions collection={this.state.transaction_collection} />
+				{this.renderPaginator()}
 			</div>
 		);
-	},
-});
+	}
+}
 
 var EconomyAccountEditHandler = React.createClass({
 	getInitialState: function()
@@ -261,6 +238,7 @@ var EconomyAccountTransactions = React.createClass({
 		{
 			var icon = "";
 		}
+
 		return (
 			<tr key={i}>
 				<td><DateField date={row.accounting_date}/></td>
@@ -270,65 +248,9 @@ var EconomyAccountTransactions = React.createClass({
 				<td className="uk-text-right"><Currency value={row.balance} currency="SEK" /></td>
 				<td>{icon}</td>
 			</tr>
-
-			/*
-			<tr><td></td></tr>
-			<tr key={i}>
-				<td><Link to={"/economy/instruction/" + row.instruction_number}>{row.instruction_number}</Link></td>
-				<td><DateField date={row.accounting_date}/></td>
-				<td>{row.title}</td>
-				<td className="uk-text-right"><Currency value={row.balance}/></td>
-				<td><Link to={"/economy/instruction/" + row.instruction_number}>Visa</Link></td>
-			</tr>
-			*/
 		);
 	},
 });
-
-/*
-var EconomyAccountTransactions = React.createClass({
-	mixins: [Backbone.React.Component.mixin],
-
-	render: function()
-	{
-		if(this.state.collection.length == 0)
-		{
-			var content = <tr><td colSpan="4"><em>Det finns inga verifikationer som bokför något på detta konto</em></td></tr>;
-		}
-		else
-		{
-			var content = this.state.collection.map(function (instruction, i)
-			{
-				if(instruction.title.length == 0)
-				{
-					instruction.title = <em>Rubrik saknas</em>
-				}
-				return (
-					<tr key={i}>
-						<td>{instruction.verification_number}</td>
-						<td><DateField date={instruction.accounting_date}/></td>
-						<td><Link to={"/economy/instruction/" + instruction.id}>{instruction.title}</Link></td>
-						<td>{instruction.description}</td>
-						<td className="uk-text-right"><Currency value={instruction.amount} /></td>
-					</tr>
-				);
-			})
-		}
-
-		return (
-			<table className="uk-table">
-				<thead>
-
-				</thead>
-				<tbody>
-					{content}
-				</tbody>
-			</table>
-		);
-		return <p>instructions</p>
-	},
-});
-*/
 
 module.exports = {
 	EconomyAccountsHandler,

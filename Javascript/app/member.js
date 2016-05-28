@@ -2,80 +2,36 @@ import React from 'react'
 import BackboneReact from 'backbone-react-component'
 import { MemberModel, MemberCollection } from './models'
 import { Link } from 'react-router'
-import { BackboneTable } from './BackboneTable'
+import {
+	BackboneTable,
+	PaginatedDataTable
+} from './BackboneTable'
+import { DateField } from './Economy/Other'
 
-var MembersHandler = React.createClass({
-	getInitialState: function()
+
+class MembersHandler extends PaginatedDataTable
+{
+	constructor(props)
 	{
-		var _this = this;
-
-		var Members = MemberCollection.extend({
-			state:
-			{
-				pageSize: 15 // TODO
-			},
-
-			parseState: function(resp, queryParams, state, options)
-			{
-				// If the paginator is already set up we need to update the parameters and rerender it
-				if(typeof _this.pagination != "undefined")
-				{
-					_this.pagination.pages = resp.last_page;
-					_this.pagination.render();
-				}
-
-				// Otherwise we just save the parameters to be used when initializing the paginator
-				_this.setState({
-					totalRecords: resp.total,
-					totalPages:   resp.last_page,
-					pageSize:     resp.per_page,
-				});
-			},
-		});
-
-		var members = new Members();
-		members.fetch();
-
-		return {
-			collection: members,
+		super(props);
+		this.state = {
+			collection: this.createPaginatedCollection(MemberCollection),
 		};
-	},
+	}
 
-	componentDidMount: function()
-	{
-		var _this = this;
-		window.requestAnimationFrame(function()
-		{
-			console.log("requestAnimationFrame");
-			var node = _this.getDOMNode();
-			if(node !== undefined)
-			{
-				_this.pagination = UIkit.pagination(_this.refs.pag.getDOMNode(), {
-					items:       _this.state.totalRecords,
-					itemsOnPage: _this.state.pageSize,
-				});
-
-				$('.uk-pagination').on('select.uk.pagination', function(e, pageIndex){
-					_this.state.collection.getPage(pageIndex + 1);
-				});
-			}
-		});
-	},
-
-	render: function()
+	render()
 	{
 		return (
 			<div>
 				<h2>Medlemmar</h2>
 				<p>På denna sida ser du en lista på samtliga medlemmar.</p>
 				<Members collection={this.state.collection} />
-				<ul ref="pag" className="uk-pagination">
-					<li className=""><a><i className="uk-icon-angle-double-left"></i></a></li>
-				</ul>
+				{this.renderPaginator()}
 			</div>
 		);
 	}
-});
+}
+MembersHandler.title = "Visa medlemmar";
 
 var MemberHandler = React.createClass({
 	getInitialState: function()
@@ -84,8 +40,9 @@ var MemberHandler = React.createClass({
 		var member = new MemberModel({id: id});
 		member.fetch();
 
+		this.title = "Meep";
 		return {
-			model: member
+			model: member,
 		};
 	},
 
@@ -94,6 +51,7 @@ var MemberHandler = React.createClass({
 		return <Member model={this.state.model} />;
 	}
 });
+MemberHandler.title = "Visa medlem";
 
 var Members = React.createClass({
 	mixins: [Backbone.React.Component.mixin, BackboneTable],
@@ -108,13 +66,13 @@ var Members = React.createClass({
 	renderRow: function(row, i)
 	{
 		return (
-			<tr>
+			<tr key={i}>
 				<td><Link to={"/member/" + row.member_number}>{row.member_number}</Link></td>
 				<td>-</td>
 				<td>{row.firstname}</td>
 				<td>{row.lastname}</td>
 				<td>{row.email}</td>
-				<td>{row.created_at}</td>
+				<td><DateField date={row.created_at} /></td>
 				<td>x</td>
 				<td>x</td>
 			</tr>
@@ -296,7 +254,7 @@ var MemberKeys = React.createClass({
 	renderRow: function(row, i)
 	{
 		return (
-			<tr>
+			<tr key={i}>
 				<td>{row.tagid}</td>
 				<td>{row.active}</td>
 				<td>{row.title}</td>
@@ -334,5 +292,7 @@ var MemberAddHandler = React.createClass({
 		return <Member model={this.state.model}/>
 	},
 });
+MemberAddHandler.title = "Skapa medlem";
+
 
 module.exports = { MemberHandler, MembersHandler, MemberKeys, MemberAddHandler }

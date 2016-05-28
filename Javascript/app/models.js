@@ -5,31 +5,51 @@ var InstructionModel = Backbone.Model.extend({
 	urlRoot: "/api/v2/economy/2015/instruction",
 
 	defaults: {
-		verification_number: 0,
+		instruction_number: 0,
 		created_at: "0000-00-00 00:00:00",
 		updated_at: "0000-00-00 00:00:00",
 		accounting_date: "0000-00-00 00:00:00",
-		external_id: "",
 		importer: "",
+		external_id: "",
+		external_date: "",
+		external_data: "",
 		description: "",
-		amount: 0,
 		transactions: [],
 		files: [],
+		balance: 0,
 	},
 });
 
 var InstructionCollection = PageableCollection.extend(
 {
+	model: InstructionModel,
 	url: "/api/v2/economy/2015/instruction",//?account_id=2999
-
-	parseRecords: function(resp, options)
-	{
-		return resp.data;
-	}
 });
 
-var TransactionCollection = Backbone.Collection.extend(
+var TransactionModel = Backbone.Model.extend({
+	urlRoot: "/api/v2/economy/2015/transaction",
+
+	defaults: {
+		created_at: "0000-00-00 00:00:00",
+		updated_at: "0000-00-00 00:00:00",
+		transaction_title: "",
+		transaction_description: "",
+		accounting_instruction: "",
+		accounting_account: "",
+		accounting_cost_center: "",
+		amount: 0,
+		external_id: "",
+		instruction_title: "",
+		instruction_number: 0,
+		accounting_date: "0000-00-00 00:00:00",
+		extid: 0,
+		balance: 0,
+	},
+});
+
+var TransactionCollection = Backbone.PageableCollection.extend(
 {
+	model: TransactionModel,
 	initialize: function(models, options)
 	{
 		this.id = options.id;
@@ -39,23 +59,16 @@ var TransactionCollection = Backbone.Collection.extend(
 	{
 		return "/api/v2/economy/2015/transaction/" + this.id;
 	},//?account_id=1930",//TODO
+
+//	urlRoot: "/api/v2/economy/2015/instruction",//?account_id=2999
 });
 
 var CostCenterModel = Backbone.Model.extend({
 	urlRoot: "/api/v2/economy/2015/costcenter",
 
 	defaults: {
-//		verification_number: 0,
 		created_at: "0000-00-00 00:00:00",
 		updated_at: "0000-00-00 00:00:00",
-		/*
-		accounting_date: "0000-00-00 00:00:00",
-		external_id: "",
-		importer: "",
-		description: "",
-		amount: 0,
-		posts: []
-		*/
 	},
 });
 
@@ -77,20 +90,21 @@ var AccountModel = Backbone.Model.extend({
 	defaults: {
 		created_at: "0000-00-00 00:00:00",
 		updated_at: "0000-00-00 00:00:00",
-		account_number: null,
+		account_number: "",
 		title: "",
 		description: "",
+		balance: 0,
 		accounting_transaction: [],
 		instructions: [],
 	},
 });
 
-var AccountCollection = Backbone.Collection.extend({
+var AccountCollection = Backbone.PageableCollection.extend({
 	model: AccountModel,
 	url: "/api/v2/economy/2015/account",
 });
 
-var MasterledgerCollection = Backbone.Collection.extend({
+var MasterledgerCollection = Backbone.PageableCollection.extend({
 	model: AccountModel,
 	url: "/api/v2/economy/2015/masterledger",
 });
@@ -111,7 +125,7 @@ var InvoiceModel = Backbone.Model.extend({
 	},
 });
 
-var InvoiceCollection = Backbone.Collection.extend({
+var InvoiceCollection = Backbone.PageableCollection.extend({
 	model: InvoiceModel,
 	url: "/api/v2/economy/2015/invoice",
 });
@@ -132,12 +146,14 @@ var LabAccessModel = Backbone.Model.extend({
 	}
 });
 
-var LabAccessCollection = Backbone.Collection.extend({
+var LabAccessCollection = Backbone.PageableCollection.extend({
 	model: LabAccessModel,
 	url: "/api/v2/labaccess",
+	/*
 	parse: function (response, options) {
 		return response.data;
 	}
+	*/
 });
 
 var RfidModel = Backbone.Model.extend({
@@ -155,11 +171,12 @@ var RfidModel = Backbone.Model.extend({
 var RfidCollection = PageableCollection.extend({
 	model: RfidModel,
 	url: "/api/v2/rfid",
-	
+	/*
 	parseRecords: function(resp, options)
 	{
 		return resp.data;
 	}
+	*/
 	
 });
 
@@ -188,10 +205,6 @@ var MemberModel = Backbone.Model.extend({
 var MemberCollection = PageableCollection.extend({
 	model: MemberModel,
 	url: "/api/v2/member",
-	parseRecords: function(resp, options)
-	{
-		return resp.data;
-	}
 });
 
 module.exports = {
@@ -208,5 +221,6 @@ module.exports = {
 	MemberCollection,
 	CostCenterModel,
 	CostCenterCollection,
+	TransactionModel,
 	TransactionCollection,
 }

@@ -3,81 +3,34 @@ import BackboneReact from 'backbone-react-component'
 import { InstructionModel, InstructionCollection } from '../models'
 import { Link } from 'react-router'
 import { Currency, DateField } from './Other'
-import { BackboneTable } from '../BackboneTable'
+import {
+	BackboneTable,
+	PaginatedDataTable,
+} from '../BackboneTable'
 
-var EconomyAccountingInstructionsHandler = React.createClass({
-	getInitialState: function()
+class EconomyAccountingInstructionsHandler extends PaginatedDataTable
+{
+	constructor(props)
 	{
-		var _this = this;
-
-		var Instructions = InstructionCollection.extend({
-			state:
-			{
-				pageSize: 15 // TODO
-			},
-
-			parseState: function(resp, queryParams, state, options)
-			{
-				// If the paginator is already set up we need to update the parameters and rerender it
-				if(typeof _this.pagination != "undefined")
-				{
-					_this.pagination.pages = resp.last_page;
-					_this.pagination.render();
-				}
-
-				// Otherwise we just save the parameters to be used when initializing the paginator
-				_this.setState({
-					totalRecords: resp.total,
-					totalPages:   resp.last_page,
-					pageSize:     resp.per_page,
-				});
-			},
-		});
-
-		var instructions = new Instructions();
-		instructions.fetch();
-
-		return {
-			collection: instructions,
+		super(props);
+		this.state = {
+			collection: this.createPaginatedCollection(InstructionCollection),
 		};
-	},
+	}
 
-	componentDidMount: function()
+	render()
 	{
-		var _this = this;
-		window.requestAnimationFrame(function()
-		{
-			console.log("requestAnimationFrame");
-			var node = _this.getDOMNode();
-			if(node !== undefined)
-			{
-				_this.pagination = UIkit.pagination(_this.refs.pag.getDOMNode(), {
-					items:       _this.state.totalRecords,
-					itemsOnPage: _this.state.pageSize,
-				});
-
-				$('.uk-pagination').on('select.uk.pagination', function(e, pageIndex){
-					_this.state.collection.getPage(pageIndex + 1);
-				});
-			}
-		});
-	},
-
-	render: function ()
-	{
-
 		return (
 			<div className="uk-width-1-1">
 				<h1>Verifikationer</h1>
 				<p>Lista över samtliga verifikationer i bokföringen</p>
 				<EconomyAccountingInstructionList collection={this.state.collection} />
-				<ul ref="pag" className="uk-pagination">
-					<li className=""><a><i className="uk-icon-angle-double-left"></i></a></li>
-				</ul>
+				{this.renderPaginator()}
 			</div>
 		);
 	}
-});
+}
+EconomyAccountingInstructionsHandler.title = "Visa verifikationer";
 
 var EconomyAccountingInstructionHandler = React.createClass({
 	getInitialState: function()
@@ -142,6 +95,16 @@ var EconomyAccountingInstructionList = React.createClass({
 
 	renderRow: function (row, i)
 	{
+//		if(typeof row.files != "undefined")
+		if(row.has_vouchers)
+		{
+			var icon = <i className="uk-icon-file"></i>;
+		}
+		else
+		{
+			var icon = "";
+		}
+
 		return (
 			<tr key={i}>
 				<td><Link to={"/economy/instruction/" + row.instruction_number}>{row.instruction_number}</Link></td>
@@ -149,6 +112,7 @@ var EconomyAccountingInstructionList = React.createClass({
 				<td>{row.title}</td>
 				<td className="uk-text-right"><Currency value={row.balance}/></td>
 				<td><Link to={"/economy/instruction/" + row.instruction_number}>Visa</Link></td>
+				<td>{icon}</td>
 			</tr>
 		);
 	},
@@ -190,21 +154,6 @@ var EconomyAccountingInstruction = React.createClass({
 			var _this = this;
 			var files = this.state.model.files.map(function (file, i)
 			{
-				/*
-				if(instruction.title.length == 0)
-				{
-					instruction.title = <em>Rubrik saknas</em>
-				}
-				return (
-					<tr key={i}>
-						<td>{instruction.verification_number}</td>
-						<td><DateField date={instruction.accounting_date}/></td>
-						<td><Link to={"/economy/instruction/" + instruction.id}>{instruction.title}</Link></td>
-						<td>{instruction.description}</td>
-						<td className="uk-text-right"><Currency value={instruction.amount} /></td>
-					</tr>
-				);
-*/
 				return (
 					<tr key={i}>
 						<td><a href={"/api/v2/economy/2015/file/" + _this.state.model.external_id + "/" + file}>{file}</a></td>
@@ -287,7 +236,7 @@ var EconomyAccountingInstruction = React.createClass({
 							<label className="uk-form-label">Kommentar</label>
 						</div>
 						<div className="uk-width-3-6">
-							<textarea>{this.state.model.description}</textarea>
+							<p>{this.state.model.description}</p>
 						</div>
 					</div>
 				</form>
