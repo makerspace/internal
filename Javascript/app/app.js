@@ -70,7 +70,8 @@ var nav = new Backbone.Model({
 	[
 		{
 			text: "Medlemmar",
-			target: "/member/list",
+			target: "/member",
+			icon: "user",
 			children:
 			[
 				{
@@ -87,31 +88,30 @@ var nav = new Backbone.Model({
 					text: "Skapa medlem",
 					target: "/member/add",
 				},
-			],
-		},
-		{
-			text: "Grupper",
-			target: "/group/list",
-			children:
-			[
+				{
+					text: "Grupper",
+					type: "heading",
+					target: "",
+				},
 				{
 					text: "Visa grupper",
-					target: "/group/list",
+					target: "/member/group/list",
 				},
 				{
 					text: "Skapa grupp",
-					target: "/group/add",
+					target: "/member/group/add",
 				},
 			],
 		},
 		{
 			text: "Prenumerationer",
 			target: "/labaccess",
+			icon: "refresh",
 			children:
 			[
 				{
 					text: "Prenumerationer",
-					target: "/labaccess",
+					target: "/labaccess/list",
 				},
 				{
 					text: "Typer",
@@ -122,11 +122,12 @@ var nav = new Backbone.Model({
 		{
 			text: "Ekonomi",
 			target: "/economy",
+			icon: "money",
 			children:
 			[
 				{
 					text: "Översikt",
-					target: "/economy",
+					target: "/economy/overview",
 				},
 				{
 					text: "Huvudbok",
@@ -150,7 +151,7 @@ var nav = new Backbone.Model({
 					[
 						{
 							text: "",
-							target: "/economy/invoice",
+							target: "/economy/invoice/:id",
 						},
 					],
 				},
@@ -183,30 +184,61 @@ var nav = new Backbone.Model({
 					text: "Räkneskapsår",
 					target: "/economy/accountingperiods",
 				},
+				{
+					text: "Debug",
+					target: "/economy/debug",
+				},
 			],
 		},
 		{
 			text: "Mail",
 			target: "/mail",
+			icon: "envelope",
+			children:
+			[
+				{
+					text: "Hantera listor",
+					target: "/mail/lists",
+					// TODO: Lista, skapa
+				},
+				{
+					text: "Hantera mallar",
+					target: "/mail/templates",
+					// TODO: Lista, skapa
+				},
+				{
+					text: "Skicka mail",
+					target: "/mail/send",
+					// TODO: Till grupp, enskild medlem, filter
+				},
+				{
+					text: "Historik",
+					target: "/mail/history",
+					// TODO: Historik
+				},
+			],
 		},
 		{
 			text: "Inställningar",
-			target: "/settings",
+			target: "settings",
+			icon: "cog",
+			// TODO: Inställningar
 		},
 		{
 			text: "Export",
-			target: "/members/export",
+			target: "members/export",
+			icon: "download",
 		},
 		{
 			text: "Statistik",
-			target: "/statistics",
+			target: "statistics",
+			icon: "area-chart",
 		},
 	]
 });
 
-
 var App = React.createClass({
-	render()
+	render: function()
 	{
 		var key = this.props.location.pathname;
 
@@ -223,6 +255,7 @@ var App = React.createClass({
 						</div>
 
 						<div className="uk-width-medium-3-4">
+							<Breadcrumb routes={this.props.routes}/>
 							{this.props.children}
 						</div>
 					</div>
@@ -231,6 +264,7 @@ var App = React.createClass({
 		);
 	}
 });
+App.title = "Internal"
 
 var NoMatch = React.createClass({
 	render: function()
@@ -239,21 +273,46 @@ var NoMatch = React.createClass({
 	}
 });
 
-React.render((
-	<Router history={history}>
+var NotImplemented = React.createClass({
+	render: function()
+	{
+		return (<h1>Not implemented</h1>);
+	}
+});
+
+ReactDOM.render((
+	<Router history={browserHistory}>
 		<Route path="/" component={App}>
 			<IndexRoute component={DashboardHandler} />
-			<Route path="/member/add"  component={MemberAddHandler} />
-			<Route path="/member/list" component={MembersHandler} />
-			<Route path="/member/:id"  component={MemberHandler} />
-			<Route path="labaccess"    component={LabAccessHandler} />
+			<Route path="member">
+				<IndexRedirect to="list" />
+				<Route path="add"  component={MemberAddHandler} />
+				<Route path="list" component={MembersHandler} />
+				<Route path=":id"  component={MemberHandler} />
+				<Route path="group">
+					<IndexRoute component={GroupsHandler} />
+					<Route path="list"     component={GroupsHandler} />
+					<Route path="add"      component={GroupAddHandler} />
+					<Route path=":id"      component={GroupHandler} />
+				</Route>
+			</Route>
+			<Route path="labaccess">
+				<IndexRedirect to="list" />
+				<Route path="list"  component={LabAccessHandler} />
+				<Route path="types" component={NotImplemented} />
+			</Route>
 			<Route path="economy">
-				<IndexRoute component={EconomyOverviewHandler} />
+				<IndexRedirect to="overview" />
+
+				<Route path="overview"         component={EconomyOverviewHandler} />
 				<Route path="masterledger"     component={MasterLedgerHandler} />
 
-				<Route path="invoice"          component={InvoiceListHandler} />
-				<Route path="invoice/add"      component={InvoiceAddHandler} />
-				<Route path="invoice/:id"      component={InvoiceHandler} />
+				<Route path="invoice">
+					<IndexRedirect to="list" />
+					<Route path="list"     component={InvoiceListHandler} />
+					<Route path="add"      component={InvoiceAddHandler} />
+					<Route path=":id"      component={InvoiceHandler} />
+				</Route>
 
 				<Route path="accounts"         component={EconomyAccountsHandler} />
 				<Route path="account/add"      component={EconomyAccountAddHandler} />
@@ -269,13 +328,12 @@ React.render((
 
 				<Route path="costcenter"       component={EconomyCostCentersHandler} />
 				<Route path="costcenter/:id"   component={EconomyCostCenterHandler} />
+
+				<Route path="debug"            component={EconomyDebugHandler} />
 			</Route>
 			<Route path="members/export" component={ExportHandler} />
 			<Route path="statistics"     component={StatisticsHandler} />
 			<Route path="mail"           component={MailHandler} />
-			<Route path="group/list"     component={GroupsHandler} />
-			<Route path="group/add"      component={GroupAddHandler} />
-			<Route path="group/:id"      component={GroupHandler} />
 			<Route path="settings"       component={SettingsHandler} />
 			<Route path="*"              component={NoMatch}/>
 		</Route>

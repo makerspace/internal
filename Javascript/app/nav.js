@@ -1,112 +1,14 @@
 import React from 'react'
-import { Link } from 'react-router'
+import {
+	Link,
+	IndexLink,
+	withRouter,
+} from 'react-router'
 import BackboneReact from 'backbone-react-component'
-
-	function findActiveRoute(this2, input, matchLevel, depth)
-	{
-//		console.log("findActiveRoute({}, [], " + matchLevel +  ", " + depth + ")");
-		/*
-		if(typeof returnFirst == 'undefined')
-		{
-			returnFirst = false;
-		}
-		*/
-
-		if(typeof depth == 'undefined')
-		{
-			depth = 0;
-		}
-
-		var activeItem;
-
-		for(var i = 0; i < input.length; i++)
-		{
-			var navItem = input[i];
-//			console.log("Checking " + navItem.text + " depth " + depth);
-
-			// Check link
-			if(this2.context.history.isActive(navItem.target, this2.props.query))
-			{
-//				console.log("Found match at level " + matchLevel + " depth " + depth);
-				return navItem;
-			}
-
-			// Recursive check children
-			if(typeof navItem.children != 'undefined')
-			{
-				var x = findActiveRoute(this2, navItem.children, false, depth+1);
-				if(x !== false)
-				{
-//					console.log("Match2");
-					// If returnFirst is set, we should return the element at the first level in the hierarchy (The active element in the top menu bar)
-					if(depth == matchLevel)
-//					if(returnFirst)
-					{
-						return navItem;
-					}
-					// If returnFirst is not set, we should return the matching element
-					else
-					{
-//						if(depth == 1)
-						{
-							return x;
-						}
-					}
-				}
-			}
-		}
-
-		// We did not find anything
-		return false;
-	}
 
 var NavItem = React.createClass({
 	contextTypes: {
 		history: React.PropTypes.object
-	},
-
-	getActiveClassName: function()
-	{
-		return "uk-active";
-	},
-
-	getActiveState()
-	{
-		var item = this.props.navItem;
-
-//		console.log("NavItem");
-		if(this.context.history.isActive(this.props.navItem.target, this.props.query))
-		{
-//			console.log("Is active:" + this.props.navItem.target);
-			return true;
-		}
-		return false;
-/*
-		var activeItem = findActiveRoute(this, this.props.navItem.children, false, 2);
-		console.log("activeItem.target = " + activeItem.target);
-		console.log("this.props.navItem.target = " + this.props.navItem.target);
-
-		if(activeItem.target == this.props.navItem.target)
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-*/
-		/*
-		if(typeof activeItem.target != "undefined")
-		{
-			return this.context.history.isActive(activeItem.target, this.props.query)
-		}
-		else
-		{
-			return false;
-		}
-		*/
-
-//		return this.context.history.isActive(item.target, this.props.query)
 	},
 
 	render: function()
@@ -121,12 +23,22 @@ var NavItem = React.createClass({
 		}
 		else
 		{
-			var className = this.getActiveState() ? this.getActiveClassName() : null;
+			if(this.context.history.isActive(this.props.navItem.target))
+			{
+				var className = "uk-active";
+			}
+			else
+			{
+				var className = null;
+			}
+
 			return (
 				<li className={className}>
-					<Link activeClassName={this.getActiveClassName()} to={this.props.navItem.target}>
+					<IndexLink activeClassName="uk-active" to={this.props.navItem.target}>
+						<i className={"uk-icon-" + this.props.navItem.icon}></i>
+						&nbsp;
 						{this.props.navItem.text}
-					</Link>
+					</IndexLink>
 				</li>
 			);
 		}
@@ -135,6 +47,10 @@ var NavItem = React.createClass({
 
 var Nav = React.createClass({
 	mixins: [Backbone.React.Component.mixin],
+
+	contextTypes: {
+		history: React.PropTypes.object
+	},
 
 	render: function ()
 	{
@@ -165,7 +81,7 @@ var SideNav = React.createClass({
 			<div id="sidenav" className="uk-offcanvas">
 				<div className="uk-offcanvas-bar">
 					<ul className="uk-nav uk-nav-offcanvas" data-uk-nav>
-						<li><Link to="/">{this.state.model.brand}</Link></li>
+						<li><IndexLink to="/">{this.state.model.brand}</IndexLink></li>
 						{this.state.model.navItems.map(function (navItem, i) {
 							return (<NavItem navItem={navItem} key={i} />);
 						})}
@@ -185,22 +101,21 @@ var SideNav2 = React.createClass({
 
 	render: function ()
 	{
-		var activeItem = findActiveRoute(this, this.state.model.navItems, 0);
-
-//		console.log(activeItem);
+		// Get the main category (level 0)
+		var activeItem = null;
+		for(var i = 0; i < this.state.model.navItems.length; i++)
+		{
+			var item = this.state.model.navItems[i];
+			if(this.context.history.isActive(item.target))
+			{
+				activeItem = item;
+			}
+		}
 
 		// There is no active menu, or children.
 		if(activeItem === null || typeof activeItem.children == 'undefined')
 		{
-//			return (<p>{activeItem.text}</p>);
-			return (
-				<div className="uk-panel uk-panel-box" data-uk-sticky="{top:35}">
-					<ul className="uk-nav uk-nav-side" data-uk-scrollspy-nav="{closest:'li', smoothscroll:true}">
-						<li className="uk-nav-header">{activeItem.text}</li>
-						<li className="uk-nav-divider"></li>
-					</ul>
-				</div>
-			);
+			return false;
 		}
 		else
 		{
@@ -230,4 +145,26 @@ var SideNav2 = React.createClass({
 	},
 });
 
-module.exports = { Nav, SideNav, SideNav2 }
+var Breadcrumb = React.createClass({
+	render: function ()
+	{
+//		const depth = this.props.routes.length;
+return (<span></span>);
+		return (
+			<ul className="uk-breadcrumb">
+				{this.props.routes.map((item, index) =>
+					<li key={index}>
+						<Link
+							onlyActiveOnIndex={true}
+							activeClassName="uk-active"
+							to={item.path || ''}>
+							{item.component.title}
+						</Link>
+					</li>
+				)}
+			</ul>
+		);
+	},
+});
+
+module.exports = { Nav, SideNav, SideNav2, Breadcrumb }

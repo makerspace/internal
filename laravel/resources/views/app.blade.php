@@ -16,8 +16,10 @@
 	<noscript>
 		Please turn on javascript in your browser.
 	</noscript>
-	<div class="loading-application">
-		<p>Loading...</p>
+	<div id="main">
+		<div class="loading-application">
+			<p>Loading...</p>
+		</div>
 	</div>
 
 	<script src="/js/app.js"></script>
