@@ -1,16 +1,18 @@
 import React from 'react'
 import BackboneReact from 'backbone-react-component'
-import { LabAccessModel, LabAccessCollection} from './models'
+import {
+	LabAccessModel,
+	LabAccessCollection
+} from '../models'
 import { Link } from 'react-router'
 
 var keyHeaders = new Backbone.Model({
-	title: "Lab Access",
 	headers: ["Member #", "End date", "Description"],
 	blurb: "Wherein the keys are edited and henceforth accessed.",
 	caption: "Change keys"
 });
 
-var LabAccessHandler = React.createClass({
+var SalesSubscriptionsHandler = React.createClass({
 	getInitialState: function()
 	{
 		var keys = new LabAccessCollection([
@@ -57,7 +59,7 @@ var LabAccessTable = React.createClass({
 	{
 		return (
 			<div className="uk-width-1-1">
-				<h1>{this.state.model.title}</h1>
+				<h2>Prenumerationer</h2>
 				<p>{this.state.model.blurb}</p>
 				<table className="uk-table uk-table-striped uk-table-hover">
 					<caption>{this.state.model.caption}</caption>
@@ -75,4 +77,4 @@ var LabAccessTable = React.createClass({
 	}
 });
 
-module.exports = { LabAccessHandler }
+module.exports = { SalesSubscriptionsHandler }

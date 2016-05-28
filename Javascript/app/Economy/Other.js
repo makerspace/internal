@@ -130,10 +130,22 @@ var EconomyDebugHandler = React.createClass({
 
 		return (
 			<div className="uk-width-1-1">
-				<h1>Debug</h1>
+				<h2>Debug</h2>
 			</div>
 		);
 	}
+});
+
+var EconomyAccountingPeriodHandler = React.createClass({
+	render: function()
+	{
+		return (
+			<div>
+				<h2>Räkneskapsår</h2>
+				<p>Konfiguera räkneskapsår</p>
+			</div>
+		);
+	},
 });
 
 module.exports = {
@@ -142,4 +154,5 @@ module.exports = {
 	Currency,
 	DateField,
 	EconomyDebugHandler,
+	EconomyAccountingPeriodHandler,
 }

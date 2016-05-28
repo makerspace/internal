@@ -17,9 +17,19 @@ import Backbone from 'backbone'
 import { browserHistory } from 'react-router'
 
 import {
+	MembersHandler,
+	MemberHandler,
+	MemberAddHandler
+} from './member'
+import { SalesOverviewHandler } from './Sales/Overview'
+import { SalesProductsHandler } from './Sales/Products'
+import { SalesSubscriptionsHandler } from './Sales/Subscriptions'
+import { SalesSubscriptionTypesHandler } from './Sales/SubscriptionTypes'
+import {
 	MasterLedgerHandler,
 	EconomyOverviewHandler,
 	EconomyDebugHandler,
+	EconomyAccountingPeriodHandler,
 } from './Economy/Other'
 
 import {
@@ -51,18 +61,21 @@ import {
 import { InvoiceListHandler, InvoiceHandler, InvoiceAddHandler } from './Economy/Invoice'
 
 import { GroupsHandler, GroupHandler, GroupAddHandler } from './groups'
-import { LabAccessHandler } from './labaccess'
-import { MembersHandler, MemberHandler, MemberAddHandler } from './member'
-import { MailHandler } from './mail'
 import {
 	Nav,
 	SideNav,
 	SideNav2,
 	Breadcrumb,
 } from './nav'
-import { SettingsHandler } from './settings'
+import { SettingsGlobalHandler } from './Settings/Global'
+import { SettingsAutomationHandler } from './Settings/Automation'
 import { StatisticsHandler } from './statistics'
 import { DashboardHandler, ExportHandler, Loading } from './temp'
+
+import { MailListsHandler } from './Mail/Lists'
+import { MailTemplatesHandler } from './Mail/Templates'
+import { MailSendHandler } from './Mail/Send'
+import { MailHistoryHandler } from './Mail/History'
 
 var nav = new Backbone.Model({
 	brand: "Makerspace Internal v2",
@@ -104,18 +117,31 @@ var nav = new Backbone.Model({
 			],
 		},
 		{
-			text: "Prenumerationer",
-			target: "/labaccess",
-			icon: "refresh",
+			text: "Försäljning",
+			target: "/sales",
+			icon: "shopping-basket",
 			children:
 			[
 				{
+					text: "Översikt",
+					target: "/sales/overview",
+				},
+				{
+					text: "Produkter",
+					target: "/sales/products",
+				},
+				{
 					text: "Prenumerationer",
-					target: "/labaccess/list",
+					type: "heading",
+					target: "",
+				},
+				{
+					text: "Aktiva",
+					target: "/sales/subscriptions",
 				},
 				{
 					text: "Typer",
-					target: "/labaccess/types",
+					target: "/sales/subscriptiontypes",
 				},
 			],
 		},
@@ -156,12 +182,22 @@ var nav = new Backbone.Model({
 					],
 				},
 				{
+					type: "heading",
+					text: "Rapporter",
+					target: "",
+				},
+				{
 					text: "Balansrapport",
 					target: "/economy/valuationsheet",
 				},
 				{
 					text: "Resultatrapport",
 					target: "/economy/resultreport",
+				},
+				{
+					type: "heading",
+					text: "Statistik",
+					target: "",
 				},
 				{
 					text: "Kostnadsställen",
@@ -177,7 +213,7 @@ var nav = new Backbone.Model({
 					target: "",
 				},
 				{
-					text: "Konton",
+					text: "Kontoplan",
 					target: "/economy/accounts",
 				},
 				{
@@ -199,40 +235,46 @@ var nav = new Backbone.Model({
 				{
 					text: "Hantera listor",
 					target: "/mail/lists",
-					// TODO: Lista, skapa
 				},
 				{
 					text: "Hantera mallar",
 					target: "/mail/templates",
-					// TODO: Lista, skapa
 				},
 				{
 					text: "Skicka mail",
 					target: "/mail/send",
-					// TODO: Till grupp, enskild medlem, filter
 				},
 				{
 					text: "Historik",
 					target: "/mail/history",
-					// TODO: Historik
 				},
 			],
 		},
 		{
-			text: "Inställningar",
-			target: "settings",
-			icon: "cog",
-			// TODO: Inställningar
+			text: "Statistik",
+			target: "/statistics",
+			icon: "area-chart",
 		},
 		{
 			text: "Export",
-			target: "members/export",
+			target: "/members/export",
 			icon: "download",
 		},
 		{
-			text: "Statistik",
-			target: "statistics",
-			icon: "area-chart",
+			text: "Inställningar",
+			target: "/settings",
+			icon: "cog",
+			children:
+			[
+				{
+					text: "Globala inställningar",
+					target: "/settings/global",
+				},
+				{
+					text: "Automation",
+					target: "/settings/automation",
+				},
+			],
 		},
 	]
 });
@@ -269,14 +311,14 @@ App.title = "Internal"
 var NoMatch = React.createClass({
 	render: function()
 	{
-		return (<h1>404</h1>);
+		return (<h2>404</h2>);
 	}
 });
 
 var NotImplemented = React.createClass({
 	render: function()
 	{
-		return (<h1>Not implemented</h1>);
+		return (<h2>Not implemented</h2>);
 	}
 });
 
@@ -296,10 +338,12 @@ ReactDOM.render((
 					<Route path=":id"      component={GroupHandler} />
 				</Route>
 			</Route>
-			<Route path="labaccess">
-				<IndexRedirect to="list" />
-				<Route path="list"  component={LabAccessHandler} />
-				<Route path="types" component={NotImplemented} />
+			<Route path="sales">
+				<IndexRedirect to="overview" />
+				<Route path="overview"          component={SalesOverviewHandler} />
+				<Route path="products"          component={SalesProductsHandler} />
+				<Route path="subscriptions"     component={SalesSubscriptionsHandler} />
+				<Route path="subscriptiontypes" component={SalesSubscriptionTypesHandler} />
 			</Route>
 			<Route path="economy">
 				<IndexRedirect to="overview" />
@@ -314,27 +358,39 @@ ReactDOM.render((
 					<Route path=":id"      component={InvoiceHandler} />
 				</Route>
 
-				<Route path="accounts"         component={EconomyAccountsHandler} />
-				<Route path="account/add"      component={EconomyAccountAddHandler} />
-				<Route path="account/:id"      component={EconomyAccountHandler} />
-				<Route path="account/:id/edit" component={EconomyAccountEditHandler} />
+				<Route path="accounts"          component={EconomyAccountsHandler} />
+				<Route path="account/add"       component={EconomyAccountAddHandler} />
+				<Route path="account/:id"       component={EconomyAccountHandler} />
+				<Route path="account/:id/edit"  component={EconomyAccountEditHandler} />
 
-				<Route path="instruction"      component={EconomyAccountingInstructionsHandler} />
-				<Route path="instruction/:id"  component={EconomyAccountingInstructionHandler} />
+				<Route path="instruction"       component={EconomyAccountingInstructionsHandler} />
+				<Route path="instruction/:id"   component={EconomyAccountingInstructionHandler} />
 				<Route path="instruction/:id/import" component={EconomyAccountingInstructionImportHandler} />
 
-				<Route path="valuationsheet"   component={EconomyValuationSheetHandler} />
-				<Route path="resultreport"     component={EconomyResultReportHandler} />
+				<Route path="valuationsheet"    component={EconomyValuationSheetHandler} />
+				<Route path="resultreport"      component={EconomyResultReportHandler} />
 
-				<Route path="costcenter"       component={EconomyCostCentersHandler} />
-				<Route path="costcenter/:id"   component={EconomyCostCenterHandler} />
+				<Route path="costcenter"        component={EconomyCostCentersHandler} />
+				<Route path="costcenter/:id"    component={EconomyCostCenterHandler} />
 
-				<Route path="debug"            component={EconomyDebugHandler} />
+				<Route path="debug"             component={EconomyDebugHandler} />
+				<Route path="accountingperiods" component={EconomyAccountingPeriodHandler} />
 			</Route>
-			<Route path="members/export" component={ExportHandler} />
+			<Route path="mail">
+				<IndexRedirect to="lists" />
+				<Route path="lists"     component={MailListsHandler} />
+				<Route path="templates" component={MailTemplatesHandler} />
+				<Route path="send"      component={MailSendHandler} />
+				<Route path="history"   component={MailHistoryHandler} />
+
+			</Route>
 			<Route path="statistics"     component={StatisticsHandler} />
-			<Route path="mail"           component={MailHandler} />
-			<Route path="settings"       component={SettingsHandler} />
+			<Route path="members/export" component={ExportHandler} />
+			<Route path="settings">
+				<IndexRedirect to="global" />
+				<Route path="global"     component={SettingsGlobalHandler} />
+				<Route path="automation" component={SettingsAutomationHandler} />
+			</Route>
 			<Route path="*"              component={NoMatch}/>
 		</Route>
 	</Router>

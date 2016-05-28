@@ -22,7 +22,7 @@ class EconomyAccountingInstructionsHandler extends PaginatedDataTable
 	{
 		return (
 			<div className="uk-width-1-1">
-				<h1>Verifikationer</h1>
+				<h2>Verifikationer</h2>
 				<p>Lista över samtliga verifikationer i bokföringen</p>
 				<EconomyAccountingInstructionList collection={this.state.collection} />
 				{this.renderPaginator()}

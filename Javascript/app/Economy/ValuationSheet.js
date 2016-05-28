@@ -117,7 +117,7 @@ var EconomyValuationSheetHandler = React.createClass({
 		{
 			return (
 				<div className="uk-width-1-1">
-					<h1>Balansrapport ÅRL</h1>
+					<h2>Balansrapport ÅRL</h2>
 					<p>Räkneskapsår {this.state.data.financial_year}</p>
 					<p>Period {this.state.data.period.from} - {this.state.data.period.to}</p>
 					<p>Utskriven: {this.state.data.created}</p>
