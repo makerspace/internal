@@ -8,10 +8,6 @@
 	<link rel="shortcut icon" href="/gfx/favicon.ico" type="image/x-icon">
 	<link rel="apple-touch-icon-precomposed" href="/gfx/apple-touch-icon.png">
 
-	<script src="/js/libs/jquery.min.js"></script>
-	<script src="/js/libs/uikit.min.js"></script>
-	<script src="/js/libs/pagination.js"></script>
-	
 	<link rel="stylesheet" href="/css/uikit.min.css" />
 	<link rel="stylesheet" href="/css/uikit.almost-flat.css" />
 	<link rel="stylesheet" href="/css/default.css" />

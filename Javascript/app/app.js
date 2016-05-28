@@ -1,11 +1,25 @@
-import React from 'react/addons';
-import { Router, Route, IndexRoute, Link } from 'react-router'
+// Load jQuery and UIkit
+global.jQuery = require('jquery')
+global.$ = global.jQuery;
+require('uikit')
+require('uikit/dist/js/components/pagination')
+
+import React from 'react';
+import ReactDOM from 'react-dom';
+import {
+	Router,
+	Route,
+	IndexRoute,
+	IndexRedirect,
+	Link,
+} from 'react-router'
 import Backbone from 'backbone'
-import history from './history'
+import { browserHistory } from 'react-router'
 
 import {
 	MasterLedgerHandler,
 	EconomyOverviewHandler,
+	EconomyDebugHandler,
 } from './Economy/Other'
 
 import {
@@ -40,7 +54,12 @@ import { GroupsHandler, GroupHandler, GroupAddHandler } from './groups'
 import { LabAccessHandler } from './labaccess'
 import { MembersHandler, MemberHandler, MemberAddHandler } from './member'
 import { MailHandler } from './mail'
-import { Nav, SideNav, SideNav2 } from './nav'
+import {
+	Nav,
+	SideNav,
+	SideNav2,
+	Breadcrumb,
+} from './nav'
 import { SettingsHandler } from './settings'
 import { StatisticsHandler } from './statistics'
 import { DashboardHandler, ExportHandler, Loading } from './temp'
@@ -261,4 +280,4 @@ React.render((
 			<Route path="*"              component={NoMatch}/>
 		</Route>
 	</Router>
-), document.body);
+), document.getElementById("main"));
