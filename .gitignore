@@ -6,3 +6,7 @@ database/database.mwb.bak
 Bokföring
 Internal.sublime-workspace
 laravel/storage
+Import/data
+Import/data.backup.*
+laravel/vouchers/
+Private
