@@ -7,16 +7,24 @@ use Illuminate\Http\Response;
 
 use App\Models\Subscription as SubscriptionModel;
 
+use App\Traits\Pagination;
+
 class Subscription extends Controller
 {
+	use Pagination;
+
 	/**
 	 *
 	 */
-	function list()
+	function list(Request $request)
 	{
-		return Response()->json(array(
-			'data' => SubscriptionModel::all(),
-		));
+		// Load data from datbase
+		$result = SubscriptionModel::list([
+			["per_page", $this->per_page($request)],
+		]);
+
+		// Return json array
+		return $result;
 	}
 
 	/**

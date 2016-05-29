@@ -78,6 +78,11 @@ class AccountingTransaction extends Entity
 					->leftJoin("accounting_account", "accounting_account.entity_id", "=", "accounting_transaction.accounting_account")
 					->where("accounting_account.account_number", $filter[1], $filter[2]);
 			}
+			// Pagination
+			else if("per_page" == $filter[0])
+			{
+				$this->pagination = $filter[1];
+			}
 		}
 
 		// Sort by accounting date
@@ -85,8 +90,10 @@ class AccountingTransaction extends Entity
 		$query = $query->orderBy("accounting_instruction.accounting_date", "asc");
 
 		// Paginate
-		$per_page = 10; // TODO
-		$query->paginate($per_page);
+		if($this->pagination != null)
+		{
+			$query->paginate($this->pagination);
+		}
 
 		// Get result
 		$result = $query->get();
@@ -113,13 +120,19 @@ class AccountingTransaction extends Entity
 			$row->balance = $balance;
 			$data[] = $row;
 		}
-//		return $data;
 
-//print_r($data);
-		return [
-			"data"  => $data,
-			"count" => $query->count(),
+		$result = [
+			"data" => $data
 		];
+
+		if($this->pagination != null)
+		{
+			$result["total"]     = $query->count();
+			$result["per_page"]  = $this->pagination;
+			$result["last_page"] = ceil($result["total"] / $result["per_page"]);
+		}
+
+		return $result;
 	}
 }
 

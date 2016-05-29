@@ -8,11 +8,13 @@ use Illuminate\Http\Response;
 use DB;
 use App\Libraries\Invoice as InvoiceExporter;
 use App\Models\Invoice;
+
 use App\Traits\AccountingPeriod;
+use App\Traits\Pagination;
 
 class InvoiceController extends Controller
 {
-	use AccountingPeriod;
+	use AccountingPeriod, Pagination;
 
 	/**
 	 *
@@ -26,21 +28,14 @@ class InvoiceController extends Controller
 			return $x;
 		}
 
-		// TODO
-		$per_page = (int)$request->get("per_page") ?? 10;
-
-		// Return result
+		// Load data from datbase
 		$result = Invoice::list([
+			["per_page", $this->per_page($request)],
 			["accountingperiod", "=", $accountingperiod],
 		]);
 
 		// Return json array
-		return Response()->json([
-			"total"     => $result["count"],
-			"per_page"  => $per_page,
-			"last_page" => ceil($result["count"] / $per_page),
-			"data"      => $result["data"],
-		]);
+		return $result;
 	}
 
 	/**

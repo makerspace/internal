@@ -5,31 +5,20 @@ import { Link } from 'react-router'
 import { Currency, DateField } from './Other'
 import {
 	BackboneTable,
-	PaginatedDataTable,
 } from '../BackboneTable'
 
-class EconomyAccountingInstructionsHandler extends PaginatedDataTable
-{
-	constructor(props)
-	{
-		super(props);
-		this.state = {
-			collection: this.createPaginatedCollection(InstructionCollection),
-		};
-	}
-
-	render()
+var EconomyAccountingInstructionsHandler = React.createClass({
+	render: function()
 	{
 		return (
 			<div className="uk-width-1-1">
 				<h2>Verifikationer</h2>
 				<p>Lista över samtliga verifikationer i bokföringen</p>
-				<EconomyAccountingInstructionList collection={this.state.collection} />
-				{this.renderPaginator()}
+				<EconomyAccountingInstructionList type={InstructionCollection} />
 			</div>
 		);
 	}
-}
+});
 EconomyAccountingInstructionsHandler.title = "Visa verifikationer";
 
 var EconomyAccountingInstructionHandler = React.createClass({

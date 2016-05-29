@@ -1,26 +1,16 @@
 import React from 'react'
 import BackboneReact from 'backbone-react-component'
-import { AccountModel, AccountCollection, MasterledgerCollection } from '../models'
+import { MasterledgerCollection } from '../models'
 import { Link } from 'react-router'
 import { BackboneTable } from '../BackboneTable'
 
 var MasterLedgerHandler = React.createClass({
-	getInitialState: function()
-	{
-		var accounts = new MasterledgerCollection();
-		accounts.fetch();
-
-		return {
-			collection: accounts
-		};
-	},
-
 	render: function()
 	{
 		return (
 			<div>
 				<h2>Huvudbok</h2>
-				<EconomyAccounts collection={this.state.collection} />
+				<EconomyAccounts type={MasterledgerCollection} />
 			</div>
 		);
 	},

@@ -60,11 +60,18 @@ class AccountingAccount extends Entity
 			{
 				$query = $query->where("accounting_account.account_number", $filter[1], $filter[2]);
 			}
+			// Pagination
+			else if("per_page" == $filter[0])
+			{
+				$this->pagination = $filter[1];
+			}
 		}
 
 		// Paginate
-		$per_page = 10; // TODO
-		$query->paginate($per_page);
+		if($this->pagination != null)
+		{
+			$query->paginate($this->pagination);
+		}
 
 		// Get result from database
 		$data = $query->get();
@@ -101,8 +108,18 @@ class AccountingAccount extends Entity
 		}
 		*/
 
-		// Return result
-		return $data;
+		$result = [
+			"data" => $data
+		];
+
+		if($this->pagination != null)
+		{
+			$result["total"]    = $query->count();
+			$result["per_page"] = $this->pagination;
+			$result["last_page"] = ceil($result["total"] / $result["per_page"]);
+		}
+
+		return $result;
 	}
 
 	/**

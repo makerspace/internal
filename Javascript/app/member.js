@@ -1,36 +1,28 @@
 import React from 'react'
 import BackboneReact from 'backbone-react-component'
-import { MemberModel, MemberCollection } from './models'
+import {
+	MemberModel,
+	MemberCollection,
+	RfidCollection
+} from './models'
 import { Link } from 'react-router'
 import {
 	BackboneTable,
-	PaginatedDataTable
 } from './BackboneTable'
 import { DateField } from './Economy/Other'
 
-
-class MembersHandler extends PaginatedDataTable
-{
-	constructor(props)
-	{
-		super(props);
-		this.state = {
-			collection: this.createPaginatedCollection(MemberCollection),
-		};
-	}
-
-	render()
+var MembersHandler = React.createClass({
+	render: function()
 	{
 		return (
 			<div>
 				<h2>Medlemmar</h2>
 				<p>På denna sida ser du en lista på samtliga medlemmar.</p>
-				<Members collection={this.state.collection} />
-				{this.renderPaginator()}
+				<Members type={MemberCollection} />
 			</div>
 		);
-	}
-}
+	},
+});
 MembersHandler.title = "Visa medlemmar";
 
 var MemberHandler = React.createClass({
@@ -48,8 +40,10 @@ var MemberHandler = React.createClass({
 
 	render: function()
 	{
-		return <Member model={this.state.model} />;
-	}
+		return (
+			<Member model={this.state.model} />
+		);
+	},
 });
 MemberHandler.title = "Visa medlem";
 
@@ -104,6 +98,7 @@ var Member = React.createClass({
 	{
 		// Ugly way to get the switcher javascript working
 		$.UIkit.init();
+		/*
 
 		var _this = this;
 		$("[data-uk-switcher]").on("show.uk.switcher", function(event, area) {
@@ -112,11 +107,15 @@ var Member = React.createClass({
 				if(!this.keys_synced)
 				{
 					// Get the RFID keys associated with the member
+					_this.state.model.keys = 
+					_this.state.collection = _this.state.model.keys;
+
 					_this.state.model.keys.fetch();
 					this.keys_synced = true;
 				}
 			}
 		});
+		*/
 	},
 
 	render: function()
@@ -188,7 +187,7 @@ var Member = React.createClass({
 					</li>
 
 					<li>
-						<MemberKeys collection={this.state.model.keys} />
+						<MemberKeys type={RfidCollection} />
 					</li>
 
 					<li>

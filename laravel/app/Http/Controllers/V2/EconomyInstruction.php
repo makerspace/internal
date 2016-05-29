@@ -7,10 +7,11 @@ use Illuminate\Http\Response;
 
 use App\Models\AccountingInstruction;
 use App\Traits\AccountingPeriod;
+use App\Traits\Pagination;
 
 class EconomyInstruction extends Controller
 {
-	use AccountingPeriod;
+	use AccountingPeriod, Pagination;
 	
 	/**
 	 *
@@ -24,21 +25,15 @@ class EconomyInstruction extends Controller
 			return $x;
 		}
 
+		// Load data from datbase
 		$result = AccountingInstruction::list([
+			["per_page", $this->per_page($request)],
 			["accountingperiod", "=", $accountingperiod],
 //			["has_voucher", "=", true],
 		]);
 
-		// Pagination
-		$per_page = (int)($request->get("per_page") ?? 25);
-
 		// Return json array
-		return Response()->json([
-			"per_page"  => $per_page,
-			"last_page" => ceil($result["count"] / $per_page),
-			"total"     => $result["count"],
-			"data"      => $result["data"],
-		]);
+		return $result;
 	}
 
 	/**

@@ -6,23 +6,12 @@ import { Currency } from './Other'
 import { BackboneTable } from '../BackboneTable'
 
 var EconomyCostCentersHandler = React.createClass({
-	getInitialState: function()
-	{
-		var _this = this;
-		var costcenters = new CostCenterCollection();
-		costcenters.fetch();
-
-		return {
-			collection: costcenters,
-		};
-	},
-
 	render: function()
 	{
 		return (
 			<div>
 				<h2>Kostnadsställen</h2>
-				<EconomyCostCenters collection={this.state.collection} />
+				<EconomyCostCenters type={CostCenterCollection} />
 			</div>
 		);
 	},

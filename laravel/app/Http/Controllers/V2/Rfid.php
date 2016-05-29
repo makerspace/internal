@@ -8,26 +8,26 @@ use Illuminate\Http\Response;
 use App\Models\Entity;
 use App\Models\Rfid as RfidModel;
 
+use App\Traits\Pagination;
+
 use DB;
 
 class Rfid extends Controller
 {
+	use Pagination;
+
 	/**
 	 *
 	 */
 	function list(Request $request)
 	{
-		$per_page = 100;
-
-		$data = RfidModel::list();
+		// Load data from datbase
+		$result = RfidModel::list([
+			["per_page", $this->per_page($request)],
+		]);
 
 		// Return json array
-		return Response()->json([
-			"per_page"  => $per_page,
-			"total"     => 2,
-			"last_page" => 1,
-			"data"      => $data,
-		]);
+		return $result;
 	}
 
 	/**

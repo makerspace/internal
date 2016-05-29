@@ -7,26 +7,24 @@ use Illuminate\Http\Response;
 
 use App\Models\Member as MemberModel;
 
+use App\Traits\Pagination;
 
 class Member extends Controller
 {
+	use Pagination;
+
 	/**
 	 *
 	 */
 	function list(Request $request)
 	{
-		// TODO
-		$per_page = (int)$request->get("per_page") ?? 25;
-
-		$result = MemberModel::list();
+		// Load data from datbase
+		$result = MemberModel::list([
+			["per_page", $this->per_page($request)],
+		]);
 
 		// Return json array
-		return Response()->json([
-			"total"     => $result->count(),
-			"per_page"  => $per_page,
-			"last_page" => ceil($result->count() / $per_page),
-			"data"      => $result->get(),
-		]);
+		return $result;
 	}
 
 	/**

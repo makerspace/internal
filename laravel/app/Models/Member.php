@@ -37,6 +37,47 @@ class Member extends Entity
 	/**
 	 *
 	 */
+	public function _list($filters = [])
+	{
+		// Build base query
+		$query = $this->_buildLoadQuery();
+
+		// Go through filters
+		foreach($filters as $filter)
+		{
+			// Pagination
+			if("per_page" == $filter[0])
+			{
+				$this->pagination = $filter[1];
+			}
+		}
+
+		// Paginate
+		if($this->pagination != null)
+		{
+			$query->paginate($this->pagination);
+		}
+
+		// Run the MySQL query
+		$data = $query->get();
+
+		$result = [
+			"data" => $data
+		];
+
+		if($this->pagination != null)
+		{
+			$result["total"]     = $query->count();
+			$result["per_page"]  = $this->pagination;
+			$result["last_page"] = ceil($result["total"] / $result["per_page"]);
+		}
+
+		return $result;
+	}
+
+	/**
+	 *
+	 */
 	public function _load($filters, $show_deleted = false)
 	{
 		// Build base query

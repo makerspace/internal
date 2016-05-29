@@ -51,26 +51,41 @@ class Invoice extends Entity
 					->leftJoin("accounting_period", "accounting_period.entity_id", "=", "invoice.accounting_period")
 					->where("accounting_period.name", $filter[1], $filter[2]);
 			}
+			// Pagination
+			else if("per_page" == $filter[0])
+			{
+				$this->pagination = $filter[1];
+			}
 		}
 
 		// Paginate
-		$per_page = 10; // TODO
-		$query->paginate($per_page);
+		if($this->pagination != null)
+		{
+			$query->paginate($this->pagination);
+		}
 
 		// Get result
-		$invoices = $query->get();
+		$data = $query->get();
 
 		// Go through invoices and calculate metadata
-		foreach($invoices as &$invoice)
+		foreach($data as &$invoice)
 		{
 			// Calculate expiry date
 			$invoice->date_expiry = $this->_calculateExpiryDate($invoice);
 		}
 
-		return [
-			"data"  => $invoices,
-			"count" => $query->count(),
+		$result = [
+			"data" => $data
 		];
+
+		if($this->pagination != null)
+		{
+			$result["total"]    = $query->count();
+			$result["per_page"] = $this->pagination;
+			$result["last_page"] = ceil($result["total"] / $result["per_page"]);
+		}
+
+		return $result;
 	}
 
 	/**

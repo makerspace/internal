@@ -214,7 +214,7 @@ class EconomyReport extends Controller
 				]
 			);
 
-			foreach($accounts as &$account)
+			foreach($accounts["data"] as &$account)
 			{
 				// Rename balance to balance_out
 				$account->balance_out = $account->balance;
@@ -233,7 +233,7 @@ class EconomyReport extends Controller
 			}
 			unset($account);
 
-			$data["accounts"] = $accounts;
+			$data["accounts"] = $accounts["data"];
 		}
 
 		if(!empty($data["children"]))

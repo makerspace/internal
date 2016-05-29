@@ -9,40 +9,26 @@ import { Link } from 'react-router'
 import { Currency, DateField } from './Other'
 import {
 	BackboneTable,
-	PaginatedDataTable
 } from '../BackboneTable'
 
 import { EconomyAccountingInstructionList } from './Instruction'
 
 var EconomyAccountsHandler = React.createClass({
-	getInitialState: function()
-	{
-		var accounts = new AccountCollection();
-		accounts.fetch();
-
-		return {
-			collection: accounts,
-		};
-	},
-
 	render: function()
 	{
 		return (
 			<div>
 				<h2>Konton</h2>
-				<EconomyAccounts collection={this.state.collection} />
+				<EconomyAccounts type={AccountCollection} />
 				<Link to={"/economy/account/add"}><i className="uk-icon-plus-circle"></i> Skapa konto</Link>
 			</div>
 		);
 	},
 });
 
-class EconomyAccountHandler extends PaginatedDataTable
-{
-	constructor(props)
+var EconomyAccountHandler = React.createClass({
+	getInitialState: function()
 	{
-		super(props);
-
 		// Get account id
 		var id = this.props.params.id;
 
@@ -50,26 +36,22 @@ class EconomyAccountHandler extends PaginatedDataTable
 		var account = new AccountModel({id: id});
 		account.fetch();
 
-		// TODO: Filter on account
-
-		this.state = {
+		return {
 			account_model: account,
-			transaction_collection: this.createPaginatedCollection(TransactionCollection, {id: id}),
 		};
-	}
+	},
 
-	render()
+	render: function()
 	{
 		return (
 			<div>
 				<h2>Konto</h2>
 				<EconomyAccount model={this.state.account_model} />
-				<EconomyAccountTransactions collection={this.state.transaction_collection} />
-				{this.renderPaginator()}
+				<EconomyAccountTransactions type={TransactionCollection} params={{id: this.state.account_model.id}} />
 			</div>
 		);
-	}
-}
+	},
+});
 
 var EconomyAccountEditHandler = React.createClass({
 	getInitialState: function()

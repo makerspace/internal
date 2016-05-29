@@ -19,6 +19,7 @@ class Entity
 		"entity.description" => "entity.description",
 	];
 	protected $data = [];
+	protected $pagination = null; // No pagination by default
 
 	/**
 	 * Constructor
@@ -33,17 +34,49 @@ class Entity
 	 *
 	 * Create an instance of the class and call the function non-static
 	 */
-	public static function list($filter = [])
+	public static function list($filters = [])
 	{
-		return (new static())->_list($filter);
+		return (new static())->_list($filters);
 	}
 
 	/**
 	 * Same as above, but called non-statically
 	 */
-	protected function _list($filter = [])
+	protected function _list($filters = [])
 	{
-		return $this->_buildLoadQuery();
+		$query = $this->_buildLoadQuery();
+
+		// Go through filters
+		foreach($filters as $filter)
+		{
+			// Pagination
+			if("per_page" == $filter[0])
+			{
+				$this->pagination = $filter[1];
+			}
+		}
+
+		// Paginate
+		if($this->pagination != null)
+		{
+			$query->paginate($this->pagination);
+		}
+
+		// Run the MySQL query
+		$data = $query->get();
+
+		$result = [
+			"data" => $data
+		];
+
+		if($this->pagination != null)
+		{
+			$result["total"]    = $query->count();
+			$result["per_page"] = $this->pagination;
+			$result["last_page"] = ceil($result["total"] / $result["per_page"]);
+		}
+
+		return $result;
 	}
 
 	/**

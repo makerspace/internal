@@ -6,11 +6,13 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 use App\Models\AccountingTransaction;
+
 use App\Traits\AccountingPeriod;
+use App\Traits\Pagination;
 
 class EconomyTransactions extends Controller
 {
-	use AccountingPeriod;
+	use AccountingPeriod, Pagination;
 
 	/**
 	 *
@@ -49,6 +51,7 @@ class EconomyTransactions extends Controller
 
 		$result = AccountingTransaction::list(
 			[
+				["per_page", $this->per_page($request)],
 				["account_number", "=", $account_number],
 				["accountingperiod", "=", $accountingperiod],
 			]
@@ -63,16 +66,8 @@ class EconomyTransactions extends Controller
 		}
 		else
 		{
-			// Pagination
-			$per_page = (int)($request->get("per_page") ?? 25);
-
 			// Return json array
-			return Response()->json([
-				"per_page"  => $per_page,
-				"last_page" => ceil($result["count"] / $per_page),
-				"total"     => $result["count"],
-				"data"      => $result["data"],
-			]);
+			return $result;
 		}
 	}
 

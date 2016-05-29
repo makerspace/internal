@@ -20,7 +20,7 @@ var InstructionModel = Backbone.Model.extend({
 	},
 });
 
-var InstructionCollection = PageableCollection.extend(
+var InstructionCollection = Backbone.PageableCollection.extend(
 {
 	model: InstructionModel,
 	url: "/api/v2/economy/2015/instruction",//?account_id=2999
@@ -72,16 +72,10 @@ var CostCenterModel = Backbone.Model.extend({
 	},
 });
 
-var CostCenterCollection = PageableCollection.extend(
+var CostCenterCollection = Backbone.PageableCollection.extend(
 {
+	model: CostCenterModel,
 	url: "/api/v2/economy/2015/costcenter",
-
-/*	
-	parseRecords: function(resp, options)
-	{
-		return resp.data;
-	}
-*/
 });
 
 var AccountModel = Backbone.Model.extend({
@@ -149,11 +143,6 @@ var LabAccessModel = Backbone.Model.extend({
 var LabAccessCollection = Backbone.PageableCollection.extend({
 	model: LabAccessModel,
 	url: "/api/v2/labaccess",
-	/*
-	parse: function (response, options) {
-		return response.data;
-	}
-	*/
 });
 
 var RfidModel = Backbone.Model.extend({
@@ -168,16 +157,9 @@ var RfidModel = Backbone.Model.extend({
 	},
 });
 
-var RfidCollection = PageableCollection.extend({
+var RfidCollection = Backbone.PageableCollection.extend({
 	model: RfidModel,
 	url: "/api/v2/rfid",
-	/*
-	parseRecords: function(resp, options)
-	{
-		return resp.data;
-	}
-	*/
-	
 });
 
 var MemberModel = Backbone.Model.extend({
@@ -190,7 +172,6 @@ var MemberModel = Backbone.Model.extend({
 		firstname: "",
 		lastname: "",
 		email: "",
-		keys: new RfidCollection(),
 	},
 	initialize: function(options)
 	{
@@ -202,7 +183,7 @@ var MemberModel = Backbone.Model.extend({
 	},
 });
 
-var MemberCollection = PageableCollection.extend({
+var MemberCollection = Backbone.PageableCollection.extend({
 	model: MemberModel,
 	url: "/api/v2/member",
 });
@@ -223,4 +204,6 @@ module.exports = {
 	CostCenterCollection,
 	TransactionModel,
 	TransactionCollection,
+	RfidModel,
+	RfidCollection,
 }

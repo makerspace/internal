@@ -6,11 +6,13 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 use App\Models\AccountingAccount;
+
 use App\Traits\AccountingPeriod;
+use App\Traits\Pagination;
 
 class EconomyAccount extends Controller
 {
-	use AccountingPeriod;
+	use AccountingPeriod, Pagination;
 
 	/**
 	 * Returns the masterledger
@@ -47,10 +49,14 @@ class EconomyAccount extends Controller
 			return $x;
 		}
 
-		// Return all account that have a balance not equal to 0
-		return AccountingAccount::list([
+		// Load data from datbase
+		$result = AccountingAccount::list([
+			["per_page", $this->per_page($request)],
 			["accountingperiod", "=", $accountingperiod],
 		]);
+
+		// Return json array
+		return $result;
 	}
 
 	/**

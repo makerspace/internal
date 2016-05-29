@@ -5,32 +5,21 @@ import { Link } from 'react-router'
 import { Currency } from './Other'
 import {
 	BackboneTable,
-	PaginatedDataTable,
 } from '../BackboneTable'
 
-class InvoiceListHandler extends PaginatedDataTable
-{
-	constructor(props)
-	{
-		super(props);
-		this.state = {
-			collection: this.createPaginatedCollection(InvoiceCollection),
-		};
-	}
-
-	render()
+var InvoiceListHandler = React.createClass({
+	render: function()
 	{
 		return (
 			<div className="uk-width-1-1">
 				<h2>Fakturor</h2>
 				<p>På denna sida ser du en lista på samtliga fakturor för det valda bokföringsåret.</p>
-				<InvoiceList collection={this.state.collection} />
-				{this.renderPaginator()}
+				<InvoiceList type={InvoiceCollection} />
 				<Link to={"/economy/invoice/add"}><i className="uk-icon-plus-circle"></i> Skapa faktura</Link>
 			</div>
 		);
-	}
-}
+	},
+});
 InvoiceListHandler.title = "Visa fakturor";
 
 var InvoiceHandler = React.createClass({

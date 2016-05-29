@@ -71,14 +71,21 @@ class AccountingInstruction extends Entity
 			{
 				$filter_vouchers = $filter[2];
 			}
+			// Pagination
+			else if("per_page" == $filter[0])
+			{
+				$this->pagination = $filter[1];
+			}
 		}
 
 		// Get the balance
 		$query->selectRaw("(SELECT SUM(amount) FROM accounting_transaction WHERE amount > 0 AND accounting_instruction = entity.entity_id) AS balance");
 
 		// Paginate
-		$per_page = 10; // TODO
-		$query->paginate($per_page);
+		if($this->pagination != null)
+		{
+			$query->paginate($this->pagination);
+		}
 
 		// Run the MySQL query
 		$data = $query->get();
@@ -123,10 +130,18 @@ class AccountingInstruction extends Entity
 		// If we removed rows in the foreach above the indexing will be wrong, so we need to remove all keys.
 		$data = array_values($data);
 
-		return [
-			"data"  => $data,
-			"count" => $query->count(),
+		$result = [
+			"data" => $data
 		];
+
+		if($this->pagination != null)
+		{
+			$result["total"]    = $query->count();
+			$result["per_page"] = $this->pagination;
+			$result["last_page"] = ceil($result["total"] / $result["per_page"]);
+		}
+
+		return $result;
 	}
 
 	/*
