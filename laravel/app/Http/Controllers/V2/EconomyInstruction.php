@@ -12,7 +12,7 @@ use App\Traits\Pagination;
 class EconomyInstruction extends Controller
 {
 	use AccountingPeriod, Pagination;
-	
+
 	/**
 	 *
 	 */
@@ -142,6 +142,19 @@ class EconomyInstruction extends Controller
 	 */
 	function delete(Request $request, $accountingperiod, $id)
 	{
-		$entity = Entity::delete($id);
+		$entity = $this->read($request, $accountingperiod, $id);
+
+		if($entity->delete())
+		{
+			return [
+				"status" => "deleted"
+			];
+		}
+		else
+		{
+			return [
+				"status" => "error"
+			];
+		}
 	}
 }

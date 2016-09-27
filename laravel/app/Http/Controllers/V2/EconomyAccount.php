@@ -141,9 +141,22 @@ class EconomyAccount extends Controller
 	/**
 	 *
 	 */
-	function delete(Request $request, $accountingperiod, $id)
+	function delete(Request $request, $accountingperiod, $account_number)
 	{
-		$entity = Entity::delete($id);
+		$entity = $this->read($request, $accountingperiod, $account_number);
+
+		if($entity->delete())
+		{
+			return [
+				"status" => "deleted"
+			];
+		}
+		else
+		{
+			return [
+				"status" => "error"
+			];
+		}
 	}
 
 	/**

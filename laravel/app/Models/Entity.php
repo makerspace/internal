@@ -205,30 +205,32 @@ class Entity
 	/**
 	 * Delete an entity
 	 */
-	public static function delete($entity_id, $permanent = false)
+	public function delete($permanent = false)
 	{
 		// Check that we have a id provided
-/*
 		if($this->id === null)
 		{
 			return false;
 		}
-*/
+
+		// TODO: Delete relations
 
 		if($permanent === true)
 		{
 			// Permanent delete
 			DB::table("entity")
-				->where("entity_id", $entity_id)
+				->where("entity_id", $this->id)
 				->delete();
 		}
 		else
 		{
 			// Soft delete
 			DB::table("entity")
-				->where("entity_id", $entity_id)
+				->where("entity_id", $this->id)
 				->update(["deleted_at" => date("c")]);
 		}
+
+		return true;
 	}
 
 	/**

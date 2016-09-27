@@ -111,6 +111,5 @@ class Rfid extends Controller
 	 */
 	function delete(Request $request, $id)
 	{
-		$entity = Entity::delete($id);
 	}
 }

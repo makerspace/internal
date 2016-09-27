@@ -80,12 +80,12 @@ class Member extends Controller
 	function read(Request $request, $member_number)
 	{
 		// Load the invoice
-		$member = MemberModel::load([
+		$entity = MemberModel::load([
 			"member_number" => $member_number
 		]);
 
 		// Generate an error if there is no such member
-		if(false === $member)
+		if(false === $entity)
 		{
 			return Response()->json([
 				"message" => "No member with specified member number",
@@ -93,7 +93,7 @@ class Member extends Controller
 		}
 		else
 		{
-			return $member;
+			return $entity;
 		}
 	}
 
@@ -108,8 +108,21 @@ class Member extends Controller
 	/**
 	 *
 	 */
-	function delete(Request $request, $id)
+	function delete(Request $request, $member_number)
 	{
-		$entity = Entity::delete($id);
+		$entity = $this->read($request, $member_number);
+
+		if($entity->delete())
+		{
+			return [
+				"status" => "deleted"
+			];
+		}
+		else
+		{
+			return [
+				"status" => "error"
+			];
+		}
 	}
 }
