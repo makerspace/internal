@@ -4,12 +4,12 @@ import {
 	MemberModel,
 	MemberCollection,
 	RfidCollection
-} from './models'
+} from '../models'
 import { Link } from 'react-router'
 import {
 	BackboneTable,
-} from './BackboneTable'
-import { DateField } from './Economy/Other'
+} from '../BackboneTable'
+import { DateField } from '../Economy/Other'
 
 var MembersHandler = React.createClass({
 	render: function()
@@ -118,6 +118,21 @@ var Member = React.createClass({
 		*/
 	},
 
+	edit: function()
+	{
+		console.log("TODO: Edit member");
+	},
+
+	save: function()
+	{
+		console.log("TODO: Save member");
+	},
+
+	cancel: function()
+	{
+		console.log("TODO: Cancel");
+	},
+
 	render: function()
 	{
 		return (
@@ -134,38 +149,134 @@ var Member = React.createClass({
 
 				<ul id="my-id" className="uk-switcher">
 					<li>
-						<dl>
-							<dt>Medlemsnummer</dt>
-							<dd>{this.state.model.member_number}</dd>
+						<br />
+						<form className="uk-form uk-form-horizontal">
+						<div className="uk-grid">
+							<div className="uk-width-1-6">
+								<label className="uk-form-label">Medlemsnummer</label>
+							</div>
+							<div className="uk-width-2-6">
+								<div className="uk-form-icon">
+									<i className="uk-icon-tag"></i>
+									<input type="text" value={this.state.model.member_number} disabled />
+								</div>
+							</div>
+							<div className="uk-width-1-6">
+								<label className="uk-form-label">Skapad</label>
+							</div>
+							<div className="uk-width-2-6">
+								<div className="uk-form-icon">
+									<i className="uk-icon-calendar"></i>
+									<input type="text" value={this.state.model.created_at} disabled />
+								</div>
+							</div>
+						</div>
 
-							<dt>Förnamn</dt>
-							<dd>{this.state.model.firstname}</dd>
+						<div className="uk-grid">
+							<div className="uk-width-1-6">
+								<label className="uk-form-label">Personnummer</label>
+							</div>
+							<div className="uk-width-2-6">
+								<div className="uk-form-icon">
+									<i className="uk-icon-tag"></i>
+									<input type="text" value={this.state.model.civicregno} />
+								</div>
+							</div>
+							<div className="uk-width-1-6">
+								<label className="uk-form-label">Uppdaterad</label>
+							</div>
+							<div className="uk-width-2-6">
+								<div className="uk-form-icon">
+									<i className="uk-icon-calendar"></i>
+									<input type="text" value={this.state.model.updated_at} disabled />
+								</div>
+							</div>
+						</div>
 
-							<dt>Efternamn</dt>
-							<dd>{this.state.model.lastname}</dd>
+						<div className="uk-grid">
+							<div className="uk-width-1-6">
+								<label className="uk-form-label">Förnamn</label>
+							</div>
+							<div className="uk-width-2-6">
+								<div className="uk-form-icon">
+									<i className="uk-icon-tag"></i>
+									<input type="text" value={this.state.model.firstname} />
+								</div>
+							</div>
+							<div className="uk-width-1-6">
+								<label className="uk-form-label">Efternamn</label>
+							</div>
+							<div className="uk-width-2-6">
+								<div className="uk-form-icon">
+									<i className="uk-icon-calendar"></i>
+									<input type="text" value={this.state.model.lastname} />
+								</div>
+							</div>
+						</div>
 
-							<dt>E-post</dt>
-							<dd>{this.state.model.email}</dd>
+						<div className="uk-grid">
+							<div className="uk-width-1-6">
+								<label className="uk-form-label">E-post</label>
+							</div>
+							<div className="uk-width-2-6">
+								<div className="uk-form-icon">
+									<i className="uk-icon-tag"></i>
+									<input type="text" value={this.state.model.email} />
+								</div>
+							</div>
+							<div className="uk-width-1-6">
+								<label className="uk-form-label">Telefonnummer</label>
+							</div>
+							<div className="uk-width-2-6">
+								<div className="uk-form-icon">
+									<i className="uk-icon-calendar"></i>
+									<input type="text" value={this.state.model.phone} />
+								</div>
+							</div>
+						</div>
 
-							<dt>Skapad</dt>
-							<dd>{this.state.model.created_at}</dd>
+						<div className="uk-grid">
+							<div className="uk-width-1-6">
+								<label className="uk-form-label">Address</label>
+							</div>
+							<div className="uk-width-2-6">
+								<div className="uk-form-icon">
+									<i className="uk-icon-tag"></i>
+									<input type="text" value={this.state.model.adress_street} />
+								</div>
+							</div>
+							<div className="uk-width-1-6">
+								<label className="uk-form-label">Land</label>
+							</div>
+							<div className="uk-width-2-6">
+								<div className="uk-form-icon">
+									<i className="uk-icon-calendar"></i>
+									<input type="text" value={this.state.model.adress_country} />
+								</div>
+							</div>
+						</div>
 
-							<dt>Uppdaterad</dt>
-							<dd>{this.state.model.updated_at}</dd>
-
-							<dt>Postadress</dt>
-							<dd>
-								{this.state.model.adress_street}
-								{this.state.model.adress_zipcode} {this.state.model.adress_city}
-								{this.state.model.adress_country}
-							</dd>
-
-							<dt>Personnummer</dt>
-							<dd>{this.state.model.civicregno}</dd>
-
-							<dt>Telefonnummer</dt>
-							<dd>{this.state.model.phone}</dd>
-						</dl>
+						<div className="uk-grid">
+							<div className="uk-width-1-6">
+								<label className="uk-form-label">Postnummer</label>
+							</div>
+							<div className="uk-width-2-6">
+								<div className="uk-form-icon">
+									<i className="uk-icon-tag"></i>
+									<input type="text" value={this.state.model.adress_zipcode} />
+								</div>
+							</div>
+							<div className="uk-width-1-6">
+								<label className="uk-form-label">Postort</label>
+							</div>
+							<div className="uk-width-2-6">
+								<div className="uk-form-icon">
+									<i className="uk-icon-calendar"></i>
+									<input type="text" value={this.state.model.adress_city} />
+								</div>
+							</div>
+						</div>
+					</form>
 					</li>
 
 					<li>
@@ -187,7 +298,7 @@ var Member = React.createClass({
 					</li>
 
 					<li>
-						<MemberKeys type={RfidCollection} />
+						<MemberKeys type={RfidCollection} params={{owner: 1234}} />
 					</li>
 
 					<li>
@@ -233,8 +344,13 @@ var Member = React.createClass({
 							</tbody>
 						</table>
 					</li>
-
 				</ul>
+
+				<br />
+
+				<div>
+					<button className="uk-button" onClick={this.save}><i className="uk-icon-save"></i> Spara</button>
+				</div>
 			</div>
 		);
 	},
@@ -294,4 +410,9 @@ var MemberAddHandler = React.createClass({
 MemberAddHandler.title = "Skapa medlem";
 
 
-module.exports = { MemberHandler, MembersHandler, MemberKeys, MemberAddHandler }
+module.exports = {
+	MemberHandler,
+	MembersHandler,
+	MemberKeys,
+	MemberAddHandler
+}

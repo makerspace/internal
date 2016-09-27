@@ -17,14 +17,24 @@ import Backbone from 'backbone'
 import { browserHistory } from 'react-router'
 
 import {
+	MemberOverviewHandler,
+} from './Member/Overview.js'
+import {
+	MemberSearchHandler,
+} from './Member/Search.js'
+import {
 	MembersHandler,
 	MemberHandler,
-	MemberAddHandler
-} from './member'
+	MemberAddHandler,
+} from './Member/Members.js'
+import {
+	GroupsHandler,
+	GroupHandler,
+	GroupAddHandler
+} from './Member/Groups.js'
 import { SalesOverviewHandler } from './Sales/Overview'
 import { SalesProductsHandler } from './Sales/Products'
 import { SalesSubscriptionsHandler } from './Sales/Subscriptions'
-import { SalesSubscriptionTypesHandler } from './Sales/SubscriptionTypes'
 import {
 	MasterLedgerHandler,
 	EconomyOverviewHandler,
@@ -60,7 +70,6 @@ import {
 
 import { InvoiceListHandler, InvoiceHandler, InvoiceAddHandler } from './Economy/Invoice'
 
-import { GroupsHandler, GroupHandler, GroupAddHandler } from './groups'
 import {
 	Nav,
 	SideNav,
@@ -88,7 +97,15 @@ var nav = new Backbone.Model({
 			children:
 			[
 				{
-					text: "Visa medlemmar",
+					text: "Översikt",
+					target: "/member/overview",
+				},
+				{
+					text: "Sök",
+					target: "/member/search",
+				},
+				{
+					text: "Medlemslista",
 					target: "/member/list",
 					children: [
 						{
@@ -103,16 +120,7 @@ var nav = new Backbone.Model({
 				},
 				{
 					text: "Grupper",
-					type: "heading",
-					target: "",
-				},
-				{
-					text: "Visa grupper",
 					target: "/member/group/list",
-				},
-				{
-					text: "Skapa grupp",
-					target: "/member/group/add",
 				},
 			],
 		},
@@ -132,16 +140,7 @@ var nav = new Backbone.Model({
 				},
 				{
 					text: "Prenumerationer",
-					type: "heading",
-					target: "",
-				},
-				{
-					text: "Aktiva",
 					target: "/sales/subscriptions",
-				},
-				{
-					text: "Typer",
-					target: "/sales/subscriptiontypes",
 				},
 			],
 		},
@@ -227,7 +226,7 @@ var nav = new Backbone.Model({
 			],
 		},
 		{
-			text: "Mail",
+			text: "Utskick",
 			target: "/mail",
 			icon: "envelope",
 			children:
@@ -241,7 +240,7 @@ var nav = new Backbone.Model({
 					target: "/mail/templates",
 				},
 				{
-					text: "Skicka mail",
+					text: "Skapa utskick",
 					target: "/mail/send",
 				},
 				{
@@ -327,15 +326,17 @@ ReactDOM.render((
 		<Route path="/" component={App}>
 			<IndexRoute component={DashboardHandler} />
 			<Route path="member">
-				<IndexRedirect to="list" />
-				<Route path="add"  component={MemberAddHandler} />
-				<Route path="list" component={MembersHandler} />
-				<Route path=":id"  component={MemberHandler} />
+				<IndexRedirect to="overview" />
+				<Route path="overview" component={MemberOverviewHandler} />
+				<Route path="search"   component={MemberSearchHandler} />
+				<Route path="list"     component={MembersHandler} />
+				<Route path=":id"      component={MemberHandler} />
+				<Route path="add"      component={MemberAddHandler} />
 				<Route path="group">
 					<IndexRoute component={GroupsHandler} />
 					<Route path="list"     component={GroupsHandler} />
-					<Route path="add"      component={GroupAddHandler} />
 					<Route path=":id"      component={GroupHandler} />
+					<Route path="add"      component={GroupAddHandler} />
 				</Route>
 			</Route>
 			<Route path="sales">
@@ -343,7 +344,6 @@ ReactDOM.render((
 				<Route path="overview"          component={SalesOverviewHandler} />
 				<Route path="products"          component={SalesProductsHandler} />
 				<Route path="subscriptions"     component={SalesSubscriptionsHandler} />
-				<Route path="subscriptiontypes" component={SalesSubscriptionTypesHandler} />
 			</Route>
 			<Route path="economy">
 				<IndexRedirect to="overview" />
@@ -354,14 +354,14 @@ ReactDOM.render((
 				<Route path="invoice">
 					<IndexRedirect to="list" />
 					<Route path="list"     component={InvoiceListHandler} />
-					<Route path="add"      component={InvoiceAddHandler} />
 					<Route path=":id"      component={InvoiceHandler} />
+					<Route path="add"      component={InvoiceAddHandler} />
 				</Route>
 
 				<Route path="accounts"          component={EconomyAccountsHandler} />
-				<Route path="account/add"       component={EconomyAccountAddHandler} />
 				<Route path="account/:id"       component={EconomyAccountHandler} />
 				<Route path="account/:id/edit"  component={EconomyAccountEditHandler} />
+				<Route path="account/add"       component={EconomyAccountAddHandler} />
 
 				<Route path="instruction"       component={EconomyAccountingInstructionsHandler} />
 				<Route path="instruction/:id"   component={EconomyAccountingInstructionHandler} />
