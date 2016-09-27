@@ -49,7 +49,7 @@ class Member extends Controller
 		// Create new member
 		$entity = new MemberModel;
 //		$entity->title         = $json["title"];
-//		$entity->description   = $json["description"]    ?? null;
+//		$entity->description   = $json["description"] ?? null;
 		$entity->member_number = $member_number;
 		$entity->email         = $json["email"];
 		$entity->password      = $json["password"]   ?? null;

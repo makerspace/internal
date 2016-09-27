@@ -33,6 +33,20 @@ Route::group(array("prefix" => "api/v2"), function()
 	Route::   put("member/{id}", "V2\Member@update"); // Model: Update
 	Route::delete("member/{id}", "V2\Member@delete"); // Model: Delete
 
+	// Groups
+	Route::   get("group",      "V2\Group@list");   // Get collection
+	Route::  post("group",      "V2\Group@create"); // Model: Create
+	Route::   get("group/{id}", "V2\Group@read");   // Model: Read
+	Route::   put("group/{id}", "V2\Group@update"); // Model: Update
+	Route::delete("group/{id}", "V2\Group@delete"); // Model: Delete
+
+	// Products
+	Route::   get("product",      "V2\Product@list");   // Get collection
+	Route::  post("product",      "V2\Product@create"); // Model: Create
+	Route::   get("product/{id}", "V2\Product@read");   // Model: Read
+	Route::   put("product/{id}", "V2\Product@update"); // Model: Update
+	Route::delete("product/{id}", "V2\Product@delete"); // Model: Delete
+
 	// Subscriptions
 	Route::   get("subscription",      "V2\Subscription@list");   // Get collection
 	Route::  post("subscription",      "V2\Subscription@create"); // Model: Create
