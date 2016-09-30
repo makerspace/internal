@@ -7,8 +7,8 @@ namespace Composer\Autoload;
 class ComposerStaticInit3b7a9c22cf6231450f7779faf8483b7e
 {
     public static $files = array (
-        '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         '1d1b89d124cc9cb8219922c9d5569199' => __DIR__ . '/..' . '/hamcrest/hamcrest-php/hamcrest/Hamcrest.php',
+        '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         '667aeda72477189d0494fecd327c3641' => __DIR__ . '/..' . '/symfony/var-dumper/Resources/functions/dump.php',
         '2c102faa651ef8ea5874edb585946bce' => __DIR__ . '/..' . '/swiftmailer/swiftmailer/lib/swift_required.php',
         'bd9634f2d41831496de0d3dfe4c94881' => __DIR__ . '/..' . '/symfony/polyfill-php56/bootstrap.php',
@@ -20,9 +20,17 @@ class ComposerStaticInit3b7a9c22cf6231450f7779faf8483b7e
     );
 
     public static $prefixLengthsPsr4 = array (
+        'p' => 
+        array (
+            'phpDocumentor\\Reflection\\' => 25,
+        ),
         'X' => 
         array (
             'XdgBaseDir\\' => 11,
+        ),
+        'W' => 
+        array (
+            'Webmozart\\Assert\\' => 17,
         ),
         'S' => 
         array (
@@ -48,6 +56,7 @@ class ComposerStaticInit3b7a9c22cf6231450f7779faf8483b7e
         'P' => 
         array (
             'Psy\\' => 4,
+            'Psr\\Log\\' => 8,
             'PhpParser\\' => 10,
         ),
         'M' => 
@@ -56,7 +65,10 @@ class ComposerStaticInit3b7a9c22cf6231450f7779faf8483b7e
         ),
         'L' => 
         array (
+            'LucaDegasperi\\OAuth2Server\\' => 27,
+            'League\\OAuth2\\Server\\' => 21,
             'League\\Flysystem\\' => 17,
+            'League\\Event\\' => 13,
         ),
         'I' => 
         array (
@@ -82,9 +94,19 @@ class ComposerStaticInit3b7a9c22cf6231450f7779faf8483b7e
     );
 
     public static $prefixDirsPsr4 = array (
+        'phpDocumentor\\Reflection\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phpdocumentor/reflection-common/src',
+            1 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
+            2 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
+        ),
         'XdgBaseDir\\' => 
         array (
             0 => __DIR__ . '/..' . '/dnoegel/php-xdg-base-dir/src',
+        ),
+        'Webmozart\\Assert\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/webmozart/assert/src',
         ),
         'Symfony\\Polyfill\\Util\\' => 
         array (
@@ -162,6 +184,10 @@ class ComposerStaticInit3b7a9c22cf6231450f7779faf8483b7e
         array (
             0 => __DIR__ . '/..' . '/psy/psysh/src/Psy',
         ),
+        'Psr\\Log\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
+        ),
         'PhpParser\\' => 
         array (
             0 => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser',
@@ -170,9 +196,21 @@ class ComposerStaticInit3b7a9c22cf6231450f7779faf8483b7e
         array (
             0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
         ),
+        'LucaDegasperi\\OAuth2Server\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/lucadegasperi/oauth2-server-laravel/src',
+        ),
+        'League\\OAuth2\\Server\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/league/oauth2-server/src',
+        ),
         'League\\Flysystem\\' => 
         array (
             0 => __DIR__ . '/..' . '/league/flysystem/src',
+        ),
+        'League\\Event\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/league/event/src',
         ),
         'Illuminate\\' => 
         array (
@@ -201,19 +239,8 @@ class ComposerStaticInit3b7a9c22cf6231450f7779faf8483b7e
     );
 
     public static $prefixesPsr0 = array (
-        'p' => 
-        array (
-            'phpDocumentor' => 
-            array (
-                0 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
-            ),
-        ),
         'P' => 
         array (
-            'Psr\\Log\\' => 
-            array (
-                0 => __DIR__ . '/..' . '/psr/log',
-            ),
             'Prophecy\\' => 
             array (
                 0 => __DIR__ . '/..' . '/phpspec/prophecy/src',
@@ -280,8 +307,10 @@ class ComposerStaticInit3b7a9c22cf6231450f7779faf8483b7e
         'App\\Http\\Controllers\\V2\\EconomyInstruction' => __DIR__ . '/../..' . '/app/Http/Controllers/V2/EconomyInstruction.php',
         'App\\Http\\Controllers\\V2\\EconomyReport' => __DIR__ . '/../..' . '/app/Http/Controllers/V2/EconomyReport.php',
         'App\\Http\\Controllers\\V2\\EconomyTransactions' => __DIR__ . '/../..' . '/app/Http/Controllers/V2/EconomyTransactions.php',
+        'App\\Http\\Controllers\\V2\\Group' => __DIR__ . '/../..' . '/app/Http/Controllers/V2/Group.php',
         'App\\Http\\Controllers\\V2\\InvoiceController' => __DIR__ . '/../..' . '/app/Http/Controllers/V2/InvoiceController.php',
         'App\\Http\\Controllers\\V2\\Member' => __DIR__ . '/../..' . '/app/Http/Controllers/V2/Member.php',
+        'App\\Http\\Controllers\\V2\\Product' => __DIR__ . '/../..' . '/app/Http/Controllers/V2/Product.php',
         'App\\Http\\Controllers\\V2\\Rfid' => __DIR__ . '/../..' . '/app/Http/Controllers/V2/Rfid.php',
         'App\\Http\\Controllers\\V2\\Subscription' => __DIR__ . '/../..' . '/app/Http/Controllers/V2/Subscription.php',
         'App\\Http\\Kernel' => __DIR__ . '/../..' . '/app/Http/Kernel.php',
@@ -299,14 +328,17 @@ class ComposerStaticInit3b7a9c22cf6231450f7779faf8483b7e
         'App\\Models\\AccountingInstruction' => __DIR__ . '/../..' . '/app/Models/AccountingInstruction.php',
         'App\\Models\\AccountingTransaction' => __DIR__ . '/../..' . '/app/Models/AccountingTransaction.php',
         'App\\Models\\Entity' => __DIR__ . '/../..' . '/app/Models/Entity.php',
+        'App\\Models\\Group' => __DIR__ . '/../..' . '/app/Models/Group.php',
         'App\\Models\\Invoice' => __DIR__ . '/../..' . '/app/Models/Invoice.php',
         'App\\Models\\Member' => __DIR__ . '/../..' . '/app/Models/Member.php',
+        'App\\Models\\Product' => __DIR__ . '/../..' . '/app/Models/Product.php',
         'App\\Models\\Rfid' => __DIR__ . '/../..' . '/app/Models/Rfid.php',
         'App\\Models\\Subscription' => __DIR__ . '/../..' . '/app/Models/Subscription.php',
         'App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AppServiceProvider.php',
         'App\\Providers\\EventServiceProvider' => __DIR__ . '/../..' . '/app/Providers/EventServiceProvider.php',
         'App\\Providers\\RouteServiceProvider' => __DIR__ . '/../..' . '/app/Providers/RouteServiceProvider.php',
         'App\\Traits\\AccountingPeriod' => __DIR__ . '/../..' . '/app/Traits/AccountingPeriod.php',
+        'App\\Traits\\Pagination' => __DIR__ . '/../..' . '/app/Traits/Pagination.php',
         'App\\User' => __DIR__ . '/../..' . '/app/User.php',
         'Carbon\\Carbon' => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon/Carbon.php',
         'Carbon\\CarbonInterval' => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon/CarbonInterval.php',
@@ -1054,6 +1086,7 @@ class ComposerStaticInit3b7a9c22cf6231450f7779faf8483b7e
         'Illuminate\\Database\\Schema\\Grammars\\SQLiteGrammar' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Database/Schema/Grammars/SQLiteGrammar.php',
         'Illuminate\\Database\\Schema\\Grammars\\SqlServerGrammar' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Database/Schema/Grammars/SqlServerGrammar.php',
         'Illuminate\\Database\\Schema\\MySqlBuilder' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Database/Schema/MySqlBuilder.php',
+        'Illuminate\\Database\\Schema\\PostgresBuilder' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Database/Schema/PostgresBuilder.php',
         'Illuminate\\Database\\SeedServiceProvider' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Database/SeedServiceProvider.php',
         'Illuminate\\Database\\Seeder' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Database/Seeder.php',
         'Illuminate\\Database\\SqlServerConnection' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Database/SqlServerConnection.php',
@@ -1343,6 +1376,24 @@ class ComposerStaticInit3b7a9c22cf6231450f7779faf8483b7e
         'JakubOnderka\\PhpConsoleColor\\ConsoleColor' => __DIR__ . '/..' . '/jakub-onderka/php-console-color/src/JakubOnderka/PhpConsoleColor/ConsoleColor.php',
         'JakubOnderka\\PhpConsoleColor\\InvalidStyleException' => __DIR__ . '/..' . '/jakub-onderka/php-console-color/src/JakubOnderka/PhpConsoleColor/InvalidStyleException.php',
         'JakubOnderka\\PhpConsoleHighlighter\\Highlighter' => __DIR__ . '/..' . '/jakub-onderka/php-console-highlighter/src/JakubOnderka/PhpConsoleHighlighter/Highlighter.php',
+        'League\\Event\\AbstractEvent' => __DIR__ . '/..' . '/league/event/src/AbstractEvent.php',
+        'League\\Event\\AbstractListener' => __DIR__ . '/..' . '/league/event/src/AbstractListener.php',
+        'League\\Event\\CallbackListener' => __DIR__ . '/..' . '/league/event/src/CallbackListener.php',
+        'League\\Event\\Emitter' => __DIR__ . '/..' . '/league/event/src/Emitter.php',
+        'League\\Event\\EmitterAwareInterface' => __DIR__ . '/..' . '/league/event/src/EmitterAwareInterface.php',
+        'League\\Event\\EmitterAwareTrait' => __DIR__ . '/..' . '/league/event/src/EmitterAwareTrait.php',
+        'League\\Event\\EmitterInterface' => __DIR__ . '/..' . '/league/event/src/EmitterInterface.php',
+        'League\\Event\\EmitterTrait' => __DIR__ . '/..' . '/league/event/src/EmitterTrait.php',
+        'League\\Event\\Event' => __DIR__ . '/..' . '/league/event/src/Event.php',
+        'League\\Event\\EventInterface' => __DIR__ . '/..' . '/league/event/src/EventInterface.php',
+        'League\\Event\\Generator' => __DIR__ . '/..' . '/league/event/src/Generator.php',
+        'League\\Event\\GeneratorInterface' => __DIR__ . '/..' . '/league/event/src/GeneratorInterface.php',
+        'League\\Event\\GeneratorTrait' => __DIR__ . '/..' . '/league/event/src/GeneratorTrait.php',
+        'League\\Event\\ListenerAcceptor' => __DIR__ . '/..' . '/league/event/src/ListenerAcceptor.php',
+        'League\\Event\\ListenerAcceptorInterface' => __DIR__ . '/..' . '/league/event/src/ListenerAcceptorInterface.php',
+        'League\\Event\\ListenerInterface' => __DIR__ . '/..' . '/league/event/src/ListenerInterface.php',
+        'League\\Event\\ListenerProviderInterface' => __DIR__ . '/..' . '/league/event/src/ListenerProviderInterface.php',
+        'League\\Event\\OneTimeListener' => __DIR__ . '/..' . '/league/event/src/OneTimeListener.php',
         'League\\Flysystem\\AdapterInterface' => __DIR__ . '/..' . '/league/flysystem/src/AdapterInterface.php',
         'League\\Flysystem\\Adapter\\AbstractAdapter' => __DIR__ . '/..' . '/league/flysystem/src/Adapter/AbstractAdapter.php',
         'League\\Flysystem\\Adapter\\AbstractFtpAdapter' => __DIR__ . '/..' . '/league/flysystem/src/Adapter/AbstractFtpAdapter.php',
@@ -1371,6 +1422,8 @@ class ComposerStaticInit3b7a9c22cf6231450f7779faf8483b7e
         'League\\Flysystem\\PluginInterface' => __DIR__ . '/..' . '/league/flysystem/src/PluginInterface.php',
         'League\\Flysystem\\Plugin\\AbstractPlugin' => __DIR__ . '/..' . '/league/flysystem/src/Plugin/AbstractPlugin.php',
         'League\\Flysystem\\Plugin\\EmptyDir' => __DIR__ . '/..' . '/league/flysystem/src/Plugin/EmptyDir.php',
+        'League\\Flysystem\\Plugin\\ForcedCopy' => __DIR__ . '/..' . '/league/flysystem/src/Plugin/ForcedCopy.php',
+        'League\\Flysystem\\Plugin\\ForcedRename' => __DIR__ . '/..' . '/league/flysystem/src/Plugin/ForcedRename.php',
         'League\\Flysystem\\Plugin\\GetWithMetadata' => __DIR__ . '/..' . '/league/flysystem/src/Plugin/GetWithMetadata.php',
         'League\\Flysystem\\Plugin\\ListFiles' => __DIR__ . '/..' . '/league/flysystem/src/Plugin/ListFiles.php',
         'League\\Flysystem\\Plugin\\ListPaths' => __DIR__ . '/..' . '/league/flysystem/src/Plugin/ListPaths.php',
@@ -1384,6 +1437,73 @@ class ComposerStaticInit3b7a9c22cf6231450f7779faf8483b7e
         'League\\Flysystem\\Util\\ContentListingFormatter' => __DIR__ . '/..' . '/league/flysystem/src/Util/ContentListingFormatter.php',
         'League\\Flysystem\\Util\\MimeType' => __DIR__ . '/..' . '/league/flysystem/src/Util/MimeType.php',
         'League\\Flysystem\\Util\\StreamHasher' => __DIR__ . '/..' . '/league/flysystem/src/Util/StreamHasher.php',
+        'League\\OAuth2\\Server\\AbstractServer' => __DIR__ . '/..' . '/league/oauth2-server/src/AbstractServer.php',
+        'League\\OAuth2\\Server\\AuthorizationServer' => __DIR__ . '/..' . '/league/oauth2-server/src/AuthorizationServer.php',
+        'League\\OAuth2\\Server\\Entity\\AbstractTokenEntity' => __DIR__ . '/..' . '/league/oauth2-server/src/Entity/AbstractTokenEntity.php',
+        'League\\OAuth2\\Server\\Entity\\AccessTokenEntity' => __DIR__ . '/..' . '/league/oauth2-server/src/Entity/AccessTokenEntity.php',
+        'League\\OAuth2\\Server\\Entity\\AuthCodeEntity' => __DIR__ . '/..' . '/league/oauth2-server/src/Entity/AuthCodeEntity.php',
+        'League\\OAuth2\\Server\\Entity\\ClientEntity' => __DIR__ . '/..' . '/league/oauth2-server/src/Entity/ClientEntity.php',
+        'League\\OAuth2\\Server\\Entity\\EntityTrait' => __DIR__ . '/..' . '/league/oauth2-server/src/Entity/EntityTrait.php',
+        'League\\OAuth2\\Server\\Entity\\RefreshTokenEntity' => __DIR__ . '/..' . '/league/oauth2-server/src/Entity/RefreshTokenEntity.php',
+        'League\\OAuth2\\Server\\Entity\\ScopeEntity' => __DIR__ . '/..' . '/league/oauth2-server/src/Entity/ScopeEntity.php',
+        'League\\OAuth2\\Server\\Entity\\SessionEntity' => __DIR__ . '/..' . '/league/oauth2-server/src/Entity/SessionEntity.php',
+        'League\\OAuth2\\Server\\Event\\ClientAuthenticationFailedEvent' => __DIR__ . '/..' . '/league/oauth2-server/src/Event/ClientAuthenticationFailedEvent.php',
+        'League\\OAuth2\\Server\\Event\\SessionOwnerEvent' => __DIR__ . '/..' . '/league/oauth2-server/src/Event/SessionOwnerEvent.php',
+        'League\\OAuth2\\Server\\Event\\UserAuthenticationFailedEvent' => __DIR__ . '/..' . '/league/oauth2-server/src/Event/UserAuthenticationFailedEvent.php',
+        'League\\OAuth2\\Server\\Exception\\AccessDeniedException' => __DIR__ . '/..' . '/league/oauth2-server/src/Exception/AccessDeniedException.php',
+        'League\\OAuth2\\Server\\Exception\\InvalidClientException' => __DIR__ . '/..' . '/league/oauth2-server/src/Exception/InvalidClientException.php',
+        'League\\OAuth2\\Server\\Exception\\InvalidCredentialsException' => __DIR__ . '/..' . '/league/oauth2-server/src/Exception/InvalidCredentialsException.php',
+        'League\\OAuth2\\Server\\Exception\\InvalidGrantException' => __DIR__ . '/..' . '/league/oauth2-server/src/Exception/InvalidGrantException.php',
+        'League\\OAuth2\\Server\\Exception\\InvalidRefreshException' => __DIR__ . '/..' . '/league/oauth2-server/src/Exception/InvalidRefreshException.php',
+        'League\\OAuth2\\Server\\Exception\\InvalidRequestException' => __DIR__ . '/..' . '/league/oauth2-server/src/Exception/InvalidRequestException.php',
+        'League\\OAuth2\\Server\\Exception\\InvalidScopeException' => __DIR__ . '/..' . '/league/oauth2-server/src/Exception/InvalidScopeException.php',
+        'League\\OAuth2\\Server\\Exception\\OAuthException' => __DIR__ . '/..' . '/league/oauth2-server/src/Exception/OAuthException.php',
+        'League\\OAuth2\\Server\\Exception\\ServerErrorException' => __DIR__ . '/..' . '/league/oauth2-server/src/Exception/ServerErrorException.php',
+        'League\\OAuth2\\Server\\Exception\\UnauthorizedClientException' => __DIR__ . '/..' . '/league/oauth2-server/src/Exception/UnauthorizedClientException.php',
+        'League\\OAuth2\\Server\\Exception\\UnsupportedGrantTypeException' => __DIR__ . '/..' . '/league/oauth2-server/src/Exception/UnsupportedGrantTypeException.php',
+        'League\\OAuth2\\Server\\Exception\\UnsupportedResponseTypeException' => __DIR__ . '/..' . '/league/oauth2-server/src/Exception/UnsupportedResponseTypeException.php',
+        'League\\OAuth2\\Server\\Grant\\AbstractGrant' => __DIR__ . '/..' . '/league/oauth2-server/src/Grant/AbstractGrant.php',
+        'League\\OAuth2\\Server\\Grant\\AuthCodeGrant' => __DIR__ . '/..' . '/league/oauth2-server/src/Grant/AuthCodeGrant.php',
+        'League\\OAuth2\\Server\\Grant\\ClientCredentialsGrant' => __DIR__ . '/..' . '/league/oauth2-server/src/Grant/ClientCredentialsGrant.php',
+        'League\\OAuth2\\Server\\Grant\\GrantTypeInterface' => __DIR__ . '/..' . '/league/oauth2-server/src/Grant/GrantTypeInterface.php',
+        'League\\OAuth2\\Server\\Grant\\PasswordGrant' => __DIR__ . '/..' . '/league/oauth2-server/src/Grant/PasswordGrant.php',
+        'League\\OAuth2\\Server\\Grant\\RefreshTokenGrant' => __DIR__ . '/..' . '/league/oauth2-server/src/Grant/RefreshTokenGrant.php',
+        'League\\OAuth2\\Server\\ResourceServer' => __DIR__ . '/..' . '/league/oauth2-server/src/ResourceServer.php',
+        'League\\OAuth2\\Server\\Storage\\AbstractStorage' => __DIR__ . '/..' . '/league/oauth2-server/src/Storage/AbstractStorage.php',
+        'League\\OAuth2\\Server\\Storage\\AccessTokenInterface' => __DIR__ . '/..' . '/league/oauth2-server/src/Storage/AccessTokenInterface.php',
+        'League\\OAuth2\\Server\\Storage\\AuthCodeInterface' => __DIR__ . '/..' . '/league/oauth2-server/src/Storage/AuthCodeInterface.php',
+        'League\\OAuth2\\Server\\Storage\\ClientInterface' => __DIR__ . '/..' . '/league/oauth2-server/src/Storage/ClientInterface.php',
+        'League\\OAuth2\\Server\\Storage\\MacTokenInterface' => __DIR__ . '/..' . '/league/oauth2-server/src/Storage/MacTokenInterface.php',
+        'League\\OAuth2\\Server\\Storage\\RefreshTokenInterface' => __DIR__ . '/..' . '/league/oauth2-server/src/Storage/RefreshTokenInterface.php',
+        'League\\OAuth2\\Server\\Storage\\ScopeInterface' => __DIR__ . '/..' . '/league/oauth2-server/src/Storage/ScopeInterface.php',
+        'League\\OAuth2\\Server\\Storage\\SessionInterface' => __DIR__ . '/..' . '/league/oauth2-server/src/Storage/SessionInterface.php',
+        'League\\OAuth2\\Server\\Storage\\StorageInterface' => __DIR__ . '/..' . '/league/oauth2-server/src/Storage/StorageInterface.php',
+        'League\\OAuth2\\Server\\TokenType\\AbstractTokenType' => __DIR__ . '/..' . '/league/oauth2-server/src/TokenType/AbstractTokenType.php',
+        'League\\OAuth2\\Server\\TokenType\\Bearer' => __DIR__ . '/..' . '/league/oauth2-server/src/TokenType/Bearer.php',
+        'League\\OAuth2\\Server\\TokenType\\MAC' => __DIR__ . '/..' . '/league/oauth2-server/src/TokenType/MAC.php',
+        'League\\OAuth2\\Server\\TokenType\\TokenTypeInterface' => __DIR__ . '/..' . '/league/oauth2-server/src/TokenType/TokenTypeInterface.php',
+        'League\\OAuth2\\Server\\Util\\KeyAlgorithm\\DefaultAlgorithm' => __DIR__ . '/..' . '/league/oauth2-server/src/Util/KeyAlgorithm/DefaultAlgorithm.php',
+        'League\\OAuth2\\Server\\Util\\KeyAlgorithm\\KeyAlgorithmInterface' => __DIR__ . '/..' . '/league/oauth2-server/src/Util/KeyAlgorithm/KeyAlgorithmInterface.php',
+        'League\\OAuth2\\Server\\Util\\RedirectUri' => __DIR__ . '/..' . '/league/oauth2-server/src/Util/RedirectUri.php',
+        'League\\OAuth2\\Server\\Util\\SecureKey' => __DIR__ . '/..' . '/league/oauth2-server/src/Util/SecureKey.php',
+        'LucaDegasperi\\OAuth2Server\\Authorizer' => __DIR__ . '/..' . '/lucadegasperi/oauth2-server-laravel/src/Authorizer.php',
+        'LucaDegasperi\\OAuth2Server\\Exceptions\\NoActiveAccessTokenException' => __DIR__ . '/..' . '/lucadegasperi/oauth2-server-laravel/src/Exceptions/NoActiveAccessTokenException.php',
+        'LucaDegasperi\\OAuth2Server\\Facades\\Authorizer' => __DIR__ . '/..' . '/lucadegasperi/oauth2-server-laravel/src/Facades/Authorizer.php',
+        'LucaDegasperi\\OAuth2Server\\Lumen\\OAuth2ServerServiceProvider' => __DIR__ . '/..' . '/lucadegasperi/oauth2-server-laravel/src/Lumen/OAuth2ServerServiceProvider.php',
+        'LucaDegasperi\\OAuth2Server\\Middleware\\CheckAuthCodeRequestMiddleware' => __DIR__ . '/..' . '/lucadegasperi/oauth2-server-laravel/src/Middleware/CheckAuthCodeRequestMiddleware.php',
+        'LucaDegasperi\\OAuth2Server\\Middleware\\OAuthClientOwnerMiddleware' => __DIR__ . '/..' . '/lucadegasperi/oauth2-server-laravel/src/Middleware/OAuthClientOwnerMiddleware.php',
+        'LucaDegasperi\\OAuth2Server\\Middleware\\OAuthExceptionHandlerMiddleware' => __DIR__ . '/..' . '/lucadegasperi/oauth2-server-laravel/src/Middleware/OAuthExceptionHandlerMiddleware.php',
+        'LucaDegasperi\\OAuth2Server\\Middleware\\OAuthMiddleware' => __DIR__ . '/..' . '/lucadegasperi/oauth2-server-laravel/src/Middleware/OAuthMiddleware.php',
+        'LucaDegasperi\\OAuth2Server\\Middleware\\OAuthUserOwnerMiddleware' => __DIR__ . '/..' . '/lucadegasperi/oauth2-server-laravel/src/Middleware/OAuthUserOwnerMiddleware.php',
+        'LucaDegasperi\\OAuth2Server\\OAuth2ServerServiceProvider' => __DIR__ . '/..' . '/lucadegasperi/oauth2-server-laravel/src/OAuth2ServerServiceProvider.php',
+        'LucaDegasperi\\OAuth2Server\\Storage\\AbstractFluentAdapter' => __DIR__ . '/..' . '/lucadegasperi/oauth2-server-laravel/src/Storage/AbstractFluentAdapter.php',
+        'LucaDegasperi\\OAuth2Server\\Storage\\FluentAccessToken' => __DIR__ . '/..' . '/lucadegasperi/oauth2-server-laravel/src/Storage/FluentAccessToken.php',
+        'LucaDegasperi\\OAuth2Server\\Storage\\FluentAuthCode' => __DIR__ . '/..' . '/lucadegasperi/oauth2-server-laravel/src/Storage/FluentAuthCode.php',
+        'LucaDegasperi\\OAuth2Server\\Storage\\FluentClient' => __DIR__ . '/..' . '/lucadegasperi/oauth2-server-laravel/src/Storage/FluentClient.php',
+        'LucaDegasperi\\OAuth2Server\\Storage\\FluentRefreshToken' => __DIR__ . '/..' . '/lucadegasperi/oauth2-server-laravel/src/Storage/FluentRefreshToken.php',
+        'LucaDegasperi\\OAuth2Server\\Storage\\FluentScope' => __DIR__ . '/..' . '/lucadegasperi/oauth2-server-laravel/src/Storage/FluentScope.php',
+        'LucaDegasperi\\OAuth2Server\\Storage\\FluentSession' => __DIR__ . '/..' . '/lucadegasperi/oauth2-server-laravel/src/Storage/FluentSession.php',
+        'LucaDegasperi\\OAuth2Server\\Storage\\FluentStorageServiceProvider' => __DIR__ . '/..' . '/lucadegasperi/oauth2-server-laravel/src/Storage/FluentStorageServiceProvider.php',
         'Mockery' => __DIR__ . '/..' . '/mockery/mockery/library/Mockery.php',
         'Mockery\\Adapter\\Phpunit\\MockeryPHPUnitIntegration' => __DIR__ . '/..' . '/mockery/mockery/library/Mockery/Adapter/Phpunit/MockeryPHPUnitIntegration.php',
         'Mockery\\Adapter\\Phpunit\\MockeryTestCase' => __DIR__ . '/..' . '/mockery/mockery/library/Mockery/Adapter/Phpunit/MockeryTestCase.php',
@@ -2319,6 +2439,7 @@ class ComposerStaticInit3b7a9c22cf6231450f7779faf8483b7e
         'PhpSpec\\Process\\ReRunner\\PcntlReRunner' => __DIR__ . '/..' . '/phpspec/phpspec/src/PhpSpec/Process/ReRunner/PcntlReRunner.php',
         'PhpSpec\\Process\\ReRunner\\PhpExecutableReRunner' => __DIR__ . '/..' . '/phpspec/phpspec/src/PhpSpec/Process/ReRunner/PhpExecutableReRunner.php',
         'PhpSpec\\Process\\ReRunner\\PlatformSpecificReRunner' => __DIR__ . '/..' . '/phpspec/phpspec/src/PhpSpec/Process/ReRunner/PlatformSpecificReRunner.php',
+        'PhpSpec\\Process\\ReRunner\\ProcOpenReRunner' => __DIR__ . '/..' . '/phpspec/phpspec/src/PhpSpec/Process/ReRunner/ProcOpenReRunner.php',
         'PhpSpec\\Process\\ReRunner\\WindowsPassthruReRunner' => __DIR__ . '/..' . '/phpspec/phpspec/src/PhpSpec/Process/ReRunner/WindowsPassthruReRunner.php',
         'PhpSpec\\Process\\Shutdown\\Shutdown' => __DIR__ . '/..' . '/phpspec/phpspec/src/PhpSpec/Process/Shutdown/Shutdown.php',
         'PhpSpec\\Process\\Shutdown\\ShutdownActionInterface' => __DIR__ . '/..' . '/phpspec/phpspec/src/PhpSpec/Process/Shutdown/ShutdownActionInterface.php',
@@ -2430,6 +2551,10 @@ class ComposerStaticInit3b7a9c22cf6231450f7779faf8483b7e
         'Prophecy\\Exception\\Prophecy\\MethodProphecyException' => __DIR__ . '/..' . '/phpspec/prophecy/src/Prophecy/Exception/Prophecy/MethodProphecyException.php',
         'Prophecy\\Exception\\Prophecy\\ObjectProphecyException' => __DIR__ . '/..' . '/phpspec/prophecy/src/Prophecy/Exception/Prophecy/ObjectProphecyException.php',
         'Prophecy\\Exception\\Prophecy\\ProphecyException' => __DIR__ . '/..' . '/phpspec/prophecy/src/Prophecy/Exception/Prophecy/ProphecyException.php',
+        'Prophecy\\PhpDocumentor\\ClassAndInterfaceTagRetriever' => __DIR__ . '/..' . '/phpspec/prophecy/src/Prophecy/PhpDocumentor/ClassAndInterfaceTagRetriever.php',
+        'Prophecy\\PhpDocumentor\\ClassTagRetriever' => __DIR__ . '/..' . '/phpspec/prophecy/src/Prophecy/PhpDocumentor/ClassTagRetriever.php',
+        'Prophecy\\PhpDocumentor\\LegacyClassTagRetriever' => __DIR__ . '/..' . '/phpspec/prophecy/src/Prophecy/PhpDocumentor/LegacyClassTagRetriever.php',
+        'Prophecy\\PhpDocumentor\\MethodTagRetrieverInterface' => __DIR__ . '/..' . '/phpspec/prophecy/src/Prophecy/PhpDocumentor/MethodTagRetrieverInterface.php',
         'Prophecy\\Prediction\\CallPrediction' => __DIR__ . '/..' . '/phpspec/prophecy/src/Prophecy/Prediction/CallPrediction.php',
         'Prophecy\\Prediction\\CallTimesPrediction' => __DIR__ . '/..' . '/phpspec/prophecy/src/Prophecy/Prediction/CallTimesPrediction.php',
         'Prophecy\\Prediction\\CallbackPrediction' => __DIR__ . '/..' . '/phpspec/prophecy/src/Prophecy/Prediction/CallbackPrediction.php',
@@ -2685,6 +2810,7 @@ class ComposerStaticInit3b7a9c22cf6231450f7779faf8483b7e
         'Symfony\\Component\\Console\\Tester\\ApplicationTester' => __DIR__ . '/..' . '/symfony/console/Tester/ApplicationTester.php',
         'Symfony\\Component\\Console\\Tester\\CommandTester' => __DIR__ . '/..' . '/symfony/console/Tester/CommandTester.php',
         'Symfony\\Component\\CssSelector\\CssSelector' => __DIR__ . '/..' . '/symfony/css-selector/CssSelector.php',
+        'Symfony\\Component\\CssSelector\\CssSelectorConverter' => __DIR__ . '/..' . '/symfony/css-selector/CssSelectorConverter.php',
         'Symfony\\Component\\CssSelector\\Exception\\ExceptionInterface' => __DIR__ . '/..' . '/symfony/css-selector/Exception/ExceptionInterface.php',
         'Symfony\\Component\\CssSelector\\Exception\\ExpressionErrorException' => __DIR__ . '/..' . '/symfony/css-selector/Exception/ExpressionErrorException.php',
         'Symfony\\Component\\CssSelector\\Exception\\InternalErrorException' => __DIR__ . '/..' . '/symfony/css-selector/Exception/InternalErrorException.php',
@@ -2812,6 +2938,7 @@ class ComposerStaticInit3b7a9c22cf6231450f7779faf8483b7e
         'Symfony\\Component\\HttpFoundation\\ApacheRequest' => __DIR__ . '/..' . '/symfony/http-foundation/ApacheRequest.php',
         'Symfony\\Component\\HttpFoundation\\BinaryFileResponse' => __DIR__ . '/..' . '/symfony/http-foundation/BinaryFileResponse.php',
         'Symfony\\Component\\HttpFoundation\\Cookie' => __DIR__ . '/..' . '/symfony/http-foundation/Cookie.php',
+        'Symfony\\Component\\HttpFoundation\\Exception\\ConflictingHeadersException' => __DIR__ . '/..' . '/symfony/http-foundation/Exception/ConflictingHeadersException.php',
         'Symfony\\Component\\HttpFoundation\\ExpressionRequestMatcher' => __DIR__ . '/..' . '/symfony/http-foundation/ExpressionRequestMatcher.php',
         'Symfony\\Component\\HttpFoundation\\FileBag' => __DIR__ . '/..' . '/symfony/http-foundation/FileBag.php',
         'Symfony\\Component\\HttpFoundation\\File\\Exception\\AccessDeniedException' => __DIR__ . '/..' . '/symfony/http-foundation/File/Exception/AccessDeniedException.php',
@@ -2924,6 +3051,7 @@ class ComposerStaticInit3b7a9c22cf6231450f7779faf8483b7e
         'Symfony\\Component\\HttpKernel\\EventListener\\SurrogateListener' => __DIR__ . '/..' . '/symfony/http-kernel/EventListener/SurrogateListener.php',
         'Symfony\\Component\\HttpKernel\\EventListener\\TestSessionListener' => __DIR__ . '/..' . '/symfony/http-kernel/EventListener/TestSessionListener.php',
         'Symfony\\Component\\HttpKernel\\EventListener\\TranslatorListener' => __DIR__ . '/..' . '/symfony/http-kernel/EventListener/TranslatorListener.php',
+        'Symfony\\Component\\HttpKernel\\EventListener\\ValidateRequestListener' => __DIR__ . '/..' . '/symfony/http-kernel/EventListener/ValidateRequestListener.php',
         'Symfony\\Component\\HttpKernel\\Event\\FilterControllerEvent' => __DIR__ . '/..' . '/symfony/http-kernel/Event/FilterControllerEvent.php',
         'Symfony\\Component\\HttpKernel\\Event\\FilterResponseEvent' => __DIR__ . '/..' . '/symfony/http-kernel/Event/FilterResponseEvent.php',
         'Symfony\\Component\\HttpKernel\\Event\\FinishRequestEvent' => __DIR__ . '/..' . '/symfony/http-kernel/Event/FinishRequestEvent.php',
@@ -3144,33 +3272,70 @@ class ComposerStaticInit3b7a9c22cf6231450f7779faf8483b7e
         'Symfony\\Polyfill\\Util\\TestListener' => __DIR__ . '/..' . '/symfony/polyfill-util/TestListener.php',
         'TestCase' => __DIR__ . '/../..' . '/tests/TestCase.php',
         'Text_Template' => __DIR__ . '/..' . '/phpunit/php-text-template/src/Template.php',
+        'Webmozart\\Assert\\Assert' => __DIR__ . '/..' . '/webmozart/assert/src/Assert.php',
         'XdgBaseDir\\Xdg' => __DIR__ . '/..' . '/dnoegel/php-xdg-base-dir/src/Xdg.php',
         'ZipInterface' => __DIR__ . '/..' . '/cybermonde/odtphp/library/zip/ZipInterface.php',
-        'phpDocumentor\\Reflection\\DocBlock' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/phpDocumentor/Reflection/DocBlock.php',
-        'phpDocumentor\\Reflection\\DocBlock\\Context' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/phpDocumentor/Reflection/DocBlock/Context.php',
-        'phpDocumentor\\Reflection\\DocBlock\\Description' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/phpDocumentor/Reflection/DocBlock/Description.php',
-        'phpDocumentor\\Reflection\\DocBlock\\Location' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/phpDocumentor/Reflection/DocBlock/Location.php',
-        'phpDocumentor\\Reflection\\DocBlock\\Serializer' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/phpDocumentor/Reflection/DocBlock/Serializer.php',
-        'phpDocumentor\\Reflection\\DocBlock\\Tag' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/phpDocumentor/Reflection/DocBlock/Tag.php',
-        'phpDocumentor\\Reflection\\DocBlock\\Tag\\AuthorTag' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/phpDocumentor/Reflection/DocBlock/Tag/AuthorTag.php',
-        'phpDocumentor\\Reflection\\DocBlock\\Tag\\CoversTag' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/phpDocumentor/Reflection/DocBlock/Tag/CoversTag.php',
-        'phpDocumentor\\Reflection\\DocBlock\\Tag\\DeprecatedTag' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/phpDocumentor/Reflection/DocBlock/Tag/DeprecatedTag.php',
-        'phpDocumentor\\Reflection\\DocBlock\\Tag\\ExampleTag' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/phpDocumentor/Reflection/DocBlock/Tag/ExampleTag.php',
-        'phpDocumentor\\Reflection\\DocBlock\\Tag\\LinkTag' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/phpDocumentor/Reflection/DocBlock/Tag/LinkTag.php',
-        'phpDocumentor\\Reflection\\DocBlock\\Tag\\MethodTag' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/phpDocumentor/Reflection/DocBlock/Tag/MethodTag.php',
-        'phpDocumentor\\Reflection\\DocBlock\\Tag\\ParamTag' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/phpDocumentor/Reflection/DocBlock/Tag/ParamTag.php',
-        'phpDocumentor\\Reflection\\DocBlock\\Tag\\PropertyReadTag' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/phpDocumentor/Reflection/DocBlock/Tag/PropertyReadTag.php',
-        'phpDocumentor\\Reflection\\DocBlock\\Tag\\PropertyTag' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/phpDocumentor/Reflection/DocBlock/Tag/PropertyTag.php',
-        'phpDocumentor\\Reflection\\DocBlock\\Tag\\PropertyWriteTag' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/phpDocumentor/Reflection/DocBlock/Tag/PropertyWriteTag.php',
-        'phpDocumentor\\Reflection\\DocBlock\\Tag\\ReturnTag' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/phpDocumentor/Reflection/DocBlock/Tag/ReturnTag.php',
-        'phpDocumentor\\Reflection\\DocBlock\\Tag\\SeeTag' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/phpDocumentor/Reflection/DocBlock/Tag/SeeTag.php',
-        'phpDocumentor\\Reflection\\DocBlock\\Tag\\SinceTag' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/phpDocumentor/Reflection/DocBlock/Tag/SinceTag.php',
-        'phpDocumentor\\Reflection\\DocBlock\\Tag\\SourceTag' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/phpDocumentor/Reflection/DocBlock/Tag/SourceTag.php',
-        'phpDocumentor\\Reflection\\DocBlock\\Tag\\ThrowsTag' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/phpDocumentor/Reflection/DocBlock/Tag/ThrowsTag.php',
-        'phpDocumentor\\Reflection\\DocBlock\\Tag\\UsesTag' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/phpDocumentor/Reflection/DocBlock/Tag/UsesTag.php',
-        'phpDocumentor\\Reflection\\DocBlock\\Tag\\VarTag' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/phpDocumentor/Reflection/DocBlock/Tag/VarTag.php',
-        'phpDocumentor\\Reflection\\DocBlock\\Tag\\VersionTag' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/phpDocumentor/Reflection/DocBlock/Tag/VersionTag.php',
-        'phpDocumentor\\Reflection\\DocBlock\\Type\\Collection' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/phpDocumentor/Reflection/DocBlock/Type/Collection.php',
+        'phpDocumentor\\Reflection\\DocBlock' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/DocBlock.php',
+        'phpDocumentor\\Reflection\\DocBlockFactory' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/DocBlockFactory.php',
+        'phpDocumentor\\Reflection\\DocBlockFactoryInterface' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/DocBlockFactoryInterface.php',
+        'phpDocumentor\\Reflection\\DocBlock\\Description' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/DocBlock/Description.php',
+        'phpDocumentor\\Reflection\\DocBlock\\DescriptionFactory' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/DocBlock/DescriptionFactory.php',
+        'phpDocumentor\\Reflection\\DocBlock\\Serializer' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/DocBlock/Serializer.php',
+        'phpDocumentor\\Reflection\\DocBlock\\StandardTagFactory' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/DocBlock/StandardTagFactory.php',
+        'phpDocumentor\\Reflection\\DocBlock\\Tag' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/DocBlock/Tag.php',
+        'phpDocumentor\\Reflection\\DocBlock\\TagFactory' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/DocBlock/TagFactory.php',
+        'phpDocumentor\\Reflection\\DocBlock\\Tags\\Author' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/DocBlock/Tags/Author.php',
+        'phpDocumentor\\Reflection\\DocBlock\\Tags\\BaseTag' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/DocBlock/Tags/BaseTag.php',
+        'phpDocumentor\\Reflection\\DocBlock\\Tags\\Covers' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/DocBlock/Tags/Covers.php',
+        'phpDocumentor\\Reflection\\DocBlock\\Tags\\Deprecated' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/DocBlock/Tags/Deprecated.php',
+        'phpDocumentor\\Reflection\\DocBlock\\Tags\\Example' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/DocBlock/Tags/Example.php',
+        'phpDocumentor\\Reflection\\DocBlock\\Tags\\Factory\\StaticMethod' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/DocBlock/Tags/Factory/StaticMethod.php',
+        'phpDocumentor\\Reflection\\DocBlock\\Tags\\Factory\\Strategy' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/DocBlock/Tags/Factory/Strategy.php',
+        'phpDocumentor\\Reflection\\DocBlock\\Tags\\Formatter' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/DocBlock/Tags/Formatter.php',
+        'phpDocumentor\\Reflection\\DocBlock\\Tags\\Formatter\\PassthroughFormatter' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/DocBlock/Tags/Formatter/PassthroughFormatter.php',
+        'phpDocumentor\\Reflection\\DocBlock\\Tags\\Generic' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/DocBlock/Tags/Generic.php',
+        'phpDocumentor\\Reflection\\DocBlock\\Tags\\Link' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/DocBlock/Tags/Link.php',
+        'phpDocumentor\\Reflection\\DocBlock\\Tags\\Method' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/DocBlock/Tags/Method.php',
+        'phpDocumentor\\Reflection\\DocBlock\\Tags\\Param' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/DocBlock/Tags/Param.php',
+        'phpDocumentor\\Reflection\\DocBlock\\Tags\\Property' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/DocBlock/Tags/Property.php',
+        'phpDocumentor\\Reflection\\DocBlock\\Tags\\PropertyRead' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/DocBlock/Tags/PropertyRead.php',
+        'phpDocumentor\\Reflection\\DocBlock\\Tags\\PropertyWrite' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/DocBlock/Tags/PropertyWrite.php',
+        'phpDocumentor\\Reflection\\DocBlock\\Tags\\Return_' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/DocBlock/Tags/Return_.php',
+        'phpDocumentor\\Reflection\\DocBlock\\Tags\\See' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/DocBlock/Tags/See.php',
+        'phpDocumentor\\Reflection\\DocBlock\\Tags\\Since' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/DocBlock/Tags/Since.php',
+        'phpDocumentor\\Reflection\\DocBlock\\Tags\\Source' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/DocBlock/Tags/Source.php',
+        'phpDocumentor\\Reflection\\DocBlock\\Tags\\Throws' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/DocBlock/Tags/Throws.php',
+        'phpDocumentor\\Reflection\\DocBlock\\Tags\\Uses' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/DocBlock/Tags/Uses.php',
+        'phpDocumentor\\Reflection\\DocBlock\\Tags\\Var_' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/DocBlock/Tags/Var_.php',
+        'phpDocumentor\\Reflection\\DocBlock\\Tags\\Version' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/DocBlock/Tags/Version.php',
+        'phpDocumentor\\Reflection\\Element' => __DIR__ . '/..' . '/phpdocumentor/reflection-common/src/Element.php',
+        'phpDocumentor\\Reflection\\ExampleFinder' => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src/DocBlock/ExampleFinder.php',
+        'phpDocumentor\\Reflection\\File' => __DIR__ . '/..' . '/phpdocumentor/reflection-common/src/File.php',
+        'phpDocumentor\\Reflection\\Fqsen' => __DIR__ . '/..' . '/phpdocumentor/reflection-common/src/Fqsen.php',
+        'phpDocumentor\\Reflection\\FqsenResolver' => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src/FqsenResolver.php',
+        'phpDocumentor\\Reflection\\Location' => __DIR__ . '/..' . '/phpdocumentor/reflection-common/src/Location.php',
+        'phpDocumentor\\Reflection\\Project' => __DIR__ . '/..' . '/phpdocumentor/reflection-common/src/Project.php',
+        'phpDocumentor\\Reflection\\ProjectFactory' => __DIR__ . '/..' . '/phpdocumentor/reflection-common/src/ProjectFactory.php',
+        'phpDocumentor\\Reflection\\Type' => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src/Type.php',
+        'phpDocumentor\\Reflection\\TypeResolver' => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src/TypeResolver.php',
+        'phpDocumentor\\Reflection\\Types\\Array_' => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src/Types/Array_.php',
+        'phpDocumentor\\Reflection\\Types\\Boolean' => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src/Types/Boolean.php',
+        'phpDocumentor\\Reflection\\Types\\Callable_' => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src/Types/Callable_.php',
+        'phpDocumentor\\Reflection\\Types\\Compound' => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src/Types/Compound.php',
+        'phpDocumentor\\Reflection\\Types\\Context' => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src/Types/Context.php',
+        'phpDocumentor\\Reflection\\Types\\ContextFactory' => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src/Types/ContextFactory.php',
+        'phpDocumentor\\Reflection\\Types\\Float_' => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src/Types/Float_.php',
+        'phpDocumentor\\Reflection\\Types\\Integer' => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src/Types/Integer.php',
+        'phpDocumentor\\Reflection\\Types\\Mixed' => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src/Types/Mixed.php',
+        'phpDocumentor\\Reflection\\Types\\Null_' => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src/Types/Null_.php',
+        'phpDocumentor\\Reflection\\Types\\Object_' => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src/Types/Object_.php',
+        'phpDocumentor\\Reflection\\Types\\Resource' => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src/Types/Resource.php',
+        'phpDocumentor\\Reflection\\Types\\Scalar' => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src/Types/Scalar.php',
+        'phpDocumentor\\Reflection\\Types\\Self_' => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src/Types/Self_.php',
+        'phpDocumentor\\Reflection\\Types\\Static_' => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src/Types/Static_.php',
+        'phpDocumentor\\Reflection\\Types\\String_' => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src/Types/String_.php',
+        'phpDocumentor\\Reflection\\Types\\This' => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src/Types/This.php',
+        'phpDocumentor\\Reflection\\Types\\Void_' => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src/Types/Void_.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

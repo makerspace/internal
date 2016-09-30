@@ -7,7 +7,8 @@
     "require": {
         "php": ">=5.5.9",
         "laravel/framework": "5.1.*",
-        "cybermonde/odtphp": "^1.7"
+        "cybermonde/odtphp": "^1.7",
+        "lucadegasperi/oauth2-server-laravel": "^5.2"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
