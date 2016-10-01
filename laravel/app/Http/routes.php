@@ -18,8 +18,14 @@ header('Access-Control-Allow-Origin: *');
 //header('Access-Control-Allow-Credentials: true');
 
 // API version 2
-Route::group(array("prefix" => "api/v2"), function()
+Route::group(["prefix" => "api/v2", "before" => "oauth"], function()
 {
+	// OAuth 2.0
+	Route::post("oauth/access_token", function() {
+		return Response::json(Authorizer::issueAccessToken());
+	});
+	// TODO: Logout?
+
 	// Debugging
 	Route::   get("debug/test",                      "V2\Debug@test");
 	Route::   get("debug/updateinstructionnumbers",  "V2\Debug@UpdateInstructionNumbers");

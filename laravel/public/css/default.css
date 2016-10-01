@@ -1,3 +1,7 @@
+html, body, #main {
+	height: 100%;
+}
+
 /* Loading React application */
 .loading-application {
 	margin: 0 auto;

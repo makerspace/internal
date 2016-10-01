@@ -64,7 +64,6 @@ var Products = React.createClass({
 					_this.error();
 				},
 			});
-//			UIkit.modal.alert("DELETE /api/v2/group/" + a.group_id);
 		});
 	},
 

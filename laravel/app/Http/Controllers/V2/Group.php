@@ -10,6 +10,8 @@ use App\Models\Entity;
 
 use App\Traits\Pagination;
 
+use LucaDegasperi\OAuth2Server\Authorizer;
+
 class Group extends Controller
 {
 	use Pagination;
@@ -17,8 +19,21 @@ class Group extends Controller
 	/**
 	 *
 	 */
-	function list(Request $request)
+	function list(Request $request, Authorizer $authorizer)
 	{
+/*
+		if($authorizer->getChecker()->getAccessToken() === null)
+		{
+			echo "Not logged in";
+		}
+		else
+		{
+			echo "Logged in";
+		}
+
+//		$user_id = $authorizer->getResourceOwnerId(); // the token user_id
+*/
+
 		// Load data from datbase
 		$result = GroupModel::list([
 			["per_page", $this->per_page($request)],

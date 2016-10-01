@@ -88,7 +88,6 @@ var Groups = React.createClass({
 					_this.error();
 				},
 			});
-//			UIkit.modal.alert("DELETE /api/v2/group/" + a.group_id);
 		});
 	},
 
@@ -113,6 +112,7 @@ var Groups = React.createClass({
 				<th>Namn</th>
 				<th>Beskrivning</th>
 				<th>Skapad</th>
+				<th></th>
 			</tr>
 		);
 	},
