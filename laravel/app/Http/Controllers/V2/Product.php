@@ -35,19 +35,8 @@ class Product extends Controller
 	{
 		$json = $request->json()->all();
 
-		// Create a unique product id if not specified
-		if(!empty($json["product_id"]))
-		{
-			$product_id = $json["product_id"];
-		}
-		else
-		{
-			$product_id = uniqid();
-		}
-
 		// Create new product
 		$entity = new ProductModel;
-		$entity->product_id  = $product_id;
 		$entity->title       = $json["title"]       ?? null;
 		$entity->description = $json["description"] ?? null;
 
@@ -63,11 +52,11 @@ class Product extends Controller
 	/**
 	 *
 	 */
-	function read(Request $request, $product_id)
+	function read(Request $request, $entity_id)
 	{
 		// Load the product
 		$entity = ProductModel::load([
-			"product_id" => $product_id
+			["entity_id", "=", $entity_id]
 		]);
 
 		// Generate an error if there is no such product
@@ -86,11 +75,11 @@ class Product extends Controller
 	/**
 	 *
 	 */
-	function update(Request $request, $product_id)
+	function update(Request $request, $entity_id)
 	{
 		// Load the product
 		$entity = ProductModel::load([
-			"product_id" => $product_id
+			"entity_id" => $entity_id
 		]);
 
 		// Generate an error if there is no such product
@@ -105,7 +94,6 @@ class Product extends Controller
 
 		// Create new product
 		// TODO: Put in generic function
-		$entity->product_id  = $product_id;
 		$entity->title       = $json["title"]       ?? null;
 		$entity->description = $json["description"] ?? null;
 
@@ -121,23 +109,42 @@ class Product extends Controller
 	/**
 	 * Delete product
 	 */
-	function delete(Request $request, $product_id)
+	function delete(Request $request, $entity_id)
 	{
+		// TODO: This one is for debugging
+		return Response()->json([
+			"status" => "error"
+		], 409);
+
+
+
+
+
+
+
 		$entity = ProductModel::load([
-			"product_id" => $product_id
+			"entity_id" => $entity_id
 		]);
+
+		// Generate an error if there is no such product
+		if(false === $entity)
+		{
+			return Response()->json([
+				"message" => "No product with specified product id",
+			], 404);
+		}
 
 		if($entity->delete())
 		{
-			return [
+			return Response()->json([
 				"status" => "deleted"
-			];
+			], 200);
 		}
 		else
 		{
-			return [
+			return Response()->json([
 				"status" => "error"
-			];
+			], 409);
 		}
 	}
 }

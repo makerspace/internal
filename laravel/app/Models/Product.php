@@ -8,6 +8,7 @@ use App\Models\Entity;
  */
 class Product extends Entity
 {
+	protected $type = "product";
 	protected $join = "product";
 	protected $columns = [
 		"entity.entity_id"        => "entity.entity_id",
@@ -15,7 +16,6 @@ class Product extends Entity
 		"entity.updated_at"       => "DATE_FORMAT(entity.updated_at, '%Y-%m-%dT%H:%i:%sZ') AS updated_at",
 		"entity.title"            => "entity.title",
 		"entity.description"      => "entity.description",
-		"product.product_id"      => "product.product_id",
 		"product.expiry_date"     => "product.expiry_date",
 		"product.auto_extend"     => "product.auto_extend",
 		"product.price"           => "product.price",
@@ -80,20 +80,12 @@ class Product extends Entity
 			{
 				$query = $query->where("entity.entity_id", $filter[1], $filter[2]);
 			}
-/*
-			// Filter on product_id
-			else if("product_id" == $filter[0])
-			{
-				$query = $query->where("product.product_id", $filter[1], $filter[2]);
-			}
-*/
 		}
 
 		// TODO
 		$data = (array)$query->first();
 		$entity = new Product;
-		$entity->id          = $data["entity_id"];
-//		$entity->product_id  = $data["product_id"];
+		$entity->entity_id   = $data["entity_id"];
 		$entity->title       = $data["title"];
 		$entity->description = $data["description"];
 		return $entity;

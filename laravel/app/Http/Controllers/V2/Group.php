@@ -50,19 +50,8 @@ class Group extends Controller
 	{
 		$json = $request->json()->all();
 
-		// Create a unique group id if not specified
-		if(!empty($json["group_id"]))
-		{
-			$group_id = $json["group_id"];
-		}
-		else
-		{
-			$group_id = uniqid();
-		}
-
 		// Create new group
 		$entity = new GroupModel;
-		$entity->group_id    = $group_id;
 		$entity->title       = $json["title"]       ?? null;
 		$entity->description = $json["description"] ?? null;
 
@@ -78,11 +67,11 @@ class Group extends Controller
 	/**
 	 *
 	 */
-	function read(Request $request, $group_id)
+	function read(Request $request, $entity_id)
 	{
 		// Load the group
 		$entity = GroupModel::load([
-			"group_id" => $group_id
+			["entity_id", "=", $entity_id]
 		]);
 
 		// Generate an error if there is no such group
@@ -101,11 +90,11 @@ class Group extends Controller
 	/**
 	 *
 	 */
-	function update(Request $request, $group_id)
+	function update(Request $request, $entity_id)
 	{
 		// Load the group
 		$entity = GroupModel::load([
-			"group_id" => $group_id
+			"entity_id" => $entity_id
 		]);
 
 		// Generate an error if there is no such group
@@ -120,26 +109,34 @@ class Group extends Controller
 
 		// Create new group
 		// TODO: Put in generic function
-		$entity->group_id    = $group_id;
 		$entity->title       = $json["title"]       ?? null;
 		$entity->description = $json["description"] ?? null;
 
 		$result = $entity->save();
 
-		// TODO: Standarized output
-		return [
-			"status" => "updated",
-			"entity" => $entity->toArray(),
-		];
+		if($result)
+		{
+			// TODO: Standarized output
+			return [
+				"status" => "updated",
+				"entity" => $entity->toArray(),
+			];
+		}
+		else
+		{
+			return [
+				"status" => "error"
+			];
+		}
 	}
 
 	/**
 	 * Delete group
 	 */
-	function delete(Request $request, $group_id)
+	function delete(Request $request, $entity_id)
 	{
 		$entity = GroupModel::load([
-			"group_id" => $group_id
+			"entity_id" => $entity_id
 		]);
 
 		if($entity->delete())
