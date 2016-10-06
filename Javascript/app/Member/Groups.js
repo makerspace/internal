@@ -4,12 +4,11 @@ import {
 	GroupModel,
 	GroupCollection
 } from '../models'
-import { Link, Router } from 'react-router'
-import { browserHistory } from 'react-router'
+import { Link, Router, browserHistory } from 'react-router'
 import {
 	BackboneTable,
 } from '../BackboneTable'
-import { DateField } from '../Economy/Other'
+import { DateField } from '../Common'
 
 var GroupsHandler = React.createClass({
 	render: function()
@@ -30,7 +29,7 @@ var GroupHandler = React.createClass({
 	getInitialState: function()
 	{
 		var id = this.props.params.id;
-		var group = new GroupModel({id: id});
+		var group = new GroupModel({entity_id: id});
 		group.fetch();
 
 		this.title = "Meep";
@@ -58,48 +57,25 @@ var Groups = React.createClass({
 		};
 	},
 
-	error: function()
+	removeTextMessage: function(entity)
 	{
-		UIkit.modal.alert("Error deleting entry");
+		return "Are you sure you want to remove group \"" + entity.title + "\"?";
 	},
 
-	remove: function(row, e)
+	removeErrorMessage: function()
 	{
-		var _this = this;
-		var entity = this.getCollection().at(row);
-		var a = entity.attributes;
-		console.log(a);
-
-		UIkit.modal.confirm("Are you sure you want to remove group " + a.group_id + " \"" + a.title + "\"?", function() {
-			entity.destroy({
-				wait: true,
-				success: function(model, response) {
-					if(response.status == "deleted")
-					{
-						UIkit.modal.alert("Successfully deleted");
-						// TODO: Reload?
-					}
-					else
-					{
-						_this.error();
-					}
-				},
-				error: function() {
-					_this.error();
-				},
-			});
-		});
+		UIkit.modal.alert("Error deleting group");
 	},
 
 	renderRow: function(row, i)
 	{
 		return (
 			<tr key={i}>
-				<td><Link to={"/member/group/" + row.group_id}>{row.group_id}</Link></td>
-				<td><Link to={"/member/group/" + row.group_id}>{row.title}</Link></td>
-				<td><Link to={"/member/group/" + row.group_id}>{row.description}</Link></td>
+				<td><Link to={"/member/group/" + row.entity_id}>{row.group_id}</Link></td>
+				<td><Link to={"/member/group/" + row.entity_id}>{row.title}</Link></td>
+				<td><Link to={"/member/group/" + row.entity_id}>{row.description}</Link></td>
 				<td><DateField date={row.created_at} /></td>
-				<td className="uk-text-right"><a href="#" onClick={this.remove.bind(this, i)} className="uk-icon-remove uk-icon-hover"> Ta bort</a></td>
+				<td className="uk-text-right">{this.removeButton(i)}</td>
 			</tr>
 		);
 	},
@@ -120,23 +96,13 @@ var Groups = React.createClass({
 
 var Group = React.createClass({
 	mixins: [Backbone.React.Component.mixin],
-	contextTypes: {
-        router: React.PropTypes.func
-    },
 
-	cancel: function()
-	{
-		console.log("TODO: Cancel");
-	},
-
-	edit: function()
-	{
-		console.log("TODO: Edit group");
-	},
-
-	save: function()
+	save: function(event)
 	{
 		var _this = this;
+
+		// Prevent the form from being submitted
+		event.preventDefault();
 
 		this.getModel().save([], {
 			success: function(model, response)
@@ -144,7 +110,7 @@ var Group = React.createClass({
 				if(response.status == "created")
 				{
 					UIkit.modal.alert("Successfully created");
-					browserHistory.push("/member/group/" + response.entity.group_id)
+					browserHistory.push("/member/group/" + response.entity.entity_id);
 				}
 				else if(response.status == "updated")
 				{
@@ -166,26 +132,24 @@ var Group = React.createClass({
 		UIkit.modal.alert("Error saving model");
 	},
 
+	handleChange: function(event)
+	{
+		// Update the model with new value
+		var target = event.target;
+		var key = target.getAttribute("name");
+		this.state.model[key] = target.value;
+
+		// When we change the value of the model we have to rerender the component
+		this.forceUpdate();
+	},
+
 	render: function()
 	{
 		return (
 			<div>
-				<h2>Skapa grupp</h2>
+				<h2>Skapa/redigera grupp</h2>
 
-				<form className="uk-form uk-form-horizontal">
-					<div className="uk-grid">
-						<div className="uk-width-1-3">
-							<label className="uk-form-label">Gruppnummer</label>
-						</div>
-						<div className="uk-width-2-3">
-							<div className="uk-form-icon">
-								<i className="uk-icon-hashtag"></i>
-								{this.state.model.group_id}
-								
-							</div>
-						</div>
-					</div>
-
+				<form className="uk-form uk-form-horizontal" onSubmit={this.save}>
 					<div className="uk-grid">
 						<div className="uk-width-1-3">
 							<label className="uk-form-label">Namn</label>
@@ -193,7 +157,7 @@ var Group = React.createClass({
 						<div className="uk-width-2-3">
 							<div className="uk-form-icon">
 								<i className="uk-icon-tag"></i>
-								<input type="text" defaultValue={this.state.model.title} />
+								<input type="text" name="title" value={this.state.model.title} onChange={this.handleChange} />
 							</div>
 						</div>
 					</div>
@@ -203,7 +167,7 @@ var Group = React.createClass({
 							<label className="uk-form-label">Beskrivning</label>
 						</div>
 						<div className="uk-width-2-3">
-							<textarea defaultValue={this.state.model.description}></textarea>
+							<textarea name="description" value={this.state.model.description} onChange={this.handleChange}></textarea>
 						</div>
 					</div>
 				</form>

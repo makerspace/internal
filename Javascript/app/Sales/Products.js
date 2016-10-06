@@ -8,7 +8,7 @@ import { Link } from 'react-router'
 import {
 	BackboneTable,
 } from '../BackboneTable'
-import { DateField, Currency } from '../Economy/Other'
+import { DateField, Currency } from '../Common'
 
 var SalesProductsHandler = React.createClass({
 	render: function()
@@ -34,37 +34,14 @@ var Products = React.createClass({
 		};
 	},
 
-	error: function()
+	removeTextMessage: function(entity)
 	{
-		UIkit.modal.alert("Error deleting entry");
+		return "Are you sure you want to remove product \"" + entity.title + "\"?";
 	},
 
-	remove: function(row, e)
+	removeErrorMessage: function()
 	{
-		var _this = this;
-		var entity = this.getCollection().at(row);
-		var a = entity.attributes;
-		console.log(a);
-
-		UIkit.modal.confirm("Are you sure you want to remove group " + a.group_id + " \"" + a.title + "\"?", function() {
-			entity.destroy({
-				wait: true,
-				success: function(model, response) {
-					if(response.status == "deleted")
-					{
-						UIkit.modal.alert("Successfully deleted");
-						// TODO: Reload?
-					}
-					else
-					{
-						_this.error();
-					}
-				},
-				error: function() {
-					_this.error();
-				},
-			});
-		});
+		UIkit.modal.alert("Error deleting product");
 	},
 
 	renderRow: function(row, i)
@@ -77,7 +54,7 @@ var Products = React.createClass({
 				<td>{row.auto_extend}</td>
 				<td>{row.interval}</td>
 				<td><Currency value={row.price} /></td>
-				<td className="uk-text-right"><a href="#" onClick={this.remove.bind(this, i)} className="uk-icon-remove uk-icon-hover"> Ta bort</a></td>
+				<td className="uk-text-right">{this.removeButton(i)}</td>
 			</tr>
 		);
 	},
