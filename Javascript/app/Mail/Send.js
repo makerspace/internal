@@ -87,11 +87,17 @@ class MailSendHandler extends React.Component
 			}),
 		}).done(function(data) {
 			setTimeout(function() {
+				var autoComplete = [];
+
+				data.data.forEach(function(element, index, array){
+					autoComplete.push({
+						label: element.firstname + " " + element.lastname + " (#" + element.member_number + ")",
+						value: element.member_number,
+					});
+				});
+
 				callback(null, {
-					options: data,
-					// CAREFUL! Only set this to true when there are no more options,
-					// or more specific queries will not be sent to the server.
-//					complete: true
+					options: autoComplete,
 				});
 			}, 100);
 
