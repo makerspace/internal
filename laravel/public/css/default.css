@@ -59,3 +59,15 @@ html, body, #main {
 
 .invoice .data {
 }
+
+
+/* react-select */
+.Select input {
+	border: 0 !important;
+	background: 0;
+}
+
+/* Remove buttons in lists */
+a.removebutton {
+	color: #f88;
+}
