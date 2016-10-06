@@ -8,8 +8,9 @@ use DB;
  */
 class Entity
 {
-	public $id = null;
+	public $entity_id = null;
 	protected $sort = null;
+	protected $type = null;
 	protected $join = null;
 	protected $columns = [
 		"entity.entity_id"   => "entity.entity_id",
@@ -24,9 +25,9 @@ class Entity
 	/**
 	 * Constructor
 	 */
-	function __construct($id = null)
+	function __construct($entity_id = null)
 	{
-		$this->id = $id;
+		$this->entity_id = $entity_id;
 	}
 
 	/**
@@ -87,6 +88,12 @@ class Entity
 		// Get all entities
 		$query = DB::table("entity");
 
+		// Type
+		if($this->type !== null)
+		{
+			$query = $query->where("entity.type", "=", $this->type);
+		}
+
 		// Join data table
 		if($this->join !== null)
 		{
@@ -114,7 +121,19 @@ class Entity
 		// Sort result
 		if($this->sort !== null)
 		{
-			$query = $query->orderBy($this->sort[0], $this->sort[1]);
+			// Sort on multiple columns
+			if(is_array($this->sort[0]))
+			{
+				foreach($this->sort as $s)
+				{
+					$query = $query->orderBy($s[0], $s[1]);
+				}
+			}
+			// Sort on single column
+			else
+			{
+				$query = $query->orderBy($this->sort[0], $this->sort[1]);
+			}
 		}
 
 		// Return the query
@@ -173,8 +192,8 @@ class Entity
 	public function save()
 	{
 		// Insert into entity table
-		$this->id = DB::table("entity")->insertGetId([
-			"type"        => $this->join,
+		$this->entity_id = DB::table("entity")->insertGetId([
+			"type"        => $this->type,
 			"description" => $this->data["description"] ?? null,
 			"title"       => $this->data["title"]       ?? null,
 			"created_at"  => date("c"),
@@ -195,7 +214,7 @@ class Entity
 		// Create a row in the relation table
 		if(!empty($inserts))
 		{
-			$inserts["entity_id"] = $this->id;
+			$inserts["entity_id"] = $this->entity_id;
 			DB::table($this->join)->insert($inserts);
 		}
 
@@ -208,7 +227,7 @@ class Entity
 	public function delete($permanent = false)
 	{
 		// Check that we have a id provided
-		if($this->id === null)
+		if($this->entity_id === null)
 		{
 			return false;
 		}
@@ -219,14 +238,14 @@ class Entity
 		{
 			// Permanent delete
 			DB::table("entity")
-				->where("entity_id", $this->id)
+				->where("entity_id", $this->entity_id)
 				->delete();
 		}
 		else
 		{
 			// Soft delete
 			DB::table("entity")
-				->where("entity_id", $this->id)
+				->where("entity_id", $this->entity_id)
 				->update(["deleted_at" => date("c")]);
 		}
 
@@ -274,7 +293,7 @@ class Entity
 	public function toArray()
 	{
 		$x = $this->data;
-		$x["entity_id"] = $this->id;
+		$x["entity_id"] = $this->entity_id;
 		return $x;
 	}
 

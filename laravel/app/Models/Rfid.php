@@ -9,6 +9,7 @@ use DB;
  */
 class Rfid extends Entity
 {
+	protected $type = "rfid";
 	protected $join = "rfid";
 	protected $columns = [
 		"entity.entity_id"   => "entity.entity_id",

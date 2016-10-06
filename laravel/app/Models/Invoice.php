@@ -9,6 +9,7 @@ use DB;
  */
 class Invoice extends Entity
 {
+	protected $type = "invoice";
 	protected $join = "invoice";
 	protected $columns = [
 		"entity.entity_id"          => "entity.entity_id",

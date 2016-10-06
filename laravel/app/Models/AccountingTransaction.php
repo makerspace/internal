@@ -17,6 +17,7 @@ use DB;
 
 class AccountingTransaction extends Entity
 {
+	protected $type = "accounting_transaction";
 	protected $join = "accounting_transaction";
 	protected $columns = [
 		"entity.entity_id"                              => "entity.entity_id",
@@ -24,11 +25,11 @@ class AccountingTransaction extends Entity
 		"entity.updated_at"                             => "DATE_FORMAT(entity.updated_at, '%Y-%m-%dT%H:%i:%sZ') AS updated_at",
 		"entity.title"                                  => "entity.title AS transaction_title",
 		"entity.description"                            => "entity.description AS transaction_description",
-		'accounting_transaction.accounting_instruction' => 'accounting_transaction.accounting_instruction',
-		'accounting_transaction.accounting_account'     => 'accounting_transaction.accounting_account',
-		'accounting_transaction.accounting_cost_center' => 'accounting_transaction.accounting_cost_center',
-		'accounting_transaction.amount'                 => 'accounting_transaction.amount',
-		'accounting_transaction.external_id'            => 'accounting_transaction.external_id',
+		"accounting_transaction.accounting_instruction" => "accounting_transaction.accounting_instruction",
+		"accounting_transaction.accounting_account"     => "accounting_transaction.accounting_account",
+		"accounting_transaction.accounting_cost_center" => "accounting_transaction.accounting_cost_center",
+		"accounting_transaction.amount"                 => "accounting_transaction.amount",
+		"accounting_transaction.external_id"            => "accounting_transaction.external_id",
 	];
 
 	/**

@@ -8,6 +8,7 @@ use App\Models\Entity;
  */
 class Subscription extends Entity
 {
+	protected $type = "subscription";
 	protected $join = "subscription";
 	protected $columns = [
 		"entity.entity_id"        => "entity.entity_id",

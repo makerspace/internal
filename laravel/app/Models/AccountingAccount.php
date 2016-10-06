@@ -9,6 +9,7 @@ use App\Models\Entity;
 
 class AccountingAccount extends Entity
 {
+	protected $type = "accounting_account";
 	protected $join = "accounting_account";
 	protected $columns = [
 		"entity.entity_id"                     => "entity.entity_id",

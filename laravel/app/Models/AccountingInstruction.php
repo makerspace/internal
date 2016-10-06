@@ -20,6 +20,7 @@ public function Transactions()
  */
 class AccountingInstruction extends Entity
 {
+	protected $type = "accounting_instruction";
 	protected $join = "accounting_instruction";
 	protected $columns = [
 		"entity.entity_id"                                      => "entity.entity_id",
