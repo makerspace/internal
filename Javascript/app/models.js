@@ -15,17 +15,19 @@ Backbone.sync = function (method, model, options)
 	// Base path for API access
 	options.url = config.apiBasePath + (typeof model.url == "function" ? model.url() : model.url);
 
-	// Error handling
-	options.error = function(data)
+	// Add generic error handling to those models who doesn't implement own error handling
+	if(!options.error)
 	{
-		if(data.status == 401)
+		options.error = function(data, xhr, options)
 		{
-			UIkit.modal.alert("<h2>Error</h2>You are unauthorized to use this API resource. This could be because one of the following reasons:<br><br>1) You have been logged out from the API<br>2) You do not have permissions to access this resource");
-		}
-		else
-		{
-			UIkit.modal.alert("<h2>Error</h2>Received an unexpected result from the server<br><br>" + data.status + " " + data.statusText + "<br><br>" + data.responseText);
-//			UIkit.modal.alert("Received an unkown response from the API");
+			if(xhr.status == 401)
+			{
+				UIkit.modal.alert("<h2>Error</h2>You are unauthorized to use this API resource. This could be because one of the following reasons:<br><br>1) You have been logged out from the API<br>2) You do not have permissions to access this resource");
+			}
+			else
+			{
+				UIkit.modal.alert("<h2>Error</h2>Received an unexpected result from the server<br><br>" + data.status + " " + data.statusText + "<br><br>" + data.responseText);
+			}
 		}
 	};
 
@@ -227,7 +229,7 @@ var MemberCollection = Backbone.PageableCollection.extend({
 });
 
 var GroupModel = Backbone.Model.extend({
-	idAttribute: "group_id",
+	idAttribute: "entity_id",
 	urlRoot: "/group",
 	defaults: {
 		created_at: "0000-00-00T00:00:00Z",
@@ -244,7 +246,7 @@ var GroupCollection = Backbone.PageableCollection.extend({
 });
 
 var ProductModel = Backbone.Model.extend({
-	idAttribute: "product_id",
+	idAttribute: "entity_id",
 	urlRoot: "/product",
 	defaults: {
 		created_at: "0000-00-00T00:00:00Z",
@@ -258,6 +260,43 @@ var ProductModel = Backbone.Model.extend({
 var ProductCollection = Backbone.PageableCollection.extend({
 	model: ProductModel,
 	url: "/product",
+});
+
+var MailModel = Backbone.Model.extend({
+	idAttribute: "entity_id",
+	urlRoot: "/mail",
+	defaults: {
+		created_at: "0000-00-00T00:00:00Z",
+		updated_at: "0000-00-00T00:00:00Z",
+		type: "",
+		recipient: "",
+		title: "",
+		description: "",
+		status: 0,
+		date_sent: "0000-00-00T00:00:00Z",
+	},
+});
+
+var MailCollection = Backbone.PageableCollection.extend({
+	model: MailModel,
+	url: "/mail",
+});
+
+var SalesHistoryModel = Backbone.Model.extend({
+	idAttribute: "entity_id",
+	urlRoot: "/sales/history",
+	defaults: {
+		created_at: "0000-00-00T00:00:00Z",
+		updated_at: "0000-00-00T00:00:00Z",
+		recipient: "",
+		title: "",
+		description: "",
+	},
+});
+
+var SalesHistoryCollection = Backbone.PageableCollection.extend({
+	model: SalesHistoryModel,
+	url: "/sales/history",
 });
 
 module.exports = {
@@ -282,4 +321,8 @@ module.exports = {
 	RfidCollection,
 	ProductModel,
 	ProductCollection,
+	MailModel,
+	MailCollection,
+	SalesHistoryModel,
+	SalesHistoryCollection,
 }

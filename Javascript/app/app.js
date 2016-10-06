@@ -3,6 +3,7 @@ global.jQuery = require('jquery')
 global.$ = global.jQuery;
 require('uikit')
 require('uikit/dist/js/components/pagination')
+require('uikit/dist/js/components/autocomplete')
 
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -35,6 +36,7 @@ import {
 import { SalesOverviewHandler } from './Sales/Overview'
 import { SalesProductsHandler } from './Sales/Products'
 import { SalesSubscriptionsHandler } from './Sales/Subscriptions'
+import { SalesHistoryHandler } from './Sales/History'
 import {
 	MasterLedgerHandler,
 	EconomyOverviewHandler,
@@ -79,9 +81,10 @@ import {
 import { SettingsGlobalHandler } from './Settings/Global'
 import { SettingsAutomationHandler } from './Settings/Automation'
 import { StatisticsHandler } from './statistics'
-import { DashboardHandler, ExportHandler, Loading } from './temp'
 
-import { MailListsHandler } from './Mail/Lists'
+import { DashboardHandler } from './Dashboard'
+import { ExportHandler } from './Export/Export'
+
 import { MailTemplatesHandler } from './Mail/Templates'
 import { MailSendHandler } from './Mail/Send'
 import { MailHistoryHandler } from './Mail/History'
@@ -142,6 +145,10 @@ var nav = new Backbone.Model({
 				{
 					text: "Prenumerationer",
 					target: "/sales/subscriptions",
+				},
+				{
+					text: "Historik",
+					target: "/sales/history",
 				},
 			],
 		},
@@ -232,10 +239,6 @@ var nav = new Backbone.Model({
 			icon: "envelope",
 			children:
 			[
-				{
-					text: "Hantera listor",
-					target: "/mail/lists",
-				},
 				{
 					text: "Hantera mallar",
 					target: "/mail/templates",
@@ -424,13 +427,13 @@ ReactDOM.render((
 				<Route path="overview" component={MemberOverviewHandler} />
 				<Route path="search"   component={MemberSearchHandler} />
 				<Route path="list"     component={MembersHandler} />
-				<Route path=":id"      component={MemberHandler} />
 				<Route path="add"      component={MemberAddHandler} />
+				<Route path=":id"      component={MemberHandler} />
 				<Route path="group">
 					<IndexRoute component={GroupsHandler} />
 					<Route path="list"     component={GroupsHandler} />
-					<Route path=":id"      component={GroupHandler} />
 					<Route path="add"      component={GroupAddHandler} />
+					<Route path=":id"      component={GroupHandler} />
 				</Route>
 			</Route>
 			<Route path="sales">
@@ -438,6 +441,7 @@ ReactDOM.render((
 				<Route path="overview"          component={SalesOverviewHandler} />
 				<Route path="products"          component={SalesProductsHandler} />
 				<Route path="subscriptions"     component={SalesSubscriptionsHandler} />
+				<Route path="history"           component={SalesHistoryHandler} />
 			</Route>
 			<Route path="economy">
 				<IndexRedirect to="overview" />
@@ -448,14 +452,14 @@ ReactDOM.render((
 				<Route path="invoice">
 					<IndexRedirect to="list" />
 					<Route path="list"     component={InvoiceListHandler} />
-					<Route path=":id"      component={InvoiceHandler} />
 					<Route path="add"      component={InvoiceAddHandler} />
+					<Route path=":id"      component={InvoiceHandler} />
 				</Route>
 
 				<Route path="accounts"          component={EconomyAccountsHandler} />
+				<Route path="account/add"       component={EconomyAccountAddHandler} />
 				<Route path="account/:id"       component={EconomyAccountHandler} />
 				<Route path="account/:id/edit"  component={EconomyAccountEditHandler} />
-				<Route path="account/add"       component={EconomyAccountAddHandler} />
 
 				<Route path="instruction"       component={EconomyAccountingInstructionsHandler} />
 				<Route path="instruction/:id"   component={EconomyAccountingInstructionHandler} />
@@ -471,8 +475,7 @@ ReactDOM.render((
 				<Route path="accountingperiods" component={EconomyAccountingPeriodHandler} />
 			</Route>
 			<Route path="mail">
-				<IndexRedirect to="lists" />
-				<Route path="lists"     component={MailListsHandler} />
+				<IndexRedirect to="history" />
 				<Route path="templates" component={MailTemplatesHandler} />
 				<Route path="send"      component={MailSendHandler} />
 				<Route path="history"   component={MailHistoryHandler} />

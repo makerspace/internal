@@ -2,7 +2,7 @@ import React from 'react'
 import BackboneReact from 'backbone-react-component'
 import { MasterledgerCollection } from '../models'
 import { Link } from 'react-router'
-import { Currency, DateField } from './Other'
+import { Currency, DateField } from '../Common'
 import { BackboneTable } from '../BackboneTable'
 
 var EconomyValuationSheetHandler = React.createClass({

@@ -3,6 +3,7 @@ import BackboneReact from 'backbone-react-component'
 import { MasterledgerCollection } from '../models'
 import { Link } from 'react-router'
 import { BackboneTable } from '../BackboneTable'
+import { Currency } from '../Common'
 
 var MasterLedgerHandler = React.createClass({
 	render: function()
@@ -22,7 +23,7 @@ var EconomyAccounts = React.createClass({
 	getInitialState: function()
 	{
 		return {
-			columns: 4,
+			columns: 3,
 		};
 	},
 
@@ -66,54 +67,6 @@ var EconomyOverviewHandler = React.createClass({
 	},
 });
 
-var Currency = React.createClass({
-	render: function()
-	{
-		var formatter = new Intl.NumberFormat('sv-SE', {
-			/*
-			style: 'currency',
-			currency: 'SEK',
-			*/
-			minimumFractionDigits: 2,
-			maximumFractionDigits: 2,
-		});
-
-		var value = formatter.format(this.props.value / 100);
-		return (<span>{value} {this.props.currency}</span>);
-	},
-});
-
-var DateField = React.createClass({
-	render: function()
-	{
-		var str = new Intl.DateTimeFormat('sv-SE').format(Date.parse(this.props.date));
-		return (<span>{str}</span>);
-	},
-});
-
-var Pagination = React.createClass({
-	getInitialState: function()
-	{
-		return {
-		};
-	},
-
-	render: function ()
-	{
-//		console.log("Pages:   " + this.state.pages);
-//		console.log("Current: " + this.state.selected);
-		return (
-			<ul className="uk-pagination">
-				<li className=""><a onClick={this.props.pagerPrev}><i className="uk-icon-angle-double-left"></i></a></li>
-				<li><a href="">1</a></li>
-				<li className="uk-active"><span>2</span></li>
-				<li><span>...</span></li>
-				<li className=""><a onClick={this.props.pagerNext}><i className="uk-icon-angle-double-right"></i></a></li>
-			</ul>
-		);
-	},
-});
-
 var EconomyDebugHandler = React.createClass({
 	render: function ()
 	{
@@ -141,8 +94,6 @@ var EconomyAccountingPeriodHandler = React.createClass({
 module.exports = {
 	EconomyOverviewHandler,
 	MasterLedgerHandler,
-	Currency,
-	DateField,
 	EconomyDebugHandler,
 	EconomyAccountingPeriodHandler,
 }

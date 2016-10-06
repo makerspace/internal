@@ -6,7 +6,7 @@ import {
 	TransactionCollection
 } from '../models'
 import { Link } from 'react-router'
-import { Currency, DateField } from './Other'
+import { Currency, DateField } from '../Common'
 import {
 	BackboneTable,
 } from '../BackboneTable'

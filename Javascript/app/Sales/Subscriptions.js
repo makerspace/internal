@@ -8,13 +8,7 @@ import { Link } from 'react-router'
 import {
 	BackboneTable,
 } from '../BackboneTable'
-import { DateField } from '../Economy/Other'
-
-var keyHeaders = new Backbone.Model({
-	headers: ["Member #", "End date", "Description"],
-	blurb: "Wherein the keys are edited and henceforth accessed.",
-	caption: "Change keys"
-});
+import { DateField } from '../Common'
 
 var SalesSubscriptionsHandler = React.createClass({
 	render: function()
@@ -66,4 +60,6 @@ var Subscriptions = React.createClass({
 	}
 });
 
-module.exports = { SalesSubscriptionsHandler }
+module.exports = {
+	SalesSubscriptionsHandler
+}

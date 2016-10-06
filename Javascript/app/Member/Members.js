@@ -9,7 +9,7 @@ import { Link } from 'react-router'
 import {
 	BackboneTable,
 } from '../BackboneTable'
-import { DateField } from '../Economy/Other'
+import { DateField } from '../Common'
 
 var MembersHandler = React.createClass({
 	render: function()
@@ -53,7 +53,7 @@ var Members = React.createClass({
 	getInitialState: function()
 	{
 		return {
-			columns: 9,
+			columns: 6,
 		};
 	},
 
@@ -67,8 +67,6 @@ var Members = React.createClass({
 				<td>{row.lastname}</td>
 				<td>{row.email}</td>
 				<td><DateField date={row.created_at} /></td>
-				<td>x</td>
-				<td>x</td>
 			</tr>
 		);
 	},
@@ -83,9 +81,6 @@ var Members = React.createClass({
 				<th>Efternamn</th>
 				<th>E-post</th>
 				<th>Blev medlem</th>
-				<th>Medlem 2015</th>
-				<th>Labbavgift</th>
-				<th></th>
 			</tr>
 		);
 	},
@@ -98,8 +93,8 @@ var Member = React.createClass({
 	{
 		// Ugly way to get the switcher javascript working
 		$.UIkit.init();
-		/*
 
+		/*
 		var _this = this;
 		$("[data-uk-switcher]").on("show.uk.switcher", function(event, area) {
 			if(area.context.id == "member_keys")
