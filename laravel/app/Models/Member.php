@@ -8,6 +8,7 @@ use App\Models\Entity;
  */
 class Member extends Entity
 {
+	protected $type = "member";
 	protected $join = "member";
 	protected $columns = [
 		"entity.entity_id"        => "entity.entity_id",
@@ -49,6 +50,30 @@ class Member extends Entity
 			if("per_page" == $filter[0])
 			{
 				$this->pagination = $filter[1];
+			}
+			else if("search" == $filter[0])
+			{
+				$words = explode(" ", $filter[1]);
+				foreach($words as $word)
+				{
+					$query = $query->where(function($query) use($word) {
+						// The phone numbers are stored with +46 in database, so strip the first zero in the phone number
+						$phone = ltrim($word, "0");
+
+						// Build the search query
+						$query
+							->  where("member.firstname",     "like", "%".$word."%")
+							->orWhere("member.lastname",      "like", "%".$word."%")
+							->orWhere("member.email",         "like", "%".$word."%")
+							->orWhere("member.address",       "like", "%".$word."%")
+							->orWhere("member.address",       "like", "%".$word."%")
+							->orWhere("member.zipcode",       "like", "%".$word."%")
+							->orWhere("member.city",          "like", "%".$word."%")
+							->orWhere("member.phone",         "like", "%".$phone."%")
+							->orWhere("member.civicregno",    "like", "%".$word."%")
+							->orWhere("member.member_number", "like", "%".$word."%");
+					});
+				}
 			}
 		}
 

@@ -33,11 +33,12 @@ Route::group(["prefix" => "api/v2", "before" => "oauth"], function()
 	Route::   get("debug/cleardatabase",             "V2\Debug@ClearDatabase");
 
 	// Members
-	Route::   get("member",      "V2\Member@list");   // Get collection
-	Route::  post("member",      "V2\Member@create"); // Model: Create
-	Route::   get("member/{id}", "V2\Member@read");   // Model: Read
-	Route::   put("member/{id}", "V2\Member@update"); // Model: Update
-	Route::delete("member/{id}", "V2\Member@delete"); // Model: Delete
+	Route::   get("member",        "V2\Member@list");   // Get collection
+	Route::  post("member",        "V2\Member@create"); // Model: Create
+	Route::   get("member/{id}",   "V2\Member@read");   // Model: Read
+	Route::   put("member/{id}",   "V2\Member@update"); // Model: Update
+	Route::delete("member/{id}",   "V2\Member@delete"); // Model: Delete
+	Route::  post("member/search", "V2\Member@search"); // Search
 
 	// Groups
 	Route::   get("group",      "V2\Group@list");   // Get collection
