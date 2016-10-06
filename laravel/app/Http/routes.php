@@ -54,6 +54,14 @@ Route::group(["prefix" => "api/v2", "before" => "oauth"], function()
 	Route::   put("product/{id}", "V2\Product@update"); // Model: Update
 	Route::delete("product/{id}", "V2\Product@delete"); // Model: Delete
 
+	// Mail
+	Route::   get("mail",      "V2\Mail@list");   // Get collection
+	Route::  post("mail",      "V2\Mail@create"); // Model: Create
+	Route::   get("mail/{id}", "V2\Mail@read");   // Model: Read
+	Route::   put("mail/{id}", "V2\Mail@update"); // Model: Update
+	Route::delete("mail/{id}", "V2\Mail@delete"); // Model: Delete
+	Route::  post("mail/send", "V2\Mail@send");   // Add E-mail to send queue
+
 	// Subscriptions
 	Route::   get("subscription",      "V2\Subscription@list");   // Get collection
 	Route::  post("subscription",      "V2\Subscription@create"); // Model: Create
@@ -67,6 +75,17 @@ Route::group(["prefix" => "api/v2", "before" => "oauth"], function()
 	Route::   get("rfid/{id}", "V2\Rfid@read");   // Model: Read
 	Route::   put("rfid/{id}", "V2\Rfid@update"); // Model: Update
 	Route::delete("rfid/{id}", "V2\Rfid@delete"); // Model: Delete
+
+	// Sales
+	Route::group(array("prefix" => "sales"), function()
+	{
+		// History
+		Route::   get("history",      "V2\Sales@list");   // Get collection
+		Route::  post("history",      "V2\Sales@create"); // Model: Create
+		Route::   get("history/{id}", "V2\Sales@read");   // Model: Read
+		Route::   put("history/{id}", "V2\Sales@update"); // Model: Update
+		Route::delete("history/{id}", "V2\Sales@delete"); // Model: Delete
+	});
 
 	// Import
 	Route::group(array("prefix" => "import"), function()
