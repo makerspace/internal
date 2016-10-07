@@ -24,9 +24,11 @@ import {
 	MemberSearchHandler,
 } from './Member/Search.js'
 import {
-	MembersHandler,
 	MemberHandler,
 	MemberAddHandler,
+} from './Member/Member.js'
+import {
+	MembersHandler,
 } from './Member/Members.js'
 import {
 	GroupsHandler,

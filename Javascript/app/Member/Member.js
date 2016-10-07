@@ -9,6 +9,7 @@ import {
 	BackboneTable,
 } from '../BackboneTable'
 import { DateField } from '../Common'
+import { RfidStuff } from './Rfid'
 
 var MemberHandler = React.createClass({
 	getInitialState: function()
@@ -252,11 +253,13 @@ var Member = React.createClass({
 									</div>
 								</div>
 							</div>
+
+							<button className="uk-button" onClick={this.save}><i className="uk-icon-save"></i> Spara personuppgifter</button>
 						</form>
 					</li>
 
 					<li>
-						<MemberKeys type={RfidCollection} member_number={this.state.model.member_number} />
+						<RfidStuff member_number={this.state.model.member_number} />
 					</li>
 
 					<li>
@@ -329,63 +332,7 @@ var Member = React.createClass({
 						<p>Utskickshistorik</p>
 					</li>
 				</ul>
-
-				<br />
-
-				<div>
-					<button className="uk-button" onClick={this.save}><i className="uk-icon-save"></i> Spara</button>
-				</div>
 			</div>
-		);
-	},
-});
-
-var MemberKeys = React.createClass({
-	mixins: [Backbone.React.Component.mixin, BackboneTable],
-
-	getInitialState: function()
-	{
-		return {
-			columns: 5,
-		};
-	},
-
-	componentWillMount: function()
-	{
-		// Load RFID keys related to member
-		this.state.collection.fetch({
-			data: {
-				relation: {
-					type: "member",
-					member_number: this.props.member_number,
-				}
-			}
-		});
-	},
-
-	renderRow: function(row, i)
-	{
-		return (
-			<tr key={i}>
-				<td>{row.tagid}</td>
-				<td>{row.active}</td>
-				<td>{row.title}</td>
-				<td>{row.description}</td>
-				<td className="uk-text-right"><a href="#" className="uk-icon-remove uk-icon-hover"> Ta bort</a> <a href="#" className="uk-icon-cog uk-icon-hover"> Redigera</a></td>
-			</tr>
-		);
-	},
-
-	renderHeader: function()
-	{
-		return (
-			<tr>
-				<th>RFID</th>
-				<th>Aktiv</th>
-				<th>Titel</th>
-				<th>Beskrivning</th>
-				<th></th>
-			</tr>
 		);
 	},
 });
@@ -408,6 +355,5 @@ MemberAddHandler.title = "Skapa medlem";
 
 module.exports = {
 	MemberHandler,
-	MemberKeys,
 	MemberAddHandler
 }

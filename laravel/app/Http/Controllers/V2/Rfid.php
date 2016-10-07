@@ -104,7 +104,7 @@ class Rfid extends Controller
 	/**
 	 *
 	 */
-	function read(Request $request, $member_number)
+	function read(Request $request, $entity_id)
 	{
 		return ["error" => "not implemented"];
 	}
@@ -112,7 +112,7 @@ class Rfid extends Controller
 	/**
 	 *
 	 */
-	function update(Request $request, $id)
+	function update(Request $request, $entity_id)
 	{
 		return ["error" => "not implemented"];
 	}
@@ -120,8 +120,23 @@ class Rfid extends Controller
 	/**
 	 *
 	 */
-	function delete(Request $request, $id)
+	function delete(Request $request, $entity_id)
 	{
-		return ["error" => "not implemented"];
+		$entity = RfidModel::load([
+			"entity.entity_id" => $entity_id
+		]);
+
+		if($entity->delete())
+		{
+			return [
+				"status" => "deleted"
+			];
+		}
+		else
+		{
+			return [
+				"status" => "error"
+			];
+		}
 	}
 }
