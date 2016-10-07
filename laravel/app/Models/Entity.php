@@ -13,6 +13,7 @@ class Entity
 	protected $type = null;
 	protected $join = null;
 	protected $columns = [
+		"entity.type"        => "entity.type",
 		"entity.entity_id"   => "entity.entity_id",
 		"entity.created_at"  => "DATE_FORMAT(entity.created_at, '%Y-%m-%dT%H:%i:%sZ') AS created_at",
 		"entity.updated_at"  => "DATE_FORMAT(entity.updated_at, '%Y-%m-%dT%H:%i:%sZ') AS updated_at",
@@ -54,6 +55,26 @@ class Entity
 			if("per_page" == $filter[0])
 			{
 				$this->pagination = $filter[1];
+			}
+			else if("relation" == $filter[0])
+			{
+				// Load the related entity and get it's entity_id
+				$entity = Entity::Load($filter[1]);
+				$entity_id = $entity->entity_id;
+
+				// Get all relation to this entity
+				$query2 = DB::table("relation")
+					->whereRaw("{$entity_id} IN (entity1, entity2)")
+					->get();
+
+				// Filter out related entities
+				$relatedEntities = null;
+				foreach($query2 as $qw)
+				{
+					$relatedEntities[] = ($qw->entity1 == $entity_id ? $qw->entity2 : $qw->entity1);
+				}
+
+				$query = $query->whereIn("entity.entity_id", $relatedEntities);
 			}
 		}
 
@@ -173,17 +194,42 @@ class Entity
 			{
 				$query = $query->where($key, "=", $value);
 			}
-
-			// Return result
-			return $query->first();
 		}
 		// Filter on entity_id
 		else
 		{
-			return $this->_buildLoadQuery()
-					->where("entity.entity_id", "=", $parameters)
-					->first();
+			$query = $this->_buildLoadQuery()
+					->where("entity.entity_id", "=", $parameters);
 		}
+
+		// Get data from database
+		$data = (array)$query->first();
+
+		// Return false if no entity was found in database
+		if(empty($data))
+		{
+			return false;
+		}
+		
+		// Create a new entity based on type
+		$type = ($this->type !== null ? $this->type : $data["type"]);
+		switch($type)
+		{
+			case "rfid":
+				$entity = new Rfid;
+				break;
+
+			default:
+				$entity = new Entity;
+		}
+
+		// Populate the entity with data
+		foreach($data as $key => $value)
+		{
+			$entity->{$key} = $value;
+		}
+
+		return $entity;
 	}
 
 	/**
