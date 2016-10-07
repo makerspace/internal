@@ -13,8 +13,10 @@ var BackboneTable = {
 	{
 		var _this = this;
 
+		// Extend the collection
 		var collection = this.props.type;
-		var ExtendedCollection = collection.extend({
+		var ExtendedCollection = collection.extend(
+		{
 			state:
 			{
 				pageSize: config.pagination.pageSize
@@ -38,13 +40,14 @@ var BackboneTable = {
 			},
 		});
 
+		// Create a new extended collection
+		// TODO: Does params really work?
 		var data = new ExtendedCollection(null, this.props.params);
-		data.fetch();
 
 		this.pagination = [];
 
 		return {
-			status: "loading",
+			status: "done",
 			collection: data,
 		};
 	},

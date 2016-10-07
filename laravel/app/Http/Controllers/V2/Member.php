@@ -48,22 +48,22 @@ class Member extends Controller
 
 		// Create new member
 		$entity = new MemberModel;
-//		$entity->title         = $json["title"];
-//		$entity->description   = $json["description"] ?? null;
-		$entity->member_number = $member_number;
-		$entity->email         = $json["email"];
-		$entity->password      = $json["password"]   ?? null;
-		$entity->firstname     = $json["firstname"]  ?? null;
-		$entity->lastname      = $json["lastname"]   ?? null;
-		$entity->civicregno    = $json["civicregno"] ?? null;
-		$entity->company       = $json["company"]    ?? null;
-		$entity->orgno         = $json["orgno"]      ?? null;
-		$entity->address       = $json["address"]    ?? null;
-		$entity->address2      = $json["address2"]   ?? null;
-		$entity->zipcode       = $json["zipcode"]    ?? null;
-		$entity->city          = $json["city"]       ?? null;
-		$entity->country       = $json["country"]    ?? "SE";
-		$entity->phone         = $json["phone"]      ?? null;
+//		$entity->title           = $json["title"];
+//		$entity->description     = $json["description"] ?? null;
+		$entity->member_number   = $member_number;
+		$entity->email           = $json["email"];
+		$entity->password        = $json["password"]        ?? null;
+		$entity->firstname       = $json["firstname"]       ?? null;
+		$entity->lastname        = $json["lastname"]        ?? null;
+		$entity->civicregno      = $json["civicregno"]      ?? null;
+		$entity->company         = $json["company"]         ?? null;
+		$entity->orgno           = $json["orgno"]           ?? null;
+		$entity->address_street  = $json["address_street"]  ?? null;
+		$entity->address_extra   = $json["address_extra"]   ?? null;
+		$entity->address_zipcode = $json["address_zipcode"] ?? null;
+		$entity->address_city    = $json["address_city"]    ?? null;
+		$entity->address_country = $json["address_country"] ?? "SE";
+		$entity->phone           = $json["phone"]           ?? null;
 
 		$result = $entity->save();
 

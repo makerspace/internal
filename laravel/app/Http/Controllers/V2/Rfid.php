@@ -21,10 +21,20 @@ class Rfid extends Controller
 	 */
 	function list(Request $request)
 	{
-		// Load data from datbase
-		$result = RfidModel::list([
+		// Paging filter
+		$filters = [
 			["per_page", $this->per_page($request)],
-		]);
+		];
+
+		// Filter on relations
+		$relation = $request->get("relation");
+		if($relation)
+		{
+			$filters[] = ["relation", $relation];
+		}
+
+		// Load data from database
+		$result = RfidModel::list($filters);
 
 		// Return json array
 		return $result;
@@ -96,6 +106,7 @@ class Rfid extends Controller
 	 */
 	function read(Request $request, $member_number)
 	{
+		return ["error" => "not implemented"];
 	}
 
 	/**
@@ -103,7 +114,7 @@ class Rfid extends Controller
 	 */
 	function update(Request $request, $id)
 	{
-		return ['error' => 'not implemented'];
+		return ["error" => "not implemented"];
 	}
 
 	/**
@@ -111,5 +122,6 @@ class Rfid extends Controller
 	 */
 	function delete(Request $request, $id)
 	{
+		return ["error" => "not implemented"];
 	}
 }

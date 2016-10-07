@@ -26,11 +26,11 @@ class Member extends Entity
 		"member.civicregno"       => "member.civicregno",
 		"member.company"          => "member.company",
 		"member.orgno"            => "member.orgno",
-		"member.address"          => "member.address",
-		"member.address2"         => "member.address2",
-		"member.zipcode"          => "member.zipcode",
-		"member.city"             => "member.city",
-		"member.country"          => "member.country",
+		"member.address_street"   => "member.address_street",
+		"member.address_extra"    => "member.address_extra",
+		"member.address_zipcode"  => "member.address_zipcode",
+		"member.address_city"     => "member.address_city",
+		"member.address_country"  => "member.address_country",
 		"member.phone"            => "member.phone",
 	];
 	protected $sort = ["member.member_number", "desc"];
@@ -62,16 +62,16 @@ class Member extends Entity
 
 						// Build the search query
 						$query
-							->  where("member.firstname",     "like", "%".$word."%")
-							->orWhere("member.lastname",      "like", "%".$word."%")
-							->orWhere("member.email",         "like", "%".$word."%")
-							->orWhere("member.address",       "like", "%".$word."%")
-							->orWhere("member.address",       "like", "%".$word."%")
-							->orWhere("member.zipcode",       "like", "%".$word."%")
-							->orWhere("member.city",          "like", "%".$word."%")
-							->orWhere("member.phone",         "like", "%".$phone."%")
-							->orWhere("member.civicregno",    "like", "%".$word."%")
-							->orWhere("member.member_number", "like", "%".$word."%");
+							->  where("member.firstname",       "like", "%".$word."%")
+							->orWhere("member.lastname",        "like", "%".$word."%")
+							->orWhere("member.email",           "like", "%".$word."%")
+							->orWhere("member.address_street",  "like", "%".$word."%")
+							->orWhere("member.address_extra",   "like", "%".$word."%")
+							->orWhere("member.address_zipcode", "like", "%".$word."%")
+							->orWhere("member.address_city",    "like", "%".$word."%")
+							->orWhere("member.phone",           "like", "%".$phone."%")
+							->orWhere("member.civicregno",      "like", "%".$word."%")
+							->orWhere("member.member_number",   "like", "%".$word."%");
 					});
 				}
 			}

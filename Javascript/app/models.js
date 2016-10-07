@@ -5,7 +5,7 @@ import config from './config'
 
 // Update the Backbone sync() method to work with our RESTful API with OAuth 2.0 authentication
 var backboneSync = Backbone.sync;
-Backbone.sync = function (method, model, options)
+Backbone.sync = function(method, model, options)
 {
 	// Include the OAuth 2.0 access token
 	options.headers = {
@@ -35,7 +35,37 @@ Backbone.sync = function (method, model, options)
 	backboneSync(method, model, options);
 };
 
-var InstructionModel = Backbone.Model.extend({
+Backbone.Model.fullExtend = function (protoProps, staticProps)
+{
+	if(typeof protoProps === "undefined")
+	{
+		var protoProps = [];
+	}
+
+	// TODO: Override the set() method so when React inputs a "" it is casted to NULL
+
+	// Preprocess the data received from the API and make sure all null's are changed to empty strings, because otherwise React will be whining when using those values in a <input value={...} />
+	protoProps["parse"] = function(response, options)
+	{
+		for(var key in response)
+		{
+			if(response.hasOwnProperty(key) && response[key] === null)
+			{
+				response[key] = "";
+			}
+		}
+
+		return response;
+	};
+
+
+	// Call default extend method
+	var extended = Backbone.Model.extend.call(this, protoProps, staticProps);
+
+	return extended;
+};
+
+var InstructionModel = Backbone.Model.fullExtend({
 	urlRoot: "/economy/2015/instruction",
 	defaults: {
 		instruction_number: 0,
@@ -59,7 +89,7 @@ var InstructionCollection = Backbone.PageableCollection.extend(
 	url: "/economy/2015/instruction",//?account_id=2999
 });
 
-var TransactionModel = Backbone.Model.extend({
+var TransactionModel = Backbone.Model.fullExtend({
 	urlRoot: "/economy/2015/transaction",
 	defaults: {
 		created_at: "0000-00-00T00:00:00Z",
@@ -93,7 +123,7 @@ var TransactionCollection = Backbone.PageableCollection.extend(
 	},
 });
 
-var CostCenterModel = Backbone.Model.extend({
+var CostCenterModel = Backbone.Model.fullExtend({
 	urlRoot: "/economy/2015/costcenter",
 
 	defaults: {
@@ -108,7 +138,7 @@ var CostCenterCollection = Backbone.PageableCollection.extend(
 	url: "/economy/2015/costcenter",
 });
 
-var AccountModel = Backbone.Model.extend({
+var AccountModel = Backbone.Model.fullExtend({
 	urlRoot: "/economy/2015/account",
 	defaults: {
 		created_at: "0000-00-00T00:00:00Z",
@@ -132,7 +162,7 @@ var MasterledgerCollection = Backbone.PageableCollection.extend({
 	url: "/economy/2015/masterledger",
 });
 
-var InvoiceModel = Backbone.Model.extend({
+var InvoiceModel = Backbone.Model.fullExtend({
 	urlRoot: "/economy/2015/invoice",
 	defaults: {
 		created_at: "0000-00-00T00:00:00Z",
@@ -152,7 +182,7 @@ var InvoiceCollection = Backbone.PageableCollection.extend({
 	url: "/economy/2015/invoice",
 });
 
-var SubscriptionModel = Backbone.Model.extend({
+var SubscriptionModel = Backbone.Model.fullExtend({
 //	idAttribute: "subscription_id",
 	urlRoot: "/subscription",
 	defaults: {
@@ -179,8 +209,8 @@ var SubscriptionCollection = Backbone.PageableCollection.extend({
 	url: "/subscription",
 });
 
-var RfidModel = Backbone.Model.extend({
-	urlRoot: "/member",
+var RfidModel = Backbone.Model.fullExtend({
+	urlRoot: "/rfid",
 	defaults: {
 		created_at: "0000-00-00T00:00:00Z",
 		updated_at: "0000-00-00T00:00:00Z",
@@ -196,22 +226,24 @@ var RfidCollection = Backbone.PageableCollection.extend({
 	url: "/rfid",
 });
 
-var MemberModel = Backbone.Model.extend({
+var MemberModel = Backbone.Model.fullExtend({
+	idAttribute: "member_number",
 	urlRoot: "/member",
 	defaults: {
 		created_at: "0000-00-00T00:00:00Z",
 		updated_at: "0000-00-00T00:00:00Z",
-		member_id: 0,
+		entity_id: 0,
 		member_number: 0,
 		civicregno: "000000-0000",
 		firstname: "",
 		lastname: "",
 		email: "",
 		phone: "",
-		adress_street: "",
-		adress_zipcode: "",
-		adress_city: "",
-		adress_country: "",
+		address_street: "",
+		address_extra: "",
+		address_zipcode: "",
+		address_city: "",
+		address_country: "",
 	},
 	initialize: function(options)
 	{
@@ -228,7 +260,7 @@ var MemberCollection = Backbone.PageableCollection.extend({
 	url: "/member",
 });
 
-var GroupModel = Backbone.Model.extend({
+var GroupModel = Backbone.Model.fullExtend({
 	idAttribute: "entity_id",
 	urlRoot: "/group",
 	defaults: {
@@ -245,7 +277,7 @@ var GroupCollection = Backbone.PageableCollection.extend({
 	url: "/group",
 });
 
-var ProductModel = Backbone.Model.extend({
+var ProductModel = Backbone.Model.fullExtend({
 	idAttribute: "entity_id",
 	urlRoot: "/product",
 	defaults: {
@@ -262,7 +294,7 @@ var ProductCollection = Backbone.PageableCollection.extend({
 	url: "/product",
 });
 
-var MailModel = Backbone.Model.extend({
+var MailModel = Backbone.Model.fullExtend({
 	idAttribute: "entity_id",
 	urlRoot: "/mail",
 	defaults: {
@@ -282,7 +314,7 @@ var MailCollection = Backbone.PageableCollection.extend({
 	url: "/mail",
 });
 
-var SalesHistoryModel = Backbone.Model.extend({
+var SalesHistoryModel = Backbone.Model.fullExtend({
 	idAttribute: "entity_id",
 	urlRoot: "/sales/history",
 	defaults: {
