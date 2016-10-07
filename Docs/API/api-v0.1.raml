@@ -1,11 +1,34 @@
 #%RAML 0.8
 title: Internal API v1.0
 version: 2
-baseUri: http://127.0.0.1:8080/api/v2/
+baseUri: http://internal.dev/api/v2/
 
-# Todo:
-#   Labaccess / prenumerationer
-#   Economy import
+securitySchemes:
+  - oauth_2_0:
+      description: OAuth 2.0
+      type: OAuth 2.0
+      describedBy:
+        headers:
+          Authorization:
+            description: Used to send a valid OAuth 2 access token.
+            type: string
+        responses:
+          401:
+            description: FU!
+      settings:
+        authorizationUri: http://internal.dev/api/v2/oauth/meep
+        accessTokenUri: http://internal.dev/api/v2/oauth/access_token
+        authorizationGrants: [ owner ]
+        scopes:
+          - "user"
+          - "user:email"
+          - "user:follow"
+          - "public_repo"
+          - "repo"
+          - "repo:status"
+          - "delete_repo"
+          - "notifications"
+          - "gist"
 
 traits:
   - paged:
@@ -16,14 +39,13 @@ traits:
         per_page:
           description: The number of entities per page
           type: integer
-  - secured:
-      queryParameters:
-        access_token:
-          description: The token to get authorized
-          type: string
 
-/economy:
-  is: [ secured ]
+securedBy: [ oauth_2_0 ]
+/economy/{accountingperiod}:
+  /masterledger:
+    get:
+      description: Receives the full master ledger
+
   /account:
     description: Manage accounting accounts
     get:
@@ -73,6 +95,8 @@ traits:
     description: Manage cost centers
     get:
       description: Returns a list of all cost centers
+    post:
+      description: Create a new cost center
     /{costcenter_id}:
       description: Manage a single cost center
       get:
@@ -91,6 +115,23 @@ traits:
         account_id:
           description: Filter instruction with a transaction to or from the specified account_id
           type: integer
+    post:
+      body:
+        application/json:
+          schema: |
+            {
+                "$schema": "http://json-schema.org/draft-03/schema",
+                "type": "object",
+                "properties": {
+                  "last_read_at": {
+                    "description": "Describes the last point that notifications were checked. Anything updated since this time will not be updated. Default: Now.",
+                    "type": "string"
+                  }
+                }
+            }
+      responses:
+        205:
+          description: Marked as read.
     /{instruction_id}:
       description: Manage a single accounting instructions
       get:
@@ -109,6 +150,8 @@ traits:
         account_id:
           description: Filter transactions to or from the specified account_id
           type: integer
+    post:
+      description: Create
     /{instruction_id}:
       description: Manage a single accounting transactions
       get:
@@ -123,6 +166,8 @@ traits:
     description: Manage invoices
     get:
       description: Returns a list of all invoices
+    post:
+      description: Create invoice
     /{invoice_id}:
       description: Manage a single invoice
       get:
@@ -131,13 +176,119 @@ traits:
         description: Updates an invoice
       delete:
         description: Deletes an invoice
+      /export:
+        get:
+          description: Export *.odt
 
+  /valuationreport:
+    get:
+      description: Valuation report
+  /resultreport:
+    get:
+      description: Valuation report
 
+  /file/{external_id}/{filename}:
+    get:
+      description: Get attached file
+
+/mail:
+  description: Mail
+  get:
+    description: Get collection
+  post:
+    description: Create model
+  /{entity_id}:
+    get:
+      description: Read model
+    put:
+      description: Update model
+    delete:
+      description: Delete model
+  /send:
+    post:
+      description: Add E-mail to send queue
+
+/rfid:
+  description: RFID
+  get:
+    description: Get collection
+  post:
+    description: Create model
+  /{entity_id}:
+    get:
+      description: Read model
+    put:
+      description: Update model
+    delete:
+      description: Delete model
+
+/subscription:
+  description: Subscription
+  get:
+    description: Get collection
+  post:
+    description: Create model
+  /{entity_id}:
+    get:
+      description: Read model
+    put:
+      description: Update model
+    delete:
+      description: Delete model
+
+/product:
+  description: product
+  get:
+    description: Get collection
+  post:
+    description: Create model
+  /{entity_id}:
+    get:
+      description: Read model
+    put:
+      description: Update model
+    delete:
+      description: Delete model
+
+/group:
+  description: Groups
+  get:
+    description: Get collection
+  post:
+    description: Create model
+  /{entity_id}:
+    get:
+      description: Read model
+    put:
+      description: Update model
+    delete:
+      description: Delete model
+
+/sales:
+  description: Sales
+  /history:
+    description: Sales history
+    get:
+      description: Get collection
+    post:
+      description: Create model
+    /{entity_id}:
+      get:
+        description: Read model
+      put:
+        description: Update model
+      delete:
+        description: Delete model
+
+/import:
+  description: Import
 
 /member:
   description: Manage single member accounts
   get:
     description: Returns a list of all members
+  post:
+    description: Create a new member
   /{member_id}:
     description: Manage a single member
     get:
@@ -146,3 +297,6 @@ traits:
       description: Updates a member
     delete:
       description: Deletes a member
+  /search:
+    post:
+      description: Fulltext search
