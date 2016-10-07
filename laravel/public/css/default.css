@@ -71,3 +71,11 @@ html, body, #main {
 a.removebutton {
 	color: #f88;
 }
+
+.key-active {
+	color: #8f8;
+}
+
+.key-inactive {
+	color: #f88;
+}

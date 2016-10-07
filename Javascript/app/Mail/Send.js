@@ -170,7 +170,7 @@ class MailSendHandler extends React.Component
 						</label>
 						<div className="uk-form-controls">
 							<div className="uk-form-icon">
-    							<i className="uk-icon-commenting"></i>
+								<i className="uk-icon-commenting"></i>
 								<input ref="subject" type="text" id="subject" name="subject" className="uk-form-width-large" onChange={this.changeSubject.bind(this)} />
 							</div>
 						</div>
