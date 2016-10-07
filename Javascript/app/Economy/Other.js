@@ -27,6 +27,11 @@ var EconomyAccounts = React.createClass({
 		};
 	},
 
+	componentWillMount: function()
+	{
+		this.state.collection.fetch();
+	},
+
 	renderHeader: function()
 	{
 		return (

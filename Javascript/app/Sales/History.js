@@ -27,6 +27,11 @@ SalesHistoryHandler.title = "Visa försäljning";
 var History = React.createClass({
 	mixins: [Backbone.React.Component.mixin, BackboneTable],
 
+	componentWillMount: function()
+	{
+		this.state.collection.fetch();
+	},
+
 	getInitialState: function()
 	{
 		return {

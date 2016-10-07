@@ -34,6 +34,11 @@ var Products = React.createClass({
 		};
 	},
 
+	componentWillMount: function()
+	{
+		this.state.collection.fetch();
+	},
+
 	removeTextMessage: function(entity)
 	{
 		return "Are you sure you want to remove product \"" + entity.title + "\"?";

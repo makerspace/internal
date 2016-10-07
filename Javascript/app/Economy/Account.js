@@ -108,6 +108,11 @@ var EconomyAccounts = React.createClass({
 		};
 	},
 
+	componentWillMount: function()
+	{
+		this.state.collection.fetch();
+	},
+
 	renderHeader: function()
 	{
 		return (
@@ -194,6 +199,11 @@ var EconomyAccountTransactions = React.createClass({
 		return {
 			columns: 6,
 		};
+	},
+
+	componentWillMount: function()
+	{
+		this.state.collection.fetch();
 	},
 
 	renderHeader: function()

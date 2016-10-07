@@ -33,6 +33,11 @@ var Queue = React.createClass({
 		};
 	},
 
+	componentWillMount: function()
+	{
+		this.state.collection.fetch();
+	},
+
 	renderRow: function(row, i)
 	{
 		return (
