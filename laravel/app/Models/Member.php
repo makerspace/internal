@@ -44,14 +44,9 @@ class Member extends Entity
 		$query = $this->_buildLoadQuery();
 
 		// Go through filters
-		foreach($filters as $filter)
+		foreach($filters as $id => $filter)
 		{
-			// Pagination
-			if("per_page" == $filter[0])
-			{
-				$this->pagination = $filter[1];
-			}
-			else if("search" == $filter[0])
+			if("search" == $filter[0])
 			{
 				$words = explode(" ", $filter[1]);
 				foreach($words as $word)
@@ -74,8 +69,12 @@ class Member extends Entity
 							->orWhere("member.member_number",   "like", "%".$word."%");
 					});
 				}
+				unset($filters[$id]);
 			}
 		}
+
+		// Apply standard filters like entity_id, relations, etc
+		$query = $this->_applyFilter($query, $filters);
 
 		// Paginate
 		if($this->pagination != null)
@@ -98,32 +97,5 @@ class Member extends Entity
 		}
 
 		return $result;
-	}
-
-	/**
-	 *
-	 */
-	public function _load($filters, $show_deleted = false)
-	{
-		// Build base query
-		$query = $this->_buildLoadQuery();
-
-		// Go through filters
-		foreach($filters as $filter)
-		{
-			// Filter on entity_id
-			if("entity_id" == $filter[0])
-			{
-				$query = $query->where("entity.entity_id", $filter[1], $filter[2]);
-			}
-			// Filter on member_number
-			else if("member_number" == $filter[0])
-			{
-				$query = $query->where("member.member_number", $filter[1], $filter[2]);
-			}
-		}
-
-		// Return account
-		return (array)$query->first();
 	}
 }

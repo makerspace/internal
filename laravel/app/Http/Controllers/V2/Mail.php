@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 use App\Models\Mail as MailModel;
+use App\Models\Member as MemberModel;
 use App\Models\Entity;
 
 use App\Traits\Pagination;
@@ -19,10 +20,26 @@ class Mail extends Controller
 	 */
 	function list(Request $request)
 	{
-		// Load data from datbase
-		$result = MailModel::list([
+		// Paging filter
+		$filters = [
 			["per_page", $this->per_page($request)],
-		]);
+		];
+
+		// Filter on relations
+		$relation = $request->get("relation");
+		if($relation)
+		{
+			$filters[] = ["relation", 
+				[
+					// TODO: Not hardcoded
+					["type", "=", $relation["type"]],
+					["member_number", "=", $relation["member_number"]],
+				]
+			];
+		}
+
+		// Load data from database
+		$result = MailModel::list($filters);
 
 		// Return json array
 		return $result;
@@ -45,7 +62,24 @@ class Mail extends Controller
 		foreach($json["recipients"] as $recipient)
 		{
 			// TODO: Get entity_id from $recipient
-			$recipient = $recipient["value"];
+			// TODO: Use entity_id instead of member_number
+			$x = MemberModel::Load(
+				[
+					["member_number", "=", $recipient["value"]]
+				]
+			);
+
+			// TODO: If entity is a group, populate all users
+
+			// Populate SMS/email
+			if($json["type"] == "email")
+			{
+				$recipient = $x->email;
+			}
+			else
+			{
+				$recipient = $x->phone;
+			}
 
 			// Create new mail
 			$entity = new MailModel;
@@ -56,6 +90,9 @@ class Mail extends Controller
 			$entity->status      = "queued";
 			$entity->date_sent   = null;
 			$result = $entity->save();
+
+			// TODO: Create a relation to the recipient Member entity
+			$entity->createRelations([$x->entity_id]);
 		}
 
 		// TODO: Standarized output

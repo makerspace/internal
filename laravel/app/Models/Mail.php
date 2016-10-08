@@ -37,15 +37,8 @@ class Mail extends Entity
 		// Build base query
 		$query = $this->_buildLoadQuery();
 
-		// Go through filters
-		foreach($filters as $filter)
-		{
-			// Pagination
-			if("per_page" == $filter[0])
-			{
-				$this->pagination = $filter[1];
-			}
-		}
+		// Apply standard filters like entity_id, relations, etc
+		$query = $this->_applyFilter($query, $filters);
 
 		// Paginate
 		if($this->pagination != null)
@@ -77,44 +70,5 @@ class Mail extends Entity
 		}
 
 		return $result;
-	}
-
-	/**
-	 *
-	 */
-	public function _load($filters, $show_deleted = false)
-	{
-		// Build base query
-		$query = $this->_buildLoadQuery();
-
-		// Go through filters
-		foreach($filters as $filter)
-		{
-			// Filter on entity_id
-			if("entity_id" == $filter[0])
-			{
-				$query = $query->where("entity.entity_id", $filter[1], $filter[2]);
-			}
-/*
-			// Filter on group_id
-			else if("group_id" == $filter[0])
-			{
-				$query = $query->where("group.group_id", $filter[1], $filter[2]);
-			}
-*/
-		}
-
-		// TODO
-		/*
-		$data = (array)$query->first();
-		$entity = new Mail;
-		$entity->id          = $data["entity_id"];
-		$entity->group_id    = $data["group_id"];
-		$entity->title       = $data["title"];
-		$entity->description = $data["description"];
-		return $entity;
-		*/
-
-		return [];
 	}
 }

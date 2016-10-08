@@ -19,5 +19,5 @@ class Subscription extends Entity
 		"subscription.product_id" => "subscription.product_id",
 		"subscription.date_start" => "subscription.date_start",
 	];
-//	protected $sort = ["invoice_number", "desc"];
+	protected $sort = ["entity.title", "asc"];
 }

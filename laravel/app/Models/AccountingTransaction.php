@@ -2,19 +2,6 @@
 namespace App\Models;
 use DB;
 
-/*
-	protected $with = array('Account');
-	public function Account()
-	{
-		return $this->belongsTo("App\Models\AccountingAccount", "account_id");
-	}
-
-	public function instruction()
-	{
-		return $this->belongsTo("App\Models\AccountingInstruction", "accounting_instruction_id");
-	}
-*/
-
 class AccountingTransaction extends Entity
 {
 	protected $type = "accounting_transaction";
@@ -37,9 +24,6 @@ class AccountingTransaction extends Entity
 	 */
 	public function _list($filters = [])
 	{
-//		DB::statement(DB::raw('SET @runtot = 0'));
-//		$query = $query
-
 		// Build base query
 		$this->columns[] = "ie.title AS instruction_title";
 		$this->columns[] = "accounting_instruction.instruction_number";
@@ -50,16 +34,12 @@ class AccountingTransaction extends Entity
 
 		$this->columns[] = "accounting_instruction.external_id AS extid";
 
-		$query = $this->_buildLoadQuery()
-//			->selectRaw("(@runtot :=  amount + @runtot) AS balance")
 
-			// Load the instruction
-			->leftJoin("accounting_instruction", "accounting_instruction.entity_id", "=", "accounting_transaction.accounting_instruction")
-			->leftJoin("entity AS ie", "ie.entity_id", "=", "accounting_instruction.entity_id");
 
-			// Load the account
-//			->leftJoin("accounting_account", "accounting_account.entity_id", "=", "accounting_transaction.accounting_account")
-//			->leftJoin("entity AS ae", "ae.entity_id", "=", "accounting_account.entity_id");
+
+
+
+		$query = $this->_buildLoadQuery();
 
 
 		// Go through filters
@@ -79,16 +59,23 @@ class AccountingTransaction extends Entity
 					->leftJoin("accounting_account", "accounting_account.entity_id", "=", "accounting_transaction.accounting_account")
 					->where("accounting_account.account_number", $filter[1], $filter[2]);
 			}
-			// Pagination
-			else if("per_page" == $filter[0])
-			{
-				$this->pagination = $filter[1];
-			}
 		}
+
+
+		$query = $this->_applyFilter($query, $filters);
+
+
+
+		// Load the instruction
+		$query = $query
+			->leftJoin("accounting_instruction", "accounting_instruction.entity_id", "=", "accounting_transaction.accounting_instruction")
+			->leftJoin("entity AS ie", "ie.entity_id", "=", "accounting_instruction.entity_id");
+
 
 		// Sort by accounting date
 		// TODO: This should not be used, sorting should be done via instruction number
-		$query = $query->orderBy("accounting_instruction.accounting_date", "asc");
+//		$query = $query->orderBy("accounting_instruction.accounting_date", "asc");
+
 
 		// Paginate
 		if($this->pagination != null)
@@ -96,7 +83,7 @@ class AccountingTransaction extends Entity
 			$query->paginate($this->pagination);
 		}
 
-		// Get result
+		// Run the MySQL query
 		$result = $query->get();
 		$data = [];
 		$balance = 0;
@@ -122,14 +109,17 @@ class AccountingTransaction extends Entity
 			$data[] = $row;
 		}
 
+
+
+
 		$result = [
 			"data" => $data
 		];
 
 		if($this->pagination != null)
 		{
-			$result["total"]     = $query->count();
-			$result["per_page"]  = $this->pagination;
+			$result["total"]    = $query->count();
+			$result["per_page"] = $this->pagination;
 			$result["last_page"] = ceil($result["total"] / $result["per_page"]);
 		}
 

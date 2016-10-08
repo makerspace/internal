@@ -32,75 +32,32 @@ class Entity
 	}
 
 	/**
-	 * Get a list of entities (called statically)
-	 *
-	 * Create an instance of the class and call the function non-static
+	 * Figure out if we need to join another table to get our result
 	 */
-	public static function list($filters = [])
+	protected function _shouldJoin(&$filters)
 	{
-		return (new static())->_list($filters);
-	}
-
-	/**
-	 * Same as above, but called non-statically
-	 */
-	protected function _list($filters = [])
-	{
-		$query = $this->_buildLoadQuery();
-
-		// Go through filters
-		foreach($filters as $filter)
+		if(is_array($filters))
 		{
-			// Pagination
-			if("per_page" == $filter[0])
+			foreach($filters as $id => $filter)
 			{
-				$this->pagination = $filter[1];
-			}
-			else if("relation" == $filter[0])
-			{
-				// Load the related entity and get it's entity_id
-				$entity = Entity::Load($filter[1]);
-				$entity_id = $entity->entity_id;
-
-				// Get all relation to this entity
-				$query2 = DB::table("relation")
-					->whereRaw("{$entity_id} IN (entity1, entity2)")
-					->get();
-
-				// Filter out related entities
-				$relatedEntities = null;
-				foreach($query2 as $qw)
+				if($filter[0] == "type")
 				{
-					$relatedEntities[] = ($qw->entity1 == $entity_id ? $qw->entity2 : $qw->entity1);
-				}
+					// TODO: We assume equal?
+					$type = $filter[2];
+					$this->type = $type;
+					// TODO: Hardcoded list
+					if(in_array($type, ["accounting_transaction", "accounting_period", "accounting_instruction", "accounting_account", "member", "mail", "product", "rfid", "subscription", "invoice"]))
+					{
+						$this->join = $type;
+					}
 
-				$query = $query->whereIn("entity.entity_id", $relatedEntities);
+					// Remove the filter to prevent further processing
+					unset($filters[$id]);
+				}
 			}
 		}
-
-		// Paginate
-		if($this->pagination != null)
-		{
-			$query->paginate($this->pagination);
-		}
-
-		// Run the MySQL query
-		$data = $query->get();
-
-		$result = [
-			"data" => $data
-		];
-
-		if($this->pagination != null)
-		{
-			$result["total"]    = $query->count();
-			$result["per_page"] = $this->pagination;
-			$result["last_page"] = ceil($result["total"] / $result["per_page"]);
-		}
-
-		return $result;
 	}
-
+	
 	/**
 	 *
 	 */
@@ -162,45 +119,131 @@ class Entity
 	}
 
 	/**
+	 *
+	 */
+	protected function _applyFilter($query, &$filters)
+	{
+		// Filter on entity_id
+		if(!is_array($filters))
+		{
+			$query = $query->where("entity.entity_id", "=", $filters);
+		}
+		// Filter in arbitrary parameters
+		else
+		{
+			// Go through filters
+			foreach($filters as $id => $filter)
+			{
+				// Pagination
+				if("per_page" == $filter[0])
+				{
+					$this->pagination = $filter[1];
+					unset($filters[$id]);
+				}
+				// Relations
+				else if("relation" == $filter[0])
+				{
+					// Load the related entity and get it's entity_id
+					$entity = Entity::Load($filter[1]);
+					$entity_id = $entity->entity_id;
+
+					// Get all relation to this entity
+					$query2 = DB::table("relation")
+						->whereRaw("{$entity_id} IN (entity1, entity2)")
+						->get();
+
+					// Filter out related entities
+					$relatedEntities = null;
+					foreach($query2 as $qw)
+					{
+						$relatedEntities[] = ($qw->entity1 == $entity_id ? $qw->entity2 : $qw->entity1);
+					}
+
+					$query = $query->whereIn("entity.entity_id", $relatedEntities);
+					unset($filters[$id]);
+				}
+				// Filter on arbritrary columns
+				else
+				{
+					if(count($filter) == 2)
+					{
+						$query = $query->where($filter[0], "=", $filter[1]);
+					}
+					else
+					{
+						$query = $query->where($filter[0], $filter[1], $filter[2]);
+					}
+					unset($filters[$id]);
+				}
+			}
+		}
+
+		return $query;
+	}
+
+	/**
+	 * Get a list of entities (called statically)
+	 *
+	 * Create an instance of the class and call the function non-static
+	 */
+	public static function list($filters = [])
+	{
+		return (new static())->_list($filters);
+	}
+
+	/**
+	 * Same as above, but called non-statically
+	 */
+	protected function _list($filters = [])
+	{
+		// A type filter should create a SQL join
+		$this->_shouldJoin($filters);
+
+		$query = $this->_buildLoadQuery();
+		$query = $this->_applyFilter($query, $filters);
+
+		// Paginate
+		if($this->pagination != null)
+		{
+			$query->paginate($this->pagination);
+		}
+
+		// Run the MySQL query
+		$data = $query->get();
+
+		$result = [
+			"data" => $data
+		];
+
+		if($this->pagination != null)
+		{
+			$result["total"]    = $query->count();
+			$result["per_page"] = $this->pagination;
+			$result["last_page"] = ceil($result["total"] / $result["per_page"]);
+		}
+
+		return $result;
+	}
+
+	/**
 	 * Load an entity (called statically)
 	 *
 	 * Create an instance of the class and call the function non-static
 	 */
-	public static function load($parameters, $show_deleted = false)
+	public static function load($filters, $show_deleted = false)
 	{
-		return (new static())->_load($parameters, $show_deleted);
+		return (new static())->_load($filters, $show_deleted);
 	}
 
 	/**
 	 *
 	 */
-	protected function _load($parameters, $show_deleted = false)
+	protected function _load($filters, $show_deleted = false)
 	{
-		// Filter in arbitrary parameters
-		if(is_array($parameters))
-		{
-			// A type filter should create a SQL join
-			if(array_key_exists("type", $parameters))
-			{
-				$this->join = $parameters["type"];
-				unset($parameters["type"]);
-			}
+		$this->_shouldJoin($filters);
 
-			// Build base query
-			$query = $this->_buildLoadQuery();
-
-			// Filter on content of $parameters
-			foreach($parameters as $key => $value)
-			{
-				$query = $query->where($key, "=", $value);
-			}
-		}
-		// Filter on entity_id
-		else
-		{
-			$query = $this->_buildLoadQuery()
-					->where("entity.entity_id", "=", $parameters);
-		}
+		$query = $this->_buildLoadQuery();
+		$query = $this->_applyFilter($query, $filters);
 
 		// Get data from database
 		$data = (array)$query->first();
@@ -230,6 +273,40 @@ class Entity
 		}
 
 		return $entity;
+	}
+
+	/**
+	 *
+	 */
+	public function createRelations($relations)
+	{
+		// Go through the list of relations
+		foreach($relations as $type => $parameters)
+		{
+			// Load the specified entity
+			$entity2 = Entity::load($parameters);// TODO: Format?
+
+			// Bail out on error
+			if(empty($entity2))
+			{
+				return false;
+				// TODO: Throw new exception
+/*
+				return Response()->json([
+					"errors" => ["Could not create relation: The entity you have specified could not be found"],
+				], 404);
+*/
+			}
+
+			// Create the relation
+			$entity1_id = $this->entity_id;
+			$entity2_id = $entity2->entity_id;
+			DB::table("relation")->insert([
+				"entity1" => $entity1_id,
+				"entity2" => $entity2_id
+			]);
+			// TODO: Error handling
+		}
 	}
 
 	/**
@@ -366,8 +443,8 @@ class Entity
 				{
 					// Check if there is anything in the database
 					$result = Entity::load([
-						"type" => $this->join,
-						$field => $this->data[$field]
+						["type", "=", $this->join],
+						[$field, "=", $this->data[$field]]
 					]);
 
 					// Return error if there is

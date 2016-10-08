@@ -30,7 +30,13 @@ class Rfid extends Controller
 		$relation = $request->get("relation");
 		if($relation)
 		{
-			$filters[] = ["relation", $relation];
+			$filters[] = ["relation",
+				[
+					// TODO: Not hardcoded
+					["type", "=", $relation["type"]],
+					["member_number", "=", $relation["member_number"]],
+				]
+			];
 		}
 
 		// Load data from database
@@ -70,28 +76,7 @@ class Rfid extends Controller
 		// Add relations
 		if(!empty($json["relations"]))
 		{
-			// Go through the list of relations
-			foreach($json["relations"] as $type => $parameters)
-			{
-				// Load the specified entity
-				$entity2 = Entity::load($parameters);
-
-				// Bail out on error
-				if(empty($entity2))
-				{
-					return Response()->json([
-						"errors" => ["Could not create relation: The entity you have specified could not be found"],
-					], 404);
-				}
-
-				// Create the relation
-				$entity1_id = $data["entity_id"];
-				$entity2_id = $entity2->entity_id;
-				DB::table("relation")->insert([
-					"entity1" => $entity1_id,
-					"entity2" => $entity2_id
-				]);
-			}
+			$entity->createRelations($json["relations"]);
 		}
 
 		// TODO: Standariezed output

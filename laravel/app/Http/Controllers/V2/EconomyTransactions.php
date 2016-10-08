@@ -19,6 +19,7 @@ class EconomyTransactions extends Controller
 	 */
 	function list(Request $request, $accountingperiod)
 	{
+		/*
 		// Check that the specified accounting period exists
 		$x = $this->_accountingPeriodOrFail($accountingperiod);
 		if(null !== $x)
@@ -27,6 +28,42 @@ class EconomyTransactions extends Controller
 		}
 
 		return ['error' => 'not implemented'];
+		*/
+
+//		echo "<pre>";
+//		echo "Return a list of all transactions\n";
+
+		// Paging filter
+		$filters = [
+//			["per_page", $this->per_page($request)],
+//				["per_page", $this->per_page($request)],
+//				["account_number", "=", $account_number],
+//				["accountingperiod", "=", $accountingperiod],
+		];
+
+		// Filter on relations
+		$relation = $request->get("relation");
+		if($relation)
+		{
+
+			$filters[] = ["relation", 
+				[
+					// TODO: Not hardcoded
+					["type", "=", $relation["type"]],
+					["member_number", "=", $relation["member_number"]],
+				]
+			];
+
+		}
+
+		// Load data from database
+		$result = AccountingTransaction::list($filters);
+
+		// Return json array
+		return $result;
+
+//		print_r($result);
+//		die();
 	}
 
 	/**

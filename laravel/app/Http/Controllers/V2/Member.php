@@ -93,7 +93,7 @@ class Member extends Controller
 		}
 		else
 		{
-			return $entity;
+			return $entity->toArray();
 		}
 	}
 

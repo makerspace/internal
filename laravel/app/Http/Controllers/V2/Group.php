@@ -21,23 +21,26 @@ class Group extends Controller
 	 */
 	function list(Request $request, Authorizer $authorizer)
 	{
-/*
-		if($authorizer->getChecker()->getAccessToken() === null)
-		{
-			echo "Not logged in";
-		}
-		else
-		{
-			echo "Logged in";
-		}
-
-//		$user_id = $authorizer->getResourceOwnerId(); // the token user_id
-*/
-
-		// Load data from datbase
-		$result = GroupModel::list([
+		// Paging filter
+		$filters = [
 			["per_page", $this->per_page($request)],
-		]);
+		];
+
+		// Filter on relations
+		$relation = $request->get("relation");
+		if($relation)
+		{
+			$filters[] = ["relation", 
+				[
+					// TODO: Not hardcoded
+					["type", "=", $relation["type"]],
+					["member_number", "=", $relation["member_number"]],
+				]
+			];
+		}
+
+		// Load data from database
+		$result = GroupModel::list($filters);
 
 		// Return json array
 		return $result;
