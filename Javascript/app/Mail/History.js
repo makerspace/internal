@@ -16,14 +16,14 @@ var MailHistoryHandler = React.createClass({
 			<div>
 				<h2>Historik</h2>
 				<p>Visa lista över samtliga E-post och SMS-utskick</p>
-				<Queue type={MailCollection} />
+				<MailHistory type={MailCollection} />
 			</div>
 		);
 	},
 });
 MailHistoryHandler.title = "Utskickshistorik";
 
-var Queue = React.createClass({
+var MailHistory = React.createClass({
 	mixins: [Backbone.React.Component.mixin, BackboneTable],
 
 	getInitialState: function()
@@ -35,9 +35,25 @@ var Queue = React.createClass({
 
 	componentWillMount: function()
 	{
-		this.state.collection.fetch();
+		if(this.props.member_number !== undefined)
+		{
+			// Load RFID keys related to member
+			this.state.collection.fetch({
+				data: {
+					relation: {
+						type: "member",
+						member_number: this.props.member_number,
+					}
+				}
+			});
+		}
+		else
+		{
+			// Load all RFID keys
+			this.state.collection.fetch();
+		}
 	},
-
+	
 	renderRow: function(row, i)
 	{
 		return (
@@ -54,7 +70,7 @@ var Queue = React.createClass({
 					})()}
 				</td>
 				<td className="uk-text-center">{ row.type == "email" ? <i className="uk-icon-envelope" title="E-mail"></i> : <i className="uk-icon-commenting" title="SMS"></i> }</td>
-				<td><Link to={"/member/" + row.recipient}>{row.recipient}</Link></td>
+				<td>{row.recipient}</td>
 				<td>{ row.type == "email" ? row.title : row.description }</td>
 			</tr>
 		);
@@ -74,4 +90,7 @@ var Queue = React.createClass({
 	},
 });
 
-module.exports = { MailHistoryHandler }
+module.exports = {
+	MailHistoryHandler,
+	MailHistory
+}

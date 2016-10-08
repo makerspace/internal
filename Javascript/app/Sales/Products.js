@@ -82,4 +82,5 @@ var Products = React.createClass({
 
 module.exports = {
 	SalesProductsHandler,
+	Products,
 }

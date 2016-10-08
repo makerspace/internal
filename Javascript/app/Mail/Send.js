@@ -1,6 +1,6 @@
 import React from 'react'
 import { browserHistory } from 'react-router'
-import { Select, Async } from 'react-select';
+import { Async } from 'react-select';
 import config from '../config'
 
 /**

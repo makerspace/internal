@@ -29,14 +29,32 @@ var BackboneTable = {
 
 			parseState: function(resp, queryParams, state, options)
 			{
-				_this.updatePagination(resp.last_page);
-
 				// Otherwise we just save the parameters to be used when initializing the paginator
 				_this.setState({
 					totalRecords: resp.total,
 					totalPages:   resp.last_page,
 					pageSize:     resp.per_page,
 				});
+
+
+				// Hide the pagination if the total number of records is 0 or there is only 1 page
+				// When the pagination is hidden there is no way to get it back as the javascript stops when React removes the DOM node.
+				if(resp.last_page == 0 && resp.data.length > 0)
+				{
+					// Note: For some reason Laravel only sends the pagination data on first request
+//					console.log("Do nothing");
+				}
+				else
+				{
+					if(resp.total == 0 || resp.last_page == 1)
+					{
+						_this.setState({showPagination: false});
+					}
+					else
+					{
+						_this.updatePagination(resp.last_page);
+					}
+				}
 			},
 		});
 
@@ -49,6 +67,7 @@ var BackboneTable = {
 		return {
 			status: "done",
 			collection: data,
+			showPagination: true,
 		};
 	},
 
@@ -68,8 +87,6 @@ var BackboneTable = {
 					items:       this.state.totalRecords,
 					itemsOnPage: this.state.pageSize,
 				});
-				$(".uk-pagination").hide();
-
 
 				$(pag).on("select.uk.pagination", function(e, pageIndex)
 				{
@@ -103,13 +120,7 @@ var BackboneTable = {
 			// If the paginator is already set up we need to update the parameters and rerender it
 			if(typeof this.pagination[i] != "undefined")
 			{
-				// TODO: For some reason Laravel only sends the number of pages on first request
-				if(last_page > 1)
-				{
-					$(".uk-pagination").show();
-					this.pagination[i].pages = last_page;
-				}
-
+				this.pagination[i].pages = last_page;
 				this.pagination[i].render();
 			}
 		}
@@ -156,7 +167,7 @@ var BackboneTable = {
 		// This event is fired when a request is sent to the server
 		this.state.collection.on("request", function()
 		{
-			console.log("Backbone::request()");
+//			console.log("Backbone::request()");
 			_this.setState({
 				status: "loading"
 			});
@@ -165,7 +176,7 @@ var BackboneTable = {
 		// This event is fired after a collection have been received from the server
 		this.state.collection.on("sync", function()
 		{
-			console.log("Backbone::sync()");
+//			console.log("Backbone::sync()");
 			_this.setState({
 				status: "done"
 			});
@@ -174,7 +185,7 @@ var BackboneTable = {
 		// This event is fired after a model have been successfully deleted.
 		this.state.collection.on("destroy", function()
 		{
-			console.log("Backbone::destroy()");
+//			console.log("Backbone::destroy()");
 			_this.setState({
 				status: "done"
 			});
@@ -250,9 +261,7 @@ var BackboneTable = {
 
 		return (
 			<div>
-				<ul name="pag1" ref="pag1" className="uk-pagination">
-					<li className=""><a><i className="uk-icon-angle-double-left"></i></a></li>
-				</ul>
+				{this.renderPagination(1)}
 				<div style={{position: "relative"}}>
 					<table className={"uk-table uk-table-condensed uk-table-striped uk-table-hover" + loadingClass}>
 						<thead>
@@ -264,15 +273,26 @@ var BackboneTable = {
 					</table>
 					{loading}
 				</div>
-				<ul name="pag2" ref="pag2" className="uk-pagination">
-					<li className=""><a><i className="uk-icon-angle-double-left"></i></a></li>
-				</ul>
+				{this.renderPagination(2)}
 			</div>
 		);
 	},
+
 	tryAgain: function()
 	{
 		this.getCollection().fetch();
+	},
+
+	renderPagination(i)
+	{
+		if(this.state.showPagination === true)
+		{
+			return (
+				<ul name={"pag" + i} ref={"pag" + i} className="uk-pagination">
+					<li className=""><a><i className="uk-icon-angle-double-left"></i></a></li>
+				</ul>
+			);
+		}
 	},
 };
 

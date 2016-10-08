@@ -91,6 +91,7 @@ import { MailTemplatesHandler } from './Mail/Templates'
 import { MailSendHandler } from './Mail/Send'
 import { MailHistoryHandler } from './Mail/History'
 import auth from './auth';
+import { KeysOverviewHandler } from './Keys/Overview'
 
 var nav = new Backbone.Model({
 	brand: "Makerspace Internal v2",
@@ -127,6 +128,18 @@ var nav = new Backbone.Model({
 				{
 					text: "Grupper",
 					target: "/member/group/list",
+				},
+			],
+		},
+		{
+			text: "Nycklar",
+			target: "/keys",
+			icon: "key",
+			children:
+			[
+				{
+					text: "Översikt",
+					target: "/keys/overview",
 				},
 			],
 		},
@@ -437,6 +450,10 @@ ReactDOM.render((
 					<Route path="add"      component={GroupAddHandler} />
 					<Route path=":id"      component={GroupHandler} />
 				</Route>
+			</Route>
+			<Route path="keys">
+				<IndexRedirect to="overview" />
+				<Route path="overview" component={KeysOverviewHandler} />
 			</Route>
 			<Route path="sales">
 				<IndexRedirect to="overview" />

@@ -119,7 +119,8 @@ var TransactionCollection = Backbone.PageableCollection.extend(
 
 	url: function()
 	{
-		return "/economy/2015/transaction/" + this.id;
+//		return "/economy/2015/transaction/" + this.id;
+		return "/economy/2015/transaction";
 	},
 });
 

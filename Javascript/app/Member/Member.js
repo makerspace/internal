@@ -2,20 +2,24 @@ import React from 'react'
 import BackboneReact from 'backbone-react-component'
 import {
 	MemberModel,
-	RfidCollection
 } from '../models'
 import { Link } from 'react-router'
-import {
-	BackboneTable,
-} from '../BackboneTable'
+import { BackboneTable } from '../BackboneTable'
 import { DateField } from '../Common'
-import { RfidStuff } from './Rfid'
+
+// Import functions from other modules
+import { KeysUserBox } from '../Keys/KeysUserBox'
+import { MailUserBox } from '../Mail/MailUserBox'
+import { GroupUserBox } from '../Member/GroupUserBox'
+import { SubscriptionUserBox } from '../Sales/SubscriptionUserBox'
+import { TransactionUserBox } from '../Economy/TransactionUserBox'
 
 var MemberHandler = React.createClass({
 	getInitialState: function()
 	{
-		var member_number = this.props.params.id;
-		var member = new MemberModel({member_number});
+		var member = new MemberModel({
+			member_number: this.props.params.id
+		});
 		member.fetch();
 
 		this.title = "Meep";
@@ -118,7 +122,6 @@ var Member = React.createClass({
 					<li id="member_info"><a>Personuppgifter</a></li>
 					<li id="member_keys"><a>Nycklar</a></li>
 					<li id="member_transactions"><a>Transaktioner</a></li>
-					<li id="member_sales"><a>Försäljning</a></li>
 					<li id="member_labaccess"><a>Prenumerationer</a></li>
 					<li id="member_groups"><a>Grupper</a></li>
 					<li id="member_groups"><a>Utskick</a></li>
@@ -257,79 +260,25 @@ var Member = React.createClass({
 							<button className="uk-button" onClick={this.save}><i className="uk-icon-save"></i> Spara personuppgifter</button>
 						</form>
 					</li>
-
+						
 					<li>
-						<RfidStuff member_number={this.state.model.member_number} />
+						<KeysUserBox member_number={this.state.model.member_number} />
 					</li>
 
 					<li>
-						<table className="uk-table uk-table-striped uk-table-hover">
-							<thead>
-								<tr>
-									<th>Datum</th>
-									<th>Beskrivning</th>
-									<th>Belopp</th>
-									<th></th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td colSpan="4"><em>Listan är tom</em></td>
-								</tr>
-							</tbody>
-						</table>
+						<TransactionUserBox member_number={this.state.model.member_number} />
 					</li>
 
 					<li>
-						<p>Försäljningshistorik</p>
+						<SubscriptionUserBox member_number={this.state.model.member_number} />
 					</li>
 
 					<li>
-						<table className="uk-table uk-table-striped uk-table-hover">
-							<thead>
-								<tr>
-									<th>Startdatum</th>
-									<th>Slutdatum</th>
-									<th>Beskrivning</th>
-									<th></th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td>2015-01-01 00:00:00</td>
-									<td>2015-12-31 23:59:59</td>
-									<td>Medlemskap</td>
-									<td className="uk-text-right"><a href="#" className="uk-icon-remove uk-icon-hover"> Ta bort</a> <a href="#" className="uk-icon-cog uk-icon-hover"> Redigera</a></td>
-								</tr>
-								<tr>
-									<td>2013-11-27 00:00:00</td>
-									<td>2016-02-12 23:59:59</td>
-									<td>Labaccess</td>
-									<td className="uk-text-right"><a href="#" className="uk-icon-remove uk-icon-hover"> Ta bort</a> <a href="#" className="uk-icon-cog uk-icon-hover"> Redigera</a></td>
-								</tr>
-							</tbody>
-						</table>
+						<GroupUserBox member_number={this.state.model.member_number} />
 					</li>
 
 					<li>
-						<table className="uk-table uk-table-striped uk-table-hover">
-							<thead>
-								<tr>
-									<th>Beskrivning</th>
-									<th></th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td>Styrelse</td>
-									<td className="uk-text-right"><a href="#" className="uk-icon-remove uk-icon-hover"> Ta bort</a> <a href="#" className="uk-icon-cog uk-icon-hover"> Redigera</a></td>
-								</tr>
-							</tbody>
-						</table>
-					</li>
-
-					<li>
-						<p>Utskickshistorik</p>
+						<MailUserBox member_number={this.state.model.member_number} />
 					</li>
 				</ul>
 			</div>

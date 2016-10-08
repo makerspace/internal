@@ -8,7 +8,6 @@ import { Link, Router, browserHistory } from 'react-router'
 import {
 	BackboneTable,
 } from '../BackboneTable'
-import { DateField } from '../Common'
 
 var GroupsHandler = React.createClass({
 	render: function()
@@ -57,6 +56,27 @@ var Groups = React.createClass({
 		};
 	},
 
+	componentWillMount: function()
+	{
+		if(this.props.member_number !== undefined)
+		{
+			// Load RFID keys related to member
+			this.state.collection.fetch({
+				data: {
+					relation: {
+						type: "member",
+						member_number: this.props.member_number,
+					}
+				}
+			});
+		}
+		else
+		{
+			// Load all RFID keys
+			this.state.collection.fetch();
+		}
+	},
+	
 	removeTextMessage: function(entity)
 	{
 		return "Are you sure you want to remove group \"" + entity.title + "\"?";
@@ -74,7 +94,6 @@ var Groups = React.createClass({
 				<td><Link to={"/member/group/" + row.entity_id}>{row.group_id}</Link></td>
 				<td><Link to={"/member/group/" + row.entity_id}>{row.title}</Link></td>
 				<td><Link to={"/member/group/" + row.entity_id}>{row.description}</Link></td>
-				<td><DateField date={row.created_at} /></td>
 				<td className="uk-text-right">{this.removeButton(i)}</td>
 			</tr>
 		);
@@ -87,7 +106,6 @@ var Groups = React.createClass({
 				<th>#</th>
 				<th>Namn</th>
 				<th>Beskrivning</th>
-				<th>Skapad</th>
 				<th></th>
 			</tr>
 		);
@@ -205,5 +223,6 @@ var GroupAddHandler = React.createClass({
 module.exports = {
 	GroupsHandler,
 	GroupHandler,
-	GroupAddHandler
+	GroupAddHandler,
+	Groups
 }
