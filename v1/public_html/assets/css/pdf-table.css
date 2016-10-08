@@ -1,6 +1,0 @@
-table{max-width:100%;border-collapse:separate;border-spacing:0; font-size: 12px !important;}
-.table{width:100%;border-right:1px solid #777777;border-bottom:1px solid #777777;}
-.table th,.table td{padding:4px 5px;line-height:20px;text-align:left;vertical-align:top;border-top:1px solid #777777;}
-.table th{font-weight:bold;}
-.table thead th{background-color:#efefef;}
-.table-bordered th,.table-bordered td{border-left:1px solid #777777;}
