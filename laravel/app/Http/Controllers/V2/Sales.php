@@ -19,6 +19,9 @@ class Sales extends Controller
 	 */
 	function list(Request $request)
 	{
+		return Response()->json([
+			"error" => "Not implemented",
+		], 501);
 /*
 		// Load data from datbase
 		$result = ProductModel::list([
@@ -35,6 +38,9 @@ class Sales extends Controller
 	 */
 	function create(Request $request)
 	{
+		return Response()->json([
+			"error" => "Not implemented",
+		], 501);
 /*
 		$json = $request->json()->all();
 
@@ -69,6 +75,9 @@ class Sales extends Controller
 	 */
 	function read(Request $request, $product_id)
 	{
+		return Response()->json([
+			"error" => "Not implemented",
+		], 501);
 /*
 		// Load the product
 		$entity = ProductModel::load([
@@ -94,6 +103,9 @@ class Sales extends Controller
 	 */
 	function update(Request $request, $product_id)
 	{
+		return Response()->json([
+			"error" => "Not implemented",
+		], 501);
 /*
 		// Load the product
 		$entity = ProductModel::load([
@@ -131,6 +143,9 @@ class Sales extends Controller
 	 */
 	function delete(Request $request, $product_id)
 	{
+		return Response()->json([
+			"error" => "Not implemented",
+		], 501);
 /*
 		$entity = ProductModel::load([
 			"product_id" => $product_id

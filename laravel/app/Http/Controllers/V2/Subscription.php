@@ -32,7 +32,9 @@ class Subscription extends Controller
 	 */
 	function create(Request $request)
 	{
-		return ['error' => 'not implemented'];
+		return Response()->json([
+			"error" => "Not implemented",
+		], 501);
 	}
 
 	/**
@@ -40,7 +42,9 @@ class Subscription extends Controller
 	 */
 	function read(Request $request, $id)
 	{
-		return ['error' => 'not implemented'];
+		return Response()->json([
+			"error" => "Not implemented",
+		], 501);
 	}
 
 	/**
@@ -48,7 +52,9 @@ class Subscription extends Controller
 	 */
 	function update(Request $request, $id)
 	{
-		return ['error' => 'not implemented'];
+		return Response()->json([
+			"error" => "Not implemented",
+		], 501);
 	}
 
 	/**
@@ -56,6 +62,8 @@ class Subscription extends Controller
 	 */
 	function delete(Request $request, $id)
 	{
-		return ['error' => 'not implemented'];
+		return Response()->json([
+			"error" => "Not implemented",
+		], 501);
 	}
 }

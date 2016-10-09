@@ -18,10 +18,18 @@ class Member extends Controller
 	 */
 	function list(Request $request)
 	{
-		// Load data from datbase
-		$result = MemberModel::list([
+		// Filters
+		$filters = [
 			["per_page", $this->per_page($request)],
-		]);
+		];
+		
+		if(!empty($request->get("search")))
+		{
+			$filters[] = ["search", $request->get("search")];
+		}
+
+		// Load data from database
+		$result = MemberModel::list($filters);
 
 		// Return json array
 		return $result;
@@ -124,21 +132,5 @@ class Member extends Controller
 				"status" => "error"
 			];
 		}
-	}
-
-	/**
-	 * Simple search engine used for member search and autocomplete
-	 */
-	function search(Request $request)
-	{
-		$json = $request->json()->all();
-
-		// Load data from datbase
-		$result = MemberModel::list([
-			["per_page", $this->per_page($request)],
-			["search",   $json["q"]]
-		]);
-
-		return $result;
 	}
 }

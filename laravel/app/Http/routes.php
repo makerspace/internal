@@ -39,7 +39,6 @@ Route::group(["prefix" => "api/v2", "before" => "oauth"], function()
 	Route::   get("member/{id}",   "V2\Member@read");   // Model: Read
 	Route::   put("member/{id}",   "V2\Member@update"); // Model: Update
 	Route::delete("member/{id}",   "V2\Member@delete"); // Model: Delete
-	Route::  post("member/search", "V2\Member@search"); // Search
 
 	// Groups
 	Route::   get("group",      "V2\Group@list");   // Get collection
