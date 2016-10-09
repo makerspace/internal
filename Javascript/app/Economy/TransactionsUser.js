@@ -1,10 +1,9 @@
 import React from 'react'
 import BackboneReact from 'backbone-react-component'
-import {
-	BackboneTable,
-} from '../BackboneTable'
+import { BackboneTable } from '../BackboneTable'
 import { Link } from 'react-router'
 import { Currency, DateField } from '../Common'
+import TableDropdownMenu from '../TableDropdownMenu'
 
 var TransactionsUser = React.createClass({
 	mixins: [Backbone.React.Component.mixin, BackboneTable],
@@ -12,7 +11,7 @@ var TransactionsUser = React.createClass({
 	getInitialState: function()
 	{
 		return {
-			columns: 3,
+			columns: 4,
 		};
 	},
 
@@ -44,6 +43,7 @@ var TransactionsUser = React.createClass({
 				<th>Bokföringsdatum</th>
 				<th>Transaktion</th>
 				<th className="uk-text-right">Belopp</th>
+				<th></th>
 			</tr>
 		);
 	},
@@ -55,6 +55,12 @@ var TransactionsUser = React.createClass({
 				<td><DateField date={row.accounting_date}/></td>
 				<td><Link to={"/economy/instruction/" + row.instruction_number}>{row.transaction_title}</Link></td>
 				<td className="uk-text-right"><Currency value={row.amount} currency="SEK" /></td>
+				<td>
+					<TableDropdownMenu>
+						<Link to={"/product/" + row.entity_id + "/edit"}><i className="uk-icon uk-icon-cog" /> Redigera metadata</Link>
+						<Link to={"/economy/instruction/" + row.instruction_number}><i className="uk-icon uk-icon-cog" /> Visa verifikation</Link>
+					</TableDropdownMenu>
+				</td>
 			</tr>
 		);
 	},

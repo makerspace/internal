@@ -1,14 +1,12 @@
 import React from 'react'
-
 import {
 	ProductModel,
 	ProductCollection
 } from '../models'
 import { Link } from 'react-router'
-import {
-	BackboneTable,
-} from '../BackboneTable'
+import { BackboneTable } from '../BackboneTable'
 import { DateField, Currency } from '../Common'
+import TableDropdownMenu from '../TableDropdownMenu'
 
 var SalesProductsHandler = React.createClass({
 	render: function()
@@ -17,8 +15,8 @@ var SalesProductsHandler = React.createClass({
 			<div>
 				<h2>Produkter</h2>
 				<p>På denna sida ser du en lista på samtliga produkter som finns för försäljning.</p>
-				<Products type={ProductCollection}/>
 				<Link className="uk-button" to="/product/add"><i className="uk-icon-plus"></i> Skapa ny produkt</Link>
+				<Products type={ProductCollection}/>
 			</div>
 		);
 	},
@@ -59,7 +57,12 @@ var Products = React.createClass({
 				<td>{row.auto_extend}</td>
 				<td>{row.interval}</td>
 				<td><Currency value={row.price} /></td>
-				<td className="uk-text-right">{this.removeButton(i)}</td>
+				<td>
+					<TableDropdownMenu>
+						<Link to={"/product/" + row.entity_id + "/edit"}><i className="uk-icon uk-icon-cog" /> Redigera produkt</Link>
+						{this.removeButton(i, "Ta bort produkt")}
+					</TableDropdownMenu>
+				</td>
 			</tr>
 		);
 	},

@@ -126,10 +126,15 @@ var BackboneTable = {
 		}
 	},
 
-	removeButton: function(i)
+	removeButton: function(i, text)
 	{
+		if(text === undefined)
+		{
+			var text = "Ta bort";
+		}
+
 		return (
-			<a onClick={this.remove.bind(this, i)} className="removebutton uk-icon-hover uk-icon-remove"> Ta bort</a>
+			<a onClick={this.remove.bind(this, i)} className="removebutton"><i className="uk-icon uk-icon-remove"></i> {text}</a>
 		);
 	},
 

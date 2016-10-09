@@ -1,30 +1,34 @@
 import React from 'react'
 import BackboneReact from 'backbone-react-component'
-import {
-	GroupModel,
-	GroupCollection
-} from '../models'
-import { Link, Router, browserHistory } from 'react-router'
-import {
-	BackboneTable,
-} from '../BackboneTable'
+import { GroupModel } from '../models'
+import { Link, browserHistory } from 'react-router'
 
-var GroupsHandler = React.createClass({
+var GroupHandler = React.createClass({
+	getInitialState: function()
+	{
+		var id = this.props.params.id;
+		var group = new GroupModel({entity_id: id});
+		group.fetch();
+
+		this.title = "Meep";
+		return {
+			model: group,
+		};
+	},
+
 	render: function()
 	{
 		return (
 			<div>
-				<h2>Grupper</h2>
-				<p>På denna sida ser du en lista på samtliga grupper.</p>
-				<Groups type={GroupCollection} />
-				<Link className="uk-button" to="/member/group/add"><i className="uk-icon-plus"></i> Skapa ny grupp</Link>
+				Show content
+				<Group model={this.state.model} />
 			</div>
 		);
 	},
 });
-GroupsHandler.title = "Visa grupper";
+GroupHandler.title = "Visa grupp";
 
-var GroupHandler = React.createClass({
+var GroupEditHandler = React.createClass({
 	getInitialState: function()
 	{
 		var id = this.props.params.id;
@@ -44,70 +48,26 @@ var GroupHandler = React.createClass({
 		);
 	},
 });
-GroupHandler.title = "Visa grupp";
+GroupEditHandler.title = "Visa grupp";
 
-var Groups = React.createClass({
-	mixins: [Backbone.React.Component.mixin, BackboneTable],
-
+var GroupAddHandler = React.createClass({
 	getInitialState: function()
 	{
+		var newGroup = new GroupModel({
+			title: "New group",
+			description: "This group is Awesome!"
+		});
 		return {
-			columns: 9,
+			model: newGroup,
 		};
 	},
 
-	componentWillMount: function()
-	{
-		if(this.props.member_number !== undefined)
-		{
-			// Load RFID keys related to member
-			this.state.collection.fetch({
-				data: {
-					relation: {
-						type: "member",
-						member_number: this.props.member_number,
-					}
-				}
-			});
-		}
-		else
-		{
-			// Load all RFID keys
-			this.state.collection.fetch();
-		}
-	},
-	
-	removeTextMessage: function(entity)
-	{
-		return "Are you sure you want to remove group \"" + entity.title + "\"?";
-	},
-
-	removeErrorMessage: function()
-	{
-		UIkit.modal.alert("Error deleting group");
-	},
-
-	renderRow: function(row, i)
+	render: function()
 	{
 		return (
-			<tr key={i}>
-				<td><Link to={"/member/group/" + row.entity_id}>{row.group_id}</Link></td>
-				<td><Link to={"/member/group/" + row.entity_id}>{row.title}</Link></td>
-				<td><Link to={"/member/group/" + row.entity_id}>{row.description}</Link></td>
-				<td className="uk-text-right">{this.removeButton(i)}</td>
-			</tr>
-		);
-	},
-
-	renderHeader: function()
-	{
-		return (
-			<tr>
-				<th>#</th>
-				<th>Namn</th>
-				<th>Beskrivning</th>
-				<th></th>
-			</tr>
+			<div>
+				<Group model={this.state.model} />
+			</div>
 		);
 	},
 });
@@ -128,7 +88,7 @@ var Group = React.createClass({
 				if(response.status == "created")
 				{
 					UIkit.modal.alert("Successfully created");
-					browserHistory.push("/member/group/" + response.entity.entity_id);
+					browserHistory.push("/groups");
 				}
 				else if(response.status == "updated")
 				{
@@ -198,31 +158,9 @@ var Group = React.createClass({
 	},
 });
 
-var GroupAddHandler = React.createClass({
-	getInitialState: function()
-	{
-		var newGroup = new GroupModel({
-			title: "New group",
-			description: "This group is Awesome!"
-		});
-		return {
-			model: newGroup,
-		};
-	},
-
-	render: function()
-	{
-		return (
-			<div>
-				<Group model={this.state.model} />
-			</div>
-		);
-	},
-});
-
 module.exports = {
-	GroupsHandler,
 	GroupHandler,
 	GroupAddHandler,
-	Groups
+	GroupEditHandler,
+	Group
 }

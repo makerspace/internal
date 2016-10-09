@@ -2,6 +2,7 @@
 global.jQuery = require('jquery')
 global.$ = global.jQuery;
 require('uikit')
+require('uikit/dist/js/core/dropdown')
 require('uikit/dist/js/components/pagination')
 require('uikit/dist/js/components/autocomplete')
 
@@ -16,13 +17,6 @@ import {
 } from 'react-router'
 import Backbone from 'backbone'
 import { browserHistory } from 'react-router'
-
-import {
-	MemberOverviewHandler,
-} from './Member/Overview.js'
-import {
-	MemberSearchHandler,
-} from './Member/Search.js'
 import {
 	MemberHandler,
 	MemberAddHandler,
@@ -30,11 +24,8 @@ import {
 import {
 	MembersHandler,
 } from './Member/Members.js'
-import {
-	GroupsHandler,
-	GroupHandler,
-	GroupAddHandler
-} from './Member/Groups.js'
+import { GroupHandler, GroupAddHandler, GroupEditHandler } from './Group/Group.js'
+import { GroupsHandler } from './Group/Groups.js'
 import { SalesOverviewHandler } from './Sales/Overview'
 import { SalesProductsHandler } from './Sales/Products'
 import { SalesSubscriptionsHandler } from './Sales/Subscriptions'
@@ -99,49 +90,18 @@ var nav = new Backbone.Model({
 	[
 		{
 			text: "Medlemmar",
-			target: "/member",
+			target: "/members",
 			icon: "user",
-			children:
-			[
-				{
-					text: "Översikt",
-					target: "/member/overview",
-				},
-				{
-					text: "Sök",
-					target: "/member/search",
-				},
-				{
-					text: "Medlemslista",
-					target: "/member/list",
-					children: [
-						{
-							text: "Medlem",
-							target: "/member/:id",
-						},
-					],
-				},
-				{
-					text: "Skapa medlem",
-					target: "/member/add",
-				},
-				{
-					text: "Grupper",
-					target: "/member/group/list",
-				},
-			],
+		},
+		{
+			text: "Grupper",
+			target: "/groups",
+			icon: "group",
 		},
 		{
 			text: "Nycklar",
 			target: "/keys",
 			icon: "key",
-			children:
-			[
-				{
-					text: "Översikt",
-					target: "/keys/overview",
-				},
-			],
 		},
 		{
 			text: "Försäljning",
@@ -225,58 +185,17 @@ var nav = new Backbone.Model({
 					text: "Kostnadsställen",
 					target: "/economy/costcenter",
 				},
-				{
-					type: "separator",
-					target: "",
-				},
-				{
-					type: "heading",
-					text: "Inställningar",
-					target: "",
-				},
-				{
-					text: "Kontoplan",
-					target: "/economy/accounts",
-				},
-				{
-					text: "Räkneskapsår",
-					target: "/economy/accountingperiods",
-				},
-				{
-					text: "Debug",
-					target: "/economy/debug",
-				},
 			],
 		},
 		{
 			text: "Utskick",
 			target: "/mail",
 			icon: "envelope",
-			children:
-			[
-				{
-					text: "Hantera mallar",
-					target: "/mail/templates",
-				},
-				{
-					text: "Skapa utskick",
-					target: "/mail/send",
-				},
-				{
-					text: "Historik",
-					target: "/mail/history",
-				},
-			],
 		},
 		{
 			text: "Statistik",
 			target: "/statistics",
 			icon: "area-chart",
-		},
-		{
-			text: "Export",
-			target: "/members/export",
-			icon: "download",
 		},
 		{
 			text: "Inställningar",
@@ -292,9 +211,47 @@ var nav = new Backbone.Model({
 					text: "Automation",
 					target: "/settings/automation",
 				},
+				{
+					text: "Export",
+					target: "/settings/export",
+					icon: "download",
+				},
+				{
+					text: "Utskick",
+					target: "/settings/mail",
+					icon: "envelope",
+					children:
+					[
+						{
+							text: "Hantera mallar",
+							target: "/settings/mail/templates",
+						},
+					],
+				},
+				{
+					type: "separator",
+					target: "",
+				},
+				{
+					type: "heading",
+					text: "Ekonomi",
+					target: "",
+				},
+				{
+					text: "Kontoplan",
+					target: "/settings/economy/accounts",
+				},
+				{
+					text: "Räkneskapsår",
+					target: "/settings/economy/accountingperiods",
+				},
+				{
+					text: "Debug",
+					target: "/settings/economy/debug",
+				},
 			],
 		},
-				{
+		{
 			text: "Logga ut",
 			target: "/logout",
 			icon: "sign-out",
@@ -437,23 +394,19 @@ ReactDOM.render((
 		<Route path="/" component={App} >
 			<IndexRoute component={DashboardHandler} />
 			<Route path="logout" component={Logout} />
-			<Route path="member">
-				<IndexRedirect to="overview" />
-				<Route path="overview" component={MemberOverviewHandler} />
-				<Route path="search"   component={MemberSearchHandler} />
-				<Route path="list"     component={MembersHandler} />
+			<Route path="members">
+				<IndexRoute component={MembersHandler} />
 				<Route path="add"      component={MemberAddHandler} />
 				<Route path=":id"      component={MemberHandler} />
-				<Route path="group">
-					<IndexRoute component={GroupsHandler} />
-					<Route path="list"     component={GroupsHandler} />
-					<Route path="add"      component={GroupAddHandler} />
-					<Route path=":id"      component={GroupHandler} />
-				</Route>
+			</Route>
+			<Route path="groups">
+				<IndexRoute component={GroupsHandler} />
+				<Route path="add"      component={GroupAddHandler} />
+				<Route path=":id"      component={GroupHandler} />
+				<Route path=":id/edit" component={GroupEditHandler} />
 			</Route>
 			<Route path="keys">
-				<IndexRedirect to="overview" />
-				<Route path="overview" component={KeysOverviewHandler} />
+				<IndexRoute component={KeysOverviewHandler} />
 			</Route>
 			<Route path="sales">
 				<IndexRedirect to="overview" />
@@ -475,11 +428,6 @@ ReactDOM.render((
 					<Route path=":id"      component={InvoiceHandler} />
 				</Route>
 
-				<Route path="accounts"          component={EconomyAccountsHandler} />
-				<Route path="account/add"       component={EconomyAccountAddHandler} />
-				<Route path="account/:id"       component={EconomyAccountHandler} />
-				<Route path="account/:id/edit"  component={EconomyAccountEditHandler} />
-
 				<Route path="instruction"       component={EconomyAccountingInstructionsHandler} />
 				<Route path="instruction/:id"   component={EconomyAccountingInstructionHandler} />
 				<Route path="instruction/:id/import" component={EconomyAccountingInstructionImportHandler} />
@@ -490,24 +438,28 @@ ReactDOM.render((
 				<Route path="costcenter"        component={EconomyCostCentersHandler} />
 				<Route path="costcenter/:id"    component={EconomyCostCenterHandler} />
 
-				<Route path="debug"             component={EconomyDebugHandler} />
-				<Route path="accountingperiods" component={EconomyAccountingPeriodHandler} />
 			</Route>
 			<Route path="mail">
-				<IndexRedirect to="history" />
-				<Route path="templates" component={MailTemplatesHandler} />
-				<Route path="send"      component={MailSendHandler} />
-				<Route path="history"   component={MailHistoryHandler} />
-
+				<IndexRoute component={MailHistoryHandler} />
+				<Route path="send" component={MailSendHandler} />
 			</Route>
 			<Route path="statistics"     component={StatisticsHandler} />
-			<Route path="members/export" component={ExportHandler} />
 			<Route path="settings">
 				<IndexRedirect to="global" />
 				<Route path="global"     component={SettingsGlobalHandler} />
 				<Route path="automation" component={SettingsAutomationHandler} />
+				<Route path="export"     component={ExportHandler} />
+				<Route path="mail"       component={MailTemplatesHandler} />
+				<Route path="economy">
+					<Route path="debug"             component={EconomyDebugHandler} />
+					<Route path="accountingperiods" component={EconomyAccountingPeriodHandler} />
+					<Route path="accounts"          component={EconomyAccountsHandler} />
+					<Route path="account/add"       component={EconomyAccountAddHandler} />
+					<Route path="account/:id"       component={EconomyAccountHandler} />
+					<Route path="account/:id/edit"  component={EconomyAccountEditHandler} />
+				</Route>
 			</Route>
-			<Route path="*"              component={NoMatch}/>
+			<Route path="*" component={NoMatch}/>
 		</Route>
 	</Router>
 ), document.getElementById("main"));

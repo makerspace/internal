@@ -1,7 +1,6 @@
 import React from 'react'
-import {
-	BackboneTable,
-} from '../BackboneTable'
+import { BackboneTable } from '../BackboneTable'
+import TableDropdownMenu from '../TableDropdownMenu'
 
 var Keys = React.createClass({
 	mixins: [Backbone.React.Component.mixin, BackboneTable],
@@ -54,7 +53,6 @@ var Keys = React.createClass({
 	{
 		return (
 			<tr key={i}>
-				<td>{row.tagid}</td>
 				<td>
 					{(() => {
 						switch (row.active) {
@@ -63,11 +61,13 @@ var Keys = React.createClass({
 						}
 					})()}
 				</td>
-				<td>{row.title}</td>
+				<td>{row.tagid}</td>
 				<td>{row.description}</td>
-				<td className="uk-text-right">
-					<a onClick={this.edit.bind(this, i)} className="uk-icon-hover uk-icon-cog"> Redigera</a>
-					{this.removeButton(i)}
+				<td>
+					<TableDropdownMenu>
+						<a onClick={this.edit.bind(this, i)}><i className="uk-icon uk-icon-cog" /> Redigera</a>
+						{this.removeButton(i)}
+					</TableDropdownMenu>
 				</td>
 			</tr>
 		);
@@ -77,15 +77,16 @@ var Keys = React.createClass({
 	{
 		return (
 			<tr>
-				<th>RFID</th>
 				<th>Aktiv</th>
-				<th>Titel</th>
+				<th>RFID</th>
 				<th>Beskrivning</th>
 				<th></th>
 			</tr>
 		);
 	},
 });
+
+
 
 module.exports = {
 	Keys,
