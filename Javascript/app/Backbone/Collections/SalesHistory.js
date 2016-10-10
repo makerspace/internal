@@ -1,5 +1,5 @@
 import Backbone from 'backbone'
-import SalesHistoryModel from '../Models/Account'
+import SalesHistoryModel from '../Models/SalesHistory'
 
 var SalesHistoryCollection = Backbone.PageableCollection.extend(
 {

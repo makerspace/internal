@@ -1,5 +1,5 @@
 import Backbone from 'backbone'
-import TransactionModel from '../Models/Account'
+import TransactionModel from '../Models/Transaction'
 
 var TransactionCollection = Backbone.PageableCollection.extend(
 {

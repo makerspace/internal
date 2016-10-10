@@ -2,6 +2,9 @@ import React from 'react'
 import BackboneTable from '../BackboneTable'
 import TableDropdownMenu from '../TableDropdownMenu'
 
+// Backbone
+import RfidModel from '../Backbone/Models/Rfid'
+
 var Keys = React.createClass({
 	mixins: [Backbone.React.Component.mixin, BackboneTable],
 
@@ -45,8 +48,8 @@ var Keys = React.createClass({
 
 	edit: function(row)
 	{
-		var entity = this.getCollection().at(row);
-		this.props.edit(entity);
+		// We need to load a new model because the model can not belong to two different components at the same time.
+		this.props.edit(this.getCollection().at(row).clone());
 	},
 
 	renderRow: function(row, i)

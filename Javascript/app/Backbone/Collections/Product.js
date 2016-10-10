@@ -1,5 +1,5 @@
 import Backbone from 'backbone'
-import ProductModel from '../Models/Account'
+import ProductModel from '../Models/Product'
 
 var ProductCollection = Backbone.PageableCollection.extend(
 {

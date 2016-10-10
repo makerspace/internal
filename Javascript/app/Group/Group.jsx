@@ -106,11 +106,12 @@ var Group = React.createClass({
 			{
 				if(response.status == "created")
 				{
-					UIkit.modal.alert("Successfully created");
 					browserHistory.push("/groups");
+					UIkit.modal.alert("Successfully created");
 				}
 				else if(response.status == "updated")
 				{
+					browserHistory.push("/groups");
 					UIkit.modal.alert("Successfully updated");
 				}
 				else

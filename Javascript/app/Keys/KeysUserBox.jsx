@@ -16,14 +16,12 @@ var KeysUserBox = React.createClass(
 		};
 	},
 
-	edit: function(entity)
+	edit: function(model)
 	{
-		UIkit.modal.alert("Parent edit" + entity);
-
 		// Load the entity into the edit form
 		this.setState({
 			showEditForm: true,
-			rfidModel: entity,
+			rfidModel: model,
 		});
 	},
 
@@ -40,8 +38,7 @@ var KeysUserBox = React.createClass(
 
 	rfidClose: function()
 	{
-		// TODO: Something here gives us an error message
-//		this.state.rfidModel.trigger("destroy", this.state.rfidModel);
+		this.state.rfidModel.trigger("destroy", this.state.rfidModel);
 
 		this.setState({
 			showEditForm: false,
@@ -52,7 +49,7 @@ var KeysUserBox = React.createClass(
 	{
 		this.setState({
 			showEditForm: false,
-		});	
+		});
 	},
 
 	render: function()

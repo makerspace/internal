@@ -8,7 +8,7 @@ var MemberModel = Backbone.Model.fullExtend(
 		created_at: "0000-00-00T00:00:00Z",
 		updated_at: "0000-00-00T00:00:00Z",
 		entity_id: 0,
-		member_number: 0,
+		member_number: null,
 		civicregno: "",
 		firstname: "",
 		lastname: "",

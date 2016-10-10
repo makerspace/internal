@@ -10,7 +10,7 @@ var TableDropdownMenu = React.createClass({
 					<div className="uk-dropdown uk-dropdown-small">
 						<ul className="uk-nav uk-nav-dropdown">
 							{React.Children.map(this.props.children, function(child, i) {
-								return (<li>{child}</li>);
+								return (<li className="uk-dropdown-close">{child}</li>);
 							})}
 						</ul>
 					</div>

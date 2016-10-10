@@ -23,21 +23,36 @@ var Edit = React.createClass({
 
 	save: function(event)
 	{
+		var _this = this;
+
 		// Prevent the form from being submitted
 		event.preventDefault();
 
 		// Add a relation to the member and save the model
-		this.getModel().save({
-			relations: [
+		this.getModel().save(
+			{
+				relations: [
+					{
+						type: "member",
+						member_number: this.props.member_number
+					}
+				],
+			},
+			{
+				wait: true,
+				success: function()
 				{
-					type: "member",
-					member_number: this.props.member_number
-				}
-			]
-		});
+					_this.getModel().trigger("destroy", _this.getModel());
 
-		// Tell parent to save form
-		this.props.save();
+					// Tell parent to save form
+					// For some reason a sync event is fired a few ms after React destroys the element, so we have to wait until the sync is done.
+					setTimeout(function() {
+						_this.props.save.call();
+					}, 10);
+				},
+			}
+		);
+
 	},
 
 	handleChange: function(event)

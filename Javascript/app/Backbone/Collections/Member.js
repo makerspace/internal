@@ -1,5 +1,5 @@
 import Backbone from 'backbone'
-import MemberModel from '../Models/Account'
+import MemberModel from '../Models/Member'
 
 var MemberCollection = Backbone.PageableCollection.extend(
 {

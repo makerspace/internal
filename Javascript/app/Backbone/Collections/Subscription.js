@@ -1,5 +1,5 @@
 import Backbone from 'backbone'
-import SubscriptionModel from '../Models/Account'
+import SubscriptionModel from '../Models/Subscription'
 
 var SubscriptionCollection = Backbone.PageableCollection.extend(
 {

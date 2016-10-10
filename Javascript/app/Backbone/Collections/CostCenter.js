@@ -1,5 +1,5 @@
 import Backbone from 'backbone'
-import CostCenterModel from '../Models/Account'
+import CostCenterModel from '../Models/CostCenter'
 
 var CostCenterCollection = Backbone.PageableCollection.extend(
 {

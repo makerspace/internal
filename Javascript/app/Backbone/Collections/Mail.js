@@ -1,5 +1,5 @@
 import Backbone from 'backbone'
-import MailModel from '../Models/Account'
+import MailModel from '../Models/Mail'
 
 var MailCollection = Backbone.PageableCollection.extend(
 {

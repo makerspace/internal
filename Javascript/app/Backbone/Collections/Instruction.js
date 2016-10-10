@@ -1,5 +1,5 @@
 import Backbone from 'backbone'
-import InstructionModel from '../Models/Account'
+import InstructionModel from '../Models/Instruction'
 
 var InstructionCollection = Backbone.PageableCollection.extend(
 {

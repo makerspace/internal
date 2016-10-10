@@ -1,5 +1,5 @@
 import Backbone from 'backbone'
-import InvoiceModel from '../Models/Account'
+import InvoiceModel from '../Models/Invoice'
 
 var InvoiceCollection = Backbone.PageableCollection.extend(
 {

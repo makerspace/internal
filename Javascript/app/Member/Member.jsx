@@ -124,8 +124,6 @@ var MemberForm = React.createClass({
 	
 	save: function(event)
 	{
-		UIkit.modal.alert("TODO: Save member");
-
 		var _this = this;
 
 		// Prevent the form from being submitted
@@ -137,7 +135,7 @@ var MemberForm = React.createClass({
 				if(response.status == "created")
 				{
 					UIkit.modal.alert("Successfully created");
-					browserHistory.push("/members/" + response.entity.entity_id);
+					browserHistory.push("/members/" + response.entity.member_number);
 				}
 				else if(response.status == "updated")
 				{
