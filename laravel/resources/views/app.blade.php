@@ -12,6 +12,7 @@
 	<link rel="stylesheet" href="/css/uikit.almost-flat.css" />
 	<link rel="stylesheet" href="/css/default.css" />
 	<link rel="stylesheet" href="/css/react-select.css" />
+	<link rel="stylesheet" href="/css/flags/flags.css" />
 </head>
 <body>
 	<noscript>
