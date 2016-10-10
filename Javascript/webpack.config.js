@@ -1,6 +1,6 @@
 module.exports = {
 	context: __dirname + "/app",
-	entry: "./app.js",
+	entry: "./app.jsx",
 
 	output:
 	{
@@ -8,17 +8,21 @@ module.exports = {
 		path: "../laravel/public/js",
 	},
 
+	resolve: {
+		extensions: ['', '.js', '.jsx']
+	},
+
 	module: {
 		loaders:
 		[
 			{
-				test: /\.js$/,
+				test: /\.jsx?$/,
 				exclude: /node_modules/,
 				loader: "babel-loader",
 				query: {
 					presets: ['es2015', 'react']
 				}
-			}
+			},
 		],
 	},
 }

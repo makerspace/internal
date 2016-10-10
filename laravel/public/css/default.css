@@ -89,6 +89,8 @@ a.removebutton {
 	background-color: #fff;
 	padding: 0;
 	color: #111;
+	margin: 5px 0;
+	height: 25px;
 }
 
 .meep .uk-form input[disabled] {
@@ -100,13 +102,28 @@ a.removebutton {
 }
 
 .meep input[name=address_zipcode] {
-	margin-right: 2em;
+	margin-right: 2em !important;
+}
+
+.meep input[name=address_city] {
+	width: 342px;
+}
+
+.meep .zipcode,
+.meep .city {
+	float: left;
+}
+
+.meep .zipcode {
+	width: 157px;
 }
 
 .meep .uk-form-row label {
 	font-size: 11px;
 	font-weight: bold;
 	color: #666;
+	height: 16px;
+	display: inline-block;
 }
 
 .meep .uk-form-row {
@@ -119,17 +136,37 @@ a.removebutton {
 }
 
 .meep .uk-form-controls {
-	margin-top: 20px;
+	margin-top: -5px;
 	position: absolute;
 	margin-left: 0;
 }
 
 .meep .uk-form fieldset {
 	margin-bottom: 2em;
-	padding-left: 2em;
+	padding-left: 3em;
 }
 
 .meep .uk-form legend {
 	margin-left: -2em;
 	padding: 0;
+}
+
+.meep ::-webkit-input-placeholder {
+	font-style: italic;
+}
+
+.meep :-moz-placeholder {
+	font-style: italic;
+}
+
+.meep ::-moz-placeholder {
+	font-style: italic;
+}
+
+.meep :-ms-input-placeholder {
+	font-style: italic;
+}
+
+button.uk-float-left {
+	margin-right: 1em;
 }
