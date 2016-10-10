@@ -79,3 +79,57 @@ a.removebutton {
 .key-inactive {
 	color: #f88;
 }
+
+
+/* Better forms */
+.meep .uk-form input[type=text] {
+	border: none;
+	border-radius: 0;
+	border-bottom: 1px solid #aaa;
+	background-color: #fff;
+	padding: 0;
+	color: #111;
+}
+
+.meep .uk-form input[disabled] {
+	border: 0;
+}
+
+.meep .uk-form input:focus {
+	border-bottom: 3px solid #66f;
+}
+
+.meep input[name=address_zipcode] {
+	margin-right: 2em;
+}
+
+.meep .uk-form-row label {
+	font-size: 11px;
+	font-weight: bold;
+	color: #666;
+}
+
+.meep .uk-form-row {
+	position: relative;
+	margin-bottom: 30px;
+}
+
+.meep .uk-form-row:focus {
+	background-color: green;
+}
+
+.meep .uk-form-controls {
+	margin-top: 20px;
+	position: absolute;
+	margin-left: 0;
+}
+
+.meep .uk-form fieldset {
+	margin-bottom: 2em;
+	padding-left: 2em;
+}
+
+.meep .uk-form legend {
+	margin-left: -2em;
+	padding: 0;
+}

@@ -12,6 +12,8 @@ import { GroupUserBox } from '../Group/GroupUserBox'
 import { SubscriptionUserBox } from '../Sales/SubscriptionUserBox'
 import { TransactionUserBox } from '../Economy/TransactionUserBox'
 
+import CountryDropdown from '../CountryDropdown'
+
 var MemberHandler = React.createClass({
 	getInitialState: function()
 	{
@@ -19,7 +21,14 @@ var MemberHandler = React.createClass({
 			member_number: this.props.params.id
 		});
 		console.log(member);
-		member.fetch();
+
+		var _this = this;
+		member.fetch({
+			success: function() {
+				console.log("success");
+				_this.forceUpdate();
+			}
+		});
 
 //		this.title = "Meep";
 		return {
@@ -54,7 +63,7 @@ var MemberHandler = React.createClass({
 	{
 		return (
 			<div>
-				<h2>Redigera {this.state.model.get("firstname")} {this.state.model.get("lastname")} #{this.state.model.get("member_number")}</h2>
+				<h2>Medlem #{this.state.model.get("member_number")}: {this.state.model.get("firstname")} {this.state.model.get("lastname")}</h2>
 
 				<ul className="uk-tab" data-uk-switcher="{connect:'#user-tabs'}">
 					<li id="member_info"><a>Personuppgifter</a></li>
@@ -93,6 +102,15 @@ MemberHandler.title = "Visa medlem";
 
 var MemberForm = React.createClass({
 	mixins: [Backbone.React.Component.mixin],
+
+	cancel: function(event)
+	{
+		// Prevent the form from being submitted
+		event.preventDefault();
+
+		console.log("TODO: Clear");
+		console.log(this.getModel());
+	},
 
 	save: function(event)
 	{
@@ -145,137 +163,125 @@ var MemberForm = React.createClass({
 	render: function()
 	{
 		return (
+			<div className="meep">
 			<form className="uk-form uk-form-horizontal">
-				<div className="uk-grid">
-					<div className="uk-width-1-6">
-						<label className="uk-form-label">Medlemsnummer</label>
-					</div>
-					<div className="uk-width-2-6">
-						<div className="uk-form-icon">
-							<i className="uk-icon-tag"></i>
-							<input type="text" name="member_number" value={this.state.model.member_number} disabled />
-						</div>
-					</div>
-					<div className="uk-width-1-6">
-						<label className="uk-form-label">Skapad</label>
-					</div>
-					<div className="uk-width-2-6">
-						<div className="uk-form-icon">
-							<i className="uk-icon-calendar"></i>
-							<input type="text" value={this.state.model.created_at} disabled />
-						</div>
-					</div>
-				</div>
+				<fieldset >
+					<legend><i className="uk-icon-user"></i> Personuppgifter</legend>
 
-				<div className="uk-grid">
-					<div className="uk-width-1-6">
+					<div className="uk-form-row">
 						<label className="uk-form-label">Personnummer</label>
-					</div>
-					<div className="uk-width-2-6">
-						<div className="uk-form-icon">
-							<i className="uk-icon-calendar"></i>
-							<input type="text" name="civicregno" value={this.state.model.civicregno} onChange={this.handleChange} />
+						<div className="uk-form-controls">
+							<input type="text" name="civicregno" value={this.state.model.civicregno} onChange={this.handleChange} className="uk-form-width-large" />
 						</div>
 					</div>
-					<div className="uk-width-1-6">
-						<label className="uk-form-label">Uppdaterad</label>
-					</div>
-					<div className="uk-width-2-6">
-						<div className="uk-form-icon">
-							<i className="uk-icon-calendar"></i>
-							<input type="text" value={this.state.model.updated_at} disabled />
-						</div>
-					</div>
-				</div>
 
-				<div className="uk-grid">
-					<div className="uk-width-1-6">
+					<div className="uk-form-row">
 						<label className="uk-form-label">Förnamn</label>
-					</div>
-					<div className="uk-width-2-6">
-						<div className="uk-form-icon">
-							<i className="uk-icon-user"></i>
-							<input type="text" name="firstname" value={this.state.model.firstname} onChange={this.handleChange} />
+						<div className="uk-form-controls">
+							<input type="text" name="firstname" value={this.state.model.firstname} onChange={this.handleChange} className="uk-form-width-large" />
 						</div>
 					</div>
-					<div className="uk-width-1-6">
+
+					<div className="uk-form-row">
 						<label className="uk-form-label">Efternamn</label>
-					</div>
-					<div className="uk-width-2-6">
-						<div className="uk-form-icon">
-							<i className="uk-icon-user"></i>
-							<input type="text" name="lastname" value={this.state.model.lastname} onChange={this.handleChange} />
+						<div className="uk-form-controls">
+							<input type="text" name="lastname" value={this.state.model.lastname} onChange={this.handleChange} className="uk-form-width-large" />
 						</div>
 					</div>
-				</div>
 
-				<div className="uk-grid">
-					<div className="uk-width-1-6">
+					<div className="uk-form-row">
 						<label className="uk-form-label">E-post</label>
-					</div>
-					<div className="uk-width-2-6">
-						<div className="uk-form-icon">
-							<i className="uk-icon-envelope"></i>
-							<input type="text" name="email" value={this.state.model.email} onChange={this.handleChange} />
+						<div className="uk-form-controls">
+							<div className="uk-form-icon">
+								<i className="uk-icon-envelope"></i>
+								<input type="text" name="email" value={this.state.model.email} onChange={this.handleChange} className="uk-form-width-large" />
+							</div>
 						</div>
 					</div>
-					<div className="uk-width-1-6">
+
+					<div className="uk-form-row">
 						<label className="uk-form-label">Telefonnummer</label>
-					</div>
-					<div className="uk-width-2-6">
-						<div className="uk-form-icon">
-							<i className="uk-icon-phone"></i>
-							<input type="text" name="phone" value={this.state.model.phone} onChange={this.handleChange} />
+						<div className="uk-form-controls">
+							<div className="uk-form-icon">
+								<i className="uk-icon-phone"></i>
+								<input type="text" name="phone" value={this.state.model.phone} onChange={this.handleChange} className="uk-form-width-large" />
+							</div>
 						</div>
 					</div>
-				</div>
+				</fieldset>
 
-				<div className="uk-grid">
-					<div className="uk-width-1-6">
+				<fieldset data-uk-margin>
+					<legend><i className="uk-icon-home"></i> Adress</legend>
+
+					<div className="uk-form-row">
 						<label className="uk-form-label">Address</label>
-					</div>
-					<div className="uk-width-2-6">
-						<div className="uk-form-icon">
-							<i className="uk-icon-home"></i>
-							<input type="text" name="address_street" value={this.state.model.address_street} onChange={this.handleChange} />
+						<div className="uk-form-controls">
+							<input type="text" name="address_street" value={this.state.model.address_street} onChange={this.handleChange} className="uk-form-width-large" />
 						</div>
 					</div>
-					<div className="uk-width-1-6">
-						<label className="uk-form-label">Land</label>
-					</div>
-					<div className="uk-width-2-6">
-						<div className="uk-form-icon">
-							<i className="uk-icon-home"></i>
-							<input type="text" name="address_country" value={this.state.model.address_country} onChange={this.handleChange} />
-						</div>
-					</div>
-				</div>
 
-				<div className="uk-grid">
-					<div className="uk-width-1-6">
-						<label className="uk-form-label">Postnummer</label>
-					</div>
-					<div className="uk-width-2-6">
-						<div className="uk-form-icon">
-							<i className="uk-icon-home"></i>
-							<input type="text" name="address_zipcode" value={this.state.model.address_zipcode} onChange={this.handleChange} />
+					<div className="uk-form-row">
+						<label className="uk-form-label">Address extra</label>
+						<div className="uk-form-controls">
+							<input type="text" name="address_extra" value={this.state.model.address_extra} onChange={this.handleChange} className="uk-form-width-large" />
 						</div>
 					</div>
-					<div className="uk-width-1-6">
-						<label className="uk-form-label">Postort</label>
-					</div>
-					<div className="uk-width-2-6">
-						<div className="uk-form-icon">
-							<i className="uk-icon-home"></i>
+
+					<div className="uk-form-row">
+						<label className="uk-form-label">Postadress</label>
+						<div className="uk-form-controls">
+							<input type="text" name="address_zipcode" value={this.state.model.address_zipcode} onChange={this.handleChange} className="uk-form-width-small" />
 							<input type="text" name="address_city" value={this.state.model.address_city} onChange={this.handleChange} />
 						</div>
 					</div>
-				</div>
 
-				<button className="uk-button" onClick={this.save}><i className="uk-icon-save"></i> Spara personuppgifter</button>
+					<div className="uk-form-row">
+						<label className="uk-form-label">Land</label>
+						<div className="uk-form-controls">
+							<CountryDropdown country={this.state.model.address_country} onChange={this.changeCountry} />
+						</div>
+					</div>
+				</fieldset>
+
+				<fieldset data-uk-margin>
+					<legend><i className="uk-icon-tag"></i> Metadata</legend>
+
+					<div className="uk-form-row">
+						<label className="uk-form-label">Medlem sedan</label>
+						<div className="uk-form-controls">
+							<div className="uk-form-icon">
+								<i className="uk-icon-calendar"></i>
+								<input type="text" value={this.state.model.created_at} disabled />
+							</div>
+						</div>
+					</div>
+
+					<div className="uk-form-row">
+						<label className="uk-form-label">Senast uppdaterad</label>
+						<div className="uk-form-controls">
+							<div className="uk-form-icon">
+								<i className="uk-icon-calendar"></i>
+								<input type="text" value={this.state.model.updated_at} disabled />
+							</div>
+						</div>
+					</div>
+				</fieldset>
+
+				<div className="uk-form">
+					<button className="uk-button uk-button-danger uk-float-left" onClick={this.cancel}><i className="uk-icon-close"></i> Återställ</button>
+					<button className="uk-button uk-button-success uk-float-right" onClick={this.save}><i className="uk-icon-save"></i> Spara personuppgifter</button>
+				</div>
 			</form>
+			</div>
 		);
 	},
+
+	changeCountry: function(country)
+	{
+		this.getModel().set({
+			address_country: country
+		});
+	}
 });
 
 var MemberAddHandler = React.createClass({
