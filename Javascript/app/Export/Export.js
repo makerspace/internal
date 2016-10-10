@@ -12,6 +12,4 @@ var ExportHandler = React.createClass({
 	},
 });
 
-module.exports = {
-	ExportHandler,
-}
+module.exports = ExportHandler

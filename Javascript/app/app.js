@@ -26,7 +26,7 @@ import {
 } from './Member/Members.js'
 import { GroupHandler, GroupAddHandler, GroupEditHandler } from './Group/Group.js'
 import { GroupsHandler } from './Group/Groups.js'
-import { SalesOverviewHandler } from './Sales/Overview'
+import SalesOverviewHandler from './Sales/Overview'
 import { SalesProductsHandler } from './Sales/Products'
 import { SalesSubscriptionsHandler } from './Sales/Subscriptions'
 import { SalesHistoryHandler } from './Sales/History'
@@ -50,13 +50,8 @@ import {
 	EconomyAccountAddHandler,
 } from './Economy/Account'
 
-import {
-	EconomyValuationSheetHandler,
-} from './Economy/ValuationSheet'
-
-import {
-	EconomyResultReportHandler,
-} from './Economy/ResultReport'
+import EconomyValuationSheetHandler from './Economy/ValuationSheet'
+import EconomyResultReportHandler from './Economy/ResultReport'
 
 import {
 	EconomyCostCentersHandler,
@@ -71,18 +66,19 @@ import {
 	SideNav2,
 	Breadcrumb,
 } from './nav'
-import { SettingsGlobalHandler } from './Settings/Global'
-import { SettingsAutomationHandler } from './Settings/Automation'
-import { StatisticsHandler } from './statistics'
 
-import { DashboardHandler } from './Dashboard'
-import { ExportHandler } from './Export/Export'
+import SettingsGlobalHandler from './Settings/Global'
+import SettingsAutomationHandler from './Settings/Automation'
+import StatisticsHandler from './Statistics'
+import DashboardHandler from './Dashboard'
+import ExportHandler from './Export/Export'
 
-import { MailTemplatesHandler } from './Mail/Templates'
-import { MailSendHandler } from './Mail/Send'
+import MailTemplatesHandler from './Mail/Templates'
+import MailSendHandler from './Mail/Send'
 import { MailHistoryHandler } from './Mail/History'
+import KeysOverviewHandler from './Keys/Overview'
+
 import auth from './auth';
-import { KeysOverviewHandler } from './Keys/Overview'
 
 var nav = new Backbone.Model({
 	brand: "Makerspace Internal v2",

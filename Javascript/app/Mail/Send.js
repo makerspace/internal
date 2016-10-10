@@ -199,4 +199,4 @@ class MailSendHandler extends React.Component
 }
 MailSendHandler.title = "Skapa utskick";
 
-module.exports = { MailSendHandler }
+module.exports = MailSendHandler

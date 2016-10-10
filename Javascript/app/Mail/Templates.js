@@ -12,4 +12,4 @@ var MailTemplatesHandler = React.createClass({
 	},
 });
 
-module.exports = { MailTemplatesHandler }
+module.exports = MailTemplatesHandler

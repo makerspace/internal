@@ -150,6 +150,4 @@ var EconomyResultReportHandler = React.createClass({
 	}
 });
 
-module.exports = {
-	EconomyResultReportHandler,
-}
+module.exports = EconomyResultReportHandler

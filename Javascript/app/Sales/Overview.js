@@ -12,6 +12,4 @@ var SalesOverviewHandler = React.createClass({
 	},
 });
 
-module.exports = {
-	SalesOverviewHandler,
-}
+module.exports = SalesOverviewHandler

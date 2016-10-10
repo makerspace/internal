@@ -154,6 +154,4 @@ var EconomyValuationSheetHandler = React.createClass({
 	}
 });
 
-module.exports = {
-	EconomyValuationSheetHandler,
-}
+module.exports = EconomyValuationSheetHandler

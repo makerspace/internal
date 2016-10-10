@@ -24,6 +24,4 @@ var KeysOverviewHandler = React.createClass({
 });
 KeysOverviewHandler.title = "Nycklar";
 
-module.exports = {
-	KeysOverviewHandler,
-}
+module.exports = KeysOverviewHandler

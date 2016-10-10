@@ -45,4 +45,4 @@ var SettingsAutomationHandler = React.createClass({
 	},
 });
 
-module.exports = { SettingsAutomationHandler }
+module.exports = SettingsAutomationHandler

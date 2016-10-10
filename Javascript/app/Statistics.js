@@ -23,4 +23,4 @@ var StatisticsHandler = React.createClass({
 	}
 });
 
-module.exports = { StatisticsHandler }
+module.exports = StatisticsHandler

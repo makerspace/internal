@@ -13,6 +13,4 @@ var DashboardHandler = React.createClass({
 	}
 });
 
-module.exports = {
-	DashboardHandler,
-}
+module.exports = DashboardHandler
