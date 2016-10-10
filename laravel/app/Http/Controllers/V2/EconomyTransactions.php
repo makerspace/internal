@@ -26,34 +26,26 @@ class EconomyTransactions extends Controller
 		{
 			return $x;
 		}
-
-		return ['error' => 'not implemented'];
 		*/
-
-//		echo "<pre>";
-//		echo "Return a list of all transactions\n";
 
 		// Paging filter
 		$filters = [
-//			["per_page", $this->per_page($request)],
-//				["per_page", $this->per_page($request)],
-//				["account_number", "=", $account_number],
-//				["accountingperiod", "=", $accountingperiod],
+			["per_page", $this->per_page($request)],
+//			["account_number", "=", $account_number],
+//			["accountingperiod", "=", $accountingperiod],
 		];
 
 		// Filter on relations
-		$relation = $request->get("relation");
-		if($relation)
+		$relations = $request->get("relation");
+		if($relations)
 		{
+			$relation_filters = [];
+			foreach($relations as $key => $value)
+			{
+				$relation_filters[] = [$key, $value];
+			}
 
-			$filters[] = ["relation", 
-				[
-					// TODO: Not hardcoded
-					["type", "=", $relation["type"]],
-					["member_number", "=", $relation["member_number"]],
-				]
-			];
-
+			$filters[] = ["relation", $relation_filters];
 		}
 
 		// Load data from database
@@ -61,9 +53,6 @@ class EconomyTransactions extends Controller
 
 		// Return json array
 		return $result;
-
-//		print_r($result);
-//		die();
 	}
 
 	/**

@@ -31,7 +31,7 @@ class InvoiceController extends Controller
 		// Load data from datbase
 		$result = Invoice::list([
 			["per_page", $this->per_page($request)],
-			["accountingperiod", "=", $accountingperiod],
+			["accountingperiod", $accountingperiod],
 		]);
 
 		// Return json array

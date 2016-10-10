@@ -55,9 +55,7 @@ class Product extends Controller
 	function read(Request $request, $entity_id)
 	{
 		// Load the product
-		$entity = ProductModel::load([
-			["entity_id", "=", $entity_id]
-		]);
+		$entity = ProductModel::load($entity_id);
 
 		// Generate an error if there is no such product
 		if(false === $entity)
@@ -78,9 +76,7 @@ class Product extends Controller
 	function update(Request $request, $entity_id)
 	{
 		// Load the product
-		$entity = ProductModel::load([
-			"entity_id" => $entity_id
-		]);
+		$entity = ProductModel::load($entity_id);
 
 		// Generate an error if there is no such product
 		if(false === $entity)
@@ -111,20 +107,7 @@ class Product extends Controller
 	 */
 	function delete(Request $request, $entity_id)
 	{
-		// TODO: This one is for debugging
-		return Response()->json([
-			"status" => "error"
-		], 409);
-
-
-
-
-
-
-
-		$entity = ProductModel::load([
-			"entity_id" => $entity_id
-		]);
+		$entity = ProductModel::load($entity_id);
 
 		// Generate an error if there is no such product
 		if(false === $entity)

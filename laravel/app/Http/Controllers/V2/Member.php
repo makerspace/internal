@@ -18,11 +18,25 @@ class Member extends Controller
 	 */
 	function list(Request $request)
 	{
-		// Filters
+		// Paging filter
 		$filters = [
 			["per_page", $this->per_page($request)],
 		];
-		
+
+		// Filter on relations
+		$relations = $request->get("relation");
+		if($relations)
+		{
+			$relation_filters = [];
+			foreach($relations as $key => $value)
+			{
+				$relation_filters[] = [$key, $value];
+			}
+
+			$filters[] = ["relation", $relation_filters];
+		}
+
+		// Filter on search
 		if(!empty($request->get("search")))
 		{
 			$filters[] = ["search", $request->get("search")];
@@ -87,7 +101,7 @@ class Member extends Controller
 	 */
 	function read(Request $request, $member_number)
 	{
-		// Load the invoice
+		// Load the entity
 		$entity = MemberModel::load([
 			["member_number", "=", $member_number]
 		]);
@@ -108,9 +122,47 @@ class Member extends Controller
 	/**
 	 *
 	 */
-	function update(Request $request, $id)
+	function update(Request $request, $member_number)
 	{
-		return ['error' => 'not implemented'];
+		// Load the entity
+		$entity = MemberModel::load([
+			["member_number", "=", $member_number]
+		]);
+
+		// Generate an error if there is no such product
+		if(false === $entity)
+		{
+			return Response()->json([
+				"message" => "Could not find any member with specified member_number",
+			], 404);
+		}
+
+		$json = $request->json()->all();
+
+		// Populate the entity with new values
+		foreach($json as $key => $value)
+		{
+			$entity->{$key} = $value ?? null;
+		}
+/*
+		// TODO: Validate input
+		// TODO: Validation of tagid will fail because it is already in the database en therefore not unique
+		$errors = $entity->validate();
+		if(!empty($errors))
+		{
+			return Response()->json([
+				"errors" => $errors,
+			], 400);
+		}
+*/
+		// Save the entity
+		$result = $entity->save();
+
+		// TODO: Standarized output
+		return Response()->json([
+			"status" => "updated",
+			"entity" => $entity->toArray(),
+		], 200);
 	}
 
 	/**

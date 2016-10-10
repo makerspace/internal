@@ -33,8 +33,8 @@ class Group extends Controller
 			$filters[] = ["relation", 
 				[
 					// TODO: Not hardcoded
-					["type", "=", $relation["type"]],
-					["member_number", "=", $relation["member_number"]],
+					["type", $relation["type"]],
+					["member_number", $relation["member_number"]],
 				]
 			];
 		}
@@ -73,9 +73,7 @@ class Group extends Controller
 	function read(Request $request, $entity_id)
 	{
 		// Load the group
-		$entity = GroupModel::load([
-			["entity_id", "=", $entity_id]
-		]);
+		$entity = GroupModel::load($entity_id);
 
 		// Generate an error if there is no such group
 		if(false === $entity)
@@ -96,15 +94,12 @@ class Group extends Controller
 	function update(Request $request, $entity_id)
 	{
 		// Load the group
-		$entity = GroupModel::load([
-			"entity_id" => $entity_id
-		]);
-
+		$entity = GroupModel::load($entity_id);
 		// Generate an error if there is no such group
 		if(false === $entity)
 		{
 			return Response()->json([
-				"message" => "No group with specified group id",
+				"message" => "No group with specified entity id",
 			], 404);
 		}
 
@@ -138,9 +133,7 @@ class Group extends Controller
 	 */
 	function delete(Request $request, $entity_id)
 	{
-		$entity = GroupModel::load([
-			"entity_id" => $entity_id
-		]);
+		$entity = GroupModel::load($entity_id);
 
 		if($entity->delete())
 		{

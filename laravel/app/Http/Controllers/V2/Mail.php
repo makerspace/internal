@@ -32,8 +32,8 @@ class Mail extends Controller
 			$filters[] = ["relation", 
 				[
 					// TODO: Not hardcoded
-					["type", "=", $relation["type"]],
-					["member_number", "=", $relation["member_number"]],
+					["type", $relation["type"]],
+					["member_number", $relation["member_number"]],
 				]
 			];
 		}

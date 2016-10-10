@@ -16,5 +16,5 @@ class Group extends Entity
 		"entity.title"            => "entity.title",
 		"entity.description"      => "entity.description",
 	];
-	protected $sort = ["entity.title", "desc"];
+	protected $sort = ["entity.title", "asc"];
 }

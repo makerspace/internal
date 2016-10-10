@@ -27,16 +27,22 @@ class Rfid extends Controller
 		];
 
 		// Filter on relations
-		$relation = $request->get("relation");
-		if($relation)
+		$relations = $request->get("relation");
+		if($relations)
 		{
-			$filters[] = ["relation",
-				[
-					// TODO: Not hardcoded
-					["type", "=", $relation["type"]],
-					["member_number", "=", $relation["member_number"]],
-				]
-			];
+			$relation_filters = [];
+			foreach($relations as $key => $value)
+			{
+				$relation_filters[] = [$key, $value];
+			}
+
+			$filters[] = ["relation", $relation_filters];
+		}
+
+		// Filter on search
+		if(!empty($request->get("search")))
+		{
+			$filters[] = ["search", $request->get("search")];
 		}
 
 		// Load data from database
@@ -91,7 +97,20 @@ class Rfid extends Controller
 	 */
 	function read(Request $request, $entity_id)
 	{
-		return ["error" => "not implemented"];
+		// Load the invoice
+		$entity = RfidModel::load($entity_id);
+
+		// Generate an error if there is no such member
+		if(false === $entity)
+		{
+			return Response()->json([
+				"message" => "Could not find any entity with specified entity_id",
+			], 404);
+		}
+		else
+		{
+			return $entity->toArray();
+		}
 	}
 
 	/**
@@ -99,7 +118,43 @@ class Rfid extends Controller
 	 */
 	function update(Request $request, $entity_id)
 	{
-		return ["error" => "not implemented"];
+		// Load the entity
+		$entity = RfidModel::load($entity_id);
+
+		// Generate an error if there is no such product
+		if(false === $entity)
+		{
+			return Response()->json([
+				"message" => "Could not find any entity with specified entity_id",
+			], 404);
+		}
+
+		$json = $request->json()->all();
+
+		// Populate the entity with new values
+		foreach($json as $key => $value)
+		{
+			$entity->{$key} = $value ?? null;
+		}
+/*
+		// TODO: Validate input
+		// TODO: Validation of tagid will fail because it is already in the database en therefore not unique
+		$errors = $entity->validate();
+		if(!empty($errors))
+		{
+			return Response()->json([
+				"errors" => $errors,
+			], 400);
+		}
+*/
+		// Save the entity
+		$result = $entity->save();
+
+		// TODO: Standarized output
+		return Response()->json([
+			"status" => "updated",
+			"entity" => $entity->toArray(),
+		], 200);
 	}
 
 	/**
@@ -107,9 +162,7 @@ class Rfid extends Controller
 	 */
 	function delete(Request $request, $entity_id)
 	{
-		$entity = RfidModel::load([
-			"entity.entity_id" => $entity_id
-		]);
+		$entity = RfidModel::load($entity_id);
 
 		if($entity->delete())
 		{

@@ -42,8 +42,7 @@ class Entity
 			{
 				if($filter[0] == "type")
 				{
-					// TODO: We assume equal?
-					$type = $filter[2];
+					$type = $filter[1];
 					$this->type = $type;
 					// TODO: Hardcoded list
 					if(in_array($type, ["accounting_transaction", "accounting_period", "accounting_instruction", "accounting_account", "member", "mail", "product", "rfid", "subscription", "invoice"]))
@@ -258,8 +257,44 @@ class Entity
 		$type = ($this->type !== null ? $this->type : $data["type"]);
 		switch($type)
 		{
+			case "accounting_account":
+				$entity = new AccountingAccount;
+				break;
+
+			case "accounting_instruction":
+				$entity = new AccountingInstruction;
+				break;
+
+			case "accounting_transaction":
+				$entity = new AccountingTransaction;
+				break;
+
+			case "group":
+				$entity = new Group;
+				break;
+
+			case "invoice":
+				$entity = new Invoice;
+				break;
+
+			case "mail":
+				$entity = new Mail;
+				break;
+
+			case "member":
+				$entity = new Member;
+				break;
+
+			case "product":
+				$entity = new Product;
+				break;
+
 			case "rfid":
 				$entity = new Rfid;
+				break;
+
+			case "subscription":
+				$entity = new Subscription;
 				break;
 
 			default:
@@ -280,9 +315,16 @@ class Entity
 	 */
 	public function createRelations($relations)
 	{
+
 		// Go through the list of relations
-		foreach($relations as $type => $parameters)
+		foreach($relations as $i => $relation)
 		{
+			$parameters = [];
+			foreach($relation as $key => $value)
+			{
+				$parameters[] = [$key, $value];
+			}
+
 			// Load the specified entity
 			$entity2 = Entity::load($parameters);// TODO: Format?
 
@@ -314,15 +356,6 @@ class Entity
 	 */
 	public function save()
 	{
-		// Insert into entity table
-		$this->entity_id = DB::table("entity")->insertGetId([
-			"type"        => $this->type,
-			"description" => $this->data["description"] ?? null,
-			"title"       => $this->data["title"]       ?? null,
-			"created_at"  => date("c"),
-		]);
-
-
 		// Get the data to insert into the relation table
 		$inserts = [];
 		foreach($this->columns as $name => $query)
@@ -334,11 +367,44 @@ class Entity
 			}
 		}
 
-		// Create a row in the relation table
-		if(!empty($inserts))
+		// Update an existing entity
+		if($this->entity_id !== null)
 		{
-			$inserts["entity_id"] = $this->entity_id;
-			DB::table($this->join)->insert($inserts);
+			// Update a row in the entity table
+			DB::table("entity")
+				->where("entity_id", $this->entity_id)
+				->update([
+					"updated_at"  => date("c"),
+					"title"       => $this->data["title"],
+					"description" => $this->data["description"],
+				]);
+
+			// Update a row in the relation table
+			if(!empty($inserts))
+			{
+				DB::table($this->join)
+					->where("entity_id", $this->entity_id)
+					->update($inserts);
+			}
+		}
+		// Create a new entity
+		else
+		{
+			// Create a new row in the entity table
+			$this->entity_id = DB::table("entity")->insertGetId([
+				"type"        => $this->type,
+				"title"       => $this->data["title"]       ?? null,
+				"description" => $this->data["description"] ?? null,
+				"created_at"  => date("c"),
+				"updated_at"  => date("c"),
+			]);
+
+			// Create a row in the relation table
+			if(!empty($inserts))
+			{
+				$inserts["entity_id"] = $this->entity_id;
+				DB::table($this->join)->insert($inserts);
+			}
 		}
 
 		return true;
@@ -443,8 +509,8 @@ class Entity
 				{
 					// Check if there is anything in the database
 					$result = Entity::load([
-						["type", "=", $this->join],
-						[$field, "=", $this->data[$field]]
+						["type", $this->join],
+						[$field, $this->data[$field]]
 					]);
 
 					// Return error if there is
