@@ -27,7 +27,17 @@ var GroupHandler = React.createClass({
 		return (
 			<div>
 				<Group model={this.state.model} />
-				<GroupMembers type={MemberCollection} entity_id={this.props.params.id} />
+				<GroupMembers type={MemberCollection}
+					filters={{
+						relations:
+						[
+							{
+								type: "member",
+								member_number: this.props.member_number,
+							}
+						]
+					}}
+				/>
 			</div>
 		);
 	},

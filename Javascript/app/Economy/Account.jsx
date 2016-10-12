@@ -13,6 +13,7 @@ import BackboneTable from '../BackboneTable'
 
 import { EconomyAccountingInstructionList } from './Instruction'
 import EconomyTransactions from './Transactions'
+import TableDropdownMenu from '../TableDropdownMenu'
 
 var EconomyAccountsHandler = React.createClass({
 	render: function()
@@ -20,7 +21,7 @@ var EconomyAccountsHandler = React.createClass({
 		return (
 			<div>
 				<h2>Konton</h2>
-				<Link to={"/economy/account/add"} className="uk-button uk-button-success"><i className="uk-icon-plus-circle"></i> Skapa nytt konto</Link>
+				<Link to={"/economy/account/add"} className="uk-button uk-button-primary"><i className="uk-icon-plus-circle"></i> Skapa nytt konto</Link>
 				<EconomyAccounts type={AccountCollection} />
 			</div>
 		);
@@ -114,16 +115,33 @@ var EconomyAccounts = React.createClass({
 		this.state.collection.fetch();
 	},
 
+
+	removeTextMessage: function(entity)
+	{
+		return "Are you sure you want to remove account \"" + entity.account_number + " " + entity.title + "\"?";
+	},
+
+	removeErrorMessage: function()
+	{
+		UIkit.modal.alert("Error deleting account");
+	},
+
 	renderHeader: function()
 	{
-		return (
-			<tr>
-				<th>#</th>
-				<th>Konto</th>
-				<th>Beskrivning</th>
-				<th></th>
-			</tr>
-		);
+		return [
+			{
+				title: "#",
+			},
+			{
+				title: "Konto",
+			},
+			{
+				title: "Beskrivning",
+			},
+			{
+				title: "",
+			},
+		];
 	},
 
 	renderRow: function(row, i)
@@ -133,7 +151,12 @@ var EconomyAccounts = React.createClass({
 				<td><Link to={"/economy/account/" + row.account_number + "/edit"}>{row.account_number}</Link></td>
 				<td>{row.title}</td>
 				<td>{row.description}</td>
-				<td className="uk-text-right"><a href="#" className="uk-icon-remove uk-icon-hover"> Ta bort</a> <a href="#" className="uk-icon-cog uk-icon-hover"> Redigera</a></td>
+				<td>
+					<TableDropdownMenu>
+						<Link to={"/settings/economy/account/" + row.entity_id + "/edit"}><i className="uk-icon uk-icon-cog"></i> Redigera konto</Link>
+						{this.removeButton(i, "Ta bort konto")}
+					</TableDropdownMenu>
+				</td>
 			</tr>
 		);
 	},

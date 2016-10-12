@@ -5,7 +5,6 @@ import BackboneReact from 'backbone-react-component'
 import MemberModel from '../Backbone/Models/Member'
 
 import { Link, browserHistory } from 'react-router'
-import BackboneTable from '../BackboneTable'
 import DateField from '../Formatters/Date'
 
 // Import functions from other modules
@@ -70,10 +69,10 @@ var MemberHandler = React.createClass({
 
 				<ul className="uk-tab" data-uk-switcher="{connect:'#user-tabs'}">
 					<li id="member_info"><a>Personuppgifter</a></li>
-					<li id="member_keys"><a>Nycklar</a></li>
-					<li id="member_transactions"><a>Transaktioner</a></li>
-					<li id="member_labaccess"><a>Prenumerationer</a></li>
 					<li id="member_groups"><a>Grupper</a></li>
+					<li id="member_keys"><a>Nycklar</a></li>
+					<li id="member_labaccess"><a>Prenumerationer</a></li>
+					<li id="member_transactions"><a>Transaktioner</a></li>
 					<li id="member_groups"><a>Utskick</a></li>
 				</ul>
 
@@ -82,16 +81,16 @@ var MemberHandler = React.createClass({
 						<MemberForm model={this.state.model} />
 					</li>
 					<li>
-						<KeysUserBox member_number={this.state.model.get("member_number")} />
+						<GroupUserBox member_number={this.state.model.get("member_number")} />
 					</li>
 					<li>
-						<TransactionUserBox member_number={this.state.model.get("member_number")} />
+						<KeysUserBox member_number={this.state.model.get("member_number")} />
 					</li>
 					<li>
 						<SubscriptionUserBox member_number={this.state.model.get("member_number")} />
 					</li>
 					<li>
-						<GroupUserBox member_number={this.state.model.get("member_number")} />
+						<TransactionUserBox member_number={this.state.model.get("member_number")} />
 					</li>
 					<li>
 						<MailUserBox member_number={this.state.model.get("member_number")} />

@@ -11,7 +11,17 @@ var TransactionUserBox = React.createClass(
 	{
 		return (
 			<div>
-				<TransactionsUser type={TransactionCollection} member_number={this.props.member_number} />
+				<TransactionsUser type={TransactionCollection}
+					filters={{
+						relations:
+						[
+							{
+								type: "member",
+								member_number: this.props.member_number,
+							}
+						]
+					}}
+				/>
 			</div>
 		);
 	},

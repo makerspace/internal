@@ -1088,7 +1088,7 @@ var CountryDropdown = React.createClass({
 	},
 
 	// Send changes back to parent
-	selectCountry: function(event, a)
+	selectCountry: function(event)
 	{
 		this.props.onChange(event.target.dataset.country);
 	},

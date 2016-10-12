@@ -18,35 +18,42 @@ var TransactionsUser = React.createClass({
 
 	componentWillMount: function()
 	{
-		if(this.props.member_number !== undefined)
+		this.fetch();
+	},
+
+	componentWillReceiveProps: function(nextProps)
+	{
+		if(nextProps.filters != this.state.filters)
 		{
-			// Load RFID keys related to member
-			this.state.collection.fetch({
-				data: {
-					relation: {
-						type: "member",
-						member_number: this.props.member_number,
-					}
-				}
+			this.setState({
+				filters: nextProps.filters
 			});
-		}
-		else
-		{
-			// Load all RFID keys
-			this.state.collection.fetch();
+
+			// TODO: setState() has a delay so we need to wait a moment
+			var _this = this;
+			setTimeout(function() {
+				_this.fetch();
+			}, 100);
 		}
 	},
 
 	renderHeader: function()
 	{
-		return (
-			<tr>
-				<th>Bokföringsdatum</th>
-				<th>Transaktion</th>
-				<th className="uk-text-right">Belopp</th>
-				<th></th>
-			</tr>
-		);
+		return [
+			{
+				title: "Bokföringsdatum",
+			},
+			{
+				title: "Transaktion",
+			},
+			{
+				title: "Belopp",
+				class: "uk-text-right",
+			},
+			{
+				title: "",
+			},
+		];
 	},
 
 	renderRow: function (row, i)

@@ -9,7 +9,6 @@ var RfidModel = Backbone.Model.fullExtend(
 		updated_at: "0000-00-00T00:00:00Z",
 		tagid: "",
 		active: 1,
-		title: "",
 		description: "",
 	},
 });

@@ -64,7 +64,17 @@ var KeysUserBox = React.createClass(
 		{
 			return (
 				<div>
-					<Keys type={RfidCollection} member_number={this.props.member_number} edit={this.edit} />
+					<Keys type={RfidCollection}
+						filters={{
+							relations:
+							[
+								{
+									type: "member",
+									member_number: this.props.member_number,
+								}
+							]
+						}}
+					edit={this.edit} />
 					<button className="uk-button uk-button-primary" onClick={this.add}><i className="uk-icon-plus-circle" /> Lägg till ny RFID-tagg</button>
 				</div>
 			);

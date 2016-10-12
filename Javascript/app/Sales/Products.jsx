@@ -30,7 +30,7 @@ var Products = React.createClass({
 	getInitialState: function()
 	{
 		return {
-			columns: 9,
+			columns: 7,
 		};
 	},
 
@@ -49,6 +49,33 @@ var Products = React.createClass({
 		UIkit.modal.alert("Error deleting product");
 	},
 
+	renderHeader: function()
+	{
+		return [
+			{
+				title: "#",
+			},
+			{
+				title: "Namn",
+			},
+			{
+				title: "Giltig till",
+			},
+			{
+				title: "Prenumeration",
+			},
+			{
+				title: "Giltighetstid",
+			},
+			{
+				title: "Pris",
+			},
+			{
+				title: "",
+			},
+		];
+	},
+
 	renderRow: function(row, i)
 	{
 		return (
@@ -65,21 +92,6 @@ var Products = React.createClass({
 						{this.removeButton(i, "Ta bort produkt")}
 					</TableDropdownMenu>
 				</td>
-			</tr>
-		);
-	},
-
-	renderHeader: function()
-	{
-		return (
-			<tr>
-				<th>#</th>
-				<th>Namn</th>
-				<th>Giltig till</th>
-				<th>Prenumeration</th>
-				<th>Giltighetstid</th>
-				<th>Pris</th>
-				<th></th>
 			</tr>
 		);
 	},

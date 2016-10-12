@@ -74,7 +74,7 @@ var InvoiceList = React.createClass({
 	getInitialState: function()
 	{
 		return {
-			columns: 7,
+			columns: 6,
 		};
 	},
 
@@ -85,16 +85,27 @@ var InvoiceList = React.createClass({
 
 	renderHeader: function()
 	{
-		return (
-			<tr>
-				<th>#</th>
-				<th>Förfallodatum</th>
-				<th>Mottagare</th>
-				<th>Referens</th>
-				<th className="uk-text-right">Belopp</th>
-				<th>Status</th>
-			</tr>
-		);
+		return [
+			{
+				title: "#",
+			},
+			{
+				title: "Förfallodatum",
+			},
+			{
+				title: "Mottagare",
+			},
+			{
+				title: "Referens",
+			},
+			{
+				title: "Belopp",
+				class: "uk-text-right",
+			},
+			{
+				title: "Status",
+			},
+		];
 	},
 
 	renderRow: function(row, i)

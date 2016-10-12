@@ -197,6 +197,7 @@ var nav = new Backbone.Model({
 			icon: "cog",
 			children:
 			[
+				// Inställningar
 				{
 					text: "Globala inställningar",
 					target: "/settings/global",
@@ -206,30 +207,16 @@ var nav = new Backbone.Model({
 					target: "/settings/automation",
 				},
 				{
-					text: "Export",
-					target: "/settings/export",
-					icon: "download",
-				},
-				{
-					text: "Utskick",
-					target: "/settings/mail",
-					icon: "envelope",
-					children:
-					[
-						{
-							text: "Hantera mallar",
-							target: "/settings/mail/templates",
-						},
-					],
-				},
-				{
 					type: "separator",
 					target: "",
 				},
+
+				// Ekonomi
 				{
 					type: "heading",
 					text: "Ekonomi",
 					target: "",
+					icon: "money",
 				},
 				{
 					text: "Kontoplan",
@@ -242,6 +229,46 @@ var nav = new Backbone.Model({
 				{
 					text: "Debug",
 					target: "/settings/economy/debug",
+				},
+
+				// Utskick
+				{
+					type: "separator",
+					target: "",
+				},
+				{
+					type: "heading",
+					text: "Utskick",
+					target: "",
+					icon: "envelope",
+				},
+				{
+					text: "Utskick",
+					target: "/settings/mail",
+				},
+				{
+					text: "Mallar",
+					target: "/settings/mail/templates",
+				},
+				{
+					type: "separator",
+					target: "",
+				},
+
+				// Export
+				{
+					type: "heading",
+					text: "Export",
+					target: "",
+					icon: "download",
+				},
+				{
+					text: "Exportera data",
+					target: "/settings/export",
+				},
+				{
+					text: "Importera data",
+					target: "/settings/export",
 				},
 			],
 		},

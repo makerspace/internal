@@ -16,15 +16,7 @@ var GroupMembers = React.createClass({
 
 	componentWillMount: function()
 	{
-		// Load all members that are in this group
-		this.state.collection.fetch({
-			data: {
-				relation: {
-					type: "group",
-					entity_id: this.props.entity_id,
-				}
-			}
-		});
+		this.fetch();
 	},
 
 	removeTextMessage: function(entity)
@@ -39,6 +31,21 @@ var GroupMembers = React.createClass({
 		UIkit.modal.alert("Error deleting group");
 	},
 
+	renderHeader: function()
+	{
+		return [
+			{
+				title: "Medlemsnummer",
+			},
+			{
+				title: "Namn",
+			},
+			{
+				title: "",
+			},
+		];
+	},
+
 	renderRow: function(row, i)
 	{
 		return (
@@ -50,17 +57,6 @@ var GroupMembers = React.createClass({
 						{this.removeButton(i, "Ta bort medlem ur grupp")}
 					</TableDropdownMenu>
 				</td>
-			</tr>
-		);
-	},
-
-	renderHeader: function()
-	{
-		return (
-			<tr>
-				<th>Medlemsnummer</th>
-				<th>Namn</th>
-				<th></th>
 			</tr>
 		);
 	},

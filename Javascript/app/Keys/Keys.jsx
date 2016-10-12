@@ -11,28 +11,28 @@ var Keys = React.createClass({
 	getInitialState: function()
 	{
 		return {
-			columns: 5,
+			columns: 4,
 		};
 	},
 
 	componentWillMount: function()
 	{
-		if(this.props.member_number !== undefined)
+		this.fetch();
+	},
+
+	componentWillReceiveProps: function(nextProps)
+	{
+		if(nextProps.filters != this.state.filters)
 		{
-			// Load RFID keys related to member
-			this.state.collection.fetch({
-				data: {
-					relation: {
-						type: "member",
-						member_number: this.props.member_number,
-					}
-				}
+			this.setState({
+				filters: nextProps.filters
 			});
-		}
-		else
-		{
-			// Load all RFID keys
-			this.state.collection.fetch();
+
+			// TODO: setState() has a delay so we need to wait a moment
+			var _this = this;
+			setTimeout(function() {
+				_this.fetch();
+			}, 100);
 		}
 	},
 
@@ -50,6 +50,27 @@ var Keys = React.createClass({
 	{
 		// We need to load a new model because the model can not belong to two different components at the same time.
 		this.props.edit(this.getCollection().at(row).clone());
+	},
+
+	renderHeader: function()
+	{
+		return [
+			{
+				title: "Aktiv",
+				sort: "active",
+			},
+			{
+				title: "RFID",
+				sort: "tagid",
+			},
+			{
+				title: "Beskrivning",
+				sort: "description",
+			},
+			{
+				title: "",
+			},
+		];
 	},
 
 	renderRow: function(row, i)
@@ -72,18 +93,6 @@ var Keys = React.createClass({
 						{this.removeButton(i)}
 					</TableDropdownMenu>
 				</td>
-			</tr>
-		);
-	},
-
-	renderHeader: function()
-	{
-		return (
-			<tr>
-				<th>Aktiv</th>
-				<th>RFID</th>
-				<th>Beskrivning</th>
-				<th></th>
 			</tr>
 		);
 	},

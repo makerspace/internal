@@ -38,6 +38,27 @@ var History = React.createClass({
 		};
 	},
 
+	renderHeader: function ()
+	{
+		return [
+			{
+				title: "Member",
+			},
+			{
+				title: "Startdatum",
+			},
+			{
+				title: "Beskrivning",
+			},
+			{
+				title: "Skapad",
+			},
+			{
+				title: "Produkt",
+			},
+		];
+	},
+
 	renderRow: function (row, i)
 	{
 		return (
@@ -49,19 +70,6 @@ var History = React.createClass({
 			</tr>
 		);
 	},
-
-	renderHeader: function ()
-	{
-		return (
-			<tr>
-				<th>Member</th>
-				<th>Startdatum</th>
-				<th>Beskrivning</th>
-				<th>Skapad</th>
-				<th>Produkt</th>
-			</tr>
-		);
-	}
 });
 
 module.exports = {

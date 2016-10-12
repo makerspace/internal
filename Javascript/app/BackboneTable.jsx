@@ -36,7 +36,6 @@ var BackboneTable = {
 					pageSize:     resp.per_page,
 				});
 
-
 				// Hide the pagination if the total number of records is 0 or there is only 1 page
 				// When the pagination is hidden there is no way to get it back as the javascript stops when React removes the DOM node.
 				if(resp.last_page == 0 && resp.data.length > 0)
@@ -67,6 +66,9 @@ var BackboneTable = {
 			status: "done",
 			collection: data,
 			showPagination: true,
+			sort_column: "",
+			sort_order: "asc",
+			filters: this.props.filters || {},
 		};
 	},
 
@@ -89,23 +91,14 @@ var BackboneTable = {
 
 				$(pag).on("select.uk.pagination", function(e, pageIndex)
 				{
-					// This one is a little bit ugle as it require the ref="pag1" to be the first attribute
-					if(e.target.attributes[0].nodeValue == "pag1")
-					{
-						var thisPag = _this.pagination[1];
-						var otherPag = _this.pagination[2];
-					}
-					else
-					{
-						var thisPag = _this.pagination[2];
-						var otherPag = _this.pagination[1];
-					}
+					// Update both paginators manually
+					_this.pagination[1].currentPage = pageIndex;
+					_this.pagination[2].currentPage = pageIndex;
+					_this.pagination[1].render(_this.pagination[1].pages);
+					_this.pagination[2].render(_this.pagination[1].pages);
 
-					_this.getCollection().getPage(pageIndex + 1);
-
-					// Update the other paginator
-					otherPag.currentPage = thisPag.currentPage;
-					otherPag.render(thisPag.pages);
+					// Send request to server
+					_this.fetch();
 				});
 			}
 		}
@@ -219,8 +212,34 @@ var BackboneTable = {
 		});
 	},
 
+	// Fetch data from server
+	fetch: function()
+	{
+		var filters = this.state.filters
+
+		// Pagination
+		var pageIndex = 0;
+		if(this.pagination[1])
+		{
+			// Get the current selected page from the top paginator
+			pageIndex = this.pagination[1].currentPage;
+		}
+		filters.page = pageIndex + 1;
+
+		// Apply sort
+		filters.sort_by = this.state.sort_column;
+		filters.sort_order = this.state.sort_order;
+
+		// Send request to server
+		this.getCollection().fetch({
+			data: filters,
+		});
+	},
+
 	render: function ()
 	{
+		var _this = this;
+
 		if(this.state.status == "loading")
 		{
 			var loading = (
@@ -266,7 +285,30 @@ var BackboneTable = {
 				<div style={{position: "relative"}}>
 					<table className={"uk-table uk-table-condensed uk-table-striped uk-table-hover" + loadingClass}>
 						<thead>
-							{this.renderHeader()}
+							<tr>
+								{this.renderHeader().map(function(column, i) {
+									if(column.title)
+									{
+										if(_this.state.sort_column == column.sort)
+										{
+											var icon = <i className={"uk-icon uk-icon-angle-" + (_this.state.sort_order == "asc" ? "up" : "down")} />
+										}
+
+										return (
+											<th key={i} className={column.class}>
+												{column.sort ?
+													<a data-sort={column.sort} onClick={_this.sort}>{column.title} {icon}</a>
+													: column.title
+												}
+											</th>
+										);
+									}
+									else
+									{
+										return (<th key={i}></th>);
+									}
+								})}
+							</tr>
 						</thead>
 						<tbody>
 							{content}
@@ -279,9 +321,36 @@ var BackboneTable = {
 		);
 	},
 
+	sort: function(event)
+	{
+		if(event.target.dataset.sort != this.state.sort_column)
+		{
+			// Always start with ascending sort
+			var order = "asc";
+		}
+		else
+		{
+			// Toggle between asc/desc when the user is clicking the same column multiple times
+			var order = (this.state.sort_order == "asc" ? "desc" : "asc");
+		}
+
+		// Save the sort order
+		this.setState({
+			sort_column: event.target.dataset.sort,
+			sort_order: order,
+		});
+
+		// Request new sorted data from the server
+		// TODO: setState does not change the state asap
+		var _this = this;
+		setTimeout(function() {
+			_this.fetch();
+		}, 100);
+	},
+
 	tryAgain: function()
 	{
-		this.getCollection().fetch();
+		this.fetch();
 	},
 
 	renderPagination(i)

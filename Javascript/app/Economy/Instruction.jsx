@@ -79,15 +79,24 @@ var EconomyAccountingInstructionList = React.createClass({
 
 	renderHeader: function()
 	{
-		return (
-			<tr>
-				<th>#</th>
-				<th>Bokföringsdatum</th>
-				<th>Beskrivning</th>
-				<th className="uk-text-right">Belopp</th>
-				<th></th>
-			</tr>
-		);
+		return [
+			{
+				title: "#",
+			},
+			{
+				title: "Bokföringsdatum",
+			},
+			{
+				title: "Beskrivning",
+			},
+			{
+				title: "Belopp",
+				class: "uk-text-right",
+			},
+			{
+				title: "",
+			},
+		];
 	},
 
 	renderRow: function (row, i)

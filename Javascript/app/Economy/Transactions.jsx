@@ -38,16 +38,28 @@ var Transactions = React.createClass({
 
 	renderHeader: function()
 	{
-		return (
-			<tr>
-				<th>Bokföringsdatum</th>
-				<th>Verifikation</th>
-				<th>Transaktion</th>
-				<th className="uk-text-right">Belopp</th>
-				<th className="uk-text-right">Saldo</th>
-				<th></th>
-			</tr>
-		);
+		return [
+			{
+				title: "Bokföringsdatum",
+			},
+			{
+				title: "Verifikation",
+			},
+			{
+				title: "Transaktion",
+			},
+			{
+				title: "Belopp",
+				class: "uk-text-right",
+			},
+			{
+				title: "Saldo",
+				class: "uk-text-right",
+			},
+			{
+				title: "",
+			},
+		];
 	},
 
 	renderRow: function (row, i)

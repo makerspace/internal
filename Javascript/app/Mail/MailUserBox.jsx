@@ -12,7 +12,17 @@ var MailUserBox = React.createClass(
 	{
 		return (
 			<div>
-				<MailHistory type={MailCollection} member_number={this.props.member_number} />
+				<MailHistory type={MailCollection}
+					filters={{
+						relations:
+						[
+							{
+								type: "member",
+								member_number: this.props.member_number,
+							}
+						]
+					}}
+				/>
 				<Link to="/mail/send" className="uk-button uk-button-primary"><i className="uk-icon-envelope" /> Skicka meddelande</Link>
 			</div>
 		);

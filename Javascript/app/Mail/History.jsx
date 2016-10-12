@@ -35,23 +35,41 @@ var MailHistory = React.createClass({
 
 	componentWillMount: function()
 	{
-		if(this.props.member_number !== undefined)
+		this.fetch();
+	},
+
+	componentWillReceiveProps: function(nextProps)
+	{
+		if(nextProps.filters != this.state.filters)
 		{
-			// Load RFID keys related to member
-			this.state.collection.fetch({
-				data: {
-					relation: {
-						type: "member",
-						member_number: this.props.member_number,
-					}
-				}
+			this.setState({
+				filters: nextProps.filters
 			});
+
+			// TODO: setState() has a delay so we need to wait a moment
+			var _this = this;
+			setTimeout(function() {
+				_this.fetch();
+			}, 100);
 		}
-		else
-		{
-			// Load all RFID keys
-			this.state.collection.fetch();
-		}
+	},
+
+	renderHeader: function()
+	{
+		return [
+			{
+				title: "Id",
+			},
+			{
+				title: "Status",
+			},
+			{
+				title: "Mottagare",
+			},
+			{
+				title: "Meddelande",
+			},
+		];
 	},
 
 	renderRow: function(row, i)
@@ -71,18 +89,6 @@ var MailHistory = React.createClass({
 				</td>
 				<td>{ row.type == "email" ? <i className="uk-icon-envelope" title="E-mail"></i> : <i className="uk-icon-commenting" title="SMS"></i> } {row.recipient}</td>
 				<td>{ row.type == "email" ? row.title : row.description }</td>
-			</tr>
-		);
-	},
-
-	renderHeader: function()
-	{
-		return (
-			<tr>
-				<th>Id</th>
-				<th>Status</th>
-				<th>Mottagare</th>
-				<th>Meddelande</th>
 			</tr>
 		);
 	},

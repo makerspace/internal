@@ -57,14 +57,20 @@ var EconomyCostCenters = React.createClass({
 
 	renderHeader: function ()
 	{
-		return (
-			<tr>
-				<th>#</th>
-				<th>Bokföringsdatum</th>
-				<th>Beskrivning</th>
-				<th>Belopp</th>
-			</tr>
-		);
+		return [
+			{
+				title: "#",
+			},
+			{
+				title: "Bokföringsdatum",
+			},
+			{
+				title: "Beskrivning",
+			},
+			{
+				title: "Belopp",
+			},
+		];
 	},
 
 	renderRow: function (row, i)

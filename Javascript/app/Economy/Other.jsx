@@ -37,13 +37,18 @@ var EconomyAccounts = React.createClass({
 
 	renderHeader: function()
 	{
-		return (
-			<tr>
-				<th>#</th>
-				<th>Konto</th>
-				<th className="uk-text-right">Kontobalans</th>
-			</tr>
-		);
+		return [
+			{
+				title: "#",
+			},
+			{
+				title: "Konto",
+			},
+			{
+				title: "Kontobalans",
+				class: "uk-text-right",
+			},
+		];
 	},
 
 	renderRow: function(row, i)

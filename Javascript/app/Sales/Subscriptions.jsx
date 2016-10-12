@@ -29,13 +29,31 @@ var Subscriptions = React.createClass({
 	getInitialState: function()
 	{
 		return {
-			columns: 5,
+			columns: 4,
 		};
 	},
 
 	componentWillMount: function()
 	{
 		this.state.collection.fetch();
+	},
+
+	renderHeader: function ()
+	{
+		return [
+			{
+				title: "Member",
+			},
+			{
+				title: "Startdatum",
+			},
+			{
+				title: "Beskrivning",
+			},
+			{
+				title: "Produkt",
+			},
+		];
 	},
 
 	renderRow: function (row, i)
@@ -49,19 +67,6 @@ var Subscriptions = React.createClass({
 			</tr>
 		);
 	},
-
-	renderHeader: function ()
-	{
-		return (
-			<tr>
-				<th>Member</th>
-				<th>Startdatum</th>
-				<th>Beskrivning</th>
-				<th>Skapad</th>
-				<th>Produkt</th>
-			</tr>
-		);
-	}
 });
 
 module.exports = {
