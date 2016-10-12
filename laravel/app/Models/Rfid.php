@@ -15,7 +15,6 @@ class Rfid extends Entity
 		"entity.entity_id"   => "entity.entity_id",
 		"entity.created_at"  => "DATE_FORMAT(entity.created_at, '%Y-%m-%dT%H:%i:%sZ') AS created_at",
 		"entity.updated_at"  => "DATE_FORMAT(entity.updated_at, '%Y-%m-%dT%H:%i:%sZ') AS updated_at",
-		"entity.title"       => "entity.title",
 		"entity.description" => "entity.description",
 		"rfid.tagid"         => "rfid.tagid",
 		"rfid.active"        => "rfid.active",
@@ -24,4 +23,20 @@ class Rfid extends Entity
 	protected $validation = [
 		"tagid" => ["unique", "required"],
 	];
+
+	public function _search($query, $search)
+	{
+		$words = explode(" ", $search);
+		foreach($words as $word)
+		{
+			$query = $query->where(function($query) use($word) {
+				// Build the search query
+				$query
+					->  where("entity.description", "like", "%".$word."%")
+					->orWhere("rfid.tagid",         "like", "%".$word."%");
+			});
+		}
+
+		return $query;
+	}
 }

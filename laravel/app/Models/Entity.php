@@ -32,9 +32,11 @@ class Entity
 	}
 
 	/**
-	 * Figure out if we need to join another table to get our result
+	 * Do some preprocessing before we can start building our query:
+	 *   1) Figure out if we need to join another table to get our result
+	 *   2) Apply sorting
 	 */
-	protected function _shouldJoin(&$filters)
+	protected function _preprocessFilters(&$filters)
 	{
 		if(is_array($filters))
 		{
@@ -51,6 +53,12 @@ class Entity
 					}
 
 					// Remove the filter to prevent further processing
+					unset($filters[$id]);
+				}
+				// Sorting
+				else if("sort" == $filter[0])
+				{
+					$this->sort = $filter[1];
 					unset($filters[$id]);
 				}
 			}
@@ -139,26 +147,39 @@ class Entity
 					$this->pagination = $filter[1];
 					unset($filters[$id]);
 				}
-				// Relations
-				else if("relation" == $filter[0])
+				// Search filter
+				else if("search" == $filter[0])
 				{
-					// Load the related entity and get it's entity_id
-					$entity = Entity::Load($filter[1]);
-					$entity_id = $entity->entity_id;
-
-					// Get all relation to this entity
-					$query2 = DB::table("relation")
-						->whereRaw("{$entity_id} IN (entity1, entity2)")
-						->get();
-
-					// Filter out related entities
-					$relatedEntities = null;
-					foreach($query2 as $qw)
+					// Check if there is a search function in the model
+					if(method_exists($this, "_search"))
 					{
-						$relatedEntities[] = ($qw->entity1 == $entity_id ? $qw->entity2 : $qw->entity1);
+						$this->_search($query, $filter[1]);
 					}
+					unset($filters[$id]);
+				}
+				// Relations
+				else if("relations" == $filter[0])
+				{
+					foreach($filter[1] as $relation)
+					{
+						// Load the related entity and get it's entity_id
+						$entity = Entity::Load($relation);
+						$entity_id = $entity->entity_id;
 
-					$query = $query->whereIn("entity.entity_id", $relatedEntities);
+						// Get all relation to this entity
+						$query2 = DB::table("relation")
+							->whereRaw("{$entity_id} IN (entity1, entity2)")
+							->get();
+
+						// Filter out related entities
+						$relatedEntities = null;
+						foreach($query2 as $qw)
+						{
+							$relatedEntities[] = ($qw->entity1 == $entity_id ? $qw->entity2 : $qw->entity1);
+						}
+
+						$query = $query->whereIn("entity.entity_id", $relatedEntities);
+					}
 					unset($filters[$id]);
 				}
 				// Filter on arbritrary columns
@@ -196,9 +217,12 @@ class Entity
 	protected function _list($filters = [])
 	{
 		// A type filter should create a SQL join
-		$this->_shouldJoin($filters);
+		$this->_preprocessFilters($filters);
 
-		$query = $this->_buildLoadQuery();
+		// Build base query
+		$query = $this->_buildLoadQuery($filters);
+
+		// Apply standard filters like entity_id, relations, etc
 		$query = $this->_applyFilter($query, $filters);
 
 		// Paginate
@@ -216,8 +240,8 @@ class Entity
 
 		if($this->pagination != null)
 		{
-			$result["total"]    = $query->count();
-			$result["per_page"] = $this->pagination;
+			$result["total"]     = $query->count();
+			$result["per_page"]  = $this->pagination;
 			$result["last_page"] = ceil($result["total"] / $result["per_page"]);
 		}
 
@@ -239,7 +263,7 @@ class Entity
 	 */
 	protected function _load($filters, $show_deleted = false)
 	{
-		$this->_shouldJoin($filters);
+		$this->_preprocessFilters($filters);
 
 		$query = $this->_buildLoadQuery();
 		$query = $this->_applyFilter($query, $filters);

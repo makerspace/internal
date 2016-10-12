@@ -35,67 +35,29 @@ class Member extends Entity
 	];
 	protected $sort = ["member.member_number", "desc"];
 
-	/**
-	 *
-	 */
-	public function _list($filters = [])
+	public function _search($query, $search)
 	{
-		// Build base query
-		$query = $this->_buildLoadQuery();
-
-		// Go through filters
-		foreach($filters as $id => $filter)
+		$words = explode(" ", $search);
+		foreach($words as $word)
 		{
-			if("search" == $filter[0])
-			{
-				$words = explode(" ", $filter[1]);
-				foreach($words as $word)
-				{
-					$query = $query->where(function($query) use($word) {
-						// The phone numbers are stored with +46 in database, so strip the first zero in the phone number
-						$phone = ltrim($word, "0");
-
-						// Build the search query
-						$query
-							->  where("member.firstname",       "like", "%".$word."%")
-							->orWhere("member.lastname",        "like", "%".$word."%")
-							->orWhere("member.email",           "like", "%".$word."%")
-							->orWhere("member.address_street",  "like", "%".$word."%")
-							->orWhere("member.address_extra",   "like", "%".$word."%")
-							->orWhere("member.address_zipcode", "like", "%".$word."%")
-							->orWhere("member.address_city",    "like", "%".$word."%")
-							->orWhere("member.phone",           "like", "%".$phone."%")
-							->orWhere("member.civicregno",      "like", "%".$word."%")
-							->orWhere("member.member_number",   "like", "%".$word."%");
-					});
-				}
-				unset($filters[$id]);
-			}
+			$query = $query->where(function($query) use($word) {
+				// The phone numbers are stored with +46 in database, so strip the first zero in the phone number
+				$phone = ltrim($word, "0");
+				// Build the search query
+				$query
+					->  where("member.firstname",       "like", "%".$word."%")
+					->orWhere("member.lastname",        "like", "%".$word."%")
+					->orWhere("member.email",           "like", "%".$word."%")
+					->orWhere("member.address_street",  "like", "%".$word."%")
+					->orWhere("member.address_extra",   "like", "%".$word."%")
+					->orWhere("member.address_zipcode", "like", "%".$word."%")
+					->orWhere("member.address_city",    "like", "%".$word."%")
+					->orWhere("member.phone",           "like", "%".$phone."%")
+					->orWhere("member.civicregno",      "like", "%".$word."%")
+					->orWhere("member.member_number",   "like", "%".$word."%");
+			});
 		}
 
-		// Apply standard filters like entity_id, relations, etc
-		$query = $this->_applyFilter($query, $filters);
-
-		// Paginate
-		if($this->pagination != null)
-		{
-			$query->paginate($this->pagination);
-		}
-
-		// Run the MySQL query
-		$data = $query->get();
-
-		$result = [
-			"data" => $data
-		];
-
-		if($this->pagination != null)
-		{
-			$result["total"]     = $query->count();
-			$result["per_page"]  = $this->pagination;
-			$result["last_page"] = ceil($result["total"] / $result["per_page"]);
-		}
-
-		return $result;
+		return $query;
 	}
 }

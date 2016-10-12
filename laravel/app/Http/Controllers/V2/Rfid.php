@@ -27,22 +27,35 @@ class Rfid extends Controller
 		];
 
 		// Filter on relations
-		$relations = $request->get("relation");
+		$relations = $request->get("relations");
 		if($relations)
 		{
-			$relation_filters = [];
-			foreach($relations as $key => $value)
+			$new_relations = [];
+			foreach($relations as $relation)
 			{
-				$relation_filters[] = [$key, $value];
+				$relation_filters = [];
+				foreach($relation as $key => $value)
+				{
+					$relation_filters[] = [$key, $value];
+				}
+				$new_relations[] = $relation_filters;
 			}
 
-			$filters[] = ["relation", $relation_filters];
+			$filters[] = ["relations", $new_relations];
 		}
 
 		// Filter on search
 		if(!empty($request->get("search")))
 		{
 			$filters[] = ["search", $request->get("search")];
+		}
+
+		// Sorting
+		if(!empty($request->get("sort_by")))
+		{
+			$order = ($request->get("sort_order") == "desc" ? "desc" : "asc");
+
+			$filters[] = ["sort", [$request->get("sort_by"), $order]];
 		}
 
 		// Load data from database

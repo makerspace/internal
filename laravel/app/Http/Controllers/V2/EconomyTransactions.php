@@ -36,16 +36,21 @@ class EconomyTransactions extends Controller
 		];
 
 		// Filter on relations
-		$relations = $request->get("relation");
+		$relations = $request->get("relations");
 		if($relations)
 		{
-			$relation_filters = [];
-			foreach($relations as $key => $value)
+			$new_relations = [];
+			foreach($relations as $relation)
 			{
-				$relation_filters[] = [$key, $value];
+				$relation_filters = [];
+				foreach($relation as $key => $value)
+				{
+					$relation_filters[] = [$key, $value];
+				}
+				$new_relations[] = $relation_filters;
 			}
 
-			$filters[] = ["relation", $relation_filters];
+			$filters[] = ["relations", $new_relations];
 		}
 
 		// Load data from database

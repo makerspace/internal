@@ -26,18 +26,29 @@ class Mail extends Controller
 		];
 
 		// Filter on relations
-		$relation = $request->get("relation");
-		if($relation)
+		$relations = $request->get("relations");
+		if($relations)
 		{
-			$filters[] = ["relation", 
-				[
-					// TODO: Not hardcoded
-					["type", $relation["type"]],
-					["member_number", $relation["member_number"]],
-				]
-			];
+			$new_relations = [];
+			foreach($relations as $relation)
+			{
+				$relation_filters = [];
+				foreach($relation as $key => $value)
+				{
+					$relation_filters[] = [$key, $value];
+				}
+				$new_relations[] = $relation_filters;
+			}
+
+			$filters[] = ["relations", $new_relations];
 		}
 
+		// Filter on search
+		if(!empty($request->get("search")))
+		{
+			$filters[] = ["search", $request->get("search")];
+		}
+		
 		// Load data from database
 		$result = MailModel::list($filters);
 
