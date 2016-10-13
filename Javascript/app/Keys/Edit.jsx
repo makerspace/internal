@@ -4,6 +4,14 @@ import BackboneReact from 'backbone-react-component'
 var Edit = React.createClass({
 	mixins: [Backbone.React.Component.mixin],
 
+	getInitialState: function()
+	{
+		return {
+			error_column: "",
+			error_message: "",
+		};
+	},
+
 	cancel: function(event)
 	{
 		// Prevent the form from being submitted
@@ -50,6 +58,16 @@ var Edit = React.createClass({
 						_this.props.save.call();
 					}, 10);
 				},
+				error: function(model, xhr, options)
+				{
+					if(xhr.status == 422)
+					{
+						_this.setState({
+							error_column:  xhr.responseJSON.column,
+							error_message: xhr.responseJSON.message,
+						});
+					}
+				},
 			}
 		);
 
@@ -64,6 +82,16 @@ var Edit = React.createClass({
 
 		// When we change the value of the model we have to rerender the component
 		this.forceUpdate();
+	},
+
+	errorMsg: function(column)
+	{
+		if(this.state.error_column == column)
+		{
+			return (
+				<p className="uk-form-help-block error">Error: {this.state.error_message}</p>
+			);
+		}
 	},
 
 	render: function()
@@ -87,22 +115,8 @@ var Edit = React.createClass({
 						ID
 					</label>
 					<div className="uk-form-controls">
-						<div className="uk-form-icon">
-							<i className="uk-icon-tag"></i>
-							<input type="text" id="tagid" name="tagid" value={this.state.model.tagid} className="uk-form-width-large" onChange={this.handleChange} />
-						</div>
-					</div>
-				</div>
-
-				<div className="uk-form-row">
-					<label className="uk-form-label" htmlFor="title">
-						Titel
-					</label>
-					<div className="uk-form-controls">
-						<div className="uk-form-icon">
-							<i className="uk-icon-tag"></i>
-							<input type="text" id="title" name="title" value={this.state.model.title} className="uk-form-width-large" onChange={this.handleChange} />
-						</div>
+						<input type="text" id="tagid" name="tagid" placeholder="Använd en RFID-läsare för att läsa av det unika numret på nyckeln" value={this.state.model.tagid} className="uk-form-width-large" onChange={this.handleChange} />
+						{this.errorMsg("tagid")}
 					</div>
 				</div>
 
@@ -111,9 +125,69 @@ var Edit = React.createClass({
 						Beskrivning
 					</label>
 					<div className="uk-form-controls">
-						<textarea id="description" name="description" value={this.state.model.description} className="uk-form-width-large" onChange={this.handleChange} />
+						<textarea id="description" name="description" placeholder="Det är valfritt att lägga in en beskrivning av nyckeln" value={this.state.model.description} className="uk-form-width-large" onChange={this.handleChange} />
+						{this.errorMsg("description")}
 					</div>
 				</div>
+
+				<div className="uk-form-row">
+					<label className="uk-form-label" htmlFor="status">
+						Status
+					</label>
+					<div className="uk-form-controls">
+						<select ref="status" id="status" name="status" value={this.state.model.status} className="uk-form-width-large" onChange={this.handleChange} >
+							<option value="active">Aktiv</option>
+							<option value="inactive">Inaktiv</option>
+							<option value="auto">Auto</option>
+						</select>
+						{this.errorMsg("status")}
+					</div>
+				</div>
+
+				<div className="uk-form-row">
+					<div className="uk-form-controls">
+						<p>
+							<i className="uk-icon uk-icon-info-circle" />
+							{(() => {
+								switch (this.state.model.status) {
+									case "active":   return "En aktiv nyckel är permanent aktiv inom de datum som specificeras nedan och påverkas altså inte av eventuella betalningar.";
+									case "inactive": return "En inaktiv nyckel är permanent inaktiv och går ej att använda i passersystem förän den aktiveras igen.";
+									case "auto":     return "Auto-läget beräknar fram om nyckeln skall vara aktiv eller ej beroende på medlemmens eventuella betalningar.";
+								}
+							})()}
+						</p>
+					</div>
+				</div>
+
+				{this.state.model.status == "active" ?
+					<div className="uk-form-row">
+						<label className="uk-form-label" htmlFor="startdate">
+							Startdatum
+						</label>
+						<div className="uk-form-controls">
+							<div className="uk-form-icon">
+								<i className="uk-icon-calendar"></i>
+								<input type="text" id="startdate" name="startdate" value={this.state.model.startdate} className="uk-form-width-large" onChange={this.handleChange} />
+								{this.errorMsg("startdate")}
+							</div>
+						</div>
+					</div>
+				: ""}
+
+				{this.state.model.status == "active" ?
+					<div className="uk-form-row">
+						<label className="uk-form-label" htmlFor="enddate">
+							Slutdatum
+						</label>
+						<div className="uk-form-controls">
+							<div className="uk-form-icon">
+								<i className="uk-icon-calendar"></i>
+								<input type="text" id="enddate" name="enddate" value={this.state.model.enddate} className="uk-form-width-large" onChange={this.handleChange} />
+								{this.errorMsg("enddate")}
+							</div>
+						</div>
+					</div>
+				: ""}
 
 				<div className="uk-form-row">
 					<div className="uk-form-controls">

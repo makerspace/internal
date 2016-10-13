@@ -29,7 +29,7 @@ Backbone.sync = function(method, model, options)
 				UIkit.modal.alert("<h2>Error</h2>Received an unexpected result from the server<br><br>" + data.status + " " + data.statusText + "<br><br>" + data.responseText);
 			}
 		}
-	};
+	}
 
 	// Call the stored original Backbone.sync method with extra headers argument added
 	backboneSync(method, model, options);

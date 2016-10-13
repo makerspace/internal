@@ -224,6 +224,7 @@ var BackboneTable = {
 			// Get the current selected page from the top paginator
 			pageIndex = this.pagination[1].currentPage;
 		}
+
 		filters.page = pageIndex + 1;
 
 		// Apply sort

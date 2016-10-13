@@ -170,3 +170,14 @@ a.removebutton {
 button.uk-float-left {
 	margin-right: 1em;
 }
+
+.filterbox {
+	border: 1px solid #ccc;
+	border-radius: 8px;
+	padding: 10px;
+	margin: 20px 0;
+}
+
+.uk-form .error {
+	color: red;
+}

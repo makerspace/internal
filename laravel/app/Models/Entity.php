@@ -399,8 +399,8 @@ class Entity
 				->where("entity_id", $this->entity_id)
 				->update([
 					"updated_at"  => date("c"),
-					"title"       => $this->data["title"],
-					"description" => $this->data["description"],
+					"title"       => $this->data["title"]       ?? null,
+					"description" => $this->data["description"] ?? null,
 				]);
 
 			// Update a row in the relation table
@@ -515,8 +515,6 @@ class Entity
 	 */
 	public function validate()
 	{
-		$errors = [];
-
 		// Go through the filters
 		foreach($this->validation as $field => $rules)
 		{
@@ -529,7 +527,14 @@ class Entity
 			// Each field can have multiple rules
 			foreach($rules as $rule)
 			{
-				if($rule == "unique")
+				if($rule == "required")
+				{
+					if(empty($this->data[$field]))
+					{
+						throw new EntityValidationException($field, "The value can not be empty");
+					}
+				}
+				else if($rule == "unique")
 				{
 					// Check if there is anything in the database
 					$result = Entity::load([
@@ -537,25 +542,37 @@ class Entity
 						[$field, $this->data[$field]]
 					]);
 
-					// Return error if there is
-					if(!empty($result))
+					// A unique value collision is not fatal if this is the same entity... or else we could not save an entity
+					if(!empty($result) && ($result->entity_id != $this->entity_id))
 					{
-						$errors[] = [$field => "Is not unique"];
+						throw new EntityValidationException($field, "The value needs to be unique in the database");
 					}
 				}
-				else if($rule == "required")
-				{
-					if(empty($this->data[$field]))
-					{
-						$errors = [$field => "Is empty"];
-					}
-				}
+
 				else
 				{
-					die("Unknown rule");
+					throw new EntityValidationException($field, "Unknown validation rule {$rule}");
 				}
 			}
 		}
-		return $errors;
+	}
+}
+
+/**
+ * Thrown when a Entity::validate() fails and catched in app/Exceptions/Handler.php to return a standardized validation error result
+ */
+class EntityValidationException extends \Exception
+{
+	protected $column;
+
+	function __construct($column, $message)
+	{
+		$this->column = $column;
+		$this->message = $message;
+	}
+
+	function getColumn()
+	{
+		return $this->column;
 	}
 }

@@ -74,10 +74,11 @@ class Rfid extends Controller
 
 		// Create new RFID entity
 		$entity = new RfidModel;
-		$entity->title         = $json["title"]       ?? null;
 		$entity->description   = $json["description"] ?? null;
 		$entity->tagid         = $json["tagid"]       ?? null;
-		$entity->active        = $json["active"]      ?? 1;
+		$entity->status        = $json["active"]      ?? "inactive";
+		$entity->startdate     = $json["startdate"]   ?? null;
+		$entity->enddate       = $json["enddate"]     ?? null;
 
 		// Validate input
 		$errors = $entity->validate();
@@ -149,17 +150,10 @@ class Rfid extends Controller
 		{
 			$entity->{$key} = $value ?? null;
 		}
-/*
-		// TODO: Validate input
-		// TODO: Validation of tagid will fail because it is already in the database en therefore not unique
-		$errors = $entity->validate();
-		if(!empty($errors))
-		{
-			return Response()->json([
-				"errors" => $errors,
-			], 400);
-		}
-*/
+
+		// Validate input
+		$entity->validate();
+
 		// Save the entity
 		$result = $entity->save();
 
