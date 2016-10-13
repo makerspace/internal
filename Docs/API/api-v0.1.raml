@@ -5,7 +5,7 @@ baseUri: http://internal.dev/api/v2/
 
 securitySchemes:
   - oauth_2_0:
-      description: OAuth 2.0
+      description: Most of the API access is secured with OAuth 2.0
       type: OAuth 2.0
       describedBy:
         headers:
@@ -35,10 +35,36 @@ traits:
       queryParameters:
         page:
           description: The number of the page to load
+          required: false
           type: integer
         per_page:
           description: The number of entities per page
+          required: false
           type: integer
+  - sortable:
+      description: Sort
+      queryParameters:
+        sort_by:
+          description: Specify the name of the column that should be used for sorting. If no column is specified the default sorting will apply.
+          required: false
+          type: string
+        sort_order:
+          description: Specify is the sorting should be ascending or descending.
+          required: false
+          type: string
+          enum: [asc, desc]
+  - searchable:
+      queryParameters:
+        search:
+          description: A freetext search on most columns.
+          required: false
+          type: string
+  - relations:
+      queryParameters:
+        relations:
+          description: Filter on relations to other entities.
+          required: false
+          type: string
 
 securedBy: [ oauth_2_0 ]
 /economy/{accountingperiod}:
@@ -194,6 +220,7 @@ securedBy: [ oauth_2_0 ]
 /mail:
   description: Mail
   get:
+    is: [ paged, sortable, searchable, relations ]
     description: Get collection
   post:
     description: Create model
@@ -211,7 +238,27 @@ securedBy: [ oauth_2_0 ]
 /rfid:
   description: RFID
   get:
+    is: [ paged, sortable, searchable, relations ]
     description: Get collection
+    queryParameters:
+      filter_active:
+        description: Filters on the "active" column
+        required: false
+        type: string
+        enum: [yes,no,auto]
+      filter_tagid:
+        description: Filters on the "tagid" column
+        required: false
+        type: string
+        enum: [yes,no,auto]
+      filter_startdate:
+        description: Filters on the "startdate" column
+        required: false
+        type: date
+      filter_enddate:
+        description: Filters on the "enddate" column
+        required: false
+        type: date
   post:
     description: Create model
   /{entity_id}:
@@ -225,6 +272,7 @@ securedBy: [ oauth_2_0 ]
 /subscription:
   description: Subscription
   get:
+    is: [ paged, sortable, searchable, relations ]
     description: Get collection
   post:
     description: Create model
@@ -239,6 +287,7 @@ securedBy: [ oauth_2_0 ]
 /product:
   description: product
   get:
+    is: [ paged, sortable, searchable, relations ]
     description: Get collection
   post:
     description: Create model
@@ -253,6 +302,7 @@ securedBy: [ oauth_2_0 ]
 /group:
   description: Groups
   get:
+    is: [ paged, sortable, searchable, relations ]
     description: Get collection
   post:
     description: Create model
@@ -269,6 +319,7 @@ securedBy: [ oauth_2_0 ]
   /history:
     description: Sales history
     get:
+      is: [ paged, sortable, searchable, relations ]
       description: Get collection
     post:
       description: Create model
@@ -286,6 +337,7 @@ securedBy: [ oauth_2_0 ]
 /member:
   description: Manage single member accounts
   get:
+    is: [ paged, sortable, searchable, relations ]
     description: Returns a list of all members
   post:
     description: Create a new member
