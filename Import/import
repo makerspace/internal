@@ -13,6 +13,7 @@ if($argc == 1)
 		"  --accounts      Import accounting accounts\n" .
 		"  --instructions  Import accounting instructions\n" .
 		"  --members       Import members\n" .
+		"  --groups        Import groups" .
 		"  --keys          Import RFID keys" .
 		"  --invoices      Import invoices\n";
 }
@@ -80,6 +81,23 @@ else
 				}
 				break;
 
+			case "--groups":
+				echo "Parsing --groups\n";
+				$i++;
+				for(; $i < count($argv); $i++)
+				{
+					if(substr($argv[$i], 0, 2) !== "--")
+					{
+						$file = $argv[$i];
+						$importer->ImportGroup($file);
+					}
+					else
+					{
+						$i--;
+						break;
+					}
+				}
+				break;
 			case "--keys":
 				echo "Parsing --keys\n";
 				$i++;
@@ -157,13 +175,13 @@ class Importer
 
 		$this->curl->Post($url, $data, true);
 
-		if($this->curl->StatusCode() == 200)
+		if($this->curl->StatusCode() == 201)
 		{
 			echo "OK\n";
 		}
 		else
 		{
-			echo "Error\n";
+			echo "Error: Returned a non 201 response from server\n";
 			echo $this->curl->html;
 			print_r($this->curl->GetJson());
 			die();
@@ -183,13 +201,42 @@ class Importer
 
 		$this->curl->Post($url, $data, true);
 
-		if($this->curl->StatusCode() == 200)
+		if($this->curl->StatusCode() == 201)
 		{
 			echo "OK\n";
 		}
 		else
 		{
-			echo "Error\n";
+			echo "Error: Returned a non 201 response from server\n";
+			echo $this->curl->html;
+			print_r($this->curl->GetJson());
+			die();
+		}
+	}
+
+	function ImportGroup($file)
+	{
+		if(!file_exists($file))
+		{
+			die("Error: File does not exist: $file\n");
+		}
+		echo " * {$file}\t";
+		$data = json_decode(file_get_contents($file));
+
+		$url = "http://internal.dev/api/v2/group";
+
+		$this->curl->Post($url, $data, true);
+
+		if($this->curl->StatusCode() == 201)
+		{
+			echo "OK\n";
+		}
+		else
+		{
+			echo "Error: Returned a non 201 response from server\n";
+			echo $this->curl->html;
+			print_r($this->curl->GetJson());
+			die();
 		}
 	}
 
@@ -206,15 +253,13 @@ class Importer
 
 		$this->curl->Post($url, $data, true);
 
-		if($this->curl->StatusCode() == 200)
+		if($this->curl->StatusCode() == 201)
 		{
 			echo "OK\n";
-			echo $this->curl->html;
-			print_r($this->curl->GetJson());
 		}
 		else
 		{
-			echo "Error\n";
+			echo "Error: Returned a non 201 response from server\n";
 			echo $this->curl->html;
 			print_r($this->curl->GetJson());
 		}
