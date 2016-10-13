@@ -10,3 +10,4 @@ Import/data
 Import/data.backup.*
 laravel/vouchers/
 Private
+Javascript/node_modules
