@@ -63,13 +63,17 @@ class Group extends Controller
 		$entity->title       = $json["title"]       ?? null;
 		$entity->description = $json["description"] ?? null;
 
-		$result = $entity->save();
+		// Validate input
+		$entity->validate();
 
-		// TODO: Standarized output
-		return [
+		// Save the entity
+		$entity->save();
+
+		// Send response to client
+		return Response()->json([
 			"status" => "created",
 			"entity" => $entity->toArray(),
-		];
+		], 201);
 	}
 
 	/**
@@ -115,22 +119,17 @@ class Group extends Controller
 		$entity->title       = $json["title"]       ?? null;
 		$entity->description = $json["description"] ?? null;
 
-		$result = $entity->save();
+		// Validate input
+		$entity->validate();
 
-		if($result)
-		{
-			// TODO: Standarized output
-			return [
-				"status" => "updated",
-				"entity" => $entity->toArray(),
-			];
-		}
-		else
-		{
-			return [
-				"status" => "error"
-			];
-		}
+		// Save the entity
+		$entity->save();
+
+		// TODO: Standarized output
+		return [
+			"status" => "updated",
+			"entity" => $entity->toArray(),
+		];
 	}
 
 	/**

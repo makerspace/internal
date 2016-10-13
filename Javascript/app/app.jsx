@@ -459,6 +459,7 @@ ReactDOM.render((
 				<Route path="costcenter"        component={EconomyCostCentersHandler} />
 				<Route path="costcenter/:id"    component={EconomyCostCenterHandler} />
 
+				<Route path="account/:id"       component={EconomyAccountHandler} />
 			</Route>
 			<Route path="mail">
 				<IndexRoute component={MailHistoryHandler} />
@@ -476,7 +477,6 @@ ReactDOM.render((
 					<Route path="accountingperiods" component={EconomyAccountingPeriodHandler} />
 					<Route path="accounts"          component={EconomyAccountsHandler} />
 					<Route path="account/add"       component={EconomyAccountAddHandler} />
-					<Route path="account/:id"       component={EconomyAccountHandler} />
 					<Route path="account/:id/edit"  component={EconomyAccountEditHandler} />
 				</Route>
 			</Route>

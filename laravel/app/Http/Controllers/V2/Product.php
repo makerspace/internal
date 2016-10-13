@@ -40,13 +40,17 @@ class Product extends Controller
 		$entity->title       = $json["title"]       ?? null;
 		$entity->description = $json["description"] ?? null;
 
-		$result = $entity->save();
+		// Validate input
+		$entity->validate();
 
-		// TODO: Standarized output
-		return [
+		// Save the entity
+		$entity->save();
+
+		// Send response to client
+		return Response()->json([
 			"status" => "created",
 			"entity" => $entity->toArray(),
-		];
+		], 201);
 	}
 
 	/**
@@ -93,7 +97,11 @@ class Product extends Controller
 		$entity->title       = $json["title"]       ?? null;
 		$entity->description = $json["description"] ?? null;
 
-		$result = $entity->save();
+		// Validate input
+		$entity->validate();
+
+		// Save the entity
+		$entity->save();
 
 		// TODO: Standarized output
 		return [

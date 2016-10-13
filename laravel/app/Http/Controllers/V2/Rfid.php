@@ -76,22 +76,15 @@ class Rfid extends Controller
 		$entity = new RfidModel;
 		$entity->description   = $json["description"] ?? null;
 		$entity->tagid         = $json["tagid"]       ?? null;
-		$entity->status        = $json["active"]      ?? "inactive";
+		$entity->status        = $json["status"]      ?? "inactive";
 		$entity->startdate     = $json["startdate"]   ?? null;
 		$entity->enddate       = $json["enddate"]     ?? null;
 
 		// Validate input
-		$errors = $entity->validate();
-		if(!empty($errors))
-		{
-			return Response()->json([
-				"errors" => $errors,
-			], 400);
-		}
+		$entity->validate();
 
 		// Save entity
-		$result = $entity->save();
-		$data = $entity->toArray();
+		$entity->save();
 
 		// Add relations
 		if(!empty($json["relations"]))
@@ -99,11 +92,11 @@ class Rfid extends Controller
 			$entity->createRelations($json["relations"]);
 		}
 
-		// TODO: Standariezed output
-		return [
+		// Send response to client
+		return Response()->json([
 			"status" => "created",
-			"entity" => $data,
-		];
+			"entity" => $entity->toArray(),
+		], 201);
 	}
 
 	/**
@@ -155,7 +148,7 @@ class Rfid extends Controller
 		$entity->validate();
 
 		// Save the entity
-		$result = $entity->save();
+		$entity->save();
 
 		// TODO: Standarized output
 		return Response()->json([

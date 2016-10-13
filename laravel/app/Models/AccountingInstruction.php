@@ -197,7 +197,7 @@ class AccountingInstruction extends Entity
 	{
 		$result = parent::save();
 
-		if(!$this->id)
+		if(!$this->entity_id)
 		{
 			die("Error: No id\n");
 		}
@@ -208,13 +208,19 @@ class AccountingInstruction extends Entity
 			foreach($this->data["transactions"] as $i => $transaction)
 			{
 				$entity = new AccountingTransaction;
-				$entity->accounting_instruction = $this->id;
+				$entity->accounting_instruction = $this->entity_id;
 				$entity->title                  = $transaction["title"];
 				$entity->accounting_account     = $this->_getAccountEntityId($transaction["account_number"]);
 				$entity->amount                 = $transaction["amount"];
 				$entity->accounting_cost_center = $transaction["accounting_cost_center"] ?? null;
 				$entity->external_id            = $transaction["external_id"] ?? null;
 				$entity->save();
+
+				// Add relations
+				if(!empty($transaction["relations"]))
+				{
+					$entity->createRelations($transaction["relations"]);
+				}
 			}
 		}
 

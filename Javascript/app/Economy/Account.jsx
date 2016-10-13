@@ -60,7 +60,7 @@ var EconomyAccountEditHandler = React.createClass({
 	{
 		var id = this.props.params.id;
 
-		var account = new AccountModel({id: id});
+		var account = new AccountModel({account_number: id});
 		account.fetch();
 
 		return {
@@ -148,12 +148,12 @@ var EconomyAccounts = React.createClass({
 	{
 		return (
 			<tr key={i}>
-				<td><Link to={"/economy/account/" + row.account_number + "/edit"}>{row.account_number}</Link></td>
+				<td><Link to={"/settings/economy/account/" + row.account_number + "/edit"}>{row.account_number}</Link></td>
 				<td>{row.title}</td>
 				<td>{row.description}</td>
 				<td>
 					<TableDropdownMenu>
-						<Link to={"/settings/economy/account/" + row.entity_id + "/edit"}><i className="uk-icon uk-icon-cog"></i> Redigera konto</Link>
+						<Link to={"/settings/economy/account/" + row.account_number + "/edit"}><i className="uk-icon uk-icon-cog"></i> Redigera konto</Link>
 						{this.removeButton(i, "Ta bort konto")}
 					</TableDropdownMenu>
 				</td>

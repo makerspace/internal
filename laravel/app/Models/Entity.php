@@ -11,6 +11,7 @@ class Entity
 	public $entity_id = null;
 	protected $sort = null;
 	protected $type = null;
+	protected $validation = [];
 	protected $join = null;
 	protected $columns = [
 		"entity.type"        => "entity.type",

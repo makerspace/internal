@@ -76,11 +76,12 @@ class EconomyAccount extends Controller
 		}
 
 		// We need to check that the provided account number is not in conflict with an existing one
-		if($this->_accountNumberIsExisting($json["account_number"]))
+		if($this->_accountNumberIsExisting($accountingperiod, $json["account_number"]))
 		{
 			return Response()->json([
+				"status"  => "error",
 				"message" => "The specified account number does already exist",
-			], 404); // TODO: Another error code
+			], 409);
 		}
 
 		// Create new entity
@@ -89,12 +90,18 @@ class EconomyAccount extends Controller
 		$entity->title              = $json["title"];
 		$entity->description        = $json["description"] ?? null;
 		$entity->accounting_period  = $accountingperiod_id;
-		$result = $entity->save();
 
-		return [
+		// Validate input
+		$entity->validate();
+
+		// Save the entity
+		$entity->save();
+
+		// Send response to client
+		return Response()->json([
 			"status" => "created",
 			"entity" => $entity->toArray(),
-		];
+		], 201);
 	}
 
 	/**

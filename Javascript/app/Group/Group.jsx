@@ -88,6 +88,14 @@ var GroupAddHandler = React.createClass({
 var Group = React.createClass({
 	mixins: [Backbone.React.Component.mixin],
 
+	getInitialState: function()
+	{
+		return {
+			error_column: "",
+			error_message: "",
+		};
+	},
+
 	cancel: function(event)
 	{
 		// Prevent the form from being submitted
@@ -129,8 +137,20 @@ var Group = React.createClass({
 					_this.error();
 				}
 			},
-			error: function(model, response, options) {
-				_this.error();
+			error: function(model, xhr, options)
+			{
+				if(xhr.status == 422)
+				{
+					_this.setState({
+						error_column:  xhr.responseJSON.column,
+						error_message: xhr.responseJSON.message,
+					});
+				}
+				else
+				{
+
+					_this.error();
+				}
 			},
 		});
 	},
@@ -151,6 +171,16 @@ var Group = React.createClass({
 		this.forceUpdate();
 	},
 
+	renderErrorMsg: function(column)
+	{
+		if(this.state.error_column == column)
+		{
+			return (
+				<p className="uk-form-help-block error">Error: {this.state.error_message}</p>
+			);
+		}
+	},
+
 	render: function()
 	{
 		return (
@@ -158,33 +188,31 @@ var Group = React.createClass({
 				<h2>{this.state.model.entity_id ? "Redigera grupp" : "Skapa grupp"}</h2>
 
 				<form className="uk-form uk-form-horizontal" onSubmit={this.save}>
-					<div className="uk-grid">
-						<div className="uk-width-1-3">
-							<label className="uk-form-label">Namn</label>
-						</div>
-						<div className="uk-width-2-3">
+					<div className="uk-form-row">
+						<label className="uk-form-label">Namn</label>
+						<div className="uk-form-controls">
 							<div className="uk-form-icon">
 								<i className="uk-icon-tag"></i>
-								<input type="text" name="title" value={this.state.model.title} onChange={this.handleChange} />
+								<input type="text" name="title" className="uk-form-width-large" value={this.state.model.title} onChange={this.handleChange} />
 							</div>
-						</div>
-					</div>
-
-					<div className="uk-grid">
-						<div className="uk-width-1-3">
-							<label className="uk-form-label">Beskrivning</label>
-						</div>
-						<div className="uk-width-2-3">
-							<textarea name="description" value={this.state.model.description} onChange={this.handleChange}></textarea>
+							{this.renderErrorMsg("title")}
 						</div>
 					</div>
 
 					<div className="uk-form-row">
-						<button className="uk-button uk-button-danger uk-float-left" onClick={this.cancel}><i className="uk-icon-close"></i> Avbryt</button>
+						<label className="uk-form-label">Beskrivning</label>
+						<div className="uk-form-controls">
+							<textarea name="description" className="uk-form-width-large" value={this.state.model.description} onChange={this.handleChange}></textarea>
+							{this.renderErrorMsg("description")}
+						</div>
+					</div>
 
-						{this.state.model.entity_id ? <button className="uk-button uk-button-danger uk-float-left" onClick={this.remove}><i className="uk-icon-trash"></i> Ta bort grupp</button> : ""}
-
-						<button className="uk-button uk-button-success uk-float-right" onClick={this.save}><i className="uk-icon-save"></i> Spara grupp</button>
+					<div className="uk-form-row">
+						<div className="uk-form-controls">
+							<button className="uk-button uk-button-danger uk-float-left" onClick={this.cancel}><i className="uk-icon-close"></i> Avbryt</button>
+							{this.state.model.entity_id ? <button className="uk-button uk-button-danger uk-float-left" onClick={this.remove}><i className="uk-icon-trash"></i> Ta bort grupp</button> : ""}
+							<button className="uk-button uk-button-success uk-float-right" onClick={this.save}><i className="uk-icon-save"></i> Spara grupp</button>
+						</div>
 					</div>
 				</form>
 			</div>

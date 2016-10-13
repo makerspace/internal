@@ -17,4 +17,7 @@ class Group extends Entity
 		"entity.description"      => "entity.description",
 	];
 	protected $sort = ["entity.title", "asc"];
+	protected $validation = [
+		"title" => ["required", "unique"],
+	];
 }

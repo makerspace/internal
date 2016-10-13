@@ -84,7 +84,7 @@ var Edit = React.createClass({
 		this.forceUpdate();
 	},
 
-	errorMsg: function(column)
+	renderErrorMsg: function(column)
 	{
 		if(this.state.error_column == column)
 		{
@@ -96,19 +96,10 @@ var Edit = React.createClass({
 
 	render: function()
 	{
-		if(this.state.model.entity_id === undefined)
-		{
-			var title = "Lägg till ny RFID-tagg";
-		}
-		else
-		{
-			var title = "Redigera RFID-tagg";
-		}
-
 		return (
 			<form className="uk-form uk-form-horizontal">
 			<div className="">
-				<h3>{title}</h3>
+				<h3>{this.state.model.entity_id ? "Redigera RFID-tagg" : "Lägg till ny RFID-tagg"}</h3>
 
 				<div className="uk-form-row">
 					<label className="uk-form-label" htmlFor="tagid">
@@ -116,7 +107,7 @@ var Edit = React.createClass({
 					</label>
 					<div className="uk-form-controls">
 						<input type="text" id="tagid" name="tagid" placeholder="Använd en RFID-läsare för att läsa av det unika numret på nyckeln" value={this.state.model.tagid} className="uk-form-width-large" onChange={this.handleChange} />
-						{this.errorMsg("tagid")}
+						{this.renderErrorMsg("tagid")}
 					</div>
 				</div>
 
@@ -126,7 +117,7 @@ var Edit = React.createClass({
 					</label>
 					<div className="uk-form-controls">
 						<textarea id="description" name="description" placeholder="Det är valfritt att lägga in en beskrivning av nyckeln" value={this.state.model.description} className="uk-form-width-large" onChange={this.handleChange} />
-						{this.errorMsg("description")}
+						{this.renderErrorMsg("description")}
 					</div>
 				</div>
 
@@ -140,7 +131,7 @@ var Edit = React.createClass({
 							<option value="inactive">Inaktiv</option>
 							<option value="auto">Auto</option>
 						</select>
-						{this.errorMsg("status")}
+						{this.renderErrorMsg("status")}
 					</div>
 				</div>
 
@@ -168,7 +159,7 @@ var Edit = React.createClass({
 							<div className="uk-form-icon">
 								<i className="uk-icon-calendar"></i>
 								<input type="text" id="startdate" name="startdate" value={this.state.model.startdate} className="uk-form-width-large" onChange={this.handleChange} />
-								{this.errorMsg("startdate")}
+								{this.renderErrorMsg("startdate")}
 							</div>
 						</div>
 					</div>
@@ -183,7 +174,7 @@ var Edit = React.createClass({
 							<div className="uk-form-icon">
 								<i className="uk-icon-calendar"></i>
 								<input type="text" id="enddate" name="enddate" value={this.state.model.enddate} className="uk-form-width-large" onChange={this.handleChange} />
-								{this.errorMsg("enddate")}
+								{this.renderErrorMsg("enddate")}
 							</div>
 						</div>
 					</div>

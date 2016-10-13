@@ -64,7 +64,7 @@ class EconomyInstruction extends Controller
 		// Create new accounting instruction
 		$entity = new AccountingInstruction;
 		$entity->title                         = $json["title"];
-		$entity->description                   = $json["description"] ?? null;
+		$entity->description                   = $json["description"]         ?? null;
 		$entity->instruction_number            = $json["instruction_number"]  ?? null;
 		$entity->accounting_date               = $json["accounting_date"];
 		$entity->accounting_category           = $json["accounting_category"] ?? null;
@@ -77,14 +77,19 @@ class EconomyInstruction extends Controller
 		*/
 		$entity->accounting_verification_serie = $json["accounting_verification_serie"] ?? null;
 		$entity->transactions                  = $json["transactions"];
-		$entity->accounting_period = $accountingperiod_id;
+		$entity->accounting_period             = $accountingperiod_id;
+
+		// Validate input
+		$entity->validate();
+
+		// Save the entity
 		$entity->save();
 
-		return [
+		// Send response to client
+		return Response()->json([
 			"status" => "created",
-			"input"  => $json,
 			"entity" => $entity->toArray(),
-		];
+		], 201);
 	}
 
 	/**

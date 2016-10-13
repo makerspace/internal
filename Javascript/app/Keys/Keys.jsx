@@ -56,8 +56,8 @@ var Keys = React.createClass({
 	{
 		return [
 			{
-				title: "Aktiv",
-				sort: "active",
+				title: "Status",
+				sort: "status",
 			},
 			{
 				title: "RFID",
@@ -79,9 +79,10 @@ var Keys = React.createClass({
 			<tr key={i}>
 				<td>
 					{(() => {
-						switch (row.active) {
-							case 1: return <span><i className="uk-icon-check key-active"></i>Ja</span>;
-							case 0: return <span><i className="uk-icon-cross key-inactive"></i>Nej</span>;
+						switch (row.status) {
+							case "active":   return <span><i className="uk-icon uk-icon-check key-active"></i>Aktiv</span>;
+							case "inactive": return <span><i className="uk-icon uk-icon-close key-inactive"></i>Inaktiv</span>;
+							case "auto":     return <span><i className="uk-icon uk-icon-cog key-auto"></i>Auto</span>;
 						}
 					})()}
 				</td>

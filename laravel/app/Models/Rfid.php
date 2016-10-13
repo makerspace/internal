@@ -17,7 +17,9 @@ class Rfid extends Entity
 		"entity.updated_at"  => "DATE_FORMAT(entity.updated_at, '%Y-%m-%dT%H:%i:%sZ') AS updated_at",
 		"entity.description" => "entity.description",
 		"rfid.tagid"         => "rfid.tagid",
-		"rfid.active"        => "rfid.active",
+		"rfid.status"        => "rfid.status",
+		"rfid.startdate"     => "DATE_FORMAT(rfid.startdate, '%Y-%m-%dT%H:%i:%sZ') AS startdate",
+		"rfid.enddate"       => "DATE_FORMAT(rfid.enddate, '%Y-%m-%dT%H:%i:%sZ') AS enddate",
 	];
 	protected $sort = ["created_at", "desc"];
 	protected $validation = [

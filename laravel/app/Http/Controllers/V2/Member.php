@@ -69,8 +69,7 @@ class Member extends Controller
 	{
 		$json = $request->json()->all();
 
-		// TODO: Require E-mail?
-
+		// TODO: This should be removed
 		// Create a unique member number if not specified
 		if(!empty($json["member_number"]))
 		{
@@ -83,8 +82,6 @@ class Member extends Controller
 
 		// Create new member
 		$entity = new MemberModel;
-//		$entity->title           = $json["title"];
-//		$entity->description     = $json["description"] ?? null;
 		$entity->member_number   = $member_number;
 		$entity->email           = $json["email"];
 		$entity->password        = $json["password"]        ?? null;
@@ -100,13 +97,17 @@ class Member extends Controller
 		$entity->address_country = $json["address_country"] ?? "SE";
 		$entity->phone           = $json["phone"]           ?? null;
 
-		$result = $entity->save();
+		// Validate input
+		$entity->validate();
 
-		// TODO: Standarized output
-		return [
+		// Save the entity
+		$entity->save();
+
+		// Send response to client
+		return Response()->json([
 			"status" => "created",
 			"entity" => $entity->toArray(),
-		];
+		], 201);
 	}
 
 	/**
@@ -168,8 +169,11 @@ class Member extends Controller
 			], 400);
 		}
 */
+		// Validate input
+		$entity->validate();
+
 		// Save the entity
-		$result = $entity->save();
+		$entity->save();
 
 		// TODO: Standarized output
 		return Response()->json([

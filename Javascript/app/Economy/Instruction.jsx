@@ -68,7 +68,7 @@ var EconomyAccountingInstructionList = React.createClass({
 	getInitialState: function()
 	{
 		return {
-			columns: 5,
+			columns: 6,
 		};
 	},
 

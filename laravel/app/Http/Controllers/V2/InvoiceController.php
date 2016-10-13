@@ -87,13 +87,17 @@ class InvoiceController extends Controller
 		$entity->accounting_period = $accountingperiod_id;
 		$entity->posts             = $json["posts"];
 
-		$result = $entity->save();
+		// Validate input
+		$entity->validate();
 
-		// TODO: Standariezed output
-		return [
+		// Save the entity
+		$entity->save();
+
+		// Send response to client
+		return Response()->json([
 			"status" => "created",
 			"entity" => $entity->toArray(),
-		];
+		], 201);
 	}
 
 	/**

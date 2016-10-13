@@ -14,8 +14,16 @@ var GroupsHandler = React.createClass({
 		return (
 			<div>
 				<h2>Grupper</h2>
-				<p>På denna sida ser du en lista på samtliga grupper.</p>
-				<Link className="uk-button uk-button-primary" to="/groups/add"><i className="uk-icon-plus-circle"></i> Skapa ny grupp</Link>
+
+				<div className="uk-grid">
+					<div className="uk-width-1-2">
+						<p>På denna sida ser du en lista på samtliga grupper.</p>
+					</div>
+					<div className="uk-width-1-2">
+						<Link className="uk-button uk-button-primary uk-float-right" to="/groups/add"><i className="uk-icon-plus-circle"></i> Skapa ny grupp</Link>
+					</div>
+				</div>
+
 				<Groups type={GroupCollection} />
 			</div>
 		);

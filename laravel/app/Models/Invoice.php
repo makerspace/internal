@@ -162,7 +162,7 @@ class Invoice extends Entity
 			foreach($this->posts as $i => $post)
 			{
 				DB::table("invoice_post")->insert([
-					"entity_id" => $this->id,
+					"entity_id" => $this->entity_id,
 					"weight"    => $post["weight"] ?? ($i * 10),
 					"type"      => $post["type"]   ?? "article",
 					"title"     => $post["title"]  ?? "",

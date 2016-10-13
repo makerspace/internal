@@ -14,7 +14,7 @@ class Member extends Entity
 		"entity.entity_id"        => "entity.entity_id",
 		"entity.created_at"       => "DATE_FORMAT(entity.created_at, '%Y-%m-%dT%H:%i:%sZ') AS created_at",
 		"entity.updated_at"       => "DATE_FORMAT(entity.updated_at, '%Y-%m-%dT%H:%i:%sZ') AS updated_at",
-		"entity.title"            => "entity.title",
+//		"entity.title"            => "entity.title",
 		"entity.description"      => "entity.description",
 		"member.member_number"    => "member.member_number",
 		"member.email"            => "member.email",
@@ -34,6 +34,10 @@ class Member extends Entity
 		"member.phone"            => "member.phone",
 	];
 	protected $sort = ["member.member_number", "desc"];
+	protected $validation = [
+		"firstname" => ["required"],
+		"email"     => ["required", "unique"],
+	];
 
 	public function _search($query, $search)
 	{

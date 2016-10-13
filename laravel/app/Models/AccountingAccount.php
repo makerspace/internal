@@ -81,8 +81,21 @@ class AccountingAccount extends Entity
 		foreach($data as &$row)
 		{
 			// Instruction with number 0 is always ingoing balance
-			$ingoing = AccountingInstruction::load(0);
+			$ingoing = AccountingInstruction::load(
+				[
+					["instruction_number", "=", 0]
+				]
+			);
+/*
+			echo "<pre>a";
+			print_r($ingoing);
+			die();
 			$row->balance_in = 0;
+*/
+			if(empty($ingoing))
+			{
+				continue;
+			}
 
 			// TODO: Vänt rätt på kredit/debet
 			if($row->account_number >= 3000 && $row->account_number <= 8311)

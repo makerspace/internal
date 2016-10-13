@@ -100,17 +100,22 @@ class Mail extends Controller
 			$entity->description = $json["body"];
 			$entity->status      = "queued";
 			$entity->date_sent   = null;
+
+			// Validate input
+			$entity->validate();
+
+			// Save the entity
 			$result = $entity->save();
 
 			// TODO: Create a relation to the recipient Member entity
 			$entity->createRelations([$x->entity_id]);
 		}
 
-		// TODO: Standarized output
-		return [
+		// Send response to client
+		return Response()->json([
 			"status" => "created",
 //			"entity" => $entity->toArray(),
-		];
+		], 201);
 	}
 
 	/**
@@ -165,7 +170,11 @@ class Mail extends Controller
 		$entity->title       = $json["title"]       ?? null;
 		$entity->description = $json["description"] ?? null;
 
-		$result = $entity->save();
+		// Validate input
+		$entity->validate();
+
+		// Save the entity
+		$entity->save();
 
 		// TODO: Standarized output
 		return [
