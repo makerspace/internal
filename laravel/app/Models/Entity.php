@@ -8,11 +8,11 @@ use DB;
  */
 class Entity
 {
-	public $entity_id = null;
-	protected $sort = null;
-	protected $type = null;
-	protected $validation = [];
-	protected $join = null;
+	public $entity_id = null;   // The database unique id for the entity
+	protected $sort = null;     // An array with sorting options eg. ["entity_id", "desc"] or [["date_updated", "asc"],["date_created","desc"]]
+	protected $type = null;     // The type of the entity, eg. "member"
+	protected $validation = []; // Validation rules
+	protected $join = null;     // Specify the relation table we should join, if any
 	protected $columns = [
 		"entity.type"        => "entity.type",
 		"entity.entity_id"   => "entity.entity_id",
@@ -21,8 +21,9 @@ class Entity
 		"entity.title"       => "entity.title",
 		"entity.description" => "entity.description",
 	];
-	protected $data = [];
+	protected $data = [];         // Holds the data of the object
 	protected $pagination = null; // No pagination by default
+	protected $relations = [];    // An array with information about relations to other entities
 
 	/**
 	 * Constructor
@@ -47,7 +48,7 @@ class Entity
 				{
 					$type = $filter[1];
 					$this->type = $type;
-					// TODO: Hardcoded list
+					// TODO: Should not be a hardcoded list
 					if(in_array($type, ["accounting_transaction", "accounting_period", "accounting_instruction", "accounting_account", "member", "mail", "product", "rfid", "subscription", "invoice"]))
 					{
 						$this->join = $type;
@@ -67,7 +68,7 @@ class Entity
 	}
 	
 	/**
-	 *
+	 * Build the base query with selecting entity types, tables, columns, join, sort and filtering removed items.
 	 */
 	protected function _buildLoadQuery($show_deleted = false)
 	{
@@ -127,7 +128,8 @@ class Entity
 	}
 
 	/**
-	 *
+	 * Apply standard filters like pagination, search and relation
+	 * All unknown filters are treated like arbritrary WHERE key=value
 	 */
 	protected function _applyFilter($query, &$filters)
 	{
@@ -217,7 +219,7 @@ class Entity
 	 */
 	protected function _list($filters = [])
 	{
-		// A type filter should create a SQL join
+		// Preprocessing (join or type and sorting)
 		$this->_preprocessFilters($filters);
 
 		// Build base query
@@ -235,10 +237,12 @@ class Entity
 		// Run the MySQL query
 		$data = $query->get();
 
+		// Prepare array to be returned
 		$result = [
 			"data" => $data
 		];
 
+		// Pagination
 		if($this->pagination != null)
 		{
 			$result["total"]     = $query->count();
@@ -260,13 +264,17 @@ class Entity
 	}
 
 	/**
-	 *
+	 * Same as above, but called non-statically
 	 */
 	protected function _load($filters, $show_deleted = false)
 	{
+		// Preprocessing (join or type and sorting)
 		$this->_preprocessFilters($filters);
 
+		// Build base query
 		$query = $this->_buildLoadQuery();
+
+		// Apply standard filters like entity_id, relations, etc
 		$query = $this->_applyFilter($query, $filters);
 
 		// Get data from database
@@ -279,6 +287,7 @@ class Entity
 		}
 		
 		// Create a new entity based on type
+		// TODO: Should not be a hardcoded list
 		$type = ($this->type !== null ? $this->type : $data["type"]);
 		switch($type)
 		{
@@ -336,48 +345,101 @@ class Entity
 	}
 
 	/**
-	 *
+	 * A helper function used in addRelation() and removeRelation()
 	 */
-	public function createRelations($relations)
+	private function _loadRelation($relation)
 	{
-
-		// Go through the list of relations
-		foreach($relations as $i => $relation)
+		if(is_numeric($relation))
 		{
-			$parameters = [];
-			foreach($relation as $key => $value)
-			{
-				$parameters[] = [$key, $value];
-			}
+			return $relation;
+		}
 
-			// Load the specified entity
-			$entity2 = Entity::load($parameters);// TODO: Format?
+		// Build a filter used for loading the entity
+		$parameters = [];
+		foreach($relation as $key => $value)
+		{
+			$parameters[] = [$key, $value];
+		}
 
-			// Bail out on error
-			if(empty($entity2))
-			{
-				return false;
-				// TODO: Throw new exception
-/*
-				return Response()->json([
-					"errors" => ["Could not create relation: The entity you have specified could not be found"],
-				], 404);
-*/
-			}
+		// Load the specified entity
+		$entity2 = Entity::load($parameters);
 
-			// Create the relation
-			$entity1_id = $this->entity_id;
-			$entity2_id = $entity2->entity_id;
-			DB::table("relation")->insert([
-				"entity1" => $entity1_id,
-				"entity2" => $entity2_id
-			]);
-			// TODO: Error handling
+		// Bail out on error
+		if(empty($entity2))
+		{
+//			throw new Exception("Could not create relation: The entity you have specified could not be found");
+			return false;
+		}
+		else
+		{
+			return $entity2->entity_id;
 		}
 	}
 
 	/**
-	 * Save an entity
+	 * Return an array of all relations
+	 */
+	public function getRelations()
+	{
+		$relations = [];
+
+		foreach($this->relations as $relation)
+		{
+			$relations[] = $relation["entity_id"];
+		}
+
+		return $relations;
+	}
+
+	/**
+	 * Add one single relation to another entity
+	 */
+	public function addRelation($relation)
+	{
+		$entity_id = $this->_loadRelation($relation);
+
+		// Make sure we don't get any duplicates in the relations
+		if(!array_key_exists($entity_id, $this->relations))
+		{
+			// Add the relation
+			$this->relations[$entity_id] = [
+				"entity_id" => $entity_id,
+				"action"    => "add",
+			];
+		}
+	}
+
+	/**
+	 * Add an array of relations to other entities
+	 */
+	public function addRelations(array $relations)
+	{
+		foreach($relations as $relation)
+		{
+			$this->addRelation($relation);
+		}
+	}
+
+	/**
+	 * Removes an relation to another entity
+	 */
+	public function removeRelation($relation)
+	{
+		$entity_id = $this->_loadRelation($relation);
+
+		// Make sure the relation does exist
+		if(!array_key_exists($entity_id, $this->relations))
+		{
+			// Removed the relation
+			$this->relations[$entity_id]["action"] = "remove";
+		}
+	}
+
+	/**
+	 * Save the entity to database
+	 *
+	 * If there is no entity_id specified, a new entity is created
+	 * If there is a entity_id specified, it is being updated
 	 */
 	public function save()
 	{
@@ -432,11 +494,42 @@ class Entity
 			}
 		}
 
+		// Go through the list of relations
+		foreach($this->relations as &$relation)
+		{
+			// Only process relation that have been changed since the entity was loaded or created
+			if($relation["action"])
+			{
+				if($relation["action"] == "add")
+				{
+					// Create the relation
+					DB::table("relation")->insert([
+						"entity1" => $this->entity_id,
+						"entity2" => $relation["entity_id"]
+					]);
+				}
+				else if($relation["action"] = "remove")
+				{
+					// TODO: Remove relation
+/*
+					DB::table("relation")->remove([
+						"entity1" => $this->entity_id,
+						"entity2" => $relation["entity_id"]
+					]);
+*/
+				}
+				unset($relation["action"]);
+			}
+		}
+
 		return true;
 	}
 
 	/**
 	 * Delete an entity
+	 *
+	 * A soft delete is used as standard and will only flag the entity as deleted
+	 * To permanently delete an entity set $permanent = true
 	 */
 	public function delete($permanent = false)
 	{
@@ -446,7 +539,7 @@ class Entity
 			return false;
 		}
 
-		// TODO: Delete relations
+		// TODO: Delete relations and data in joins
 
 		if($permanent === true)
 		{
@@ -467,7 +560,7 @@ class Entity
 	}
 
 	/**
-	 *
+	 * Get a property
 	 */
 	public function __get($name)
 	{
@@ -486,7 +579,7 @@ class Entity
 	}
 
 	/**
-	 *
+	 * Set a property
 	 */
 	public function __set($name, $value)
 	{
@@ -494,7 +587,7 @@ class Entity
 	}
 
 	/**
-	 *
+	 * Check if a property is set
 	 */
 	public function __isset($name)
 	{
@@ -502,7 +595,7 @@ class Entity
 	}
 
 	/**
-	 * Convert the entity into an array
+	 * Convert the data on an entity into an array
 	 */
 	public function toArray()
 	{
@@ -519,7 +612,7 @@ class Entity
 		// Go through the filters
 		foreach($this->validation as $field => $rules)
 		{
-			// Do not apply a filter if the key does not exist
+			// Do not apply a filter if there is not data to validate
 			if(!array_key_exists($field, $this->data))
 			{
 				continue;
@@ -528,6 +621,7 @@ class Entity
 			// Each field can have multiple rules
 			foreach($rules as $rule)
 			{
+				// The value is required to be not empty
 				if($rule == "required")
 				{
 					if(empty($this->data[$field]))
@@ -535,6 +629,7 @@ class Entity
 						throw new EntityValidationException($field, "The value can not be empty");
 					}
 				}
+				// The value should be unique in database (except from deleted entities)
 				else if($rule == "unique")
 				{
 					// Check if there is anything in the database
@@ -543,13 +638,32 @@ class Entity
 						[$field, $this->data[$field]]
 					]);
 
-					// A unique value collision is not fatal if this is the same entity... or else we could not save an entity
+					// A unique value collision is not fatal if it is from the same entity thas is being validated (itself)... or else we could not save an entity
 					if(!empty($result) && ($result->entity_id != $this->entity_id))
 					{
 						throw new EntityValidationException($field, "The value needs to be unique in the database");
 					}
 				}
-
+				// Validate a date according to ISO8601 standard
+				else if($rule == "date")
+				{
+					// TODO
+				}
+				// E-mail
+				else if($rule == "email")
+				{
+					// TODO
+				}
+				// Personnummer
+				else if($rule == "civicregno")
+				{
+					// TODO
+				}
+				// Phone number
+				else if($rule == "phone")
+				{
+					// TODO
+				}
 				else
 				{
 					throw new EntityValidationException($field, "Unknown validation rule {$rule}");

@@ -101,14 +101,14 @@ class Mail extends Controller
 			$entity->status      = "queued";
 			$entity->date_sent   = null;
 
+			// Create a relation to the recipient Member entity
+			$entity->addRelation($x->entity_id);
+
 			// Validate input
 			$entity->validate();
 
-			// Save the entity
-			$result = $entity->save();
-
-			// TODO: Create a relation to the recipient Member entity
-			$entity->createRelations([$x->entity_id]);
+			// Save entity
+			$entity->save();
 		}
 
 		// Send response to client

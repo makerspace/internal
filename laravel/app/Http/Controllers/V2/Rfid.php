@@ -74,23 +74,23 @@ class Rfid extends Controller
 
 		// Create new RFID entity
 		$entity = new RfidModel;
-		$entity->description   = $json["description"] ?? null;
-		$entity->tagid         = $json["tagid"]       ?? null;
-		$entity->status        = $json["status"]      ?? "inactive";
-		$entity->startdate     = $json["startdate"]   ?? null;
-		$entity->enddate       = $json["enddate"]     ?? null;
+		$entity->description = $json["description"] ?? null;
+		$entity->tagid       = $json["tagid"]       ?? null;
+		$entity->status      = $json["status"]      ?? "inactive";
+		$entity->startdate   = $json["startdate"]   ?? null;
+		$entity->enddate     = $json["enddate"]     ?? null;
+
+		// Add relations
+		if(!empty($json["relations"]))
+		{
+			$entity->addRelations($json["relations"]);
+		}
 
 		// Validate input
 		$entity->validate();
 
 		// Save entity
 		$entity->save();
-
-		// Add relations
-		if(!empty($json["relations"]))
-		{
-			$entity->createRelations($json["relations"]);
-		}
 
 		// Send response to client
 		return Response()->json([
