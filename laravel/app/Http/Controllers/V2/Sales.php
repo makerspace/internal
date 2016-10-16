@@ -9,28 +9,46 @@ use Illuminate\Http\Response;
 use App\Models\Entity;
 
 use App\Traits\Pagination;
+use App\Traits\EntityStandardFiltering;
 
 class Sales extends Controller
 {
-	use Pagination;
+	use Pagination, EntityStandardFiltering;
 
 	/**
 	 *
 	 */
 	function list(Request $request)
 	{
-		return Response()->json([
-			"error" => "Not implemented",
-		], 501);
-/*
-		// Load data from datbase
-		$result = ProductModel::list([
-			["per_page", $this->per_page($request)],
-		]);
+		// Paging filter
+		$filters = [
+			"per_page" => $this->per_page($request), // TODO: Rename?
+		];
+
+		// Filter on relations
+		if(!empty($request->get("relations")))
+		{
+			$filters["relations"] = $request->get("relations");
+		}
+
+		// Filter on search
+		if(!empty($request->get("search")))
+		{
+			$filters["search"] = $request->get("search");
+		}
+
+		// Sorting
+		if(!empty($request->get("sort_by")))
+		{
+			$order = ($request->get("sort_order") == "desc" ? "desc" : "asc");
+			$filters["sort"] = [$request->get("sort_by"), $order];
+		}
+
+		// Load data from database
+		$result = call_user_func("\App\Models\Sales::list", $filters);
 
 		// Return json array
 		return $result;
-*/
 	}
 
 	/**

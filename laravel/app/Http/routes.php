@@ -141,6 +141,14 @@ Route::group(["prefix" => "api/v2", "before" => "oauth"], function()
 		Route::   get("valuationsheet",   "V2\EconomyReport@valuationSheet"); // Get collection
 		Route::   get("resultreport",     "V2\EconomyReport@resultReport");   // Get collection
 	});
+
+	// Relations
+	// History
+//	Route::   get("relation",      "V2\Sales@list");   // Get collection
+	Route::  post("relation",      "V2\Relation@create"); // Create relation
+//	Route::   get("relation/{id}", "V2\Sales@read");   // Model: Read
+//	Route::   put("relation/{id}", "V2\Sales@update"); // Model: Update
+	Route::delete("relation/{id}", "V2\Relation@delete"); // Delete relation
 });
 
 // Everything else should load the single page app
