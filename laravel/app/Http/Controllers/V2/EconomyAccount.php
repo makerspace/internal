@@ -31,8 +31,8 @@ class EconomyAccount extends Controller
 		// Return all account that have a balance not equal to 0
 		return AccountingAccount::list(
 			[
-				["transactions", ">", 0],
-				["accountingperiod", "=", $accountingperiod],
+				"transactions"     => [">", 0],
+				"accountingperiod" => ["=", $accountingperiod],
 			]
 		);
 	}
@@ -49,11 +49,32 @@ class EconomyAccount extends Controller
 			return $x;
 		}
 
-		// Load data from datbase
-		$result = AccountingAccount::list([
-			["per_page", $this->per_page($request)],
-			["accountingperiod", "=", $accountingperiod],
-		]);
+		// Paging filter
+		$filters = [
+			"per_page" => $this->per_page($request), // TODO: Rename?
+		];
+
+		// Filter on relations
+		if(!empty($request->get("relations")))
+		{
+			$filters["relations"] = $request->get("relations");
+		}
+
+		// Filter on search
+		if(!empty($request->get("search")))
+		{
+			$filters["search"] = $request->get("search");
+		}
+
+		// Sorting
+		if(!empty($request->get("sort_by")))
+		{
+			$order = ($request->get("sort_order") == "desc" ? "desc" : "asc");
+			$filters["sort"] = [$request->get("sort_by"), $order];
+		}
+
+		// Load data from database
+		$result = call_user_func("\App\Models\AccountingAccount::list", $filters);
 
 		// Return json array
 		return $result;

@@ -14,8 +14,10 @@ var MailHistoryHandler = React.createClass({
 		return (
 			<div>
 				<h2>Historik</h2>
-				<p>Visa lista över samtliga E-post och SMS-utskick</p>
-				<Link to="/mail/send" className="uk-button uk-button-primary"><i className="uk-icon-plus-circle"></i> Skapa nytt utskick</Link>
+
+				<p className="uk-float-left">Visa lista över samtliga E-post och SMS-utskick.</p>
+				<Link to="/mail/send" className="uk-button uk-button-primary uk-float-right"><i className="uk-icon-plus-circle"></i> Skapa nytt utskick</Link>
+
 				<MailHistory type={MailCollection} />
 			</div>
 		);
@@ -59,15 +61,19 @@ var MailHistory = React.createClass({
 		return [
 			{
 				title: "Id",
+				sort: "entity_id",
 			},
 			{
 				title: "Status",
+				sort: "status",
 			},
 			{
 				title: "Mottagare",
+				sort: "recipient",
 			},
 			{
 				title: "Meddelande",
+				sort: "description",
 			},
 		];
 	},

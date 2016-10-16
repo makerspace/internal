@@ -23,30 +23,77 @@ class AccountingInstruction extends Entity
 	protected $type = "accounting_instruction";
 	protected $join = "accounting_instruction";
 	protected $columns = [
-		"entity.entity_id"                                      => "entity.entity_id",
-		"entity.created_at"                                     => "DATE_FORMAT(entity.created_at, '%Y-%m-%dT%H:%i:%sZ') AS created_at",
-		"entity.updated_at"                                     => "DATE_FORMAT(entity.updated_at, '%Y-%m-%dT%H:%i:%sZ') AS updated_at",
-		"entity.title"                                          => "entity.title",
-		"entity.description"                                    => "entity.description",
-		"accounting_instruction.instruction_number"             => "accounting_instruction.instruction_number",
-		"accounting_instruction.accounting_date"                => "accounting_instruction.accounting_date",
-		"accounting_instruction.accounting_category"            => "accounting_instruction.accounting_category",
-		"accounting_instruction.importer"                       => "accounting_instruction.importer",
-		"accounting_instruction.external_id"                    => "accounting_instruction.external_id",
-		"accounting_instruction.external_date"                  => "accounting_instruction.external_date",
-		"accounting_instruction.external_text"                  => "accounting_instruction.external_text",
-		"accounting_instruction.external_data"                  => "accounting_instruction.external_data",
-		"accounting_instruction.accounting_verification_series" => "accounting_instruction.accounting_verification_series",
-		"accounting_instruction.accounting_period"              => "accounting_instruction.accounting_period",
+		"entity_id" => [
+			"column" => "entity.entity_id",
+			"select" => "entity.entity_id",
+		],
+		"created_at" => [
+			"column" => "entity.created_at",
+			"select" => "DATE_FORMAT(entity.created_at, '%Y-%m-%dT%H:%i:%sZ')",
+		],
+		"updated_at" => [
+			"column" => "entity.updated_at",
+			"select" => "DATE_FORMAT(entity.updated_at, '%Y-%m-%dT%H:%i:%sZ')",
+		],
+		"title" => [
+			"column" => "entity.title",
+			"select" => "entity.title",
+		],
+		"description" => [
+			"column" => "entity.description",
+			"select" => "entity.description",
+		],
+		"instruction_number" => [
+			"column" => "accounting_instruction.instruction_number",
+			"select" => "accounting_instruction.instruction_number",
+		],
+		"accounting_date" => [
+			"column" => "accounting_instruction.accounting_date",
+			"select" => "accounting_instruction.accounting_date",
+		],
+		"accounting_category" => [
+			"column" => "accounting_instruction.accounting_category",
+			"select" => "accounting_instruction.accounting_category",
+		],
+		"importer" => [
+			"column" => "accounting_instruction.importer",
+			"select" => "accounting_instruction.importer",
+		],
+		"external_id" => [
+			"column" => "accounting_instruction.external_id",
+			"select" => "accounting_instruction.external_id",
+		],
+		"external_date" => [
+			"column" => "accounting_instruction.external_date",
+			"select" => "accounting_instruction.external_date",
+		],
+		"external_text" => [
+			"column" => "accounting_instruction.external_text",
+			"select" => "accounting_instruction.external_text",
+		],
+		"external_data" => [
+			"column" => "accounting_instruction.external_data",
+			"select" => "accounting_instruction.external_data",
+		],
+		"accounting_verification_series" => [
+			"column" => "accounting_instruction.accounting_verification_series",
+			"select" => "accounting_instruction.accounting_verification_series",
+		],
+		"accounting_period" => [
+			"column" => "accounting_instruction.accounting_period",
+			"select" => "accounting_instruction.accounting_period",
+		],
 	];
-
-	protected $sort = ["accounting_instruction.instruction_number", "desc"];
+	protected $sort = ["instruction_number", "desc"];
 
 	/**
 	 *
 	 */
 	public function _list($filters = [])
 	{
+		// Preprocessing (join or type and sorting)
+		$this->_preprocessFilters($filters);
+
 		// Build base query
 		$query = $this->_buildLoadQuery();
 
@@ -79,8 +126,14 @@ class AccountingInstruction extends Entity
 			}
 		}
 
+		// Apply standard filters like entity_id, relations, etc
+		$query = $this->_applyFilter($query, $filters);
+
 		// Get the balance
 		$query->selectRaw("(SELECT SUM(amount) FROM accounting_transaction WHERE amount > 0 AND accounting_instruction = entity.entity_id) AS balance");
+
+		// Sort
+		$query = $this->_applySorting($query);
 
 		// Paginate
 		if($this->pagination != null)
@@ -214,13 +267,15 @@ class AccountingInstruction extends Entity
 				$entity->amount                 = $transaction["amount"];
 				$entity->accounting_cost_center = $transaction["accounting_cost_center"] ?? null;
 				$entity->external_id            = $transaction["external_id"] ?? null;
-				$entity->save();
 
 				// Add relations
 				if(!empty($transaction["relations"]))
 				{
-					$entity->createRelations($transaction["relations"]);
+					$entity->addRelations($transaction["relations"]);
 				}
+
+				// Save the entity
+				$entity->save();
 			}
 		}
 

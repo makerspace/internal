@@ -27,15 +27,13 @@ class MailSendHandler extends React.Component
 		this.setState({
 			type: this.refs.type.value
 		});
+	}
 
-		if(this.refs.type.value == "sms")
-		{
-			$("#subject_container").hide();
-		}
-		else
-		{
-			$("#subject_container").show();
-		}
+	changeSubject()
+	{
+		this.setState({
+			subject: this.refs.subject.value
+		});
 	}
 
 	changeRecipient(value)
@@ -46,13 +44,6 @@ class MailSendHandler extends React.Component
 
 		// Clear the search history so there is no drop down with old data after adding a recipient
 		this.refs.recps.setState({options: []});
-	}
-
-	changeSubject()
-	{
-		this.setState({
-			subject: this.refs.subject.value
-		});
 	}
 
 	changeBody()
@@ -131,7 +122,7 @@ class MailSendHandler extends React.Component
 			}),
 		}).done(function (){
 			// TODO: Falhantering
-			browserHistory.push("/mail/history");
+			browserHistory.push("/mail");
 		});
 	}
 
@@ -171,17 +162,19 @@ class MailSendHandler extends React.Component
 						</div>
 					</div>
 
-					<div className="uk-form-row" id="subject_container">
-						<label className="uk-form-label" htmlFor="subject">
-							Ärende
-						</label>
-						<div className="uk-form-controls">
-							<div className="uk-form-icon">
-								<i className="uk-icon-commenting"></i>
-								<input ref="subject" type="text" id="subject" name="subject" className="uk-form-width-large" onChange={this.changeSubject.bind(this)} />
+					{this.state.type == "email" ?
+						<div className="uk-form-row">
+							<label className="uk-form-label" htmlFor="subject">
+								Ärende
+							</label>
+							<div className="uk-form-controls">
+								<div className="uk-form-icon">
+									<i className="uk-icon-commenting"></i>
+									<input ref="subject" type="text" id="subject" name="subject" className="uk-form-width-large" onChange={this.changeSubject.bind(this)} />
+								</div>
 							</div>
 						</div>
-					</div>
+					: ""}
 
 					<div className="uk-form-row">
 						<label className="uk-form-label" htmlFor="body">

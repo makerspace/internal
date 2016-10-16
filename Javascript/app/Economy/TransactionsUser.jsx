@@ -42,13 +42,16 @@ var TransactionsUser = React.createClass({
 		return [
 			{
 				title: "Bokföringsdatum",
+				sort: "accounting_date",
 			},
 			{
 				title: "Transaktion",
+				sort: "transaction_title",
 			},
 			{
 				title: "Belopp",
 				class: "uk-text-right",
+				sort: "amount",
 			},
 			{
 				title: "",

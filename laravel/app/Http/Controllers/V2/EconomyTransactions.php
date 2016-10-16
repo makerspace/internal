@@ -30,27 +30,28 @@ class EconomyTransactions extends Controller
 
 		// Paging filter
 		$filters = [
-			["per_page", $this->per_page($request)],
-//			["account_number", "=", $account_number],
-//			["accountingperiod", "=", $accountingperiod],
+			"per_page" => $this->per_page($request),
+//			"account_number" => $account_number,
+//			"accountingperiod" => $accountingperiod,
 		];
 
 		// Filter on relations
-		$relations = $request->get("relations");
-		if($relations)
+		if($request->get("relations"))
 		{
-			$new_relations = [];
-			foreach($relations as $relation)
-			{
-				$relation_filters = [];
-				foreach($relation as $key => $value)
-				{
-					$relation_filters[] = [$key, $value];
-				}
-				$new_relations[] = $relation_filters;
-			}
+			$filters["relations"] = $request->get("relations");
+		}
 
-			$filters[] = ["relations", $new_relations];
+		// Filter on search
+		if(!empty($request->get("search")))
+		{
+			$filters["search"] = $request->get("search");
+		}
+
+		// Sorting
+		if(!empty($request->get("sort_by")))
+		{
+			$order = ($request->get("sort_order") == "desc" ? "desc" : "asc");
+			$filters["sort"] = [$request->get("sort_by"), $order];
 		}
 
 		// Load data from database

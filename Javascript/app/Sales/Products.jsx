@@ -16,8 +16,10 @@ var SalesProductsHandler = React.createClass({
 		return (
 			<div>
 				<h2>Produkter</h2>
-				<p>På denna sida ser du en lista på samtliga produkter som finns för försäljning.</p>
-				<Link to="/product/add" className="uk-button uk-button-primary"><i className="uk-icon-plus-circle"></i> Skapa ny produkt</Link>
+
+				<p className="uk-float-left">På denna sida ser du en lista på samtliga produkter som finns för försäljning.</p>
+				<Link to="/product/add" className="uk-button uk-button-primary uk-float-right"><i className="uk-icon-plus-circle"></i> Skapa ny produkt</Link>
+
 				<Products type={ProductCollection}/>
 			</div>
 		);
@@ -54,21 +56,27 @@ var Products = React.createClass({
 		return [
 			{
 				title: "#",
+				sort: "entity_id",
 			},
 			{
 				title: "Namn",
+				sort: "title",
 			},
 			{
 				title: "Giltig till",
+				sort: "expiry_date",
 			},
 			{
 				title: "Prenumeration",
+				sort: "auto_extend",
 			},
 			{
 				title: "Giltighetstid",
+				sort: "interval",
 			},
 			{
 				title: "Pris",
+				sort: "price",
 			},
 			{
 				title: "",

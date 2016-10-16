@@ -172,6 +172,7 @@ button.uk-float-left {
 }
 
 .filterbox {
+	clear: both;
 	border: 1px solid #ccc;
 	border-radius: 8px;
 	padding: 10px;

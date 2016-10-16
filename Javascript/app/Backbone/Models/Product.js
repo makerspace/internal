@@ -9,6 +9,9 @@ var ProductModel = Backbone.Model.fullExtend(
 		updated_at: "0000-00-00T00:00:00Z",
 		title: "",
 		description: "",
+		expiry_date: "",
+		price: 0,
+		interval: "",
 	},
 });
 

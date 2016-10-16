@@ -11,32 +11,91 @@ class Member extends Entity
 	protected $type = "member";
 	protected $join = "member";
 	protected $columns = [
-		"entity.entity_id"        => "entity.entity_id",
-		"entity.created_at"       => "DATE_FORMAT(entity.created_at, '%Y-%m-%dT%H:%i:%sZ') AS created_at",
-		"entity.updated_at"       => "DATE_FORMAT(entity.updated_at, '%Y-%m-%dT%H:%i:%sZ') AS updated_at",
-//		"entity.title"            => "entity.title",
-		"entity.description"      => "entity.description",
-		"member.member_number"    => "member.member_number",
-		"member.email"            => "member.email",
-		"member.password"         => "member.password",
-		"member.reset_token"      => "member.reset_token",
-		"member.reset_expire"     => "member.reset_expire",
-		"member.firstname"        => "member.firstname",
-		"member.lastname"         => "member.lastname",
-		"member.civicregno"       => "member.civicregno",
-		"member.company"          => "member.company",
-		"member.orgno"            => "member.orgno",
-		"member.address_street"   => "member.address_street",
-		"member.address_extra"    => "member.address_extra",
-		"member.address_zipcode"  => "member.address_zipcode",
-		"member.address_city"     => "member.address_city",
-		"member.address_country"  => "member.address_country",
-		"member.phone"            => "member.phone",
+		"entity_id" => [
+			"column" => "entity.entity_id",
+			"select" => "entity.entity_id",
+		],
+		"created_at" => [
+			"column" => "entity.created_at",
+			"select" => "DATE_FORMAT(entity.created_at, '%Y-%m-%dT%H:%i:%sZ')",
+		],
+		"updated_at" => [
+			"column" => "entity.updated_at",
+			"select" => "DATE_FORMAT(entity.updated_at, '%Y-%m-%dT%H:%i:%sZ')",
+		],
+		"description" => [
+			"column" => "entity.description",
+			"select" => "entity.description",
+		],
+		"member_number" => [
+			"column" => "member.member_number",
+			"select" => "member.member_number",
+		],
+		"email" => [
+			"column" => "member.email",
+			"select" => "member.email",
+		],
+		"password" => [
+			"column" => "member.password",
+			"select" => "member.password",
+		],
+		"reset_token" => [
+			"column" => "member.reset_token",
+			"select" => "member.reset_token",
+		],
+		"reset_expire" => [
+			"column" => "member.reset_expire",
+			"select" => "member.reset_expire",
+		],
+		"firstname" => [
+			"column" => "member.firstname",
+			"select" => "member.firstname",
+		],
+		"lastname" => [
+			"column" => "member.lastname",
+			"select" => "member.lastname",
+		],
+		"civicregno" => [
+			"column" => "member.civicregno",
+			"select" => "member.civicregno",
+		],
+		"company" => [
+			"column" => "member.company",
+			"select" => "member.company",
+		],
+		"orgno" => [
+			"column" => "member.orgno",
+			"select" => "member.orgno",
+		],
+		"address_street" => [
+			"column" => "member.address_street",
+			"select" => "member.address_street",
+		],
+		"address_extra" => [
+			"column" => "member.address_extra",
+			"select" => "member.address_extra",
+		],
+		"address_zipcode" => [
+			"column" => "member.address_zipcode",
+			"select" => "member.address_zipcode",
+		],
+		"address_city" => [
+			"column" => "member.address_city",
+			"select" => "member.address_city",
+		],
+		"address_country" => [
+			"column" => "member.address_country",
+			"select" => "member.address_country",
+		],
+		"phone" => [
+			"column" => "member.phone",
+			"select" => "member.phone",
+		],
 	];
-	protected $sort = ["member.member_number", "desc"];
+	protected $sort = ["member_number", "desc"];
 	protected $validation = [
 		"firstname" => ["required"],
-		"email"     => ["required", "unique"],
+//		"email"     => ["required", "unique"],
 	];
 
 	public function _search($query, $search)

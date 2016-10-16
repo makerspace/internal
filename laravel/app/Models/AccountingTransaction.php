@@ -7,40 +7,75 @@ class AccountingTransaction extends Entity
 	protected $type = "accounting_transaction";
 	protected $join = "accounting_transaction";
 	protected $columns = [
-		"entity.entity_id"                              => "entity.entity_id",
-		"entity.created_at"                             => "DATE_FORMAT(entity.created_at, '%Y-%m-%dT%H:%i:%sZ') AS created_at",
-		"entity.updated_at"                             => "DATE_FORMAT(entity.updated_at, '%Y-%m-%dT%H:%i:%sZ') AS updated_at",
-		"entity.title"                                  => "entity.title AS transaction_title",
-		"entity.description"                            => "entity.description AS transaction_description",
-		"accounting_transaction.accounting_instruction" => "accounting_transaction.accounting_instruction",
-		"accounting_transaction.accounting_account"     => "accounting_transaction.accounting_account",
-		"accounting_transaction.accounting_cost_center" => "accounting_transaction.accounting_cost_center",
-		"accounting_transaction.amount"                 => "accounting_transaction.amount",
-		"accounting_transaction.external_id"            => "accounting_transaction.external_id",
+		"entity_id" => [
+			"column" => "entity.entity_id",
+			"select" => "entity.entity_id",
+		],
+		"created_at" => [
+			"column" => "entity.created_at",
+			"select" => "DATE_FORMAT(entity.created_at, '%Y-%m-%dT%H:%i:%sZ')",
+		],
+		"updated_at" => [
+			"column" => "DATE_FORMAT(entity.updated_at, '%Y-%m-%dT%H:%i:%sZ')",
+			"select" => "DATE_FORMAT(entity.updated_at, '%Y-%m-%dT%H:%i:%sZ')",
+		],
+		"transaction_title" => [
+			"column" => "entity.title",
+			"select" => "entity.title",
+		],
+		"transaction_description" => [
+			"column" => "entity.description",
+			"select" => "entity.description",
+		],
+		"accounting_instruction" => [
+			"column" => "accounting_transaction.accounting_instruction",
+			"select" => "accounting_transaction.accounting_instruction",
+		],
+		"accounting_account" => [
+			"column" => "accounting_transaction.accounting_account",
+			"select" => "accounting_transaction.accounting_account",
+		],
+		"accounting_cost_center" => [
+			"column" => "accounting_transaction.accounting_cost_center",
+			"select" => "accounting_transaction.accounting_cost_center",
+		],
+		"amount" => [
+			"column" => "accounting_transaction.amount",
+			"select" => "accounting_transaction.amount",
+		],
+		"external_id" => [
+			"column" => "accounting_transaction.external_id",
+			"select" => "accounting_transaction.external_id",
+		],
+		"instruction_title" => [
+			"column" => "ie.title",
+			"select" => "ie.title",
+		],
+		"instruction_number" => [
+			"column" => "accounting_instruction.instruction_number",
+			"select" => "accounting_instruction.instruction_number",
+		],
+		"accounting_date" => [
+			"column" => "accounting_instruction.accounting_date",
+			"select" => "accounting_instruction.accounting_date",
+		],
+		"extid" => [
+			"column" => "accounting_instruction.external_id",
+			"select" => "accounting_instruction.external_id",
+		],
 	];
+	protected $sort = ["accounting_date", "desc"];
 
 	/**
 	 *
 	 */
 	public function _list($filters = [])
 	{
+		// Preprocessing (join or type and sorting)
+		$this->_preprocessFilters($filters);
+
 		// Build base query
-		$this->columns[] = "ie.title AS instruction_title";
-		$this->columns[] = "accounting_instruction.instruction_number";
-//		$this->columns[] = "12356 AS balance";
-//		$this->columns[] = "accounting_account.account_number";
-//		$this->columns[] = "ae.title AS account_name";
-		$this->columns[] = "accounting_instruction.accounting_date";
-
-		$this->columns[] = "accounting_instruction.external_id AS extid";
-
-
-
-
-
-
 		$query = $this->_buildLoadQuery();
-
 
 		// Go through filters
 		foreach($filters as $filter)
@@ -61,21 +96,16 @@ class AccountingTransaction extends Entity
 			}
 		}
 
-
+		// Apply standard filters like entity_id, relations, etc
 		$query = $this->_applyFilter($query, $filters);
-
-
 
 		// Load the instruction
 		$query = $query
 			->leftJoin("accounting_instruction", "accounting_instruction.entity_id", "=", "accounting_transaction.accounting_instruction")
 			->leftJoin("entity AS ie", "ie.entity_id", "=", "accounting_instruction.entity_id");
 
-
-		// Sort by accounting date
-		// TODO: This should not be used, sorting should be done via instruction number
-//		$query = $query->orderBy("accounting_instruction.accounting_date", "asc");
-
+		// Sort
+		$query = $this->_applySorting($query);
 
 		// Paginate
 		if($this->pagination != null)
@@ -89,12 +119,6 @@ class AccountingTransaction extends Entity
 		$balance = 0;
 		foreach($result as $row)
 		{
-/*
-			if(empty($row->instruction_number))
-			{
-				$row->instruction_number = "entity:".$row->entity_id;
-			}
-*/
 			if(!empty($row->extid))
 			{
 				$dir = "/var/www/html/vouchers/{$row->extid}";
@@ -126,20 +150,3 @@ class AccountingTransaction extends Entity
 		return $result;
 	}
 }
-
-/*
-		// Load the accounting instructions
-		$data->instructions = DB::table("accounting_instruction")
-			->leftJoin("accounting_transaction", "accounting_instruction.id", "=", "accounting_transaction.accounting_instruction_id")
-			->groupBy("accounting_instruction.id")
-			->where("accounting_transaction.amount", ">", 0)
-			->select(
-				"accounting_instruction.id",
-				"accounting_instruction.accounting_date",
-				"accounting_instruction.verification_number",
-				"accounting_instruction.title",
-				"accounting_instruction.description",
-				DB::raw("SUM(accounting_transaction.amount) AS amount")
-			)
-			->get();
-			*/

@@ -8,58 +8,20 @@ use Illuminate\Http\Response;
 use App\Models\Member as MemberModel;
 
 use App\Traits\Pagination;
+use App\Traits\EntityStandardFiltering;
+
+use DB;
 
 class Member extends Controller
 {
-	use Pagination;
+	use Pagination, EntityStandardFiltering;
 
 	/**
 	 *
 	 */
 	function list(Request $request)
 	{
-		// Paging filter
-		$filters = [
-			["per_page", $this->per_page($request)],
-		];
-
-		// Filter on relations
-		$relations = $request->get("relations");
-		if($relations)
-		{
-			$new_relations = [];
-			foreach($relations as $relation)
-			{
-				$relation_filters = [];
-				foreach($relation as $key => $value)
-				{
-					$relation_filters[] = [$key, $value];
-				}
-				$new_relations[] = $relation_filters;
-			}
-
-			$filters[] = ["relations", $new_relations];
-		}
-
-		// Filter on search
-		if(!empty($request->get("search")))
-		{
-			$filters[] = ["search", $request->get("search")];
-		}
-
-		// Sorting
-		if(!empty($request->get("sort_by")))
-		{
-			$order = ($request->get("sort_order") == "desc" ? "desc" : "asc");
-
-			$filters[] = ["sort", [$request->get("sort_by"), $order]];
-		}
-		
-		// Load data from database
-		$result = MemberModel::list($filters);
-
-		// Return json array
-		return $result;
+		return $this->_applyStandardFilters("Member", $request);
 	}
 
 	/**
@@ -77,7 +39,18 @@ class Member extends Controller
 		}
 		else
 		{
-			$member_number = uniqid();
+			$newest_member = MemberModel::load([
+				["sort", ["member_number", "desc"]]
+			]);
+
+			if(empty($newest_member))
+			{
+				$member_number = 1;
+			}
+			else
+			{
+				$member_number = ($newest_member->member_number + 1);
+			}
 		}
 
 		// Create new member
@@ -96,6 +69,12 @@ class Member extends Controller
 		$entity->address_city    = $json["address_city"]    ?? null;
 		$entity->address_country = $json["address_country"] ?? "SE";
 		$entity->phone           = $json["phone"]           ?? null;
+
+		// Add relations
+		if(!empty($json["relations"]))
+		{
+			$entity->addRelations($json["relations"]);
+		}
 
 		// Validate input
 		$entity->validate();
@@ -117,7 +96,7 @@ class Member extends Controller
 	{
 		// Load the entity
 		$entity = MemberModel::load([
-			["member_number", "=", $member_number]
+			"member_number" => $member_number
 		]);
 
 		// Generate an error if there is no such member
@@ -187,7 +166,10 @@ class Member extends Controller
 	 */
 	function delete(Request $request, $member_number)
 	{
-		$entity = $this->read($request, $member_number);
+		// Load the entity
+		$entity = MemberModel::load([
+			["member_number", "=", $member_number]
+		]);
 
 		if($entity->delete())
 		{

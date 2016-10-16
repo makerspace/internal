@@ -9,23 +9,18 @@ use App\Models\Product as ProductModel;
 use App\Models\Entity;
 
 use App\Traits\Pagination;
+use App\Traits\EntityStandardFiltering;
 
 class Product extends Controller
 {
-	use Pagination;
+	use Pagination, EntityStandardFiltering;
 
 	/**
 	 *
 	 */
 	function list(Request $request)
 	{
-		// Load data from datbase
-		$result = ProductModel::list([
-			["per_page", $this->per_page($request)],
-		]);
-
-		// Return json array
-		return $result;
+		return $this->_applyStandardFilters("Product", $request);
 	}
 
 	/**
@@ -39,6 +34,10 @@ class Product extends Controller
 		$entity = new ProductModel;
 		$entity->title       = $json["title"]       ?? null;
 		$entity->description = $json["description"] ?? null;
+		$entity->expiry_date = $json["expiry_date"] ?? null;
+		$entity->price       = $json["price"]       ?? null;
+		$entity->auto_extend = $json["auto_extend"] ?? null;
+		$entity->interval    = $json["interval"]    ?? null;
 
 		// Validate input
 		$entity->validate();

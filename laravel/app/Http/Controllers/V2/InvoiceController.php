@@ -60,7 +60,10 @@ class InvoiceController extends Controller
 			// If a invoice number is specified we need to check that it is not in conflict with an existing one
 			if($this->_invoiceNumberIsExisting($json["invoice_number"]))
 			{
-				return ["error" => "The specified invoice number does already exist"];
+				return Response()->json([
+					"error" => "The specified invoice number does already exist",
+					"entity" => $entity->toArray(),
+				], 409);
 			}
 			else
 			{

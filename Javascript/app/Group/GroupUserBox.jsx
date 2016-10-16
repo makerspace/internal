@@ -57,19 +57,19 @@ var GroupUserBox = React.createClass(
 		}
 
 		$.ajax({
-			method: "POST",
-			url: config.apiBasePath + "/member/search",
-			data: JSON.stringify({
-				q: input,
-			}),
+			method: "GET",
+			url: config.apiBasePath + "/group",
+			data: {
+				search: input,
+			},
 		}).done(function(data) {
 			setTimeout(function() {
 				var autoComplete = [];
 
 				data.data.forEach(function(element, index, array){
 					autoComplete.push({
-						label: element.firstname + " " + element.lastname + " (#" + element.member_number + ")",
-						value: element.member_number,
+						label: element.title + ": " + element.description,
+						value: element.entity_id,
 					});
 				});
 
@@ -84,11 +84,41 @@ var GroupUserBox = React.createClass(
 	// Send an API request and queue the message to be sent
 	send: function(event)
 	{
+		var _this = this;
+
 		// Prevent the form from being submitted
 		event.preventDefault();
 
-		var groups = this.state.addGroups;
-		UIkit.modal.alert("TODO: Add to groups: " + groups);
+		// Create a list of entity_id's that should relate to this entity
+		var entity2 = [];
+		this.state.addGroups.forEach(function(element, index, array) {
+			entity2.push(element.value);
+		});
+
+		// Send API request
+		$.ajax({
+			method: "POST",
+			url: config.apiBasePath + "/relation",
+			data: JSON.stringify({
+				entity1: [{
+					relations:
+						[
+							{
+								type: "member",
+								member_number: this.props.member_number,
+							}
+						],
+					}],
+				entity2: entity2,
+			}),
+		}).done(function (){
+/*
+			_this.setState({
+				showEditForm: false,
+				addGroups: "",
+			});
+*/
+		});
 	},
 
 	gotoGroup: function(value, event)

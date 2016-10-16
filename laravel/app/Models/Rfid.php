@@ -12,14 +12,38 @@ class Rfid extends Entity
 	protected $type = "rfid";
 	protected $join = "rfid";
 	protected $columns = [
-		"entity.entity_id"   => "entity.entity_id",
-		"entity.created_at"  => "DATE_FORMAT(entity.created_at, '%Y-%m-%dT%H:%i:%sZ') AS created_at",
-		"entity.updated_at"  => "DATE_FORMAT(entity.updated_at, '%Y-%m-%dT%H:%i:%sZ') AS updated_at",
-		"entity.description" => "entity.description",
-		"rfid.tagid"         => "rfid.tagid",
-		"rfid.status"        => "rfid.status",
-		"rfid.startdate"     => "DATE_FORMAT(rfid.startdate, '%Y-%m-%dT%H:%i:%sZ') AS startdate",
-		"rfid.enddate"       => "DATE_FORMAT(rfid.enddate, '%Y-%m-%dT%H:%i:%sZ') AS enddate",
+		"entity_id" => [
+			"column" => "entity.entity_id",
+			"select" => "entity.entity_id",
+		],
+		"created_at" => [
+			"column" => "entity.created_at",
+			"select" => "DATE_FORMAT(entity.created_at, '%Y-%m-%dT%H:%i:%sZ')",
+		],
+		"updated_at" => [
+			"column" => "entity.updated_at",
+			"select" => "DATE_FORMAT(entity.updated_at, '%Y-%m-%dT%H:%i:%sZ')",
+		],
+		"description" => [
+			"column" => "entity.description",
+			"select" => "entity.description",
+		],
+		"tagid" => [
+			"column" => "rfid.tagid",
+			"select" => "rfid.tagid",
+		],
+		"status" => [
+			"column" => "rfid.status",
+			"select" => "rfid.status",
+		],
+		"startdate" => [
+			"column" => "rfid.startdate",
+			"select" => "DATE_FORMAT(rfid.startdate, '%Y-%m-%dT%H:%i:%sZ')",
+		],
+		"enddate" => [
+			"column" => "rfid.enddate",
+			"select" => "DATE_FORMAT(rfid.enddate, '%Y-%m-%dT%H:%i:%sZ')",
+		],
 	];
 	protected $sort = ["created_at", "desc"];
 	protected $validation = [

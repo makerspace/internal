@@ -37,14 +37,9 @@ var MembersHandler = React.createClass({
 		return (
 			<div>
 				<h2>Medlemmar</h2>
-				<div className="uk-grid">
-					<div className="uk-width-1-2">
-						<p>På denna sida ser du en lista på samtliga medlemmar.</p>
-					</div>
-					<div className="uk-width-1-2">
-						<Link to="/members/add" className="uk-button uk-button-primary uk-float-right"><i className="uk-icon-plus-circle"></i> Skapa ny medlem</Link>
-					</div>
-				</div>
+
+				<p className="uk-float-left">På denna sida ser du en lista på samtliga medlemmar.</p>
+				<Link to="/members/add" className="uk-button uk-button-primary uk-float-right"><i className="uk-icon-plus-circle"></i> Skapa ny medlem</Link>
 
 				<TableFilterBox onChange={this.updateFilters} />
 				<Members type={MemberCollection} filters={this.state.filters} />

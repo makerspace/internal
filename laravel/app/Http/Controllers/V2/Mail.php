@@ -10,50 +10,18 @@ use App\Models\Member as MemberModel;
 use App\Models\Entity;
 
 use App\Traits\Pagination;
+use App\Traits\EntityStandardFiltering;
 
 class Mail extends Controller
 {
-	use Pagination;
+	use Pagination, EntityStandardFiltering;
 
 	/**
 	 *
 	 */
 	function list(Request $request)
 	{
-		// Paging filter
-		$filters = [
-			["per_page", $this->per_page($request)],
-		];
-
-		// Filter on relations
-		$relations = $request->get("relations");
-		if($relations)
-		{
-			$new_relations = [];
-			foreach($relations as $relation)
-			{
-				$relation_filters = [];
-				foreach($relation as $key => $value)
-				{
-					$relation_filters[] = [$key, $value];
-				}
-				$new_relations[] = $relation_filters;
-			}
-
-			$filters[] = ["relations", $new_relations];
-		}
-
-		// Filter on search
-		if(!empty($request->get("search")))
-		{
-			$filters[] = ["search", $request->get("search")];
-		}
-		
-		// Load data from database
-		$result = MailModel::list($filters);
-
-		// Return json array
-		return $result;
+		return $this->_applyStandardFilters("Mail", $request);
 	}
 
 	/**
@@ -76,7 +44,7 @@ class Mail extends Controller
 			// TODO: Use entity_id instead of member_number
 			$x = MemberModel::Load(
 				[
-					["member_number", "=", $recipient["value"]]
+					"member_number" => ["=", $recipient["value"]]
 				]
 			);
 

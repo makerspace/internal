@@ -9,60 +9,20 @@ use App\Models\Entity;
 use App\Models\Rfid as RfidModel;
 
 use App\Traits\Pagination;
+use App\Traits\EntityStandardFiltering;
 
 use DB;
 
 class Rfid extends Controller
 {
-	use Pagination;
+	use Pagination, EntityStandardFiltering;
 
 	/**
 	 *
 	 */
 	function list(Request $request)
 	{
-		// Paging filter
-		$filters = [
-			["per_page", $this->per_page($request)],
-		];
-
-		// Filter on relations
-		$relations = $request->get("relations");
-		if($relations)
-		{
-			$new_relations = [];
-			foreach($relations as $relation)
-			{
-				$relation_filters = [];
-				foreach($relation as $key => $value)
-				{
-					$relation_filters[] = [$key, $value];
-				}
-				$new_relations[] = $relation_filters;
-			}
-
-			$filters[] = ["relations", $new_relations];
-		}
-
-		// Filter on search
-		if(!empty($request->get("search")))
-		{
-			$filters[] = ["search", $request->get("search")];
-		}
-
-		// Sorting
-		if(!empty($request->get("sort_by")))
-		{
-			$order = ($request->get("sort_order") == "desc" ? "desc" : "asc");
-
-			$filters[] = ["sort", [$request->get("sort_by"), $order]];
-		}
-
-		// Load data from database
-		$result = RfidModel::list($filters);
-
-		// Return json array
-		return $result;
+		return $this->_applyStandardFilters("Rfid", $request);
 	}
 
 	/**

@@ -12,21 +12,45 @@ class AccountingAccount extends Entity
 	protected $type = "accounting_account";
 	protected $join = "accounting_account";
 	protected $columns = [
-		"entity.entity_id"                     => "entity.entity_id",
-		"entity.created_at"                    => "DATE_FORMAT(entity.created_at, '%Y-%m-%dT%H:%i:%sZ') AS created_at",
-		"entity.updated_at"                    => "DATE_FORMAT(entity.updated_at, '%Y-%m-%dT%H:%i:%sZ') AS updated_at",
-		"entity.title"                         => "entity.title",
-		"entity.description"                   => "entity.description",
-		"accounting_account.account_number"    => "accounting_account.account_number",
-		"accounting_account.accounting_period" => "accounting_account.accounting_period",
+		"entity_id" => [
+			"column" => "entity.entity_id",
+			"select" => "entity.entity_id",
+		],
+		"created_at" => [
+			"column" => "entity.created_at",
+			"select" => "DATE_FORMAT(entity.created_at, '%Y-%m-%dT%H:%i:%sZ')",
+		],
+		"updated_at" => [
+			"column" => "entity.updated_at",
+			"select" => "DATE_FORMAT(entity.updated_at, '%Y-%m-%dT%H:%i:%sZ')",
+		],
+		"title" => [
+			"column" => "entity.title",
+			"select" => "entity.title",
+		],
+		"description" => [
+			"column" => "entity.description",
+			"select" => "entity.description",
+		],
+		"account_number" => [
+			"column" => "accounting_account.account_number",
+			"select" => "accounting_account.account_number",
+		],
+		"accounting_period" => [
+			"column" => "accounting_account.accounting_period",
+			"select" => "accounting_account.accounting_period",
+		],
 	];
-	protected $sort = ["accounting_account.account_number", "asc"];
+	protected $sort = ["account_number", "asc"];
 
 	/**
 	 *
 	 */
 	public function _list($filters = [])
 	{
+		// Preprocessing (join or type and sorting)
+		$this->_preprocessFilters($filters);
+
 		// Build base query
 		$query = $this->_buildLoadQuery();
 
@@ -36,37 +60,50 @@ class AccountingAccount extends Entity
 			->selectRaw("COALESCE(SUM(amount), 0) AS balance");
 
 		// Go through filters
-		foreach($filters as $filter)
+		foreach($filters as $id => $filter)
 		{
 			// Filter on accounting period
-			if("accountingperiod" == $filter[0])
+			if("accountingperiod" == $id)
 			{
 				$query = $query
 					->leftJoin("accounting_period", "accounting_period.entity_id", "=", "accounting_account.accounting_period")
-					->where("accounting_period.name", $filter[1], $filter[2]);
+					->where("accounting_period.name", $filter[0], $filter[1]);
+				unset($filters[$id]);
 			}
 			// Filter on account balance
-			else if("balance" == $filter[0])
+			else if("balance" == $id)
 			{
-				$query = $query->having("balance", $filter[1], $filter[2]);
+				$query = $query->having("balance", $filter[0], $filter[1]);
+				unset($filters[$id]);
 			}
 			// Filter on number of transactions
-			else if("transactions" == $filter[0])
+			else if("transactions" == $id)
 			{
 				$query = $query->selectRaw("COUNT(accounting_transaction.entity_id) AS num_transactions");
-				$query = $query->having("num_transactions", $filter[1], $filter[2]);
+				$query = $query->having("num_transactions", $filter[0], $filter[1]);
+				unset($filters[$id]);
 			}
+/*
 			// Filter on account_number
-			else if("account_number" == $filter[0])
+			else if("account_number" == $id)
 			{
-				$query = $query->where("accounting_account.account_number", $filter[1], $filter[2]);
+				$query = $query->where("accounting_account.account_number", $filter[0], $filter[1]);
+				unset($filters[$id]);
 			}
+*/
 			// Pagination
-			else if("per_page" == $filter[0])
+			else if("per_page" == $id)
 			{
-				$this->pagination = $filter[1];
+				$this->pagination = $filter;
+				unset($filters[$id]);
 			}
 		}
+
+		// Apply standard filters like entity_id, relations, etc
+		$query = $this->_applyFilter($query, $filters);
+
+		// Sort
+		$query = $this->_applySorting($query);
 
 		// Paginate
 		if($this->pagination != null)
@@ -175,6 +212,9 @@ class AccountingAccount extends Entity
 				$query = $query->where("accounting_account.account_number", $filter[1], $filter[2]);
 			}
 		}
+
+		// Apply standard filters like entity_id, relations, etc
+		$query = $this->_applyFilter($query, $filters);
 
 		// Calculate sum of transactions
 		$query = $query

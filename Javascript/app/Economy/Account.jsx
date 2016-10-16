@@ -21,7 +21,16 @@ var EconomyAccountsHandler = React.createClass({
 		return (
 			<div>
 				<h2>Konton</h2>
-				<Link to={"/economy/account/add"} className="uk-button uk-button-primary"><i className="uk-icon-plus-circle"></i> Skapa nytt konto</Link>
+
+				<div className="uk-grid">
+					<div className="uk-width-2-3">
+						<p>På denna sida ser du en lista över samtliga bokföringskonton, även de som inte har några bokförda verifikationer.</p>
+					</div>
+					<div className="uk-width-1-3">
+						<Link to={"/economy/account/add"} className="uk-button uk-button-primary uk-float-right"><i className="uk-icon-plus-circle"></i> Skapa nytt konto</Link>
+					</div>
+				</div>
+
 				<EconomyAccounts type={AccountCollection} />
 			</div>
 		);
@@ -131,12 +140,15 @@ var EconomyAccounts = React.createClass({
 		return [
 			{
 				title: "#",
+				sort: "account_number",
 			},
 			{
 				title: "Konto",
+				sort: "title",
 			},
 			{
 				title: "Beskrivning",
+				sort: "description",
 			},
 			{
 				title: "",

@@ -96,6 +96,9 @@ var EconomyAccountingInstructionList = React.createClass({
 			{
 				title: "",
 			},
+			{
+				title: "",
+			},
 		];
 	},
 

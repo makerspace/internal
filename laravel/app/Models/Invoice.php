@@ -12,20 +12,62 @@ class Invoice extends Entity
 	protected $type = "invoice";
 	protected $join = "invoice";
 	protected $columns = [
-		"entity.entity_id"          => "entity.entity_id",
-		"entity.created_at"         => "DATE_FORMAT(entity.created_at, '%Y-%m-%dT%H:%i:%sZ') AS created_at",
-		"entity.updated_at"         => "DATE_FORMAT(entity.updated_at, '%Y-%m-%dT%H:%i:%sZ') AS updated_at",
-		"entity.title"              => "entity.title",
-		"entity.description"        => "entity.description",
-		"invoice.invoice_number"    => "invoice.invoice_number",
-		"invoice.date_invoice"      => "invoice.date_invoice",
-		"invoice.conditions"        => "invoice.conditions",
-		"invoice.our_reference"     => "invoice.our_reference",
-		"invoice.your_reference"    => "invoice.your_reference",
-		"invoice.address"           => "invoice.address",
-		"invoice.status"            => "invoice.status",
-		"invoice.currency"          => "invoice.currency",
-		"invoice.accounting_period" => "invoice.accounting_period",
+		"entity_id" => [
+			"column" => "entity.entity_id",
+			"select" => "entity.entity_id",
+		],
+		"created_at" => [
+			"column" => "entity.created_at",
+			"select" => "DATE_FORMAT(entity.created_at, '%Y-%m-%dT%H:%i:%sZ')",
+		],
+		"updated_at" => [
+			"column" => "entity.updated_at",
+			"select" => "DATE_FORMAT(entity.updated_at, '%Y-%m-%dT%H:%i:%sZ')",
+		],
+		"title" => [
+			"column" => "entity.title",
+			"select" => "entity.title",
+		],
+		"description" => [
+			"column" => "entity.description",
+			"select" => "entity.description",
+		],
+		"invoice_number" => [
+			"column" => "invoice.invoice_number",
+			"select" => "invoice.invoice_number",
+		],
+		"date_invoice" => [
+			"column" => "invoice.date_invoice",
+			"select" => "invoice.date_invoice",
+		],
+		"conditions" => [
+			"column" => "invoice.conditions",
+			"select" => "invoice.conditions",
+		],
+		"our_reference" => [
+			"column" => "invoice.our_reference",
+			"select" => "invoice.our_reference",
+		],
+		"your_reference" => [
+			"column" => "invoice.your_reference",
+			"select" => "invoice.your_reference",
+		],
+		"address" => [
+			"column" => "invoice.address",
+			"select" => "invoice.address",
+		],
+		"status" => [
+			"column" => "invoice.status",
+			"select" => "invoice.status",
+		],
+		"currency" => [
+			"column" => "invoice.currency",
+			"select" => "invoice.currency",
+		],
+		"accounting_period" => [
+			"column" => "invoice.accounting_period",
+			"select" => "invoice.accounting_period",
+		],
 	];
 	protected $sort = ["invoice_number", "desc"];
 
@@ -34,10 +76,14 @@ class Invoice extends Entity
 	 */
 	public function _list($filters = [])
 	{
+		// Preprocessing (join or type and sorting)
+		$this->_preprocessFilters($filters);
+
 		// Build base query
 		$query = $this->_buildLoadQuery()
 
-			// Calculate total of invoice
+		// Calculate total of invoice
+		$query = $query
 			->leftJoin("invoice_post", "invoice_post.entity_id", "=", "entity.entity_id")
 			->groupBy("entity.entity_id")
 			->selectRaw("SUM(price * amount) as _total");
@@ -58,6 +104,12 @@ class Invoice extends Entity
 				$this->pagination = $filter[1];
 			}
 		}
+
+		// Apply standard filters like entity_id, relations, etc
+		$query = $this->_applyFilter($query, $filters);
+
+		// Sort
+		$query = $this->_applySorting($query);
 
 		// Paginate
 		if($this->pagination != null)

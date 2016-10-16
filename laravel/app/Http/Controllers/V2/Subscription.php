@@ -8,20 +8,18 @@ use Illuminate\Http\Response;
 use App\Models\Subscription as SubscriptionModel;
 
 use App\Traits\Pagination;
+use App\Traits\EntityStandardFiltering;
 
 class Subscription extends Controller
 {
-	use Pagination;
+	use Pagination, EntityStandardFiltering;
 
 	/**
 	 *
 	 */
 	function list(Request $request)
 	{
-		// Load data from datbase
-		$result = SubscriptionModel::list([
-			["per_page", $this->per_page($request)],
-		]);
+		return $this->_applyStandardFilters("Subscription", $request);
 
 		// Return json array
 		return $result;

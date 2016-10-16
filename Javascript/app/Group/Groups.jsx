@@ -8,23 +8,42 @@ import { Link } from 'react-router'
 import BackboneTable from '../BackboneTable'
 import TableDropdownMenu from '../TableDropdownMenu'
 
+import TableFilterBox from '../TableFilterBox'
+
 var GroupsHandler = React.createClass({
+	getInitialState: function()
+	{
+		return {
+			filters: {},
+		};
+	},
+
+	// TODO: Remove?
+	overrideFiltersFromProps: function(filters)
+	{
+		console.log("overrideFiltersFromProps");
+		return filters;
+	},
+
+	updateFilters: function(newFilter)
+	{
+		var filters = this.overrideFiltersFromProps(newFilter);
+		this.setState({
+			filters: filters
+		});
+	},
+
 	render: function()
 	{
 		return (
 			<div>
 				<h2>Grupper</h2>
 
-				<div className="uk-grid">
-					<div className="uk-width-1-2">
-						<p>På denna sida ser du en lista på samtliga grupper.</p>
-					</div>
-					<div className="uk-width-1-2">
-						<Link className="uk-button uk-button-primary uk-float-right" to="/groups/add"><i className="uk-icon-plus-circle"></i> Skapa ny grupp</Link>
-					</div>
-				</div>
+				<p className="uk-float-left">På denna sida ser du en lista på samtliga grupper.</p>
+				<Link className="uk-button uk-button-primary uk-float-right" to="/groups/add"><i className="uk-icon-plus-circle"></i> Skapa ny grupp</Link>
 
-				<Groups type={GroupCollection} />
+				<TableFilterBox onChange={this.updateFilters} />
+				<Groups type={GroupCollection} filters={this.state.filters} />
 			</div>
 		);
 	},
@@ -77,12 +96,15 @@ var Groups = React.createClass({
 		return [
 			{
 				title: "Namn",
+				sort: "title",
 			},
 			{
 				title: "Beskrivning",
+				sort: "description",
 			},
 			{
 				title: "Antal medlemmar",
+				sort: "membercount",
 			},
 			{
 				title: "",
@@ -96,7 +118,7 @@ var Groups = React.createClass({
 			<tr key={i}>
 				<td><Link to={"/groups/" + row.entity_id}>{row.title}</Link></td>
 				<td><Link to={"/groups/" + row.entity_id}>{row.description}</Link></td>
-				<td>5</td>
+				<td>{row.membercount}</td>
 				<td>
 					<TableDropdownMenu>
 						<Link to={"/groups/" + row.entity_id + "/edit"}><i className="uk-icon uk-icon-cog"></i> Redigera grupp</Link>

@@ -8,22 +8,40 @@ use DB;
  */
 class Entity
 {
-	public $entity_id = null;   // The database unique id for the entity
-	protected $sort = null;     // An array with sorting options eg. ["entity_id", "desc"] or [["date_updated", "asc"],["date_created","desc"]]
-	protected $type = null;     // The type of the entity, eg. "member"
-	protected $validation = []; // Validation rules
-	protected $join = null;     // Specify the relation table we should join, if any
-	protected $columns = [
-		"entity.type"        => "entity.type",
-		"entity.entity_id"   => "entity.entity_id",
-		"entity.created_at"  => "DATE_FORMAT(entity.created_at, '%Y-%m-%dT%H:%i:%sZ') AS created_at",
-		"entity.updated_at"  => "DATE_FORMAT(entity.updated_at, '%Y-%m-%dT%H:%i:%sZ') AS updated_at",
-		"entity.title"       => "entity.title",
-		"entity.description" => "entity.description",
-	];
+	public $entity_id = null;     // The database unique id for the entity
 	protected $data = [];         // Holds the data of the object
 	protected $pagination = null; // No pagination by default
 	protected $relations = [];    // An array with information about relations to other entities
+	protected $type = null;       // The type of the entity, eg. "member"
+	protected $join = null;       // Specify the relation table we should join, if any
+	protected $columns = [
+		"type" => [
+			"column" => "entity.type",
+			"select" => "entity.type",
+		],
+		"entity_id" => [
+			"column" => "entity.entity_id",
+			"select" => "entity.entity_id",
+		],
+		"created_at" => [
+			"column" => "entity.created_at",
+			"select" => "DATE_FORMAT(entity.created_at, '%Y-%m-%dT%H:%i:%sZ')",
+		],
+		"updated_at" => [
+			"column" => "entity.updated_at",
+			"select" => "DATE_FORMAT(entity.updated_at, '%Y-%m-%dT%H:%i:%sZ')",
+		],
+		"title" => [
+			"column" => "entity.title",
+			"select" => "entity.title",
+		],
+		"description" => [
+			"column" => "entity.description",
+			"select" => "entity.description",
+		],
+	];
+	protected $sort = ["created_at", "desc"]; // An array with sorting options eg. ["entity_id", "desc"] or [["date_updated", "asc"],["date_created","desc"]]
+	protected $validation = [];               // Validation rules
 
 	/**
 	 * Constructor
@@ -44,23 +62,22 @@ class Entity
 		{
 			foreach($filters as $id => $filter)
 			{
-				if($filter[0] == "type")
+				if($id == "type")
 				{
-					$type = $filter[1];
-					$this->type = $type;
+					$this->type = $filter;
 					// TODO: Should not be a hardcoded list
-					if(in_array($type, ["accounting_transaction", "accounting_period", "accounting_instruction", "accounting_account", "member", "mail", "product", "rfid", "subscription", "invoice"]))
+					if(in_array($this->type, ["accounting_transaction", "accounting_period", "accounting_instruction", "accounting_account", "member", "mail", "product", "rfid", "subscription", "invoice"]))
 					{
-						$this->join = $type;
+						$this->join = $this->type;
 					}
 
 					// Remove the filter to prevent further processing
 					unset($filters[$id]);
 				}
 				// Sorting
-				else if("sort" == $filter[0])
+				else if("sort" == $id)
 				{
-					$this->sort = $filter[1];
+					$this->sort = $filter;
 					unset($filters[$id]);
 				}
 			}
@@ -88,39 +105,24 @@ class Entity
 		}
 
 		// Get columns
-		foreach($this->columns as $column)
+		foreach($this->columns as $name => $column)
 		{
-			$query = $query->selectRaw($column);
+			$query = $query->selectRaw("{$column["select"]} AS `{$name}`");
 		}
 
 		// Show deleted entities or not?
 		if($show_deleted === true)
 		{
 			// Include the deleted_at column in output only when we show deleted content
-			$this->columns["entity.deleted_at"] = "entity.deleted_at";
+			$this->columns["deleted_at"] = [
+				"column" => "entity.deleted_at",
+				"select" => "entity.deleted_at",
+			];
 		}
 		else
 		{
 			// The deleted_at should be null, which means it is not yet deleted
 			$query = $query->whereNull("entity.deleted_at");
-		}
-
-		// Sort result
-		if($this->sort !== null)
-		{
-			// Sort on multiple columns
-			if(is_array($this->sort[0]))
-			{
-				foreach($this->sort as $s)
-				{
-					$query = $query->orderBy($s[0], $s[1]);
-				}
-			}
-			// Sort on single column
-			else
-			{
-				$query = $query->orderBy($this->sort[0], $this->sort[1]);
-			}
 		}
 
 		// Return the query
@@ -145,28 +147,34 @@ class Entity
 			foreach($filters as $id => $filter)
 			{
 				// Pagination
-				if("per_page" == $filter[0])
+				if("per_page" == $id)
 				{
-					$this->pagination = $filter[1];
+					$this->pagination = $filter;
 					unset($filters[$id]);
 				}
 				// Search filter
-				else if("search" == $filter[0])
+				else if("search" == $id)
 				{
 					// Check if there is a search function in the model
 					if(method_exists($this, "_search"))
 					{
-						$this->_search($query, $filter[1]);
+						$this->_search($query, $filter);
 					}
 					unset($filters[$id]);
 				}
 				// Relations
-				else if("relations" == $filter[0])
+				else if("relations" == $id)
 				{
-					foreach($filter[1] as $relation)
+					foreach($filter as $relation)
 					{
 						// Load the related entity and get it's entity_id
 						$entity = Entity::Load($relation);
+						if(empty($entity))
+						{
+							throw new \Exception("Could not find entity: ".json_encode($relation));
+							return false;
+						}
+
 						$entity_id = $entity->entity_id;
 
 						// Get all relation to this entity
@@ -188,16 +196,39 @@ class Entity
 				// Filter on arbritrary columns
 				else
 				{
-					if(count($filter) == 2)
+					if(!is_array($filter))
 					{
-						$query = $query->where($filter[0], "=", $filter[1]);
+						$query = $query->where($id, "=", $filter);
 					}
 					else
 					{
-						$query = $query->where($filter[0], $filter[1], $filter[2]);
+						$query = $query->where($id, $filter[0], $filter[1]);
 					}
 					unset($filters[$id]);
 				}
+			}
+		}
+
+		return $query;
+	}
+
+	public function _applySorting($query)
+	{
+		// Sort result
+		if($this->sort !== null)
+		{
+			// Sort on multiple columns
+			if(is_array($this->sort[0]))
+			{
+				foreach($this->sort as $s)
+				{
+					$query = $query->orderBy($this->columns[$s[0]]["column"], $s[1]);
+				}
+			}
+			// Sort on single column
+			else
+			{
+				$query = $query->orderBy($this->columns[$this->sort[0]]["column"], $this->sort[1]);
 			}
 		}
 
@@ -227,6 +258,9 @@ class Entity
 
 		// Apply standard filters like entity_id, relations, etc
 		$query = $this->_applyFilter($query, $filters);
+
+		// Sort
+		$query = $this->_applySorting($query);
 
 		// Paginate
 		if($this->pagination != null)
@@ -354,15 +388,8 @@ class Entity
 			return $relation;
 		}
 
-		// Build a filter used for loading the entity
-		$parameters = [];
-		foreach($relation as $key => $value)
-		{
-			$parameters[] = [$key, $value];
-		}
-
 		// Load the specified entity
-		$entity2 = Entity::load($parameters);
+		$entity2 = Entity::load($relation);
 
 		// Bail out on error
 		if(empty($entity2))
@@ -396,7 +423,10 @@ class Entity
 	 */
 	public function addRelation($relation)
 	{
-		$entity_id = $this->_loadRelation($relation);
+		if(!($entity_id = $this->_loadRelation($relation)))
+		{
+			return false;
+		}
 
 		// Make sure we don't get any duplicates in the relations
 		if(!array_key_exists($entity_id, $this->relations))
@@ -425,7 +455,10 @@ class Entity
 	 */
 	public function removeRelation($relation)
 	{
-		$entity_id = $this->_loadRelation($relation);
+		if(!($entity_id = $this->_loadRelation($relation)))
+		{
+			return false;
+		}
 
 		// Make sure the relation does exist
 		if(!array_key_exists($entity_id, $this->relations))
@@ -445,9 +478,9 @@ class Entity
 	{
 		// Get the data to insert into the relation table
 		$inserts = [];
-		foreach($this->columns as $name => $query)
+		foreach($this->columns as $name => $data)
 		{
-			list($table, $column) = explode(".", $name);
+			list($table, $column) = explode(".", $data["column"]);
 			if($table == $this->join && array_key_exists($column, $this->data))
 			{
 				$inserts[$column] = $this->data[$column];
@@ -634,8 +667,8 @@ class Entity
 				{
 					// Check if there is anything in the database
 					$result = Entity::load([
-						["type", $this->join],
-						[$field, $this->data[$field]]
+						"type" => $this->join,
+						$field => $this->data[$field]
 					]);
 
 					// A unique value collision is not fatal if it is from the same entity thas is being validated (itself)... or else we could not save an entity
