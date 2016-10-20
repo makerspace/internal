@@ -19,14 +19,8 @@ class EconomyTransactions extends Controller
 	 */
 	function list(Request $request, $accountingperiod)
 	{
-		/*
 		// Check that the specified accounting period exists
-		$x = $this->_accountingPeriodOrFail($accountingperiod);
-		if(null !== $x)
-		{
-			return $x;
-		}
-		*/
+//		$accountingperiod_id = $this->_getAccountingPeriodId($accountingperiod);
 
 		// Paging filter
 		$filters = [
@@ -54,6 +48,12 @@ class EconomyTransactions extends Controller
 			$filters["sort"] = [$request->get("sort_by"), $order];
 		}
 
+		// Filters
+		if(!empty($request->get("account_number")))
+		{
+			$filters["account_number"] = ["=", $request->get("account_number")];
+		}
+
 		// Load data from database
 		$result = AccountingTransaction::list($filters);
 
@@ -75,11 +75,7 @@ class EconomyTransactions extends Controller
 	function read(Request $request, $accountingperiod, $account_number)
 	{
 		// Check that the specified accounting period exists
-		$x = $this->_accountingPeriodOrFail($accountingperiod);
-		if(null !== $x)
-		{
-			return $x;
-		}
+		$accountingperiod_id = $this->_getAccountingPeriodId($accountingperiod);
 
 		$result = AccountingTransaction::list(
 			[

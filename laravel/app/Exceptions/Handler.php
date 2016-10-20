@@ -48,6 +48,15 @@ class Handler extends ExceptionHandler
 				"message" => $e->getMessage(),
 			], 422);
 		}
+		else if($e instanceof \App\Traits\FilterNotFoundException)
+		{
+			return Response()->json([
+				"status"  => "error",
+				"column"  => $e->getColumn(),
+				"data"    => $e->getData(),
+				"message" => $e->getMessage(),
+			], 404);
+		}
 		else
 		{
 /*

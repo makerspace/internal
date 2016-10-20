@@ -11,22 +11,38 @@ trait AccountingPeriod
 	 */
 	protected function _getAccountingPeriodId($period)
 	{
-		return DB::table("accounting_period")
+		$accountingperiod_id = DB::table("accounting_period")
 			->where("name", "=", $period)
 			->value("entity_id");
-	}
 
-	/**
-	 * Check if the accounting period exists and return an error message if not
-	 */
-	protected function _accountingPeriodOrFail($period)
-	{
-		$accountingperiod_id = $this->_getAccountingPeriodId($period);
 		if(null === $accountingperiod_id)
 		{
-			return Response()->json([
-				"message" => "Could not find the specified accounting period",
-			], 404);
+			throw new FilterNotFoundException("accountingperiod", $period, "Could not find the specified accounting period");
 		}
+
+		return $accountingperiod_id;
+	}
+}
+
+class FilterNotFoundException extends \Exception
+{
+	protected $column;
+	protected $data;
+
+	function __construct($column, $data, $message)
+	{
+		$this->column = $column;
+		$this->data = $data;
+		$this->message = $message;
+	}
+
+	function getColumn()
+	{
+		return $this->column;
+	}
+
+	function getData()
+	{
+		return $this->data;
 	}
 }

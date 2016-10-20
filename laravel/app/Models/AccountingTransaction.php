@@ -78,21 +78,34 @@ class AccountingTransaction extends Entity
 		$query = $this->_buildLoadQuery();
 
 		// Go through filters
-		foreach($filters as $filter)
+		foreach($filters as $id => $filter)
 		{
+			if(is_array($filter) && count($filter) >= 2)
+			{
+				$op    = $filter[0];
+				$param = $filter[1];
+			}
+			else
+			{
+				$op    = "=";
+				$param = $filter;
+			}
+
 			// Filter on accounting period
-			if("accountingperiod" == $filter[0])
+			if("accountingperiod" == $id)
 			{
 				$query = $query
 					->leftJoin("accounting_period", "accounting_period.entity_id", "=", "accounting_instruction.accounting_period")
-					->where("accounting_period.name", $filter[1], $filter[2]);
+					->where("accounting_period.name", $op, $param);
+				unset($filters[$id]);
 			}
 			// Filter on accounting period
-			if("account_number" == $filter[0])
+			else if("account_number" == $id)
 			{
 				$query = $query
 					->leftJoin("accounting_account", "accounting_account.entity_id", "=", "accounting_transaction.accounting_account")
-					->where("accounting_account.account_number", $filter[1], $filter[2]);
+					->where("accounting_account.account_number", $op, $param);
+				unset($filters[$id]);
 			}
 		}
 
@@ -132,9 +145,6 @@ class AccountingTransaction extends Entity
 			$row->balance = $balance;
 			$data[] = $row;
 		}
-
-
-
 
 		$result = [
 			"data" => $data

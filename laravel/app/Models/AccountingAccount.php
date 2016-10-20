@@ -62,25 +62,36 @@ class AccountingAccount extends Entity
 		// Go through filters
 		foreach($filters as $id => $filter)
 		{
+			if(is_array($filter) && count($filter) >= 2)
+			{
+				$op    = $filter[0];
+				$param = $filter[1];
+			}
+			else
+			{
+				$op    = "=";
+				$param = $filter;
+			}
+
 			// Filter on accounting period
 			if("accountingperiod" == $id)
 			{
 				$query = $query
 					->leftJoin("accounting_period", "accounting_period.entity_id", "=", "accounting_account.accounting_period")
-					->where("accounting_period.name", $filter[0], $filter[1]);
+					->where("accounting_period.name", $op, $param);
 				unset($filters[$id]);
 			}
 			// Filter on account balance
 			else if("balance" == $id)
 			{
-				$query = $query->having("balance", $filter[0], $filter[1]);
+				$query = $query->having("balance", $op, $param);
 				unset($filters[$id]);
 			}
 			// Filter on number of transactions
 			else if("transactions" == $id)
 			{
 				$query = $query->selectRaw("COUNT(accounting_transaction.entity_id) AS num_transactions");
-				$query = $query->having("num_transactions", $filter[0], $filter[1]);
+				$query = $query->having("num_transactions", $op, $param);
 				unset($filters[$id]);
 			}
 /*
@@ -176,40 +187,38 @@ class AccountingAccount extends Entity
 	/**
 	 *
 	 */
-/*
-	public static function loadByAccountNumber($account_number, $show_deleted = false)
-	{
-		return (new static())->_loadByAccountNumber($account_number, $show_deleted);
-	}
-*/
-
-	/**
-	 *
-	 */
 	public function _load($filters, $show_deleted = false)
 	{
 		// Build base query
 		$query = $this->_buildLoadQuery();
 
 		// Go through filters
-		foreach($filters as $filter)
+		foreach($filters as $id => $filter)
 		{
+			if(is_array($filter) && count($filter) >= 2)
+			{
+				$op    = $filter[0];
+				$param = $filter[1];
+			}
+			else
+			{
+				$op    = "=";
+				$param = $filter;
+			}
+
 			// Filter on accounting period
-			if("accountingperiod" == $filter[0])
+			if("accountingperiod" == $id)
 			{
 				$query = $query
 					->leftJoin("accounting_period", "accounting_period.entity_id", "=", "accounting_account.accounting_period")
-					->where("accounting_period.name", $filter[1], $filter[2]);
-			}
-			// Filter on entity_id
-			else if("entity_id" == $filter[0])
-			{
-				$query = $query->where("entity.entity_id", $filter[1], $filter[2]);
+					->where("accounting_period.name", $op, $param);
+				unset($filters[$id]);
 			}
 			// Filter on account_number
-			else if("account_number" == $filter[0])
+			else if("account_number" == $id)
 			{
-				$query = $query->where("accounting_account.account_number", $filter[1], $filter[2]);
+				$query = $query->where("accounting_account.account_number", $op, $param);
+				unset($filters[$id]);
 			}
 		}
 
@@ -222,7 +231,19 @@ class AccountingAccount extends Entity
 			->groupBy("entity.entity_id")
 			->selectRaw("SUM(amount) AS balance");
 
+		// Get result from database
+		$data = (array)$query->first();
+
+		// Create a new entity
+		$entity = new AccountingAccount;
+
+		// Populate the entity with data
+		foreach($data as $key => $value)
+		{
+			$entity->{$key} = $value;
+		}
+
 		// Return account
-		return (array)$query->first();
+		return $entity;
 	}
 }

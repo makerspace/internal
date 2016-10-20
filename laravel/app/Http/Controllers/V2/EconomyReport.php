@@ -18,11 +18,7 @@ class EconomyReport extends Controller
 	function valuationSheet(Request $request, $accountingperiod)
 	{
 		// Check that the specified accounting period exists
-		$x = $this->_accountingPeriodOrFail($accountingperiod);
-		if(null !== $x)
-		{
-			return $x;
-		}
+		$this->_getAccountingPeriodId($accountingperiod);
 
 		// TODO: Hardcoded data
 		$data = [
@@ -100,11 +96,7 @@ class EconomyReport extends Controller
 	function resultReport(Request $request, $accountingperiod)
 	{
 		// Check that the specified accounting period exists
-		$x = $this->_accountingPeriodOrFail($accountingperiod);
-		if(null !== $x)
-		{
-			return $x;
-		}
+		$this->_getAccountingPeriodId($accountingperiod);
 
 		// TODO: Hardcoded data
 		$data = [

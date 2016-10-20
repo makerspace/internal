@@ -72,6 +72,22 @@ var BackboneTable = {
 		};
 	},
 
+	componentWillReceiveProps: function(nextProps)
+	{
+		if(nextProps.filters != this.state.filters)
+		{
+			this.setState({
+				filters: nextProps.filters
+			});
+
+			// TODO: setState() has a delay so we need to wait a moment
+			var _this = this;
+			setTimeout(function() {
+				_this.fetch();
+			}, 100);
+		}
+	},
+
 	initializePagination: function(i)
 	{
 		var _this = this;

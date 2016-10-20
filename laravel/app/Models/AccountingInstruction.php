@@ -86,6 +86,24 @@ class AccountingInstruction extends Entity
 	];
 	protected $sort = ["instruction_number", "desc"];
 
+	public function _search($query, $search)
+	{
+		$words = explode(" ", $search);
+		foreach($words as $word)
+		{
+			$query = $query->where(function($query) use($word) {
+				// Build the search query
+				$query
+					->  where("entity.title",                              "like", "%".$word."%")
+					->orWhere("entity.description",                        "like", "%".$word."%")
+					->orWhere("accounting_instruction.instruction_number", "like", "%".$word."%")
+					->orWhere("accounting_instruction.external_id",        "like", "%".$word."%");
+			});
+		}
+
+		return $query;
+	}
+
 	/**
 	 *
 	 */
@@ -98,31 +116,46 @@ class AccountingInstruction extends Entity
 		$query = $this->_buildLoadQuery();
 
 		// Go through filters
-		foreach($filters as $filter)
+		foreach($filters as $id => $filter)
 		{
+			if(is_array($filter) && count($filter) >= 2)
+			{
+				$op    = $filter[0];
+				$param = $filter[1];
+			}
+			else
+			{
+				$op    = "=";
+				$param = $filter;
+			}
+
 			// Filter on accounting period
-			if("accountingperiod" == $filter[0])
+			if("accountingperiod" == $id)
 			{
 				$query = $query
 					->leftJoin("accounting_period", "accounting_period.entity_id", "=", "accounting_instruction.accounting_period")
-					->where("accounting_period.name", $filter[1], $filter[2]);
+					->where("accounting_period.name", $op, $param);
+				unset($filters[$id]);
 			}
 			// Filter on transaction.account_id
-			else if("account_id" == $filter[0])
+			else if("account_id" == $id)
 			{
 				$query = $query
 					->join("accounting_transaction", "accounting_transaction.accounting_instruction", "=", "entity.entity_id")
 					->join("accounting_account", "accounting_account.entity_id", "=", "accounting_transaction.accounting_account")
-					->where("accounting_account.account_number", $filter[1], $filter[2]);
+					->where("accounting_account.account_number", $op, $param);
+				unset($filters[$id]);
 			}
-			else if("has_voucher" == $filter[0])
+			else if("has_voucher" == $id)
 			{
-				$filter_vouchers = $filter[2];
+				$filter_vouchers = $filter;
+				unset($filters[$id]);
 			}
 			// Pagination
-			else if("per_page" == $filter[0])
+			else if("per_page" == $id)
 			{
-				$this->pagination = $filter[1];
+				$this->pagination = $filter;
+				unset($filters[$id]);
 			}
 		}
 
@@ -201,22 +234,54 @@ class AccountingInstruction extends Entity
 	/*
 	 * Same as above, but called non-statically
 	 */
-	public function _load($instruction_number, $show_deleted = false)
+	public function _load($filters, $show_deleted = false)
 	{
-		// Load accounting instruction
-		$data = $this->_buildLoadQuery()
 
-			// Join transactions table and calculate balance
+		// Load accounting instruction
+		$query = $this->_buildLoadQuery();
+
+		// Go through filters
+		foreach($filters as $id => $filter)
+		{
+			if(is_array($filter) && count($filter) >= 2)
+			{
+				$op    = $filter[0];
+				$param = $filter[1];
+			}
+			else
+			{
+				$op    = "=";
+				$param = $filter;
+			}
+
+			// Filter on accounting period
+			if("accountingperiod" == $id)
+			{
+				$query = $query
+					->leftJoin("accounting_period", "accounting_period.entity_id", "=", "accounting_instruction.accounting_period")
+					->where("accounting_period.name", $op, $param);
+				unset($filters[$id]);
+			}
+			else if("instruction_number" == $id)
+			{
+				// Filter on instruction_number
+				$query = $query->where("accounting_instruction.instruction_number", $op, $param);
+				unset($filters[$id]);
+			}
+		}
+
+		// Apply standard filters like entity_id, relations, etc
+		$query = $this->_applyFilter($query, $filters);
+
+		// Join transactions table and calculate balance
+		$query = $query
 			->leftJoin("accounting_transaction", "accounting_transaction.accounting_instruction", "=", "entity.entity_id")
 			->groupBy("entity.entity_id")
 			->where("accounting_transaction.amount", ">", 0)
-			->selectRaw("SUM(amount) AS balance")
+			->selectRaw("SUM(amount) AS balance");
 
-			// Filter on instruction_number
-			->where("accounting_instruction.instruction_number", "=", $instruction_number)
-
-			// Return result
-			->first();
+		// Get result from database
+		$data = (array)$query->first();
 
 		// Generate an error if there is no such instruction
 		if(empty($data))
@@ -224,12 +289,21 @@ class AccountingInstruction extends Entity
 			return false;
 		}
 
+		// Create a new entity
+		$entity = new AccountingInstruction;
+
+		// Populate the entity with data
+		foreach($data as $key => $value)
+		{
+			$entity->{$key} = $value;
+		}
+
 		// Load the transactions
-		$data->transactions = DB::table("entity")
+		$entity->transactions = DB::table("entity")
 			->join("accounting_transaction", "accounting_transaction.entity_id", "=", "entity.entity_id")
 			->join("accounting_account", "accounting_transaction.accounting_account", "=", "accounting_account.entity_id")
 			->join("entity AS e2", "accounting_account.entity_id", "=", "e2.entity_id")
-			->where("accounting_instruction", "=", $data->entity_id)
+			->where("accounting_instruction", "=", $entity->entity_id)
 			->select(
 				"entity.title",
 				"entity.description",
@@ -239,8 +313,8 @@ class AccountingInstruction extends Entity
 			)
 			->get();
 
-		// Return data
-		return (array)$data;
+		// Return the entity
+		return $entity;
 	}
 
 	/**

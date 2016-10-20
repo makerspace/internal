@@ -2,6 +2,7 @@ import Backbone from 'backbone'
 
 var TransactionModel = Backbone.Model.fullExtend(
 {
+	idAttribute: "entity_id",
 	urlRoot: "/economy/2015/transaction",
 	defaults: {
 		created_at: "0000-00-00T00:00:00Z",

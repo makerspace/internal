@@ -2,7 +2,7 @@ import Backbone from 'backbone'
 
 var SubscriptionModel = Backbone.Model.fullExtend(
 {
-//	idAttribute: "subscription_id",
+	idAttribute: "account_number",
 	urlRoot: "/subscription",
 	defaults: {
 		created_at: "0000-00-00T00:00:00Z",

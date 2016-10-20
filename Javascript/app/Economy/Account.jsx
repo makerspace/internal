@@ -12,7 +12,7 @@ import DateField from '../Formatters/Date'
 import BackboneTable from '../BackboneTable'
 
 import { EconomyAccountingInstructionList } from './Instruction'
-import EconomyTransactions from './Transactions'
+import Transactions from './Transactions'
 import TableDropdownMenu from '../TableDropdownMenu'
 
 var EconomyAccountsHandler = React.createClass({
@@ -22,14 +22,8 @@ var EconomyAccountsHandler = React.createClass({
 			<div>
 				<h2>Konton</h2>
 
-				<div className="uk-grid">
-					<div className="uk-width-2-3">
-						<p>På denna sida ser du en lista över samtliga bokföringskonton, även de som inte har några bokförda verifikationer.</p>
-					</div>
-					<div className="uk-width-1-3">
-						<Link to={"/economy/account/add"} className="uk-button uk-button-primary uk-float-right"><i className="uk-icon-plus-circle"></i> Skapa nytt konto</Link>
-					</div>
-				</div>
+				<p className="uk-float-left">På denna sida ser du en lista över samtliga bokföringskonton, även de som inte har några bokförda verifikationer.</p>
+				<Link to={"/economy/account/add"} className="uk-button uk-button-primary uk-float-right"><i className="uk-icon-plus-circle"></i> Skapa nytt konto</Link>
 
 				<EconomyAccounts type={AccountCollection} />
 			</div>
@@ -40,11 +34,10 @@ var EconomyAccountsHandler = React.createClass({
 var EconomyAccountHandler = React.createClass({
 	getInitialState: function()
 	{
-		// Get account id
-		var id = this.props.params.id;
-
 		// Load account model
-		var account = new AccountModel({id: id});
+		var account = new AccountModel({
+			account_number: this.props.params.id
+		});
 		account.fetch();
 
 		return {
@@ -58,7 +51,11 @@ var EconomyAccountHandler = React.createClass({
 			<div>
 				<h2>Konto</h2>
 				<EconomyAccount model={this.state.account_model} />
-				<Transactions type={TransactionCollection} params={{id: this.state.account_model.id}} />
+				<Transactions type={TransactionCollection} filters={
+					{
+						account_number: this.state.account_model.get("account_number")
+					}
+				}/>
 			</div>
 		);
 	},
@@ -177,6 +174,17 @@ var EconomyAccounts = React.createClass({
 var EconomyAccount = React.createClass({
 	mixins: [Backbone.React.Component.mixin],
 
+	handleChange: function(event)
+	{
+		// Update the model with new value
+		var target = event.target;
+		var key = target.getAttribute("name");
+		this.state.model[key] = target.value;
+
+		// When we change the value of the model we have to rerender the component
+		this.forceUpdate();
+	},
+
 	render: function()
 	{
 		return (
@@ -187,7 +195,7 @@ var EconomyAccount = React.createClass({
 						<div className="uk-form-controls">
 							<div className="uk-form-icon">
 								<i className="uk-icon-database"></i>
-								<input type="text" value={this.state.model.account_number} />
+								<input type="text" value={this.state.model.account_number} className="uk-form-width-large" onChange={this.handleChange} />
 							</div>
 						</div>
 					</div>
@@ -197,7 +205,7 @@ var EconomyAccount = React.createClass({
 						<div className="uk-form-controls">
 							<div className="uk-form-icon">
 								<i className="uk-icon-database"></i>
-								<input type="text" value={this.state.model.title} />
+								<input type="text" value={this.state.model.title} className="uk-form-width-large" onChange={this.handleChange} />
 							</div>
 						</div>
 					</div>
@@ -205,20 +213,14 @@ var EconomyAccount = React.createClass({
 					<div className="uk-form-row">
 						<label className="uk-form-label">Beskrivning</label>
 						<div className="uk-form-controls">
-							<div className="uk-form-icon">
-								<i className="uk-icon-database"></i>
-								<input type="text" value={this.state.model.description} />
-							</div>
+							<textarea value={this.state.model.description} className="uk-form-width-large" onChange={this.handleChange} />
 						</div>
 					</div>
 
 					<div className="uk-form-row">
 						<label className="uk-form-label">Balans</label>
 						<div className="uk-form-controls">
-							<div className="uk-form-icon">
-								<i className="uk-icon-usd"></i>
-								<input type="text" value={this.state.model.balance} disabled />
-							</div>
+							<Currency value={this.state.model.balance} />
 						</div>
 					</div>
 				</form>

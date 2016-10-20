@@ -9,15 +9,42 @@ import { Link } from 'react-router'
 import Currency from '../Formatters/Currency'
 import DateField from '../Formatters/Date'
 import BackboneTable from '../BackboneTable'
+import TableDropdownMenu from '../TableDropdownMenu'
+import TableFilterBox from '../TableFilterBox'
 
 var EconomyAccountingInstructionsHandler = React.createClass({
+	getInitialState: function()
+	{
+		return {
+			filters: this.props.filters || {},
+		};
+	},
+
+	updateFilters: function(newFilter)
+	{
+		var filters = this.overrideFiltersFromProps(newFilter);
+		this.setState({
+			filters: filters
+		});
+	},
+
+	overrideFiltersFromProps: function(filters)
+	{
+		return filters;
+	},
+
 	render: function()
 	{
 		return (
 			<div className="uk-width-1-1">
 				<h2>Verifikationer</h2>
-				<p>Lista över samtliga verifikationer i bokföringen</p>
-				<EconomyAccountingInstructionList type={InstructionCollection} />
+
+				<p className="uk-float-left">Lista över samtliga verifikationer i bokföringen</p>
+				<Link to="/economy/instruction/add" className="uk-button uk-button-primary uk-float-right"><i className="uk-icon-plus-circle"></i> Skapa ny verifikation</Link>
+
+				<TableFilterBox onChange={this.updateFilters} />
+
+				<EconomyAccountingInstructionList type={InstructionCollection} filters={this.state.filters} />
 			</div>
 		);
 	}
@@ -27,10 +54,24 @@ EconomyAccountingInstructionsHandler.title = "Visa verifikationer";
 var EconomyAccountingInstructionHandler = React.createClass({
 	getInitialState: function()
 	{
-		var id = this.props.params.id;
-
-		var instruction = new InstructionModel({id: id});
+		var instruction = new InstructionModel({instruction_number: this.props.params.id});
 		instruction.fetch();
+
+		return {
+			model: instruction
+		};
+	},
+
+	render: function()
+	{
+		return (<EconomyAccountingInstruction model={this.state.model} />);
+	}
+});
+
+var EconomyAccountingInstructionAddHandler = React.createClass({
+	getInitialState: function()
+	{
+		var instruction = new InstructionModel();
 
 		return {
 			model: instruction
@@ -46,9 +87,7 @@ var EconomyAccountingInstructionHandler = React.createClass({
 var EconomyAccountingInstructionImportHandler = React.createClass({
 	getInitialState: function()
 	{
-		var id = this.props.params.id;
-
-		var instruction = new InstructionModel({id: id});
+		var instruction = new InstructionModel({instruction_number: this.props.params.id});
 		instruction.fetch();
 
 		return {
@@ -82,12 +121,15 @@ var EconomyAccountingInstructionList = React.createClass({
 		return [
 			{
 				title: "#",
+				sort: "instruction_number",
 			},
 			{
 				title: "Bokföringsdatum",
+				sort: "accounting_date",
 			},
 			{
 				title: "Beskrivning",
+				sort: "title",
 			},
 			{
 				title: "Belopp",
@@ -100,6 +142,16 @@ var EconomyAccountingInstructionList = React.createClass({
 				title: "",
 			},
 		];
+	},
+
+	removeTextMessage: function(entity)
+	{
+		return "Are you sure you want to remove instruction \"" + entity.instruction_number + " " + entity.title + "\"?";
+	},
+
+	removeErrorMessage: function()
+	{
+		UIkit.modal.alert("Error deleting instruction");
 	},
 
 	renderRow: function (row, i)
@@ -120,8 +172,13 @@ var EconomyAccountingInstructionList = React.createClass({
 				<td><DateField date={row.accounting_date}/></td>
 				<td>{row.title}</td>
 				<td className="uk-text-right"><Currency value={row.balance}/></td>
-				<td><Link to={"/economy/instruction/" + row.instruction_number}>Visa</Link></td>
 				<td>{icon}</td>
+				<td>
+					<TableDropdownMenu>
+						<Link to={"/economy/instruction/" + row.instruction_number}><i className="uk-icon uk-icon-cog"/> Redigera verifikation</Link>
+						{this.removeButton(i, "Ta bort verifikation")}
+					</TableDropdownMenu>
+				</td>
 			</tr>
 		);
 	},
@@ -129,6 +186,17 @@ var EconomyAccountingInstructionList = React.createClass({
 
 var EconomyAccountingInstruction = React.createClass({
 	mixins: [Backbone.React.Component.mixin],
+
+	handleChange: function(event)
+	{
+		// Update the model with new value
+		var target = event.target;
+		var key = target.getAttribute("name");
+		this.state.model[key] = target.value;
+
+		// When we change the value of the model we have to rerender the component
+		this.forceUpdate();
+	},
 
 	render: function()
 	{
@@ -152,7 +220,15 @@ var EconomyAccountingInstruction = React.createClass({
 			})
 		}
 
-		var title = this.state.model.instruction_number === null ? 'Preliminär verifikation' : 'Verifikation ' + this.state.model.instruction_number;
+		if(this.state.model.entity_id == 0)
+		{
+			var title = "Skapa verifikation";
+		}
+		else
+		{
+			var title = this.state.model.instruction_number === null ? 'Preliminär verifikation' : 'Verifikation ' + this.state.model.instruction_number;
+			title = title + " - " + this.state.model.title;
+		}
 
 		if(this.state.model.files.length == 0)
 		{
@@ -173,10 +249,9 @@ var EconomyAccountingInstruction = React.createClass({
 
 		return (
 			<div>
-				<h2>{title} - {this.state.model.title}</h2>
+				<h2>{title}</h2>
 
 				<form className="uk-form uk-form-horizontal">
-
 					<div className="uk-grid">
 						<div className="uk-width-1-6">
 							<label className="uk-form-label">Verifikationsnr</label>
@@ -184,7 +259,7 @@ var EconomyAccountingInstruction = React.createClass({
 						<div className="uk-width-2-6">
 							<div className="uk-form-icon">
 								<i className="uk-icon-tag"></i>
-								<input type="text" value={this.state.model.instruction_number} />
+								<input type="text" value={this.state.model.instruction_number} disabled />
 							</div>
 						</div>
 						<div className="uk-width-1-6">
@@ -204,7 +279,7 @@ var EconomyAccountingInstruction = React.createClass({
 						<div className="uk-width-2-6">
 							<div className="uk-form-icon">
 								<i className="uk-icon-calendar"></i>
-								<input type="text" value={this.state.model.accounting_date} />
+								<input type="text" value={this.state.model.accounting_date} onChange={this.handleChange} />
 							</div>
 						</div>
 						<div className="uk-width-1-6">
@@ -228,16 +303,20 @@ var EconomyAccountingInstruction = React.createClass({
 								<input type="text" value={this.state.model.balance} disabled />
 							</div>
 						</div>
-						<div className="uk-width-1-6">
-							<label className="uk-form-label">Importerad från</label>
-						</div>
-						<div className="uk-width-2-6">
-							<div className="uk-form-icon">
-								<i className="uk-icon-institution"></i>
-								<input type="text" value={this.state.model.importer} disabled />
+						{ this.state.model.entity_id != 0 ?
+							<div className="uk-width-1-6">
+								<label className="uk-form-label">Importerad från</label>
 							</div>
-							<p><em><Link to={"/economy/instruction/" + this.state.model.id + "/import"}>Visa data från import</Link></em></p>
-						</div>
+						: "" }
+						{ this.state.model.entity_id != 0 ?
+							<div className="uk-width-2-6">
+								<div className="uk-form-icon">
+									<i className="uk-icon-institution"></i>
+									<input type="text" value={this.state.model.importer} disabled />
+								</div>
+								<p><em><Link to={"/economy/instruction/" + this.state.model.id + "/import"}>Visa data från import</Link></em></p>
+							</div>
+						: "" }
 					</div>
 
 					<div className="uk-grid">
@@ -245,7 +324,7 @@ var EconomyAccountingInstruction = React.createClass({
 							<label className="uk-form-label">Kommentar</label>
 						</div>
 						<div className="uk-width-3-6">
-							<p>{this.state.model.description}</p>
+							<textarea value={this.state.model.description} onChange={this.handleChange} />
 						</div>
 					</div>
 				</form>
@@ -336,6 +415,7 @@ var EconomyAccountingInstructionImport = React.createClass({
 
 module.exports = {
 	EconomyAccountingInstructionsHandler,
+	EconomyAccountingInstructionAddHandler,
 	EconomyAccountingInstructionHandler,
 	EconomyAccountingInstructionImportHandler,
 	EconomyAccountingInstructionList,

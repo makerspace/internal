@@ -31,10 +31,12 @@ class Group extends Entity
 			"select" => "entity.description",
 		],
 		// TODO: Count members
+/*
 		"membercount" => [
 			"column" => "7",
 			"select" => "7",
 		],
+*/
 	];
 	protected $sort = ["title", "asc"];
 	protected $validation = [

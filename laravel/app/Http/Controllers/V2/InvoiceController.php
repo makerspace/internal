@@ -22,17 +22,41 @@ class InvoiceController extends Controller
 	function list(Request $request, $accountingperiod)
 	{
 		// Check that the specified accounting period exists
-		$x = $this->_accountingPeriodOrFail($accountingperiod);
-		if(null !== $x)
+		$accountingperiod_id = $this->_getAccountingPeriodId($accountingperiod);
+
+		// Paging filter
+		$filters = [
+			"per_page"         => $this->per_page($request),
+			"accountingperiod" => $accountingperiod,
+		];
+
+		// Filter on relations
+		if($request->get("relations"))
 		{
-			return $x;
+			$filters["relations"] = $request->get("relations");
 		}
 
-		// Load data from datbase
-		$result = Invoice::list([
-			["per_page", $this->per_page($request)],
-			["accountingperiod", $accountingperiod],
-		]);
+		// Filter on search
+		if(!empty($request->get("search")))
+		{
+			$filters["search"] = $request->get("search");
+		}
+
+		// Sorting
+		if(!empty($request->get("sort_by")))
+		{
+			$order = ($request->get("sort_order") == "desc" ? "desc" : "asc");
+			$filters["sort"] = [$request->get("sort_by"), $order];
+		}
+
+		// Filters
+		if(!empty($request->get("account_number")))
+		{
+			$filters["account_number"] = ["=", $request->get("account_number")];
+		}
+
+		// Load data from database
+		$result = Invoice::list($filters);
 
 		// Return json array
 		return $result;
@@ -110,11 +134,7 @@ class InvoiceController extends Controller
 	function read(Request $request, $accountingperiod, $invoice_number)
 	{
 		// Check that the specified accounting period exists
-		$x = $this->_accountingPeriodOrFail($accountingperiod);
-		if(null !== $x)
-		{
-			return $x;
-		}
+		$this->_getAccountingPeriodId($accountingperiod);
 
 		// Load the invoice
 		$invoice = Invoice::loadByInvoiceNumber($invoice_number);

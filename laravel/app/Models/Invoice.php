@@ -71,6 +71,26 @@ class Invoice extends Entity
 	];
 	protected $sort = ["invoice_number", "desc"];
 
+	public function _search($query, $search)
+	{
+		$words = explode(" ", $search);
+		foreach($words as $word)
+		{
+			$query = $query->where(function($query) use($word) {
+				// Build the search query
+				$query
+					->  where("entity.title",           "like", "%".$word."%")
+					->orWhere("entity.description",     "like", "%".$word."%")
+					->orWhere("invoice.invoice_number", "like", "%".$word."%")
+					->orWhere("invoice.our_reference",  "like", "%".$word."%")
+					->orWhere("invoice.your_reference", "like", "%".$word."%")
+					->orWhere("invoice.address",        "like", "%".$word."%");
+			});
+		}
+
+		return $query;
+	}
+
 	/**
 	 * Same as above, but called non-statically
 	 */
@@ -80,7 +100,7 @@ class Invoice extends Entity
 		$this->_preprocessFilters($filters);
 
 		// Build base query
-		$query = $this->_buildLoadQuery()
+		$query = $this->_buildLoadQuery();
 
 		// Calculate total of invoice
 		$query = $query
@@ -89,19 +109,26 @@ class Invoice extends Entity
 			->selectRaw("SUM(price * amount) as _total");
 
 		// Go through filters
-		foreach($filters as $filter)
+		foreach($filters as $id => $filter)
 		{
+			if(is_array($filter) && count($filter) >= 2)
+			{
+				$op    = $filter[0];
+				$param = $filter[1];
+			}
+			else
+			{
+				$op    = "=";
+				$param = $filter;
+			}
+
 			// Filter on accounting period
-			if("accountingperiod" == $filter[0])
+			if("accountingperiod" == $id)
 			{
 				$query = $query
 					->leftJoin("accounting_period", "accounting_period.entity_id", "=", "invoice.accounting_period")
-					->where("accounting_period.name", $filter[1], $filter[2]);
-			}
-			// Pagination
-			else if("per_page" == $filter[0])
-			{
-				$this->pagination = $filter[1];
+					->where("accounting_period.name", $op, $param);
+				unset($filters[$id]);
 			}
 		}
 

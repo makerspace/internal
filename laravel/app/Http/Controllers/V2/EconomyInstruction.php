@@ -19,18 +19,30 @@ class EconomyInstruction extends Controller
 	function list(Request $request, $accountingperiod)
 	{
 		// Check that the specified accounting period exists
-		$x = $this->_accountingPeriodOrFail($accountingperiod);
-		if(null !== $x)
+		$this->_getAccountingPeriodId($accountingperiod);
+
+		// Standard filters
+		$filters = [
+			"per_page" => $this->per_page($request),
+			"accountingperiod" => ["=", $accountingperiod],
+//			"has_voucher" => ["=", true],
+		];
+
+		// Filter on search
+		if(!empty($request->get("search")))
 		{
-			return $x;
+			$filters["search"] = $request->get("search");
+		}
+
+		// Sorting
+		if(!empty($request->get("sort_by")))
+		{
+			$order = ($request->get("sort_order") == "desc" ? "desc" : "asc");
+			$filters["sort"] = [$request->get("sort_by"), $order];
 		}
 
 		// Load data from datbase
-		$result = AccountingInstruction::list([
-			["per_page", $this->per_page($request)],
-			["accountingperiod", "=", $accountingperiod],
-//			["has_voucher", "=", true],
-		]);
+		$result = AccountingInstruction::list($filters);
 
 		// Return json array
 		return $result;
@@ -45,12 +57,6 @@ class EconomyInstruction extends Controller
 
 		// Get id of accounting period
 		$accountingperiod_id = $this->_getAccountingPeriodId($accountingperiod);
-		if(null === $accountingperiod_id)
-		{
-			return Response()->json([
-				"message" => "Could not find the specified accounting period",
-			], 404);
-		}
 
 		// We need to check that the provided account number is not in conflict with an existing one
 /*
@@ -95,34 +101,19 @@ class EconomyInstruction extends Controller
 	/**
 	 *
 	 */
-	function read(Request $request, $accountingperiod, $id)
+	function read(Request $request, $accountingperiod, $instruction_number)
 	{
-		// Check that the specified accounting period exists
-		$x = $this->_accountingPeriodOrFail($accountingperiod);
-		if(null !== $x)
-		{
-			return $x;
-		}
+		// Check that the specified accounting period exists, or throw an FilterNotFoundException
+		$this->_getAccountingPeriodId($accountingperiod);
 
-		// Load the instruction
-		$data = AccountingInstruction::load($id);
-
-		// Append files ("Verifikat")
-		$data["files"] = [];
-		if(!empty($data["external_id"]))
-		{
-			$dir = "/var/www/html/vouchers/{$data["external_id"]}";
-			if(file_exists($dir))
-			{
-				foreach(glob("{$dir}/*") as $file)
-				{
-					$data["files"][] = basename($file);
-				}
-			}
-		}
+		// Load the instruction entity
+		$entity = AccountingInstruction::load([
+			"accountingperiod"   => $accountingperiod,
+			"instruction_number" => $instruction_number,
+		]);
 
 		// Generate an error if there is no such instruction
-		if(false === $data)
+		if(false === $entity)
 		{
 			return Response()->json([
 				"message" => "No instruction with specified instruction number",
@@ -130,7 +121,22 @@ class EconomyInstruction extends Controller
 		}
 		else
 		{
-			return $data;
+			// Append files ("Verifikat")
+			$files = [];
+			if(!empty($entity->external_id))
+			{
+				$dir = "/var/www/html/vouchers/{$entity->external_id}";
+				if(file_exists($dir))
+				{
+					foreach(glob("{$dir}/*") as $file)
+					{
+						$files[] = basename($file);
+					}
+				}
+			}
+			$entity->files = $files;
+
+			return $entity->toArray();
 		}
 	}
 
@@ -145,9 +151,16 @@ class EconomyInstruction extends Controller
 	/**
 	 * Delete an instruction
 	 */
-	function delete(Request $request, $accountingperiod, $id)
+	function delete(Request $request, $accountingperiod, $instruction_number)
 	{
-		$entity = $this->read($request, $accountingperiod, $id);
+		// Check that the specified accounting period exists, or throw an FilterNotFoundException
+		$this->_getAccountingPeriodId($accountingperiod);
+
+		// Load the instruction entity
+		$entity = AccountingInstruction::load([
+			"accountingperiod"   => $accountingperiod,
+			"instruction_number" => $instruction_number,
+		]);
 
 		if($entity->delete())
 		{

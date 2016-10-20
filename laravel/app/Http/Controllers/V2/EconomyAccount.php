@@ -22,19 +22,23 @@ class EconomyAccount extends Controller
 	function masterledger(Request $request, $accountingperiod)
 	{
 		// Check that the specified accounting period exists
-		$x = $this->_accountingPeriodOrFail($accountingperiod);
-		if(null !== $x)
+		$this->_getAccountingPeriodId($accountingperiod);
+
+		// Return all account that have a balance not equal to 0
+		$filters = [
+			"transactions"     => [">", 0],
+			"accountingperiod" => ["=", $accountingperiod],
+		];
+
+		// Sorting
+		if(!empty($request->get("sort_by")))
 		{
-			return $x;
+			$order = ($request->get("sort_order") == "desc" ? "desc" : "asc");
+			$filters["sort"] = [$request->get("sort_by"), $order];
 		}
 
 		// Return all account that have a balance not equal to 0
-		return AccountingAccount::list(
-			[
-				"transactions"     => [">", 0],
-				"accountingperiod" => ["=", $accountingperiod],
-			]
-		);
+		return AccountingAccount::list($filters);
 	}
 
 	/**
@@ -43,11 +47,7 @@ class EconomyAccount extends Controller
 	function list(Request $request, $accountingperiod)
 	{
 		// Check that the specified accounting period exists
-		$x = $this->_accountingPeriodOrFail($accountingperiod);
-		if(null !== $x)
-		{
-			return $x;
-		}
+		$this->_getAccountingPeriodId($accountingperiod);
 
 		// Paging filter
 		$filters = [
@@ -87,14 +87,8 @@ class EconomyAccount extends Controller
 	{
 		$json = $request->json()->all();
 
-		// Get id of accounting period
+		// Check that the specified accounting period exists
 		$accountingperiod_id = $this->_getAccountingPeriodId($accountingperiod);
-		if(null === $accountingperiod_id)
-		{
-			return Response()->json([
-				"message" => "Could not find the specified accounting period",
-			], 404);
-		}
 
 		// We need to check that the provided account number is not in conflict with an existing one
 		if($this->_accountNumberIsExisting($accountingperiod, $json["account_number"]))
@@ -130,23 +124,17 @@ class EconomyAccount extends Controller
 	 */
 	function read(Request $request, $accountingperiod, $account_number)
 	{
-		// Get id of accounting period
-		$accountingperiod_id = $this->_getAccountingPeriodId($accountingperiod);
-		if(null === $accountingperiod_id)
-		{
-			return Response()->json([
-				"message" => "Could not find the specified accounting period",
-			], 404);
-		}
+		// Check that the specified accounting period exists
+		$this->_getAccountingPeriodId($accountingperiod);
 
 		// Load the account
-		$account = AccountingAccount::load([
-			["accountingperiod", "=", $accountingperiod],
-			["account_number",   "=", $account_number],
+		$entity = AccountingAccount::load([
+			"accountingperiod" => $accountingperiod,
+			"account_number"   => ["=", $account_number],
 		]);
 
 		// Generate an error if there is no such account
-		if(false === $account)
+		if(false === $entity)
 		{
 			return Response()->json([
 				"message" => "No account with specified account number in the selected accounting period",
@@ -154,7 +142,7 @@ class EconomyAccount extends Controller
 		}
 		else
 		{
-			return $account;
+			return $entity->toArray();
 		}
 	}
 
@@ -171,7 +159,14 @@ class EconomyAccount extends Controller
 	 */
 	function delete(Request $request, $accountingperiod, $account_number)
 	{
-		$entity = $this->read($request, $accountingperiod, $account_number);
+		// Check that the specified accounting period exists
+		$this->_getAccountingPeriodId($accountingperiod);
+
+		// Load the account
+		$entity = AccountingAccount::load([
+			["accountingperiod", "=", $accountingperiod],
+			["account_number",   "=", $account_number],
+		]);
 
 		if($entity->delete())
 		{

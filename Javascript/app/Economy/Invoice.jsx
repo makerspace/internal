@@ -8,16 +8,40 @@ import InvoiceModel from '../Backbone/Models/Invoice'
 import { Link } from 'react-router'
 import Currency from '../Formatters/Currency'
 import BackboneTable from '../BackboneTable'
+import TableFilterBox from '../TableFilterBox'
 
 var InvoiceListHandler = React.createClass({
+	getInitialState: function()
+	{
+		return {
+			filters: this.props.filters || {},
+		};
+	},
+
+	updateFilters: function(newFilter)
+	{
+		var filters = this.overrideFiltersFromProps(newFilter);
+		this.setState({
+			filters: filters
+		});
+	},
+
+	overrideFiltersFromProps: function(filters)
+	{
+		return filters;
+	},
+
 	render: function()
 	{
 		return (
 			<div className="uk-width-1-1">
 				<h2>Fakturor</h2>
-				<p>På denna sida ser du en lista på samtliga fakturor för det valda bokföringsåret.</p>
-				<InvoiceList type={InvoiceCollection} />
-				<Link to={"/economy/invoice/add"}><i className="uk-icon-plus-circle"></i> Skapa faktura</Link>
+
+				<p className="uk-float-left">På denna sida ser du en lista på samtliga fakturor för det valda bokföringsåret.</p>
+				<Link to={"/economy/invoice/add"} className="uk-button uk-button-primary uk-float-right"><i className="uk-icon-plus-circle"></i> Skapa ny faktura</Link>
+
+				<TableFilterBox onChange={this.updateFilters} />
+				<InvoiceList type={InvoiceCollection} filters={this.state.filters} />
 			</div>
 		);
 	},
@@ -91,19 +115,24 @@ var InvoiceList = React.createClass({
 			},
 			{
 				title: "Förfallodatum",
+				sort: "",
 			},
 			{
 				title: "Mottagare",
+				sort: "",
 			},
 			{
 				title: "Referens",
+				sort: "rour_reference",
 			},
 			{
 				title: "Belopp",
 				class: "uk-text-right",
+				sort: "amount",
 			},
 			{
 				title: "Status",
+				sort: "status",
 			},
 		];
 	},

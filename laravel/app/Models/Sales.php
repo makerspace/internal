@@ -35,7 +35,7 @@ class Sales extends Entity
 			"column" => "accounting_transaction.accounting_account",
 			"select" => "accounting_transaction.accounting_account",
 		],
-		".accounting_cost_center" => [
+		"accounting_cost_center" => [
 			"column" => "accounting_transaction.accounting_cost_center",
 			"select" => "accounting_transaction.accounting_cost_center",
 		],
@@ -88,6 +88,24 @@ class Sales extends Entity
 	];
 	protected $sort = ["accounting_date", "desc"];
 
+	public function _search($query, $search)
+	{
+		$words = explode(" ", $search);
+		foreach($words as $word)
+		{
+			$query = $query->where(function($query) use($word) {
+				// Build the search query
+				$query
+					->  where("pe.title",             "like", "%".$word."%")
+					->orWhere("member.member_number", "like", "%".$word."%")
+					->orWhere("member.firstname",     "like", "%".$word."%")
+					->orWhere("member.lastname",      "like", "%".$word."%");
+			});
+		}
+
+		return $query;
+	}
+
 	/**
 	 *
 	 */
@@ -100,27 +118,9 @@ class Sales extends Entity
 		// Build base query
 		$query = $this->_buildLoadQuery($filters);
 
-/*
-		// Go through filters
-		foreach($filters as $filter)
-		{
-			// Filter on accounting period
-			if("accountingperiod" == $filter[0])
-			{
-				$query = $query
-					->leftJoin("accounting_period", "accounting_period.entity_id", "=", "accounting_instruction.accounting_period")
-					->where("accounting_period.name", $filter[1], $filter[2]);
-			}
-			// Filter on accounting period
-			if("account_number" == $filter[0])
-			{
-				$query = $query
-					->leftJoin("accounting_account", "accounting_account.entity_id", "=", "accounting_transaction.accounting_account")
-					->where("accounting_account.account_number", $filter[1], $filter[2]);
-			}
-		}
-*/
+		// TODO: Go through filters
 
+		// Apply standard filters like entity_id, relations, etc
 		$query = $this->_applyFilter($query, $filters);
 
 		// Load the instruction
@@ -139,25 +139,6 @@ class Sales extends Entity
 		$query = $query
 			->leftJoin("member", "member.entity_id", "=", DB::Raw("(SELECT relation.entity2 FROM relation LEFT JOIN entity e ON e.entity_id = relation.entity2 WHERE e.type=\"member\" AND relation.entity1 = entity.entity_id LIMIT 1)"));
 
-/*
-		LEFT JOIN entity em
-		ON em.entity_id = r2.entity2
-		AND em.type = "member"
-		JOIN relation r2
-		ON r2.entity1 = entity.entity_id
-		WHERE r2.entity2 = entity.entity_id
-*/
-/*
-		$query = $query
-			->join("relation AS r2", function($join) {
-				$join->on("r2.entity1", "=", "entity.entity_id");
-			})
-			->leftJoin("entity AS em", function($join) {
-				$join->on("em.entity_id", "=", "r2.entity2")
-					->where("em.type", "=", "member");
-			})
-			->leftJoin("member", "member.entity_id", "=", "em.entity_id");
-*/
 		// Sort
 		$query = $this->_applySorting($query);
 

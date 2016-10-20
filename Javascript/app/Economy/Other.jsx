@@ -40,9 +40,11 @@ var EconomyAccounts = React.createClass({
 		return [
 			{
 				title: "#",
+				sort: "account_number",
 			},
 			{
 				title: "Konto",
+				sort: "title",
 			},
 			{
 				title: "Kontobalans",

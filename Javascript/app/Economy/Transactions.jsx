@@ -17,23 +17,7 @@ var Transactions = React.createClass({
 
 	componentWillMount: function()
 	{
-		if(this.props.member_number !== undefined)
-		{
-			// Load RFID keys related to member
-			this.state.collection.fetch({
-				data: {
-					relation: {
-						type: "member",
-						member_number: this.props.member_number,
-					}
-				}
-			});
-		}
-		else
-		{
-			// Load all RFID keys
-			this.state.collection.fetch();
-		}
+		this.fetch();
 	},
 
 	renderHeader: function()
