@@ -247,31 +247,25 @@
 			text: "Inställningar",
 			target: "/settings",
 			icon: "cog",
-			children: [{
+			children: [
+			// Inställningar
+			{
 				text: "Globala inställningar",
 				target: "/settings/global"
 			}, {
 				text: "Automation",
 				target: "/settings/automation"
 			}, {
-				text: "Export",
-				target: "/settings/export",
-				icon: "download"
-			}, {
-				text: "Utskick",
-				target: "/settings/mail",
-				icon: "envelope",
-				children: [{
-					text: "Hantera mallar",
-					target: "/settings/mail/templates"
-				}]
-			}, {
 				type: "separator",
 				target: ""
-			}, {
+			},
+
+			// Ekonomi
+			{
 				type: "heading",
 				text: "Ekonomi",
-				target: ""
+				target: "",
+				icon: "money"
 			}, {
 				text: "Kontoplan",
 				target: "/settings/economy/accounts"
@@ -281,6 +275,40 @@
 			}, {
 				text: "Debug",
 				target: "/settings/economy/debug"
+			},
+
+			// Utskick
+			{
+				type: "separator",
+				target: ""
+			}, {
+				type: "heading",
+				text: "Utskick",
+				target: "",
+				icon: "envelope"
+			}, {
+				text: "Utskick",
+				target: "/settings/mail"
+			}, {
+				text: "Mallar",
+				target: "/settings/mail/templates"
+			}, {
+				type: "separator",
+				target: ""
+			},
+
+			// Export
+			{
+				type: "heading",
+				text: "Export",
+				target: "",
+				icon: "download"
+			}, {
+				text: "Exportera data",
+				target: "/settings/export"
+			}, {
+				text: "Importera data",
+				target: "/settings/export"
 			}]
 		}, {
 			text: "Logga ut",
@@ -518,12 +546,14 @@
 					_react2.default.createElement(_reactRouter.Route, { path: ':id', component: _Invoice.InvoiceHandler })
 				),
 				_react2.default.createElement(_reactRouter.Route, { path: 'instruction', component: _Instruction.EconomyAccountingInstructionsHandler }),
+				_react2.default.createElement(_reactRouter.Route, { path: 'instruction/add', component: _Instruction.EconomyAccountingInstructionAddHandler }),
 				_react2.default.createElement(_reactRouter.Route, { path: 'instruction/:id', component: _Instruction.EconomyAccountingInstructionHandler }),
 				_react2.default.createElement(_reactRouter.Route, { path: 'instruction/:id/import', component: _Instruction.EconomyAccountingInstructionImportHandler }),
 				_react2.default.createElement(_reactRouter.Route, { path: 'valuationsheet', component: _ValuationSheet2.default }),
 				_react2.default.createElement(_reactRouter.Route, { path: 'resultreport', component: _ResultReport2.default }),
 				_react2.default.createElement(_reactRouter.Route, { path: 'costcenter', component: _CostCenter.EconomyCostCentersHandler }),
-				_react2.default.createElement(_reactRouter.Route, { path: 'costcenter/:id', component: _CostCenter.EconomyCostCenterHandler })
+				_react2.default.createElement(_reactRouter.Route, { path: 'costcenter/:id', component: _CostCenter.EconomyCostCenterHandler }),
+				_react2.default.createElement(_reactRouter.Route, { path: 'account/:id', component: _Account.EconomyAccountHandler })
 			),
 			_react2.default.createElement(
 				_reactRouter.Route,
@@ -547,7 +577,6 @@
 					_react2.default.createElement(_reactRouter.Route, { path: 'accountingperiods', component: _Other.EconomyAccountingPeriodHandler }),
 					_react2.default.createElement(_reactRouter.Route, { path: 'accounts', component: _Account.EconomyAccountsHandler }),
 					_react2.default.createElement(_reactRouter.Route, { path: 'account/add', component: _Account.EconomyAccountAddHandler }),
-					_react2.default.createElement(_reactRouter.Route, { path: 'account/:id', component: _Account.EconomyAccountHandler }),
 					_react2.default.createElement(_reactRouter.Route, { path: 'account/:id/edit', component: _Account.EconomyAccountEditHandler })
 				)
 			),
@@ -27676,7 +27705,7 @@
 					UIkit.modal.alert("<h2>Error</h2>Received an unexpected result from the server<br><br>" + data.status + " " + data.statusText + "<br><br>" + data.responseText);
 				}
 			};
-		};
+		}
 
 		// Call the stored original Backbone.sync method with extra headers argument added
 		backboneSync(method, model, options);
@@ -42916,10 +42945,6 @@
 
 	var _reactRouter = __webpack_require__(173);
 
-	var _BackboneTable = __webpack_require__(247);
-
-	var _BackboneTable2 = _interopRequireDefault(_BackboneTable);
-
 	var _Date = __webpack_require__(249);
 
 	var _Date2 = _interopRequireDefault(_Date);
@@ -42953,6 +42978,9 @@
 	var _DateTime2 = _interopRequireDefault(_DateTime);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	// Backbone
+
 
 	var MemberHandler = _react2.default.createClass({
 		displayName: 'MemberHandler',
@@ -43026,20 +43054,20 @@
 					),
 					_react2.default.createElement(
 						'li',
+						{ id: 'member_groups' },
+						_react2.default.createElement(
+							'a',
+							null,
+							'Grupper'
+						)
+					),
+					_react2.default.createElement(
+						'li',
 						{ id: 'member_keys' },
 						_react2.default.createElement(
 							'a',
 							null,
 							'Nycklar'
-						)
-					),
-					_react2.default.createElement(
-						'li',
-						{ id: 'member_transactions' },
-						_react2.default.createElement(
-							'a',
-							null,
-							'Transaktioner'
 						)
 					),
 					_react2.default.createElement(
@@ -43053,11 +43081,11 @@
 					),
 					_react2.default.createElement(
 						'li',
-						{ id: 'member_groups' },
+						{ id: 'member_transactions' },
 						_react2.default.createElement(
 							'a',
 							null,
-							'Grupper'
+							'Transaktioner'
 						)
 					),
 					_react2.default.createElement(
@@ -43081,12 +43109,12 @@
 					_react2.default.createElement(
 						'li',
 						null,
-						_react2.default.createElement(_KeysUserBox2.default, { member_number: this.state.model.get("member_number") })
+						_react2.default.createElement(_GroupUserBox2.default, { member_number: this.state.model.get("member_number") })
 					),
 					_react2.default.createElement(
 						'li',
 						null,
-						_react2.default.createElement(_TransactionUserBox2.default, { member_number: this.state.model.get("member_number") })
+						_react2.default.createElement(_KeysUserBox2.default, { member_number: this.state.model.get("member_number") })
 					),
 					_react2.default.createElement(
 						'li',
@@ -43096,7 +43124,7 @@
 					_react2.default.createElement(
 						'li',
 						null,
-						_react2.default.createElement(_GroupUserBox2.default, { member_number: this.state.model.get("member_number") })
+						_react2.default.createElement(_TransactionUserBox2.default, { member_number: this.state.model.get("member_number") })
 					),
 					_react2.default.createElement(
 						'li',
@@ -43109,9 +43137,6 @@
 	});
 
 	// Import functions from other modules
-
-
-	// Backbone
 
 	MemberHandler.title = "Visa medlem";
 
@@ -43192,13 +43217,13 @@
 							{ className: 'uk-form-row' },
 							_react2.default.createElement(
 								'label',
-								{ className: 'uk-form-label' },
+								{ htmlFor: 'civicregno', className: 'uk-form-label' },
 								this.state.model.civicregno ? "Personnummer" : ""
 							),
 							_react2.default.createElement(
 								'div',
 								{ className: 'uk-form-controls' },
-								_react2.default.createElement('input', { type: 'text', name: 'civicregno', value: this.state.model.civicregno, placeholder: 'Personnummer', onChange: this.handleChange, className: 'uk-form-width-large' })
+								_react2.default.createElement('input', { type: 'text', name: 'civicregno', id: 'civicregno', value: this.state.model.civicregno, placeholder: 'Personnummer', onChange: this.handleChange, className: 'uk-form-width-large' })
 							)
 						),
 						_react2.default.createElement(
@@ -43206,13 +43231,13 @@
 							{ className: 'uk-form-row' },
 							_react2.default.createElement(
 								'label',
-								{ className: 'uk-form-label' },
+								{ htmlFor: 'firstname', className: 'uk-form-label' },
 								this.state.model.firstname ? "Förnamn" : ""
 							),
 							_react2.default.createElement(
 								'div',
 								{ className: 'uk-form-controls' },
-								_react2.default.createElement('input', { type: 'text', name: 'firstname', value: this.state.model.firstname, placeholder: 'Förnamn', onChange: this.handleChange, className: 'uk-form-width-large' })
+								_react2.default.createElement('input', { type: 'text', name: 'firstname', id: 'firstname', value: this.state.model.firstname, placeholder: 'Förnamn', onChange: this.handleChange, className: 'uk-form-width-large' })
 							)
 						),
 						_react2.default.createElement(
@@ -43220,13 +43245,13 @@
 							{ className: 'uk-form-row' },
 							_react2.default.createElement(
 								'label',
-								{ className: 'uk-form-label' },
+								{ htmlFor: 'lastname', className: 'uk-form-label' },
 								this.state.model.lastname ? "Efternamn" : ""
 							),
 							_react2.default.createElement(
 								'div',
 								{ className: 'uk-form-controls' },
-								_react2.default.createElement('input', { type: 'text', name: 'lastname', value: this.state.model.lastname, placeholder: 'Efternamn', onChange: this.handleChange, className: 'uk-form-width-large' })
+								_react2.default.createElement('input', { type: 'text', name: 'lastname', id: 'lastname', value: this.state.model.lastname, placeholder: 'Efternamn', onChange: this.handleChange, className: 'uk-form-width-large' })
 							)
 						),
 						_react2.default.createElement(
@@ -43234,7 +43259,7 @@
 							{ className: 'uk-form-row' },
 							_react2.default.createElement(
 								'label',
-								{ className: 'uk-form-label' },
+								{ htmlFor: 'email', className: 'uk-form-label' },
 								this.state.model.email ? "E-post" : ""
 							),
 							_react2.default.createElement(
@@ -43244,7 +43269,7 @@
 									'div',
 									{ className: 'uk-form-icon' },
 									_react2.default.createElement('i', { className: 'uk-icon-envelope' }),
-									_react2.default.createElement('input', { type: 'text', name: 'email', value: this.state.model.email, placeholder: 'E-postadress', onChange: this.handleChange, className: 'uk-form-width-large' })
+									_react2.default.createElement('input', { type: 'text', name: 'email', id: 'email', value: this.state.model.email, placeholder: 'E-postadress', onChange: this.handleChange, className: 'uk-form-width-large' })
 								)
 							)
 						),
@@ -43253,7 +43278,7 @@
 							{ className: 'uk-form-row' },
 							_react2.default.createElement(
 								'label',
-								{ className: 'uk-form-label' },
+								{ htmlFor: 'phone', className: 'uk-form-label' },
 								this.state.model.phone ? "Telefonnummer" : ""
 							),
 							_react2.default.createElement(
@@ -43263,7 +43288,7 @@
 									'div',
 									{ className: 'uk-form-icon' },
 									_react2.default.createElement('i', { className: 'uk-icon-phone' }),
-									_react2.default.createElement('input', { type: 'text', name: 'phone', value: this.state.model.phone, placeholder: 'Telefonnummer', onChange: this.handleChange, className: 'uk-form-width-large' })
+									_react2.default.createElement('input', { type: 'text', name: 'phone', id: 'phone', value: this.state.model.phone, placeholder: 'Telefonnummer', onChange: this.handleChange, className: 'uk-form-width-large' })
 								)
 							)
 						)
@@ -43282,13 +43307,13 @@
 							{ className: 'uk-form-row' },
 							_react2.default.createElement(
 								'label',
-								{ className: 'uk-form-label' },
+								{ htmlFor: 'address_street', className: 'uk-form-label' },
 								this.state.model.address_street ? "Address" : ""
 							),
 							_react2.default.createElement(
 								'div',
 								{ className: 'uk-form-controls' },
-								_react2.default.createElement('input', { type: 'text', name: 'address_street', value: this.state.model.address_street, placeholder: 'Adress inkl gatunummer och lägenhetsnummer', onChange: this.handleChange, className: 'uk-form-width-large' })
+								_react2.default.createElement('input', { type: 'text', name: 'address_street', id: 'address_street', value: this.state.model.address_street, placeholder: 'Adress inkl gatunummer och lägenhetsnummer', onChange: this.handleChange, className: 'uk-form-width-large' })
 							)
 						),
 						_react2.default.createElement(
@@ -43296,13 +43321,13 @@
 							{ className: 'uk-form-row' },
 							_react2.default.createElement(
 								'label',
-								{ className: 'uk-form-label' },
+								{ htmlFor: 'address_extra', className: 'uk-form-label' },
 								this.state.model.address_extra ? "Address extra" : ""
 							),
 							_react2.default.createElement(
 								'div',
 								{ className: 'uk-form-controls' },
-								_react2.default.createElement('input', { type: 'text', name: 'address_extra', value: this.state.model.address_extra, placeholder: 'Extra adressrad, t ex C/O adress', onChange: this.handleChange, className: 'uk-form-width-large' })
+								_react2.default.createElement('input', { type: 'text', name: 'address_extra', id: 'address_extra', value: this.state.model.address_extra, placeholder: 'Extra adressrad, t ex C/O adress', onChange: this.handleChange, className: 'uk-form-width-large' })
 							)
 						),
 						_react2.default.createElement(
@@ -43313,13 +43338,13 @@
 								{ className: 'zipcode' },
 								_react2.default.createElement(
 									'label',
-									{ className: 'uk-form-label' },
+									{ htmlFor: 'address_zipcode', className: 'uk-form-label' },
 									this.state.model.address_zipcode ? "Postnummer" : ""
 								),
 								_react2.default.createElement(
 									'div',
 									{ className: 'uk-form-controls' },
-									_react2.default.createElement('input', { type: 'text', name: 'address_zipcode', value: this.state.model.address_zipcode, placeholder: 'Postnummer', onChange: this.handleChange, className: 'uk-form-width-small' })
+									_react2.default.createElement('input', { type: 'text', name: 'address_zipcode', id: 'address_zipcode', value: this.state.model.address_zipcode, placeholder: 'Postnummer', onChange: this.handleChange, className: 'uk-form-width-small' })
 								)
 							),
 							_react2.default.createElement(
@@ -43327,13 +43352,13 @@
 								{ className: 'city' },
 								_react2.default.createElement(
 									'label',
-									{ className: 'uk-form-label' },
+									{ htmlFor: 'address_city', className: 'uk-form-label' },
 									this.state.model.address_city ? "Postort" : ""
 								),
 								_react2.default.createElement(
 									'div',
 									{ className: 'uk-form-controls' },
-									_react2.default.createElement('input', { type: 'text', name: 'address_city', value: this.state.model.address_city, placeholder: 'Postort', onChange: this.handleChange })
+									_react2.default.createElement('input', { type: 'text', name: 'address_city', id: 'address_city', value: this.state.model.address_city, placeholder: 'Postort', onChange: this.handleChange })
 								)
 							)
 						),
@@ -43342,7 +43367,7 @@
 							{ className: 'uk-form-row' },
 							_react2.default.createElement(
 								'label',
-								{ className: 'uk-form-label' },
+								{ htmlFor: '', className: 'uk-form-label' },
 								'Land'
 							),
 							_react2.default.createElement(
@@ -43980,8 +44005,25 @@
 			return {
 				status: "done",
 				collection: data,
-				showPagination: true
+				showPagination: true,
+				sort_column: "",
+				sort_order: "asc",
+				filters: this.props.filters || {}
 			};
+		},
+
+		componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
+			if (nextProps.filters != this.state.filters) {
+				this.setState({
+					filters: nextProps.filters
+				});
+
+				// TODO: setState() has a delay so we need to wait a moment
+				var _this = this;
+				setTimeout(function () {
+					_this.fetch();
+				}, 100);
+			}
 		},
 
 		initializePagination: function initializePagination(i) {
@@ -43999,20 +44041,14 @@
 					});
 
 					$(pag).on("select.uk.pagination", function (e, pageIndex) {
-						// This one is a little bit ugle as it require the ref="pag1" to be the first attribute
-						if (e.target.attributes[0].nodeValue == "pag1") {
-							var thisPag = _this.pagination[1];
-							var otherPag = _this.pagination[2];
-						} else {
-							var thisPag = _this.pagination[2];
-							var otherPag = _this.pagination[1];
-						}
+						// Update both paginators manually
+						_this.pagination[1].currentPage = pageIndex;
+						_this.pagination[2].currentPage = pageIndex;
+						_this.pagination[1].render(_this.pagination[1].pages);
+						_this.pagination[2].render(_this.pagination[1].pages);
 
-						_this.getCollection().getPage(pageIndex + 1);
-
-						// Update the other paginator
-						otherPag.currentPage = thisPag.currentPage;
-						otherPag.render(thisPag.pages);
+						// Send request to server
+						_this.fetch();
 					});
 				}
 			}
@@ -44113,7 +44149,32 @@
 			});
 		},
 
+		// Fetch data from server
+		fetch: function fetch() {
+			var filters = this.state.filters;
+
+			// Pagination
+			var pageIndex = 0;
+			if (this.pagination[1]) {
+				// Get the current selected page from the top paginator
+				pageIndex = this.pagination[1].currentPage;
+			}
+
+			filters.page = pageIndex + 1;
+
+			// Apply sort
+			filters.sort_by = this.state.sort_column;
+			filters.sort_order = this.state.sort_order;
+
+			// Send request to server
+			this.getCollection().fetch({
+				data: filters
+			});
+		},
+
 		render: function render() {
+			var _this = this;
+
 			if (this.state.status == "loading") {
 				var loading = _react2.default.createElement(
 					'div',
@@ -44183,7 +44244,31 @@
 						_react2.default.createElement(
 							'thead',
 							null,
-							this.renderHeader()
+							_react2.default.createElement(
+								'tr',
+								null,
+								this.renderHeader().map(function (column, i) {
+									if (column.title) {
+										if (_this.state.sort_column == column.sort) {
+											var icon = _react2.default.createElement('i', { className: "uk-icon uk-icon-angle-" + (_this.state.sort_order == "asc" ? "up" : "down") });
+										}
+
+										return _react2.default.createElement(
+											'th',
+											{ key: i, className: column.class },
+											column.sort ? _react2.default.createElement(
+												'a',
+												{ 'data-sort': column.sort, onClick: _this.sort },
+												column.title,
+												' ',
+												icon
+											) : column.title
+										);
+									} else {
+										return _react2.default.createElement('th', { key: i });
+									}
+								})
+							)
 						),
 						_react2.default.createElement(
 							'tbody',
@@ -44197,8 +44282,31 @@
 			);
 		},
 
+		sort: function sort(event) {
+			if (event.target.dataset.sort != this.state.sort_column) {
+				// Always start with ascending sort
+				var order = "asc";
+			} else {
+				// Toggle between asc/desc when the user is clicking the same column multiple times
+				var order = this.state.sort_order == "asc" ? "desc" : "asc";
+			}
+
+			// Save the sort order
+			this.setState({
+				sort_column: event.target.dataset.sort,
+				sort_order: order
+			});
+
+			// Request new sorted data from the server
+			// TODO: setState does not change the state asap
+			var _this = this;
+			setTimeout(function () {
+				_this.fetch();
+			}, 100);
+		},
+
 		tryAgain: function tryAgain() {
-			this.getCollection().fetch();
+			this.fetch();
 		},
 
 		renderPagination: function renderPagination(i) {
@@ -44362,7 +44470,14 @@
 				return _react2.default.createElement(
 					'div',
 					null,
-					_react2.default.createElement(_Keys2.default, { type: _Rfid2.default, member_number: this.props.member_number, edit: this.edit }),
+					_react2.default.createElement(_Keys2.default, { type: _Rfid2.default,
+						filters: {
+							relations: [{
+								type: "member",
+								member_number: this.props.member_number
+							}]
+						},
+						edit: this.edit }),
 					_react2.default.createElement(
 						'button',
 						{ className: 'uk-button uk-button-primary', onClick: this.add },
@@ -44412,6 +44527,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var AccountModel = _backbone2.default.Model.fullExtend({
+		idAttribute: "account_number",
 		urlRoot: "/economy/2015/account",
 		defaults: {
 			created_at: "0000-00-00T00:00:00Z",
@@ -44446,9 +44562,10 @@
 			created_at: "0000-00-00T00:00:00Z",
 			updated_at: "0000-00-00T00:00:00Z",
 			tagid: "",
-			active: 1,
-			title: "",
-			description: ""
+			description: "",
+			status: "inactive",
+			startdate: "0000-00-00T00:00:00Z",
+			enddate: "0000-00-00T00:00:00Z"
 		}
 	});
 
@@ -44485,24 +44602,25 @@
 
 		getInitialState: function getInitialState() {
 			return {
-				columns: 5
+				columns: 4
 			};
 		},
 
 		componentWillMount: function componentWillMount() {
-			if (this.props.member_number !== undefined) {
-				// Load RFID keys related to member
-				this.state.collection.fetch({
-					data: {
-						relation: {
-							type: "member",
-							member_number: this.props.member_number
-						}
-					}
+			this.fetch();
+		},
+
+		componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
+			if (nextProps.filters != this.state.filters) {
+				this.setState({
+					filters: nextProps.filters
 				});
-			} else {
-				// Load all RFID keys
-				this.state.collection.fetch();
+
+				// TODO: setState() has a delay so we need to wait a moment
+				var _this = this;
+				setTimeout(function () {
+					_this.fetch();
+				}, 100);
 			}
 		},
 
@@ -44519,6 +44637,21 @@
 			this.props.edit(this.getCollection().at(row).clone());
 		},
 
+		renderHeader: function renderHeader() {
+			return [{
+				title: "Status",
+				sort: "status"
+			}, {
+				title: "RFID",
+				sort: "tagid"
+			}, {
+				title: "Beskrivning",
+				sort: "description"
+			}, {
+				title: ""
+			}];
+		},
+
 		renderRow: function renderRow(row, i) {
 			return _react2.default.createElement(
 				'tr',
@@ -44527,20 +44660,27 @@
 					'td',
 					null,
 					function () {
-						switch (row.active) {
-							case 1:
+						switch (row.status) {
+							case "active":
 								return _react2.default.createElement(
 									'span',
 									null,
-									_react2.default.createElement('i', { className: 'uk-icon-check key-active' }),
-									'Ja'
+									_react2.default.createElement('i', { className: 'uk-icon uk-icon-check key-active' }),
+									'Aktiv'
 								);
-							case 0:
+							case "inactive":
 								return _react2.default.createElement(
 									'span',
 									null,
-									_react2.default.createElement('i', { className: 'uk-icon-cross key-inactive' }),
-									'Nej'
+									_react2.default.createElement('i', { className: 'uk-icon uk-icon-close key-inactive' }),
+									'Inaktiv'
+								);
+							case "auto":
+								return _react2.default.createElement(
+									'span',
+									null,
+									_react2.default.createElement('i', { className: 'uk-icon uk-icon-cog key-auto' }),
+									'Auto'
 								);
 						}
 					}()
@@ -44570,29 +44710,6 @@
 						this.removeButton(i)
 					)
 				)
-			);
-		},
-
-		renderHeader: function renderHeader() {
-			return _react2.default.createElement(
-				'tr',
-				null,
-				_react2.default.createElement(
-					'th',
-					null,
-					'Aktiv'
-				),
-				_react2.default.createElement(
-					'th',
-					null,
-					'RFID'
-				),
-				_react2.default.createElement(
-					'th',
-					null,
-					'Beskrivning'
-				),
-				_react2.default.createElement('th', null)
 			);
 		}
 	});
@@ -44672,6 +44789,13 @@
 
 		mixins: [Backbone.React.Component.mixin],
 
+		getInitialState: function getInitialState() {
+			return {
+				error_column: "",
+				error_message: ""
+			};
+		},
+
 		cancel: function cancel(event) {
 			// Prevent the form from being submitted
 			event.preventDefault();
@@ -44709,6 +44833,14 @@
 					setTimeout(function () {
 						_this.props.save.call();
 					}, 10);
+				},
+				error: function error(model, xhr, options) {
+					if (xhr.status == 422) {
+						_this.setState({
+							error_column: xhr.responseJSON.column,
+							error_message: xhr.responseJSON.message
+						});
+					}
 				}
 			});
 		},
@@ -44723,12 +44855,19 @@
 			this.forceUpdate();
 		},
 
-		render: function render() {
-			if (this.state.model.entity_id === undefined) {
-				var title = "Lägg till ny RFID-tagg";
-			} else {
-				var title = "Redigera RFID-tagg";
+		renderErrorMsg: function renderErrorMsg(column) {
+			if (this.state.error_column == column) {
+				return _react2.default.createElement(
+					'p',
+					{ className: 'uk-form-help-block error' },
+					'Error: ',
+					this.state.error_message
+				);
 			}
+		},
+
+		render: function render() {
+			var _this2 = this;
 
 			return _react2.default.createElement(
 				'form',
@@ -44739,7 +44878,7 @@
 					_react2.default.createElement(
 						'h3',
 						null,
-						title
+						this.state.model.entity_id ? "Redigera RFID-tagg" : "Lägg till ny RFID-tagg"
 					),
 					_react2.default.createElement(
 						'div',
@@ -44752,31 +44891,8 @@
 						_react2.default.createElement(
 							'div',
 							{ className: 'uk-form-controls' },
-							_react2.default.createElement(
-								'div',
-								{ className: 'uk-form-icon' },
-								_react2.default.createElement('i', { className: 'uk-icon-tag' }),
-								_react2.default.createElement('input', { type: 'text', id: 'tagid', name: 'tagid', value: this.state.model.tagid, className: 'uk-form-width-large', onChange: this.handleChange })
-							)
-						)
-					),
-					_react2.default.createElement(
-						'div',
-						{ className: 'uk-form-row' },
-						_react2.default.createElement(
-							'label',
-							{ className: 'uk-form-label', htmlFor: 'title' },
-							'Titel'
-						),
-						_react2.default.createElement(
-							'div',
-							{ className: 'uk-form-controls' },
-							_react2.default.createElement(
-								'div',
-								{ className: 'uk-form-icon' },
-								_react2.default.createElement('i', { className: 'uk-icon-tag' }),
-								_react2.default.createElement('input', { type: 'text', id: 'title', name: 'title', value: this.state.model.title, className: 'uk-form-width-large', onChange: this.handleChange })
-							)
+							_react2.default.createElement('input', { type: 'text', id: 'tagid', name: 'tagid', placeholder: 'Använd en RFID-läsare för att läsa av det unika numret på nyckeln', value: this.state.model.tagid, className: 'uk-form-width-large', onChange: this.handleChange }),
+							this.renderErrorMsg("tagid")
 						)
 					),
 					_react2.default.createElement(
@@ -44790,9 +44906,106 @@
 						_react2.default.createElement(
 							'div',
 							{ className: 'uk-form-controls' },
-							_react2.default.createElement('textarea', { id: 'description', name: 'description', value: this.state.model.description, className: 'uk-form-width-large', onChange: this.handleChange })
+							_react2.default.createElement('textarea', { id: 'description', name: 'description', placeholder: 'Det är valfritt att lägga in en beskrivning av nyckeln', value: this.state.model.description, className: 'uk-form-width-large', onChange: this.handleChange }),
+							this.renderErrorMsg("description")
 						)
 					),
+					_react2.default.createElement(
+						'div',
+						{ className: 'uk-form-row' },
+						_react2.default.createElement(
+							'label',
+							{ className: 'uk-form-label', htmlFor: 'status' },
+							'Status'
+						),
+						_react2.default.createElement(
+							'div',
+							{ className: 'uk-form-controls' },
+							_react2.default.createElement(
+								'select',
+								{ ref: 'status', id: 'status', name: 'status', value: this.state.model.status, className: 'uk-form-width-large', onChange: this.handleChange },
+								_react2.default.createElement(
+									'option',
+									{ value: 'active' },
+									'Aktiv'
+								),
+								_react2.default.createElement(
+									'option',
+									{ value: 'inactive' },
+									'Inaktiv'
+								),
+								_react2.default.createElement(
+									'option',
+									{ value: 'auto' },
+									'Auto'
+								)
+							),
+							this.renderErrorMsg("status")
+						)
+					),
+					_react2.default.createElement(
+						'div',
+						{ className: 'uk-form-row' },
+						_react2.default.createElement(
+							'div',
+							{ className: 'uk-form-controls' },
+							_react2.default.createElement(
+								'p',
+								null,
+								_react2.default.createElement('i', { className: 'uk-icon uk-icon-info-circle' }),
+								function () {
+									switch (_this2.state.model.status) {
+										case "active":
+											return "En aktiv nyckel är permanent aktiv inom de datum som specificeras nedan och påverkas altså inte av eventuella betalningar.";
+										case "inactive":
+											return "En inaktiv nyckel är permanent inaktiv och går ej att använda i passersystem förän den aktiveras igen.";
+										case "auto":
+											return "Auto-läget beräknar fram om nyckeln skall vara aktiv eller ej beroende på medlemmens eventuella betalningar.";
+									}
+								}()
+							)
+						)
+					),
+					this.state.model.status == "active" ? _react2.default.createElement(
+						'div',
+						{ className: 'uk-form-row' },
+						_react2.default.createElement(
+							'label',
+							{ className: 'uk-form-label', htmlFor: 'startdate' },
+							'Startdatum'
+						),
+						_react2.default.createElement(
+							'div',
+							{ className: 'uk-form-controls' },
+							_react2.default.createElement(
+								'div',
+								{ className: 'uk-form-icon' },
+								_react2.default.createElement('i', { className: 'uk-icon-calendar' }),
+								_react2.default.createElement('input', { type: 'text', id: 'startdate', name: 'startdate', value: this.state.model.startdate, className: 'uk-form-width-large', onChange: this.handleChange }),
+								this.renderErrorMsg("startdate")
+							)
+						)
+					) : "",
+					this.state.model.status == "active" ? _react2.default.createElement(
+						'div',
+						{ className: 'uk-form-row' },
+						_react2.default.createElement(
+							'label',
+							{ className: 'uk-form-label', htmlFor: 'enddate' },
+							'Slutdatum'
+						),
+						_react2.default.createElement(
+							'div',
+							{ className: 'uk-form-controls' },
+							_react2.default.createElement(
+								'div',
+								{ className: 'uk-form-icon' },
+								_react2.default.createElement('i', { className: 'uk-icon-calendar' }),
+								_react2.default.createElement('input', { type: 'text', id: 'enddate', name: 'enddate', value: this.state.model.enddate, className: 'uk-form-width-large', onChange: this.handleChange }),
+								this.renderErrorMsg("enddate")
+							)
+						)
+					) : "",
 					_react2.default.createElement(
 						'div',
 						{ className: 'uk-form-row' },
@@ -44856,7 +45069,14 @@
 			return _react2.default.createElement(
 				'div',
 				null,
-				_react2.default.createElement(_History.MailHistory, { type: _Mail2.default, member_number: this.props.member_number }),
+				_react2.default.createElement(_History.MailHistory, { type: _Mail2.default,
+					filters: {
+						relations: [{
+							type: "member",
+							member_number: this.props.member_number
+						}]
+					}
+				}),
 				_react2.default.createElement(
 					_reactRouter.Link,
 					{ to: '/mail/send', className: 'uk-button uk-button-primary' },
@@ -44913,12 +45133,12 @@
 				),
 				_react2.default.createElement(
 					'p',
-					null,
-					'Visa lista över samtliga E-post och SMS-utskick'
+					{ className: 'uk-float-left' },
+					'Visa lista över samtliga E-post och SMS-utskick.'
 				),
 				_react2.default.createElement(
 					_reactRouter.Link,
-					{ to: '/mail/send', className: 'uk-button uk-button-primary' },
+					{ to: '/mail/send', className: 'uk-button uk-button-primary uk-float-right' },
 					_react2.default.createElement('i', { className: 'uk-icon-plus-circle' }),
 					' Skapa nytt utskick'
 				),
@@ -44943,20 +45163,37 @@
 		},
 
 		componentWillMount: function componentWillMount() {
-			if (this.props.member_number !== undefined) {
-				// Load RFID keys related to member
-				this.state.collection.fetch({
-					data: {
-						relation: {
-							type: "member",
-							member_number: this.props.member_number
-						}
-					}
+			this.fetch();
+		},
+
+		componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
+			if (nextProps.filters != this.state.filters) {
+				this.setState({
+					filters: nextProps.filters
 				});
-			} else {
-				// Load all RFID keys
-				this.state.collection.fetch();
+
+				// TODO: setState() has a delay so we need to wait a moment
+				var _this = this;
+				setTimeout(function () {
+					_this.fetch();
+				}, 100);
 			}
+		},
+
+		renderHeader: function renderHeader() {
+			return [{
+				title: "Id",
+				sort: "entity_id"
+			}, {
+				title: "Status",
+				sort: "status"
+			}, {
+				title: "Mottagare",
+				sort: "recipient"
+			}, {
+				title: "Meddelande",
+				sort: "description"
+			}];
 		},
 
 		renderRow: function renderRow(row, i) {
@@ -45009,33 +45246,6 @@
 					'td',
 					null,
 					row.type == "email" ? row.title : row.description
-				)
-			);
-		},
-
-		renderHeader: function renderHeader() {
-			return _react2.default.createElement(
-				'tr',
-				null,
-				_react2.default.createElement(
-					'th',
-					null,
-					'Id'
-				),
-				_react2.default.createElement(
-					'th',
-					null,
-					'Status'
-				),
-				_react2.default.createElement(
-					'th',
-					null,
-					'Mottagare'
-				),
-				_react2.default.createElement(
-					'th',
-					null,
-					'Meddelande'
 				)
 			);
 		}
@@ -45207,19 +45417,19 @@
 			}
 
 			$.ajax({
-				method: "POST",
-				url: _config2.default.apiBasePath + "/member/search",
-				data: JSON.stringify({
-					q: input
-				})
+				method: "GET",
+				url: _config2.default.apiBasePath + "/group",
+				data: {
+					search: input
+				}
 			}).done(function (data) {
 				setTimeout(function () {
 					var autoComplete = [];
 
 					data.data.forEach(function (element, index, array) {
 						autoComplete.push({
-							label: element.firstname + " " + element.lastname + " (#" + element.member_number + ")",
-							value: element.member_number
+							label: element.title + ": " + element.description,
+							value: element.entity_id
 						});
 					});
 
@@ -45232,11 +45442,38 @@
 
 		// Send an API request and queue the message to be sent
 		send: function send(event) {
+			var _this = this;
+
 			// Prevent the form from being submitted
 			event.preventDefault();
 
-			var groups = this.state.addGroups;
-			UIkit.modal.alert("TODO: Add to groups: " + groups);
+			// Create a list of entity_id's that should relate to this entity
+			var entity2 = [];
+			this.state.addGroups.forEach(function (element, index, array) {
+				entity2.push(element.value);
+			});
+
+			// Send API request
+			$.ajax({
+				method: "POST",
+				url: _config2.default.apiBasePath + "/relation",
+				data: JSON.stringify({
+					entity1: [{
+						relations: [{
+							type: "member",
+							member_number: this.props.member_number
+						}]
+					}],
+					entity2: entity2
+				})
+			}).done(function () {
+				/*
+	   			_this.setState({
+	   				showEditForm: false,
+	   				addGroups: "",
+	   			});
+	   */
+			});
 		},
 
 		gotoGroup: function gotoGroup(value, event) {
@@ -45291,7 +45528,14 @@
 				return _react2.default.createElement(
 					'div',
 					null,
-					_react2.default.createElement(_Groups.Groups, { type: _Group2.default, member_number: this.props.member_number }),
+					_react2.default.createElement(_Groups.Groups, { type: _Group2.default,
+						filters: {
+							relations: [{
+								type: "member",
+								member_number: this.props.member_number
+							}]
+						}
+					}),
 					_react2.default.createElement(
 						'button',
 						{ className: 'uk-button uk-button-primary', onClick: this.add },
@@ -45336,13 +45580,33 @@
 
 	var _TableDropdownMenu2 = _interopRequireDefault(_TableDropdownMenu);
 
+	var _TableFilterBox = __webpack_require__(329);
+
+	var _TableFilterBox2 = _interopRequireDefault(_TableFilterBox);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	// Backbone
-
 
 	var GroupsHandler = _react2.default.createClass({
 		displayName: 'GroupsHandler',
+
+		getInitialState: function getInitialState() {
+			return {
+				filters: {}
+			};
+		},
+
+		// TODO: Remove?
+		overrideFiltersFromProps: function overrideFiltersFromProps(filters) {
+			console.log("overrideFiltersFromProps");
+			return filters;
+		},
+
+		updateFilters: function updateFilters(newFilter) {
+			var filters = this.overrideFiltersFromProps(newFilter);
+			this.setState({
+				filters: filters
+			});
+		},
 
 		render: function render() {
 			return _react2.default.createElement(
@@ -45355,19 +45619,23 @@
 				),
 				_react2.default.createElement(
 					'p',
-					null,
+					{ className: 'uk-float-left' },
 					'På denna sida ser du en lista på samtliga grupper.'
 				),
 				_react2.default.createElement(
 					_reactRouter.Link,
-					{ className: 'uk-button uk-button-primary', to: '/groups/add' },
+					{ className: 'uk-button uk-button-primary uk-float-right', to: '/groups/add' },
 					_react2.default.createElement('i', { className: 'uk-icon-plus-circle' }),
 					' Skapa ny grupp'
 				),
-				_react2.default.createElement(Groups, { type: _Group2.default })
+				_react2.default.createElement(_TableFilterBox2.default, { onChange: this.updateFilters }),
+				_react2.default.createElement(Groups, { type: _Group2.default, filters: this.state.filters })
 			);
 		}
 	});
+
+	// Backbone
+
 	GroupsHandler.title = "Visa grupper";
 
 	var Groups = _react2.default.createClass({
@@ -45382,19 +45650,20 @@
 		},
 
 		componentWillMount: function componentWillMount() {
-			if (this.props.member_number !== undefined) {
-				// Load RFID keys related to member
-				this.state.collection.fetch({
-					data: {
-						relation: {
-							type: "member",
-							member_number: this.props.member_number
-						}
-					}
+			this.fetch();
+		},
+
+		componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
+			if (nextProps.filters != this.state.filters) {
+				this.setState({
+					filters: nextProps.filters
 				});
-			} else {
-				// Load all RFID keys
-				this.state.collection.fetch();
+
+				// TODO: setState() has a delay so we need to wait a moment
+				var _this = this;
+				setTimeout(function () {
+					_this.fetch();
+				}, 100);
 			}
 		},
 
@@ -45404,6 +45673,21 @@
 
 		removeErrorMessage: function removeErrorMessage() {
 			UIkit.modal.alert("Error deleting group");
+		},
+
+		renderHeader: function renderHeader() {
+			return [{
+				title: "Namn",
+				sort: "title"
+			}, {
+				title: "Beskrivning",
+				sort: "description"
+			}, {
+				title: "Antal medlemmar",
+				sort: "membercount"
+			}, {
+				title: ""
+			}];
 		},
 
 		renderRow: function renderRow(row, i) {
@@ -45431,7 +45715,7 @@
 				_react2.default.createElement(
 					'td',
 					null,
-					'5'
+					row.membercount
 				),
 				_react2.default.createElement(
 					'td',
@@ -45448,29 +45732,6 @@
 						this.removeButton(i, "Ta bort grupp")
 					)
 				)
-			);
-		},
-
-		renderHeader: function renderHeader() {
-			return _react2.default.createElement(
-				'tr',
-				null,
-				_react2.default.createElement(
-					'th',
-					null,
-					'Namn'
-				),
-				_react2.default.createElement(
-					'th',
-					null,
-					'Beskrivning'
-				),
-				_react2.default.createElement(
-					'th',
-					null,
-					'Antal medlemmar'
-				),
-				_react2.default.createElement('th', null)
 			);
 		}
 	});
@@ -47892,7 +48153,14 @@
 			return _react2.default.createElement(
 				'div',
 				null,
-				_react2.default.createElement(_TransactionsUser2.default, { type: _Transaction2.default, member_number: this.props.member_number })
+				_react2.default.createElement(_TransactionsUser2.default, { type: _Transaction2.default,
+					filters: {
+						relations: [{
+							type: "member",
+							member_number: this.props.member_number
+						}]
+					}
+				})
 			);
 		}
 	});
@@ -47972,43 +48240,37 @@
 		},
 
 		componentWillMount: function componentWillMount() {
-			if (this.props.member_number !== undefined) {
-				// Load RFID keys related to member
-				this.state.collection.fetch({
-					data: {
-						relation: {
-							type: "member",
-							member_number: this.props.member_number
-						}
-					}
+			this.fetch();
+		},
+
+		componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
+			if (nextProps.filters != this.state.filters) {
+				this.setState({
+					filters: nextProps.filters
 				});
-			} else {
-				// Load all RFID keys
-				this.state.collection.fetch();
+
+				// TODO: setState() has a delay so we need to wait a moment
+				var _this = this;
+				setTimeout(function () {
+					_this.fetch();
+				}, 100);
 			}
 		},
 
 		renderHeader: function renderHeader() {
-			return _react2.default.createElement(
-				'tr',
-				null,
-				_react2.default.createElement(
-					'th',
-					null,
-					'Bokföringsdatum'
-				),
-				_react2.default.createElement(
-					'th',
-					null,
-					'Transaktion'
-				),
-				_react2.default.createElement(
-					'th',
-					{ className: 'uk-text-right' },
-					'Belopp'
-				),
-				_react2.default.createElement('th', null)
-			);
+			return [{
+				title: "Bokföringsdatum",
+				sort: "accounting_date"
+			}, {
+				title: "Transaktion",
+				sort: "transaction_title"
+			}, {
+				title: "Belopp",
+				class: "uk-text-right",
+				sort: "amount"
+			}, {
+				title: ""
+			}];
 		},
 
 		renderRow: function renderRow(row, i) {
@@ -48954,7 +49216,7 @@
 		},
 
 		// Send changes back to parent
-		selectCountry: function selectCountry(event, a) {
+		selectCountry: function selectCountry(event) {
 			this.props.onChange(event.target.dataset.country);
 		},
 
@@ -49013,6 +49275,14 @@
 
 	var _config2 = _interopRequireDefault(_config);
 
+	var _TableDropdownMenu = __webpack_require__(255);
+
+	var _TableDropdownMenu2 = _interopRequireDefault(_TableDropdownMenu);
+
+	var _TableFilterBox = __webpack_require__(329);
+
+	var _TableFilterBox2 = _interopRequireDefault(_TableFilterBox);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var MembersHandler = _react2.default.createClass({
@@ -49020,17 +49290,19 @@
 
 		getInitialState: function getInitialState() {
 			return {
-				search: ""
+				filters: this.props.filters || {}
 			};
 		},
 
-		search: function search(event) {
-			var _this = this;
-			event.preventDefault();
-
+		updateFilters: function updateFilters(newFilter) {
+			var filters = this.overrideFiltersFromProps(newFilter);
 			this.setState({
-				search: this.refs.q.value
+				filters: filters
 			});
+		},
+
+		overrideFiltersFromProps: function overrideFiltersFromProps(filters) {
+			return filters;
 		},
 
 		render: function render() {
@@ -49044,26 +49316,17 @@
 				),
 				_react2.default.createElement(
 					'p',
-					null,
+					{ className: 'uk-float-left' },
 					'På denna sida ser du en lista på samtliga medlemmar.'
 				),
 				_react2.default.createElement(
 					_reactRouter.Link,
-					{ to: '/members/add', className: 'uk-button uk-button-primary' },
+					{ to: '/members/add', className: 'uk-button uk-button-primary uk-float-right' },
 					_react2.default.createElement('i', { className: 'uk-icon-plus-circle' }),
 					' Skapa ny medlem'
 				),
-				_react2.default.createElement(
-					'form',
-					{ className: 'uk-form' },
-					_react2.default.createElement(
-						'div',
-						{ className: 'uk-form-icon' },
-						_react2.default.createElement('i', { className: 'uk-icon-search' }),
-						_react2.default.createElement('input', { ref: 'q', type: 'text', className: 'uk-form-width-large', placeholder: 'Skriv in ett sökord', onChange: this.search })
-					)
-				),
-				_react2.default.createElement(Members, { type: _Member2.default, search: this.state.search })
+				_react2.default.createElement(_TableFilterBox2.default, { onChange: this.updateFilters }),
+				_react2.default.createElement(Members, { type: _Member2.default, filters: this.state.filters })
 			);
 		}
 	});
@@ -49079,38 +49342,37 @@
 
 		getInitialState: function getInitialState() {
 			return {
-				columns: 6
+				columns: 7
 			};
 		},
 
-		componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
-			this.fetch(nextProps.search);
-		},
-
-		fetch: function fetch(search) {
-			if (search !== undefined && search.length > 0) {
-				// Update the paginator so that is tells us we're on page 1
-				this.pagination[1].currentPage = 0;
-				this.pagination[2].currentPage = 0;
-				this.pagination[1].render();
-				this.pagination[2].render();
-
-				// Make sure the Backbone collection will receive page 1
-				this.getCollection().state.currentPage = 1;
-
-				// Get data from the server
-				this.getCollection().fetch({
-					data: {
-						search: search
-					}
-				});
-			} else {
-				this.getCollection().fetch();
-			}
-		},
-
+		/*
+	 	// TODO: Få igång denna igen
+	 	fetch: function(search)
+	 	{
+	 		if(search !== undefined && search.length > 0)
+	 		{
+	 			// Update the paginator so that is tells us we're on page 1
+	 			this.pagination[1].currentPage = 0;
+	 			this.pagination[2].currentPage = 0;
+	 			this.pagination[1].render();
+	 			this.pagination[2].render();
+	 
+	 			// Make sure the Backbone collection will receive page 1
+	 			this.getCollection().state.currentPage = 1;
+	 		}
+	 	},
+	 */
 		componentWillMount: function componentWillMount() {
 			this.fetch();
+		},
+
+		removeTextMessage: function removeTextMessage(entity) {
+			return "Are you sure you want to remove member \"" + entity.firstname + " " + entity.lastname + "\"?";
+		},
+
+		removeErrorMessage: function removeErrorMessage() {
+			UIkit.modal.alert("Error deleting member");
 		},
 
 		renderRow: function renderRow(row, i) {
@@ -49150,45 +49412,46 @@
 					'td',
 					null,
 					_react2.default.createElement(_Date2.default, { date: row.created_at })
+				),
+				_react2.default.createElement(
+					'td',
+					null,
+					_react2.default.createElement(
+						_TableDropdownMenu2.default,
+						null,
+						_react2.default.createElement(
+							_reactRouter.Link,
+							{ to: "/members/" + row.member_number },
+							_react2.default.createElement('i', { className: 'uk-icon uk-icon-cog' }),
+							' Redigera medlem'
+						),
+						this.removeButton(i, "Ta bort medlem")
+					)
 				)
 			);
 		},
 
 		renderHeader: function renderHeader() {
-			return _react2.default.createElement(
-				'tr',
-				null,
-				_react2.default.createElement(
-					'th',
-					null,
-					'#'
-				),
-				_react2.default.createElement(
-					'th',
-					null,
-					'Kön'
-				),
-				_react2.default.createElement(
-					'th',
-					null,
-					'Förnamn'
-				),
-				_react2.default.createElement(
-					'th',
-					null,
-					'Efternamn'
-				),
-				_react2.default.createElement(
-					'th',
-					null,
-					'E-post'
-				),
-				_react2.default.createElement(
-					'th',
-					null,
-					'Blev medlem'
-				)
-			);
+			return [{
+				title: "#",
+				sort: "member_number"
+			}, {
+				title: "Kön"
+			}, {
+				title: "Förnamn",
+				sort: "firstname"
+			}, {
+				title: "Efternamn",
+				sort: "lastname"
+			}, {
+				title: "E-post",
+				sort: "email"
+			}, {
+				title: "Blev medlem",
+				sort: "created_at"
+			}, {
+				title: ""
+			}];
 		}
 	});
 
@@ -49272,7 +49535,14 @@
 				'div',
 				null,
 				_react2.default.createElement(Group, { model: this.state.model }),
-				_react2.default.createElement(_Members2.default, { type: _Member2.default, entity_id: this.props.params.id })
+				_react2.default.createElement(_Members2.default, { type: _Member2.default,
+					filters: {
+						relations: [{
+							type: "member",
+							member_number: this.props.member_number
+						}]
+					}
+				})
 			);
 		}
 	});
@@ -49322,6 +49592,13 @@
 
 		mixins: [Backbone.React.Component.mixin],
 
+		getInitialState: function getInitialState() {
+			return {
+				error_column: "",
+				error_message: ""
+			};
+		},
+
 		cancel: function cancel(event) {
 			// Prevent the form from being submitted
 			event.preventDefault();
@@ -49354,8 +49631,16 @@
 						_this.error();
 					}
 				},
-				error: function error(model, response, options) {
-					_this.error();
+				error: function error(model, xhr, options) {
+					if (xhr.status == 422) {
+						_this.setState({
+							error_column: xhr.responseJSON.column,
+							error_message: xhr.responseJSON.message
+						});
+					} else {
+
+						_this.error();
+					}
 				}
 			});
 		},
@@ -49374,6 +49659,17 @@
 			this.forceUpdate();
 		},
 
+		renderErrorMsg: function renderErrorMsg(column) {
+			if (this.state.error_column == column) {
+				return _react2.default.createElement(
+					'p',
+					{ className: 'uk-form-help-block error' },
+					'Error: ',
+					this.state.error_message
+				);
+			}
+		},
+
 		render: function render() {
 			return _react2.default.createElement(
 				'div',
@@ -49388,65 +49684,63 @@
 					{ className: 'uk-form uk-form-horizontal', onSubmit: this.save },
 					_react2.default.createElement(
 						'div',
-						{ className: 'uk-grid' },
+						{ className: 'uk-form-row' },
 						_react2.default.createElement(
-							'div',
-							{ className: 'uk-width-1-3' },
-							_react2.default.createElement(
-								'label',
-								{ className: 'uk-form-label' },
-								'Namn'
-							)
+							'label',
+							{ className: 'uk-form-label' },
+							'Namn'
 						),
 						_react2.default.createElement(
 							'div',
-							{ className: 'uk-width-2-3' },
+							{ className: 'uk-form-controls' },
 							_react2.default.createElement(
 								'div',
 								{ className: 'uk-form-icon' },
 								_react2.default.createElement('i', { className: 'uk-icon-tag' }),
-								_react2.default.createElement('input', { type: 'text', name: 'title', value: this.state.model.title, onChange: this.handleChange })
-							)
-						)
-					),
-					_react2.default.createElement(
-						'div',
-						{ className: 'uk-grid' },
-						_react2.default.createElement(
-							'div',
-							{ className: 'uk-width-1-3' },
-							_react2.default.createElement(
-								'label',
-								{ className: 'uk-form-label' },
-								'Beskrivning'
-							)
-						),
-						_react2.default.createElement(
-							'div',
-							{ className: 'uk-width-2-3' },
-							_react2.default.createElement('textarea', { name: 'description', value: this.state.model.description, onChange: this.handleChange })
+								_react2.default.createElement('input', { type: 'text', name: 'title', className: 'uk-form-width-large', value: this.state.model.title, onChange: this.handleChange })
+							),
+							this.renderErrorMsg("title")
 						)
 					),
 					_react2.default.createElement(
 						'div',
 						{ className: 'uk-form-row' },
 						_react2.default.createElement(
-							'button',
-							{ className: 'uk-button uk-button-danger uk-float-left', onClick: this.cancel },
-							_react2.default.createElement('i', { className: 'uk-icon-close' }),
-							' Avbryt'
+							'label',
+							{ className: 'uk-form-label' },
+							'Beskrivning'
 						),
-						this.state.model.entity_id ? _react2.default.createElement(
-							'button',
-							{ className: 'uk-button uk-button-danger uk-float-left', onClick: this.remove },
-							_react2.default.createElement('i', { className: 'uk-icon-trash' }),
-							' Ta bort grupp'
-						) : "",
 						_react2.default.createElement(
-							'button',
-							{ className: 'uk-button uk-button-success uk-float-right', onClick: this.save },
-							_react2.default.createElement('i', { className: 'uk-icon-save' }),
-							' Spara grupp'
+							'div',
+							{ className: 'uk-form-controls' },
+							_react2.default.createElement('textarea', { name: 'description', className: 'uk-form-width-large', value: this.state.model.description, onChange: this.handleChange }),
+							this.renderErrorMsg("description")
+						)
+					),
+					_react2.default.createElement(
+						'div',
+						{ className: 'uk-form-row' },
+						_react2.default.createElement(
+							'div',
+							{ className: 'uk-form-controls' },
+							_react2.default.createElement(
+								'button',
+								{ className: 'uk-button uk-button-danger uk-float-left', onClick: this.cancel },
+								_react2.default.createElement('i', { className: 'uk-icon-close' }),
+								' Avbryt'
+							),
+							this.state.model.entity_id ? _react2.default.createElement(
+								'button',
+								{ className: 'uk-button uk-button-danger uk-float-left', onClick: this.remove },
+								_react2.default.createElement('i', { className: 'uk-icon-trash' }),
+								' Ta bort grupp'
+							) : "",
+							_react2.default.createElement(
+								'button',
+								{ className: 'uk-button uk-button-success uk-float-right', onClick: this.save },
+								_react2.default.createElement('i', { className: 'uk-icon-save' }),
+								' Spara grupp'
+							)
 						)
 					)
 				)
@@ -49499,15 +49793,7 @@
 		},
 
 		componentWillMount: function componentWillMount() {
-			// Load all members that are in this group
-			this.state.collection.fetch({
-				data: {
-					relation: {
-						type: "group",
-						entity_id: this.props.entity_id
-					}
-				}
-			});
+			this.fetch();
 		},
 
 		removeTextMessage: function removeTextMessage(entity) {
@@ -49518,6 +49804,16 @@
 		removeErrorMessage: function removeErrorMessage() {
 			// TODO
 			UIkit.modal.alert("Error deleting group");
+		},
+
+		renderHeader: function renderHeader() {
+			return [{
+				title: "Medlemsnummer"
+			}, {
+				title: "Namn"
+			}, {
+				title: ""
+			}];
 		},
 
 		renderRow: function renderRow(row, i) {
@@ -49553,24 +49849,6 @@
 						this.removeButton(i, "Ta bort medlem ur grupp")
 					)
 				)
-			);
-		},
-
-		renderHeader: function renderHeader() {
-			return _react2.default.createElement(
-				'tr',
-				null,
-				_react2.default.createElement(
-					'th',
-					null,
-					'Medlemsnummer'
-				),
-				_react2.default.createElement(
-					'th',
-					null,
-					'Namn'
-				),
-				_react2.default.createElement('th', null)
 			);
 		}
 	});
@@ -49660,12 +49938,12 @@
 				),
 				_react2.default.createElement(
 					'p',
-					null,
+					{ className: 'uk-float-left' },
 					'På denna sida ser du en lista på samtliga produkter som finns för försäljning.'
 				),
 				_react2.default.createElement(
 					_reactRouter.Link,
-					{ to: '/product/add', className: 'uk-button uk-button-primary' },
+					{ to: '/product/add', className: 'uk-button uk-button-primary uk-float-right' },
 					_react2.default.createElement('i', { className: 'uk-icon-plus-circle' }),
 					' Skapa ny produkt'
 				),
@@ -49684,7 +49962,7 @@
 
 		getInitialState: function getInitialState() {
 			return {
-				columns: 9
+				columns: 7
 			};
 		},
 
@@ -49698,6 +49976,30 @@
 
 		removeErrorMessage: function removeErrorMessage() {
 			UIkit.modal.alert("Error deleting product");
+		},
+
+		renderHeader: function renderHeader() {
+			return [{
+				title: "#",
+				sort: "entity_id"
+			}, {
+				title: "Namn",
+				sort: "title"
+			}, {
+				title: "Giltig till",
+				sort: "expiry_date"
+			}, {
+				title: "Prenumeration",
+				sort: "auto_extend"
+			}, {
+				title: "Giltighetstid",
+				sort: "interval"
+			}, {
+				title: "Pris",
+				sort: "price"
+			}, {
+				title: ""
+			}];
 		},
 
 		renderRow: function renderRow(row, i) {
@@ -49754,44 +50056,6 @@
 					)
 				)
 			);
-		},
-
-		renderHeader: function renderHeader() {
-			return _react2.default.createElement(
-				'tr',
-				null,
-				_react2.default.createElement(
-					'th',
-					null,
-					'#'
-				),
-				_react2.default.createElement(
-					'th',
-					null,
-					'Namn'
-				),
-				_react2.default.createElement(
-					'th',
-					null,
-					'Giltig till'
-				),
-				_react2.default.createElement(
-					'th',
-					null,
-					'Prenumeration'
-				),
-				_react2.default.createElement(
-					'th',
-					null,
-					'Giltighetstid'
-				),
-				_react2.default.createElement(
-					'th',
-					null,
-					'Pris'
-				),
-				_react2.default.createElement('th', null)
-			);
 		}
 	});
 
@@ -49842,7 +50106,10 @@
 			created_at: "0000-00-00T00:00:00Z",
 			updated_at: "0000-00-00T00:00:00Z",
 			title: "",
-			description: ""
+			description: "",
+			expiry_date: "",
+			price: 0,
+			interval: ""
 		}
 	});
 
@@ -49915,12 +50182,24 @@
 
 		getInitialState: function getInitialState() {
 			return {
-				columns: 5
+				columns: 4
 			};
 		},
 
 		componentWillMount: function componentWillMount() {
 			this.state.collection.fetch();
+		},
+
+		renderHeader: function renderHeader() {
+			return [{
+				title: "Member"
+			}, {
+				title: "Startdatum"
+			}, {
+				title: "Beskrivning"
+			}, {
+				title: "Produkt"
+			}];
 		},
 
 		renderRow: function renderRow(row, i) {
@@ -49946,38 +50225,6 @@
 					'td',
 					null,
 					row.product_id
-				)
-			);
-		},
-
-		renderHeader: function renderHeader() {
-			return _react2.default.createElement(
-				'tr',
-				null,
-				_react2.default.createElement(
-					'th',
-					null,
-					'Member'
-				),
-				_react2.default.createElement(
-					'th',
-					null,
-					'Startdatum'
-				),
-				_react2.default.createElement(
-					'th',
-					null,
-					'Beskrivning'
-				),
-				_react2.default.createElement(
-					'th',
-					null,
-					'Skapad'
-				),
-				_react2.default.createElement(
-					'th',
-					null,
-					'Produkt'
 				)
 			);
 		}
@@ -50023,7 +50270,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var SubscriptionModel = _backbone2.default.Model.fullExtend({
-		//	idAttribute: "subscription_id",
+		idAttribute: "account_number",
 		urlRoot: "/subscription",
 		defaults: {
 			created_at: "0000-00-00T00:00:00Z",
@@ -50069,10 +50316,35 @@
 
 	var _Date2 = _interopRequireDefault(_Date);
 
+	var _Currency = __webpack_require__(282);
+
+	var _Currency2 = _interopRequireDefault(_Currency);
+
+	var _TableFilterBox = __webpack_require__(329);
+
+	var _TableFilterBox2 = _interopRequireDefault(_TableFilterBox);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var SalesHistoryHandler = _react2.default.createClass({
 		displayName: 'SalesHistoryHandler',
+
+		getInitialState: function getInitialState() {
+			return {
+				filters: this.props.filters || {}
+			};
+		},
+
+		updateFilters: function updateFilters(newFilter) {
+			var filters = this.overrideFiltersFromProps(newFilter);
+			this.setState({
+				filters: filters
+			});
+		},
+
+		overrideFiltersFromProps: function overrideFiltersFromProps(filters) {
+			return filters;
+		},
 
 		render: function render() {
 			return _react2.default.createElement(
@@ -50088,7 +50360,8 @@
 					null,
 					'På denna sida ser du en lista på samtliga sålda produkter.'
 				),
-				_react2.default.createElement(History, { type: _SalesHistory2.default })
+				_react2.default.createElement(_TableFilterBox2.default, { onChange: this.updateFilters }),
+				_react2.default.createElement(History, { type: _SalesHistory2.default, filters: this.state.filters })
 			);
 		}
 	});
@@ -50108,8 +50381,30 @@
 
 		getInitialState: function getInitialState() {
 			return {
-				columns: 5
+				columns: 7
 			};
+		},
+
+		renderHeader: function renderHeader() {
+			return [{
+				title: "Datum",
+				sort: "accounting_date"
+			}, {
+				title: "Order",
+				sort: "extid"
+			}, {
+				title: "Medlem",
+				sort: "member_number"
+			}, {
+				title: "Beskrivning"
+			}, {
+				title: "Produkt",
+				sort: "product_title"
+			}, {
+				title: "Belopp",
+				class: "uk-text-right",
+				sort: "amount"
+			}];
 		},
 
 		renderRow: function renderRow(row, i) {
@@ -50119,54 +50414,46 @@
 				_react2.default.createElement(
 					'td',
 					null,
-					row.member_id
+					row.accounting_date
 				),
 				_react2.default.createElement(
 					'td',
 					null,
-					row.date_start
+					_react2.default.createElement(
+						_reactRouter.Link,
+						{ to: "/entity/" + row.entity_id },
+						row.extid
+					)
 				),
 				_react2.default.createElement(
 					'td',
 					null,
-					row.title
+					_react2.default.createElement(
+						_reactRouter.Link,
+						{ to: "/members/" + row.member_number },
+						row.member_firstname,
+						' ',
+						row.member_lastname
+					)
 				),
 				_react2.default.createElement(
 					'td',
 					null,
-					row.product_id
-				)
-			);
-		},
-
-		renderHeader: function renderHeader() {
-			return _react2.default.createElement(
-				'tr',
-				null,
-				_react2.default.createElement(
-					'th',
-					null,
-					'Member'
+					row.instruction_title
 				),
 				_react2.default.createElement(
-					'th',
+					'td',
 					null,
-					'Startdatum'
+					_react2.default.createElement(
+						_reactRouter.Link,
+						{ to: "/sales/products/" + row.product_id },
+						row.product_title
+					)
 				),
 				_react2.default.createElement(
-					'th',
-					null,
-					'Beskrivning'
-				),
-				_react2.default.createElement(
-					'th',
-					null,
-					'Skapad'
-				),
-				_react2.default.createElement(
-					'th',
-					null,
-					'Produkt'
+					'td',
+					{ className: 'uk-text-right' },
+					_react2.default.createElement(_Currency2.default, { value: -1 * row.amount })
 				)
 			);
 		}
@@ -50291,25 +50578,16 @@
 		},
 
 		renderHeader: function renderHeader() {
-			return _react2.default.createElement(
-				'tr',
-				null,
-				_react2.default.createElement(
-					'th',
-					null,
-					'#'
-				),
-				_react2.default.createElement(
-					'th',
-					null,
-					'Konto'
-				),
-				_react2.default.createElement(
-					'th',
-					{ className: 'uk-text-right' },
-					'Kontobalans'
-				)
-			);
+			return [{
+				title: "#",
+				sort: "account_number"
+			}, {
+				title: "Konto",
+				sort: "title"
+			}, {
+				title: "Kontobalans",
+				class: "uk-text-right"
+			}];
 		},
 
 		renderRow: function renderRow(row, i) {
@@ -50483,6 +50761,14 @@
 
 	var _BackboneTable2 = _interopRequireDefault(_BackboneTable);
 
+	var _TableDropdownMenu = __webpack_require__(255);
+
+	var _TableDropdownMenu2 = _interopRequireDefault(_TableDropdownMenu);
+
+	var _TableFilterBox = __webpack_require__(329);
+
+	var _TableFilterBox2 = _interopRequireDefault(_TableFilterBox);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	// Backbone
@@ -50490,6 +50776,23 @@
 
 	var EconomyAccountingInstructionsHandler = _react2.default.createClass({
 		displayName: 'EconomyAccountingInstructionsHandler',
+
+		getInitialState: function getInitialState() {
+			return {
+				filters: this.props.filters || {}
+			};
+		},
+
+		updateFilters: function updateFilters(newFilter) {
+			var filters = this.overrideFiltersFromProps(newFilter);
+			this.setState({
+				filters: filters
+			});
+		},
+
+		overrideFiltersFromProps: function overrideFiltersFromProps(filters) {
+			return filters;
+		},
 
 		render: function render() {
 			return _react2.default.createElement(
@@ -50502,10 +50805,17 @@
 				),
 				_react2.default.createElement(
 					'p',
-					null,
+					{ className: 'uk-float-left' },
 					'Lista över samtliga verifikationer i bokföringen'
 				),
-				_react2.default.createElement(EconomyAccountingInstructionList, { type: _Instruction2.default })
+				_react2.default.createElement(
+					_reactRouter.Link,
+					{ to: '/economy/instruction/add', className: 'uk-button uk-button-primary uk-float-right' },
+					_react2.default.createElement('i', { className: 'uk-icon-plus-circle' }),
+					' Skapa ny verifikation'
+				),
+				_react2.default.createElement(_TableFilterBox2.default, { onChange: this.updateFilters }),
+				_react2.default.createElement(EconomyAccountingInstructionList, { type: _Instruction2.default, filters: this.state.filters })
 			);
 		}
 	});
@@ -50515,10 +50825,24 @@
 		displayName: 'EconomyAccountingInstructionHandler',
 
 		getInitialState: function getInitialState() {
-			var id = this.props.params.id;
-
-			var instruction = new _Instruction4.default({ id: id });
+			var instruction = new _Instruction4.default({ instruction_number: this.props.params.id });
 			instruction.fetch();
+
+			return {
+				model: instruction
+			};
+		},
+
+		render: function render() {
+			return _react2.default.createElement(EconomyAccountingInstruction, { model: this.state.model });
+		}
+	});
+
+	var EconomyAccountingInstructionAddHandler = _react2.default.createClass({
+		displayName: 'EconomyAccountingInstructionAddHandler',
+
+		getInitialState: function getInitialState() {
+			var instruction = new _Instruction4.default();
 
 			return {
 				model: instruction
@@ -50534,9 +50858,7 @@
 		displayName: 'EconomyAccountingInstructionImportHandler',
 
 		getInitialState: function getInitialState() {
-			var id = this.props.params.id;
-
-			var instruction = new _Instruction4.default({ id: id });
+			var instruction = new _Instruction4.default({ instruction_number: this.props.params.id });
 			instruction.fetch();
 
 			return {
@@ -50556,7 +50878,7 @@
 
 		getInitialState: function getInitialState() {
 			return {
-				columns: 5
+				columns: 6
 			};
 		},
 
@@ -50565,31 +50887,31 @@
 		},
 
 		renderHeader: function renderHeader() {
-			return _react2.default.createElement(
-				'tr',
-				null,
-				_react2.default.createElement(
-					'th',
-					null,
-					'#'
-				),
-				_react2.default.createElement(
-					'th',
-					null,
-					'Bokföringsdatum'
-				),
-				_react2.default.createElement(
-					'th',
-					null,
-					'Beskrivning'
-				),
-				_react2.default.createElement(
-					'th',
-					{ className: 'uk-text-right' },
-					'Belopp'
-				),
-				_react2.default.createElement('th', null)
-			);
+			return [{
+				title: "#",
+				sort: "instruction_number"
+			}, {
+				title: "Bokföringsdatum",
+				sort: "accounting_date"
+			}, {
+				title: "Beskrivning",
+				sort: "title"
+			}, {
+				title: "Belopp",
+				class: "uk-text-right"
+			}, {
+				title: ""
+			}, {
+				title: ""
+			}];
+		},
+
+		removeTextMessage: function removeTextMessage(entity) {
+			return "Are you sure you want to remove instruction \"" + entity.instruction_number + " " + entity.title + "\"?";
+		},
+
+		removeErrorMessage: function removeErrorMessage() {
+			UIkit.modal.alert("Error deleting instruction");
 		},
 
 		renderRow: function renderRow(row, i) {
@@ -50630,16 +50952,22 @@
 				_react2.default.createElement(
 					'td',
 					null,
-					_react2.default.createElement(
-						_reactRouter.Link,
-						{ to: "/economy/instruction/" + row.instruction_number },
-						'Visa'
-					)
+					icon
 				),
 				_react2.default.createElement(
 					'td',
 					null,
-					icon
+					_react2.default.createElement(
+						_TableDropdownMenu2.default,
+						null,
+						_react2.default.createElement(
+							_reactRouter.Link,
+							{ to: "/economy/instruction/" + row.instruction_number },
+							_react2.default.createElement('i', { className: 'uk-icon uk-icon-cog' }),
+							' Redigera verifikation'
+						),
+						this.removeButton(i, "Ta bort verifikation")
+					)
 				)
 			);
 		}
@@ -50649,6 +50977,16 @@
 		displayName: 'EconomyAccountingInstruction',
 
 		mixins: [Backbone.React.Component.mixin],
+
+		handleChange: function handleChange(event) {
+			// Update the model with new value
+			var target = event.target;
+			var key = target.getAttribute("name");
+			this.state.model[key] = target.value;
+
+			// When we change the value of the model we have to rerender the component
+			this.forceUpdate();
+		},
 
 		render: function render() {
 			if (this.state.model.transactions.length == 0) {
@@ -50695,7 +51033,12 @@
 				});
 			}
 
-			var title = this.state.model.instruction_number === null ? 'Preliminär verifikation' : 'Verifikation ' + this.state.model.instruction_number;
+			if (this.state.model.entity_id == 0) {
+				var title = "Skapa verifikation";
+			} else {
+				var title = this.state.model.instruction_number === null ? 'Preliminär verifikation' : 'Verifikation ' + this.state.model.instruction_number;
+				title = title + " - " + this.state.model.title;
+			}
 
 			if (this.state.model.files.length == 0) {
 				var files = _react2.default.createElement(
@@ -50736,9 +51079,7 @@
 				_react2.default.createElement(
 					'h2',
 					null,
-					title,
-					' - ',
-					this.state.model.title
+					title
 				),
 				_react2.default.createElement(
 					'form',
@@ -50762,7 +51103,7 @@
 								'div',
 								{ className: 'uk-form-icon' },
 								_react2.default.createElement('i', { className: 'uk-icon-tag' }),
-								_react2.default.createElement('input', { type: 'text', value: this.state.model.instruction_number })
+								_react2.default.createElement('input', { type: 'text', value: this.state.model.instruction_number, disabled: true })
 							)
 						),
 						_react2.default.createElement(
@@ -50804,7 +51145,7 @@
 								'div',
 								{ className: 'uk-form-icon' },
 								_react2.default.createElement('i', { className: 'uk-icon-calendar' }),
-								_react2.default.createElement('input', { type: 'text', value: this.state.model.accounting_date })
+								_react2.default.createElement('input', { type: 'text', value: this.state.model.accounting_date, onChange: this.handleChange })
 							)
 						),
 						_react2.default.createElement(
@@ -50849,7 +51190,7 @@
 								_react2.default.createElement('input', { type: 'text', value: this.state.model.balance, disabled: true })
 							)
 						),
-						_react2.default.createElement(
+						this.state.model.entity_id != 0 ? _react2.default.createElement(
 							'div',
 							{ className: 'uk-width-1-6' },
 							_react2.default.createElement(
@@ -50857,8 +51198,8 @@
 								{ className: 'uk-form-label' },
 								'Importerad från'
 							)
-						),
-						_react2.default.createElement(
+						) : "",
+						this.state.model.entity_id != 0 ? _react2.default.createElement(
 							'div',
 							{ className: 'uk-width-2-6' },
 							_react2.default.createElement(
@@ -50880,7 +51221,7 @@
 									)
 								)
 							)
-						)
+						) : ""
 					),
 					_react2.default.createElement(
 						'div',
@@ -50897,11 +51238,7 @@
 						_react2.default.createElement(
 							'div',
 							{ className: 'uk-width-3-6' },
-							_react2.default.createElement(
-								'p',
-								null,
-								this.state.model.description
-							)
+							_react2.default.createElement('textarea', { value: this.state.model.description, onChange: this.handleChange })
 						)
 					)
 				),
@@ -51071,6 +51408,7 @@
 
 	module.exports = {
 		EconomyAccountingInstructionsHandler: EconomyAccountingInstructionsHandler,
+		EconomyAccountingInstructionAddHandler: EconomyAccountingInstructionAddHandler,
 		EconomyAccountingInstructionHandler: EconomyAccountingInstructionHandler,
 		EconomyAccountingInstructionImportHandler: EconomyAccountingInstructionImportHandler,
 		EconomyAccountingInstructionList: EconomyAccountingInstructionList
@@ -51112,8 +51450,10 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var InstructionModel = _backbone2.default.Model.fullExtend({
+		idAttribute: "instruction_number",
 		urlRoot: "/economy/2015/instruction",
 		defaults: {
+			entity_id: 0,
 			instruction_number: 0,
 			created_at: "0000-00-00T00:00:00Z",
 			updated_at: "0000-00-00T00:00:00Z",
@@ -51177,7 +51517,14 @@
 
 	var _Transactions2 = _interopRequireDefault(_Transactions);
 
+	var _TableDropdownMenu = __webpack_require__(255);
+
+	var _TableDropdownMenu2 = _interopRequireDefault(_TableDropdownMenu);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	// Backbone
+
 
 	var EconomyAccountsHandler = _react2.default.createClass({
 		displayName: 'EconomyAccountsHandler',
@@ -51192,8 +51539,13 @@
 					'Konton'
 				),
 				_react2.default.createElement(
+					'p',
+					{ className: 'uk-float-left' },
+					'På denna sida ser du en lista över samtliga bokföringskonton, även de som inte har några bokförda verifikationer.'
+				),
+				_react2.default.createElement(
 					_reactRouter.Link,
-					{ to: "/economy/account/add", className: 'uk-button uk-button-success' },
+					{ to: "/economy/account/add", className: 'uk-button uk-button-primary uk-float-right' },
 					_react2.default.createElement('i', { className: 'uk-icon-plus-circle' }),
 					' Skapa nytt konto'
 				),
@@ -51202,18 +51554,14 @@
 		}
 	});
 
-	// Backbone
-
-
 	var EconomyAccountHandler = _react2.default.createClass({
 		displayName: 'EconomyAccountHandler',
 
 		getInitialState: function getInitialState() {
-			// Get account id
-			var id = this.props.params.id;
-
 			// Load account model
-			var account = new _Account2.default({ id: id });
+			var account = new _Account2.default({
+				account_number: this.props.params.id
+			});
 			account.fetch();
 
 			return {
@@ -51231,7 +51579,9 @@
 					'Konto'
 				),
 				_react2.default.createElement(EconomyAccount, { model: this.state.account_model }),
-				_react2.default.createElement(Transactions, { type: _Transaction2.default, params: { id: this.state.account_model.id } })
+				_react2.default.createElement(_Transactions2.default, { type: _Transaction2.default, filters: {
+						account_number: this.state.account_model.get("account_number")
+					} })
 			);
 		}
 	});
@@ -51242,7 +51592,7 @@
 		getInitialState: function getInitialState() {
 			var id = this.props.params.id;
 
-			var account = new _Account2.default({ id: id });
+			var account = new _Account2.default({ account_number: id });
 			account.fetch();
 
 			return {
@@ -51304,27 +51654,27 @@
 			this.state.collection.fetch();
 		},
 
+		removeTextMessage: function removeTextMessage(entity) {
+			return "Are you sure you want to remove account \"" + entity.account_number + " " + entity.title + "\"?";
+		},
+
+		removeErrorMessage: function removeErrorMessage() {
+			UIkit.modal.alert("Error deleting account");
+		},
+
 		renderHeader: function renderHeader() {
-			return _react2.default.createElement(
-				'tr',
-				null,
-				_react2.default.createElement(
-					'th',
-					null,
-					'#'
-				),
-				_react2.default.createElement(
-					'th',
-					null,
-					'Konto'
-				),
-				_react2.default.createElement(
-					'th',
-					null,
-					'Beskrivning'
-				),
-				_react2.default.createElement('th', null)
-			);
+			return [{
+				title: "#",
+				sort: "account_number"
+			}, {
+				title: "Konto",
+				sort: "title"
+			}, {
+				title: "Beskrivning",
+				sort: "description"
+			}, {
+				title: ""
+			}];
 		},
 
 		renderRow: function renderRow(row, i) {
@@ -51336,7 +51686,7 @@
 					null,
 					_react2.default.createElement(
 						_reactRouter.Link,
-						{ to: "/economy/account/" + row.account_number + "/edit" },
+						{ to: "/settings/economy/account/" + row.account_number + "/edit" },
 						row.account_number
 					)
 				),
@@ -51352,17 +51702,17 @@
 				),
 				_react2.default.createElement(
 					'td',
-					{ className: 'uk-text-right' },
+					null,
 					_react2.default.createElement(
-						'a',
-						{ href: '#', className: 'uk-icon-remove uk-icon-hover' },
-						' Ta bort'
-					),
-					' ',
-					_react2.default.createElement(
-						'a',
-						{ href: '#', className: 'uk-icon-cog uk-icon-hover' },
-						' Redigera'
+						_TableDropdownMenu2.default,
+						null,
+						_react2.default.createElement(
+							_reactRouter.Link,
+							{ to: "/settings/economy/account/" + row.account_number + "/edit" },
+							_react2.default.createElement('i', { className: 'uk-icon uk-icon-cog' }),
+							' Redigera konto'
+						),
+						this.removeButton(i, "Ta bort konto")
 					)
 				)
 			);
@@ -51373,6 +51723,16 @@
 		displayName: 'EconomyAccount',
 
 		mixins: [Backbone.React.Component.mixin],
+
+		handleChange: function handleChange(event) {
+			// Update the model with new value
+			var target = event.target;
+			var key = target.getAttribute("name");
+			this.state.model[key] = target.value;
+
+			// When we change the value of the model we have to rerender the component
+			this.forceUpdate();
+		},
 
 		render: function render() {
 			return _react2.default.createElement(
@@ -51396,7 +51756,7 @@
 								'div',
 								{ className: 'uk-form-icon' },
 								_react2.default.createElement('i', { className: 'uk-icon-database' }),
-								_react2.default.createElement('input', { type: 'text', value: this.state.model.account_number })
+								_react2.default.createElement('input', { type: 'text', value: this.state.model.account_number, className: 'uk-form-width-large', onChange: this.handleChange })
 							)
 						)
 					),
@@ -51415,7 +51775,7 @@
 								'div',
 								{ className: 'uk-form-icon' },
 								_react2.default.createElement('i', { className: 'uk-icon-database' }),
-								_react2.default.createElement('input', { type: 'text', value: this.state.model.title })
+								_react2.default.createElement('input', { type: 'text', value: this.state.model.title, className: 'uk-form-width-large', onChange: this.handleChange })
 							)
 						)
 					),
@@ -51430,12 +51790,7 @@
 						_react2.default.createElement(
 							'div',
 							{ className: 'uk-form-controls' },
-							_react2.default.createElement(
-								'div',
-								{ className: 'uk-form-icon' },
-								_react2.default.createElement('i', { className: 'uk-icon-database' }),
-								_react2.default.createElement('input', { type: 'text', value: this.state.model.description })
-							)
+							_react2.default.createElement('textarea', { value: this.state.model.description, className: 'uk-form-width-large', onChange: this.handleChange })
 						)
 					),
 					_react2.default.createElement(
@@ -51449,12 +51804,7 @@
 						_react2.default.createElement(
 							'div',
 							{ className: 'uk-form-controls' },
-							_react2.default.createElement(
-								'div',
-								{ className: 'uk-form-icon' },
-								_react2.default.createElement('i', { className: 'uk-icon-usd' }),
-								_react2.default.createElement('input', { type: 'text', value: this.state.model.balance, disabled: true })
-							)
+							_react2.default.createElement(_Currency2.default, { value: this.state.model.balance })
 						)
 					)
 				)
@@ -51534,53 +51884,25 @@
 		},
 
 		componentWillMount: function componentWillMount() {
-			if (this.props.member_number !== undefined) {
-				// Load RFID keys related to member
-				this.state.collection.fetch({
-					data: {
-						relation: {
-							type: "member",
-							member_number: this.props.member_number
-						}
-					}
-				});
-			} else {
-				// Load all RFID keys
-				this.state.collection.fetch();
-			}
+			this.fetch();
 		},
 
 		renderHeader: function renderHeader() {
-			return _react2.default.createElement(
-				'tr',
-				null,
-				_react2.default.createElement(
-					'th',
-					null,
-					'Bokföringsdatum'
-				),
-				_react2.default.createElement(
-					'th',
-					null,
-					'Verifikation'
-				),
-				_react2.default.createElement(
-					'th',
-					null,
-					'Transaktion'
-				),
-				_react2.default.createElement(
-					'th',
-					{ className: 'uk-text-right' },
-					'Belopp'
-				),
-				_react2.default.createElement(
-					'th',
-					{ className: 'uk-text-right' },
-					'Saldo'
-				),
-				_react2.default.createElement('th', null)
-			);
+			return [{
+				title: "Bokföringsdatum"
+			}, {
+				title: "Verifikation"
+			}, {
+				title: "Transaktion"
+			}, {
+				title: "Belopp",
+				class: "uk-text-right"
+			}, {
+				title: "Saldo",
+				class: "uk-text-right"
+			}, {
+				title: ""
+			}];
 		},
 
 		renderRow: function renderRow(row, i) {
@@ -52326,30 +52648,15 @@
 		},
 
 		renderHeader: function renderHeader() {
-			return _react2.default.createElement(
-				'tr',
-				null,
-				_react2.default.createElement(
-					'th',
-					null,
-					'#'
-				),
-				_react2.default.createElement(
-					'th',
-					null,
-					'Bokföringsdatum'
-				),
-				_react2.default.createElement(
-					'th',
-					null,
-					'Beskrivning'
-				),
-				_react2.default.createElement(
-					'th',
-					null,
-					'Belopp'
-				)
-			);
+			return [{
+				title: "#"
+			}, {
+				title: "Bokföringsdatum"
+			}, {
+				title: "Beskrivning"
+			}, {
+				title: "Belopp"
+			}];
 		},
 
 		renderRow: function renderRow(row, i) {
@@ -52411,8 +52718,8 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var CostCenterModel = _backbone2.default.Model.fullExtend({
+		idAttribute: "account_number",
 		urlRoot: "/economy/2015/costcenter",
-
 		defaults: {
 			created_at: "0000-00-00T00:00:00Z",
 			updated_at: "0000-00-00T00:00:00Z",
@@ -52478,10 +52785,34 @@
 
 	var _BackboneTable2 = _interopRequireDefault(_BackboneTable);
 
+	var _TableFilterBox = __webpack_require__(329);
+
+	var _TableFilterBox2 = _interopRequireDefault(_TableFilterBox);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	// Backbone
+
 
 	var InvoiceListHandler = _react2.default.createClass({
 		displayName: 'InvoiceListHandler',
+
+		getInitialState: function getInitialState() {
+			return {
+				filters: this.props.filters || {}
+			};
+		},
+
+		updateFilters: function updateFilters(newFilter) {
+			var filters = this.overrideFiltersFromProps(newFilter);
+			this.setState({
+				filters: filters
+			});
+		},
+
+		overrideFiltersFromProps: function overrideFiltersFromProps(filters) {
+			return filters;
+		},
 
 		render: function render() {
 			return _react2.default.createElement(
@@ -52494,22 +52825,20 @@
 				),
 				_react2.default.createElement(
 					'p',
-					null,
+					{ className: 'uk-float-left' },
 					'På denna sida ser du en lista på samtliga fakturor för det valda bokföringsåret.'
 				),
-				_react2.default.createElement(InvoiceList, { type: _Invoice2.default }),
 				_react2.default.createElement(
 					_reactRouter.Link,
-					{ to: "/economy/invoice/add" },
+					{ to: "/economy/invoice/add", className: 'uk-button uk-button-primary uk-float-right' },
 					_react2.default.createElement('i', { className: 'uk-icon-plus-circle' }),
-					' Skapa faktura'
-				)
+					' Skapa ny faktura'
+				),
+				_react2.default.createElement(_TableFilterBox2.default, { onChange: this.updateFilters }),
+				_react2.default.createElement(InvoiceList, { type: _Invoice2.default, filters: this.state.filters })
 			);
 		}
 	});
-
-	// Backbone
-
 	InvoiceListHandler.title = "Visa fakturor";
 
 	var InvoiceHandler = _react2.default.createClass({
@@ -52571,7 +52900,7 @@
 
 		getInitialState: function getInitialState() {
 			return {
-				columns: 7
+				columns: 6
 			};
 		},
 
@@ -52580,40 +52909,25 @@
 		},
 
 		renderHeader: function renderHeader() {
-			return _react2.default.createElement(
-				'tr',
-				null,
-				_react2.default.createElement(
-					'th',
-					null,
-					'#'
-				),
-				_react2.default.createElement(
-					'th',
-					null,
-					'Förfallodatum'
-				),
-				_react2.default.createElement(
-					'th',
-					null,
-					'Mottagare'
-				),
-				_react2.default.createElement(
-					'th',
-					null,
-					'Referens'
-				),
-				_react2.default.createElement(
-					'th',
-					{ className: 'uk-text-right' },
-					'Belopp'
-				),
-				_react2.default.createElement(
-					'th',
-					null,
-					'Status'
-				)
-			);
+			return [{
+				title: "#"
+			}, {
+				title: "Förfallodatum",
+				sort: ""
+			}, {
+				title: "Mottagare",
+				sort: ""
+			}, {
+				title: "Referens",
+				sort: "rour_reference"
+			}, {
+				title: "Belopp",
+				class: "uk-text-right",
+				sort: "amount"
+			}, {
+				title: "Status",
+				sort: "status"
+			}];
 		},
 
 		renderRow: function renderRow(row, i) {
@@ -52989,6 +53303,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var InvoiceModel = _backbone2.default.Model.fullExtend({
+		idAttribute: "invoice_number",
 		urlRoot: "/economy/2015/invoice",
 		defaults: {
 			created_at: "0000-00-00T00:00:00Z",
@@ -53654,12 +53969,13 @@
 				this.setState({
 					type: this.refs.type.value
 				});
-
-				if (this.refs.type.value == "sms") {
-					$("#subject_container").hide();
-				} else {
-					$("#subject_container").show();
-				}
+			}
+		}, {
+			key: 'changeSubject',
+			value: function changeSubject() {
+				this.setState({
+					subject: this.refs.subject.value
+				});
 			}
 		}, {
 			key: 'changeRecipient',
@@ -53670,13 +53986,6 @@
 
 				// Clear the search history so there is no drop down with old data after adding a recipient
 				this.refs.recps.setState({ options: [] });
-			}
-		}, {
-			key: 'changeSubject',
-			value: function changeSubject() {
-				this.setState({
-					subject: this.refs.subject.value
-				});
 			}
 		}, {
 			key: 'changeBody',
@@ -53758,7 +54067,7 @@
 					})
 				}).done(function () {
 					// TODO: Falhantering
-					_reactRouter.browserHistory.push("/mail/history");
+					_reactRouter.browserHistory.push("/mail");
 				});
 			}
 		}, {
@@ -53824,9 +54133,9 @@
 								_react2.default.createElement(_reactSelect.Async, { ref: 'recps', multi: true, cache: false, name: 'recipients', filterOption: this.filter, loadOptions: this.search, value: this.state.recipients, onChange: this.changeRecipient.bind(this), onValueClick: this.gotoMember })
 							)
 						),
-						_react2.default.createElement(
+						this.state.type == "email" ? _react2.default.createElement(
 							'div',
-							{ className: 'uk-form-row', id: 'subject_container' },
+							{ className: 'uk-form-row' },
 							_react2.default.createElement(
 								'label',
 								{ className: 'uk-form-label', htmlFor: 'subject' },
@@ -53842,7 +54151,7 @@
 									_react2.default.createElement('input', { ref: 'subject', type: 'text', id: 'subject', name: 'subject', className: 'uk-form-width-large', onChange: this.changeSubject.bind(this) })
 								)
 							)
-						),
+						) : "",
 						_react2.default.createElement(
 							'div',
 							{ className: 'uk-form-row' },
@@ -53925,16 +54234,64 @@
 
 	var _Keys2 = _interopRequireDefault(_Keys);
 
+	var _TableFilterBox = __webpack_require__(329);
+
+	var _TableFilterBox2 = _interopRequireDefault(_TableFilterBox);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	// Backbone
-
 
 	var KeysOverviewHandler = _react2.default.createClass({
 		displayName: 'KeysOverviewHandler',
 
+		getInitialState: function getInitialState() {
+			return {
+				filters: {}
+			};
+		},
+
 		edit: function edit(entity) {
 			UIkit.modal.alert("TODO: Parent edit" + entity);
+		},
+
+		overrideFiltersFromProps: function overrideFiltersFromProps(filters) {
+			console.log("overrideFiltersFromProps");
+
+			if (this.props.member_number !== undefined && this.props.member_number.length > 0) {
+				console.log("  member_number present");
+
+				if (!filters.relations) {
+					filters.relations = [];
+				}
+
+				filters.relations.push({
+					type: "member",
+					member_number: this.props.member_number
+				});
+			}
+
+			return filters;
+		},
+
+		updateFilters: function updateFilters(newFilter) {
+			var filters = this.overrideFiltersFromProps(newFilter);
+			this.setState({
+				filters: filters
+			});
+		},
+
+		componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
+			console.log("componentWillReceiveProps");
+			if (nextProps.member_number != this.props.member_number) {
+				console.log("TODO: Filter on member number");
+				this.props.member_number = nextProps.member_number;
+
+				var filters = this.overrideFiltersFromProps(this.state.filters);
+				this.setState({
+					filters: filters
+				});
+			} else {
+				console.log("TODO: Turn off filter on member number");
+			}
 		},
 
 		render: function render() {
@@ -53951,10 +54308,14 @@
 					null,
 					'Visa lista över samtliga nycklas i systemet'
 				),
-				_react2.default.createElement(_Keys2.default, { type: _Rfid2.default, edit: this.edit })
+				_react2.default.createElement(_TableFilterBox2.default, { onChange: this.updateFilters }),
+				_react2.default.createElement(_Keys2.default, { type: _Rfid2.default, edit: this.edit, filters: this.state.filters })
 			);
 		}
 	});
+
+	// Backbone
+
 	KeysOverviewHandler.title = "Nycklar";
 
 	module.exports = KeysOverviewHandler;
@@ -58945,6 +59306,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var TransactionModel = _backbone2.default.Model.fullExtend({
+		idAttribute: "entity_id",
 		urlRoot: "/economy/2015/transaction",
 		defaults: {
 			created_at: "0000-00-00T00:00:00Z",
@@ -58965,6 +59327,131 @@
 	});
 
 	module.exports = TransactionModel;
+
+/***/ },
+/* 329 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	var _react = __webpack_require__(2);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	var TableFilterBox = _react2.default.createClass({
+		displayName: "TableFilterBox",
+
+		getInitialState: function getInitialState() {
+			this.filters = {};
+			return {};
+		},
+
+		buildNewFilterObject: function buildNewFilterObject() {
+			var newFilter = {};
+
+			// Filters
+			for (var key in this.filters) {
+				var value = this.filters[key];
+				console.log(key + ": " + value);
+				newFilter[key] = value;
+			}
+
+			// Search
+			if (this.refs.search.value != "") {
+				newFilter["search"] = this.refs.search.value;
+			}
+
+			// Debugging
+			console.log(newFilter);
+
+			this.props.onChange(newFilter);
+		},
+
+		changeFilterValue: function changeFilterValue(event) {
+			var target = event.target;
+			var key = target.getAttribute("name");
+			this.filters[key] = target.value;
+
+			this.buildNewFilterObject();
+		},
+
+		render: function render() {
+			return _react2.default.createElement(
+				"div",
+				{ className: "filterbox" },
+				_react2.default.createElement(
+					"div",
+					{ className: "uk-grid" },
+					_react2.default.createElement(
+						"div",
+						{ className: "uk-width-2-3" },
+						_react2.default.createElement(
+							"form",
+							{ className: "uk-form" },
+							_react2.default.createElement(
+								"div",
+								{ className: "uk-form-icon" },
+								_react2.default.createElement("i", { className: "uk-icon-search" }),
+								_react2.default.createElement("input", { ref: "search", type: "text", className: "uk-form-width-large", placeholder: "Skriv in ett sökord", onChange: this.buildNewFilterObject })
+							)
+						)
+					),
+					_react2.default.createElement(
+						"div",
+						{ className: "uk-width-1-3" },
+						_react2.default.createElement(
+							"div",
+							{ className: "uk-align-right2" },
+							_react2.default.createElement(
+								"button",
+								{ className: "uk-button uk-float-right", "data-uk-toggle": "{target:'#my-id'}" },
+								"Visa fler filter ",
+								_react2.default.createElement("i", { className: "uk-icon uk-icon-angle-down" })
+							)
+						)
+					)
+				),
+				_react2.default.createElement(
+					"div",
+					{ id: "my-id", className: "uk-hidden" },
+					_react2.default.createElement(
+						"label",
+						{ htmlFor: "filter_active", className: "uk-form-label" },
+						"Aktiv:"
+					),
+					_react2.default.createElement(
+						"select",
+						{ ref: "filter_active", id: "filter_active", name: "filter_active", onChange: this.changeFilterValue },
+						_react2.default.createElement(
+							"option",
+							{ value: "yes" },
+							"Ja"
+						),
+						_react2.default.createElement(
+							"option",
+							{ value: "no" },
+							"Nej"
+						),
+						_react2.default.createElement(
+							"option",
+							{ value: "auto" },
+							"Auto"
+						)
+					),
+					_react2.default.createElement(
+						"button",
+						{ className: "uk-button" },
+						_react2.default.createElement("i", { className: "uk-icon uk-icon-close" }),
+						" Nollställ filter"
+					)
+				)
+			);
+		}
+	});
+
+	module.exports = TableFilterBox;
 
 /***/ }
 /******/ ]);
