@@ -1,4 +1,4 @@
-FROM php:7.0.6-fpm
+FROM php:7.0.12-fpm
 
 # Install nginx
 RUN apt-get update && apt-get install -y --no-install-recommends nginx && rm -r /var/lib/apt/lists/*
