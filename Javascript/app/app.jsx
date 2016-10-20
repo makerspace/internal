@@ -37,6 +37,7 @@ import {
 
 import {
 	EconomyAccountingInstructionsHandler,
+	EconomyAccountingInstructionAddHandler,
 	EconomyAccountingInstructionHandler,
 	EconomyAccountingInstructionImportHandler,
 } from './Economy/Instruction'
@@ -450,6 +451,7 @@ ReactDOM.render((
 				</Route>
 
 				<Route path="instruction"       component={EconomyAccountingInstructionsHandler} />
+				<Route path="instruction/add"   component={EconomyAccountingInstructionAddHandler} />
 				<Route path="instruction/:id"   component={EconomyAccountingInstructionHandler} />
 				<Route path="instruction/:id/import" component={EconomyAccountingInstructionImportHandler} />
 
