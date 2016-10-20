@@ -13,8 +13,8 @@ if($argc == 1)
 		"  --accounts      Import accounting accounts\n" .
 		"  --instructions  Import accounting instructions\n" .
 		"  --members       Import members\n" .
-		"  --groups        Import groups" .
-		"  --keys          Import RFID keys" .
+		"  --groups        Import groups\n" .
+		"  --keys          Import RFID keys\n" .
 		"  --invoices      Import invoices\n";
 }
 else
@@ -35,7 +35,7 @@ else
 					if(substr($argv[$i], 0, 2) !== "--")
 					{
 						$file = $argv[$i];
-						$importer->Import("account", ACCOUNTING_YEAR, $file);
+						$importer->ImportGeneric("account", $file, ACCOUNTING_YEAR);
 					}
 					else
 					{
@@ -53,7 +53,7 @@ else
 					if(substr($argv[$i], 0, 2) !== "--")
 					{
 						$file = $argv[$i];
-						$importer->Import("instruction", ACCOUNTING_YEAR, $file);
+						$importer->ImportGeneric("instruction", $file, ACCOUNTING_YEAR);
 					}
 					else
 					{
@@ -71,7 +71,25 @@ else
 					if(substr($argv[$i], 0, 2) !== "--")
 					{
 						$file = $argv[$i];
-						$importer->ImportMember($file);
+						$importer->ImportGeneric("member", $file);
+					}
+					else
+					{
+						$i--;
+						break;
+					}
+				}
+				break;
+
+			case "--products":
+				echo "Parsing --products\n";
+				$i++;
+				for(; $i < count($argv); $i++)
+				{
+					if(substr($argv[$i], 0, 2) !== "--")
+					{
+						$file = $argv[$i];
+						$importer->ImportGeneric("product", $file);
 					}
 					else
 					{
@@ -89,7 +107,7 @@ else
 					if(substr($argv[$i], 0, 2) !== "--")
 					{
 						$file = $argv[$i];
-						$importer->ImportGroup($file);
+						$importer->ImportGeneric("group", $file);
 					}
 					else
 					{
@@ -106,7 +124,7 @@ else
 					if(substr($argv[$i], 0, 2) !== "--")
 					{
 						$file = $argv[$i];
-						$importer->ImportKey($file);
+						$importer->ImportGeneric("key", $file);
 					}
 					else
 					{
@@ -124,7 +142,7 @@ else
 					if(substr($argv[$i], 0, 2) !== "--")
 					{
 						$file = $argv[$i];
-						$importer->Import("invoice", ACCOUNTING_YEAR, $file);
+						$importer->ImportGeneric("invoice", $file, ACCOUNTING_YEAR);
 					}
 					else
 					{
@@ -149,7 +167,7 @@ class Importer
 		$this->curl = new CurlBrowser;
 	}
 
-	function Import($type, $period, $file)
+	function ImportGeneric($type, $file, $period = null)
 	{
 		if(!file_exists($file))
 		{
@@ -160,6 +178,22 @@ class Importer
 
 		switch($type)
 		{
+			case "product":
+				$url = "http://internal.dev/api/v2/product";
+				break;
+
+			case "member":
+				$url = "http://internal.dev/api/v2/member";
+				break;
+
+			case "group":
+				$url = "http://internal.dev/api/v2/group";
+				break;
+
+			case "key":
+				$url = "http://internal.dev/api/v2/rfid";
+				break;
+
 			case "account":
 				$url = "http://internal.dev/api/v2/economy/{$period}/account";
 				break;
@@ -178,6 +212,8 @@ class Importer
 		if($this->curl->StatusCode() == 201)
 		{
 			echo "OK\n";
+//			echo $this->curl->html;
+//			print_r($this->curl->GetJson());
 		}
 		else
 		{
@@ -185,83 +221,6 @@ class Importer
 			echo $this->curl->html;
 			print_r($this->curl->GetJson());
 			die();
-		}
-	}
-
-	function ImportMember($file)
-	{
-		if(!file_exists($file))
-		{
-			die("Error: File does not exist: $file\n");
-		}
-		echo " * {$file}\t";
-		$data = json_decode(file_get_contents($file));
-
-		$url = "http://internal.dev/api/v2/member";
-
-		$this->curl->Post($url, $data, true);
-
-		if($this->curl->StatusCode() == 201)
-		{
-			echo "OK\n";
-		}
-		else
-		{
-			echo "Error: Returned a non 201 response from server\n";
-			echo $this->curl->html;
-			print_r($this->curl->GetJson());
-			die();
-		}
-	}
-
-	function ImportGroup($file)
-	{
-		if(!file_exists($file))
-		{
-			die("Error: File does not exist: $file\n");
-		}
-		echo " * {$file}\t";
-		$data = json_decode(file_get_contents($file));
-
-		$url = "http://internal.dev/api/v2/group";
-
-		$this->curl->Post($url, $data, true);
-
-		if($this->curl->StatusCode() == 201)
-		{
-			echo "OK\n";
-		}
-		else
-		{
-			echo "Error: Returned a non 201 response from server\n";
-			echo $this->curl->html;
-			print_r($this->curl->GetJson());
-			die();
-		}
-	}
-
-	function ImportKey($file)
-	{
-		if(!file_exists($file))
-		{
-			die("Error: File does not exist: $file\n");
-		}
-		echo " * {$file}\t";
-		$data = json_decode(file_get_contents($file));
-
-		$url = "http://internal.dev/api/v2/rfid";
-
-		$this->curl->Post($url, $data, true);
-
-		if($this->curl->StatusCode() == 201)
-		{
-			echo "OK\n";
-		}
-		else
-		{
-			echo "Error: Returned a non 201 response from server\n";
-			echo $this->curl->html;
-			print_r($this->curl->GetJson());
 		}
 	}
 }
