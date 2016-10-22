@@ -2,25 +2,37 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>Internal v2.0 todo</title>
+	<title>Internal v2.0 kravspec</title>
 </head>
 <body>
 
 <div id="content">
-	<h1>Todo-list</h1>
+	<h1>Kravspec</h1>
 	<p>Dessa task är sorterade efter prioritet. Viktigast högst upp.</p>
 
 	<div class="task">
 		<h2>Skapa testdata</h2>
-		<p>För att kunna arbeta vettigt med systemet behöver vi data att lägga in i systemet för att testa med. Vi kan dessvärre inte jobba med den "riktiga" databasen, då den innehåller känsliga personuppgifter</p>
-		<p>Vi behöver data till följande:</p>
-		<ul>
-			<li>Påhittade medlemmar (members-tabellen)</li>
-			<li>Påhittade banktransaktioner (SEB)</li>
-			<li>Påhittade bankgirotransaktioner</li>
-			<li>Påhittade PayPal-transaktioner</li>
-			<li>Påhittade Stripe-transaktioner</li>
-		</ul>
+		<p>För att kunna arbeta vettigt i en utvecklingsmiljö behöver vi ordentlig data att testa med. Vi bör ha ett genereringsscript som slummpar fram data och populerar samtliga tabeller i databasen med en lagom mängd data.</p>
+	</div>
+
+	<div class="task">
+		<h2>Medlemshantering</h2>
+		<p></p>
+	</div>
+
+	<div class="task">
+		<h2>Grupper</h2>
+		<p></p>
+	</div>
+
+	<div class="task">
+		<h2>Inloggning</h2>
+		<p>Inloggning via YubiKey</p>
+	</div>
+
+	<div class="task">
+		<h2>Utskick</h2>
+		<p>Gör det möjligt att skriva ett mail direkt i Internal och sedan skicka det till en grupp, eller ett par utvalda användare, genom mailchimp eller annan extern leverantör (för att minimera risk att fastna i spamfilter). Detta skulle behövas för att skicka påminnelser för medlemsavgift etc./p>
 	</div>
 
 	<div class="task">
@@ -29,7 +41,7 @@
 		<ul>
 			<li>En databas över samtliga nycklar som är utlämnade</li>
 			<li>En nyckel har en koppling till medlem</li>
-			<li>En medlen kan ha flera nycklar</li>
+			<li>En medlem kan ha flera nycklar</li>
 			<li>Visa lista på alla nycklar (Filtrering: Samtliga, endast aktiva, endast passerat slutdautm, endast sådana som aldrig har aktiverats)</li>
 			<li>En separat tabell håller koll på giltighetstiderna. Man skapar en rad med ett start och ett slutdatum. Dessa datum gäller för för alla nycklar den personen har.</li>
 			<li>En rad i giltighetstabellen skall ha en koppling till en monetär transaktion</li>
@@ -51,22 +63,6 @@
 	</div>
 
 	<div class="task">
-		<h2>PayPal-import</h2>
-		<p>Vi behöver importera transaktionshistorik från PayPal. Delar från scriptet ovan kan återanvändas, men denna process skall vara helt automatiserad och inte ha något användargränssnitt (om möjligt).</p>
-		<ul>
-			<li>Klura ut hur PayPal's API fungerar och hur vi får ut data</li>
-			<li>Bygga ett script som hämtar data och petar in i en array</li>
-			<li>Kolla vad i denna array som ej finns i nuvarande databas</li>
-			<li>Stoppa in all ny data i databasen (transaction-tabellen)</li>
-		</ul>
-	</div>
-
-	<div class="task">
-		<h2>Stripe importer</h2>
-		<p>Samma som ovan, fast för Stripe</p>
-	</div>
-
-	<div class="task">
 		<h2>Bankgiro-import</h2>
 		<p>Klura ut hur man parse:ar ut Bankgiro-data från SEB's internetbank. Det verkar inte finnas någon exportfunktion för detta, så vi får nog köra lite regular expressions mot en *.html-fil.</p>
 	</div>
@@ -77,25 +73,87 @@
 	</div>
 
 	<div class="task">
-		<h2></h2>
-		<p></p>
+		<h2>Dokumentarkiv</h2>
+		<p>Ett superenkelt dokumentarkiv som fungerar som så att man laddar upp filer och sorterar in manuellt via FTP. Ett PHP-script läser denna katalogstruktur och skapar en sida där man kan klicka runt. Självklart med automatiskt generering av thumbnails från bilder och pdf.</p>
 	</div>
 
 	<div class="task">
-		<h2></h2>
-		<p></p>
+		<h2>Kioskinterface</h2>
+		<p>Vi bygger ett gränssnitt som är lämpligt för att någon förtroendevald ska få åtkomst endast till de funktioner och data som krävs för att lämna ut en nyckel till en medlem.</p>
 	</div>
 
 	<div class="task">
-		<h2></h2>
-		<p></p>
+		<h2>Monetära transaktioner</h2>
+		<ul>
+			<li>En monetär transaktion kan ha en koppling till en användare</li>
+			<li>Transaktioner som nyligen importeras saknar koppling</li>
+			<li>Lista på samtliga transaktioner med olika filtreringsalternativ (PayPal/Strip, datum, koppling till medlem, etc)</li>
+		</ul>
 	</div>
 
 	<div class="task">
-		<h2></h2>
-		<p></p>
+		<h2>Villkårade priser</h2>
+		<ul>
+			<li>Mängdrabatt</li>
+			<li>Datumstyrda priser</li>
+			<li>Intervallstyrda priser</li>
+			<li>Kombinationsrabatt</li>
+			<li>Övriga externa krav (arbetslös, student, etc)</li>
+			<li>Pris baserat på grupptillhörighet</li>
+		</ul>
 	</div>
 </div>
 
 </body>
 </html>
+
+
+
+<!--
+
+Tasks low prio:
+	Export av data
+	Config
+		Bygg ett gränssnitt som gör det möjligt att redigera config-tabellen direkt från webben
+	
+
+EconomyParser
+	The EconomyParser interface defines an interface used for importing and converting data from an external system.
+
+	To add a payment system you should do the following:
+	* Create a class that implements the EconomyImporter interface
+	* Create glue-logic used to read the data, like parsing a *.csv file or connecting to your payment providers API and export data.
+	* Go through the data and convert it into a format that could be handled by the system
+	* Specify on what account, in the "BAS kontoplan", this transaction should be added to.
+
+EconomyImporter
+	This class is used to cross check what is already in the database and what should be imported. All information is kept, but a flag is added to indicate whetever the transaction should be imported into the database or not.
+
+EconomyClassification
+	This is a interface used to classificate an economy transaction. When a transaction is imported into the system an accounting instruction (Swe: Verifikation) is automatically created. This accounting instruction need to have at least two rows that defines credit and debit on two different accounts. For example the credit could be on the "1930 Bank account. That information should already have been added by the EconomyImporter class. The debit could be on the "xxxx Membership fee". That should be added by this class. The sum of the transaction should be zero.
+
+	All transaction that cannot be classified is automatically added to the "2999 OBS" account. This account is specified in the "BAS kontoplan" to be used for unclassified or temporary transaction. Everything on this account should be moved in the near future and the balance should be zero.
+
+
+
+- Autentisering: Varje användare ska enbart behöva ett lösenord som lätt kan ändras
+- Access: Vem har tillträde till vad (lokal, datorsystem, hemsidor, wifi?, vpn?)Extra funktioner som kanske inte alla föreningar behöver / vill ha:
+- Betalsystem: Hantering av kostnader för t.ex. förbrukningsmateriel
+- Interna webbsidor: Föreningsinformation, wiki, forum 
+
+Betalsystem
+	PayPal
+	Strip
+	SEB
+	Bankgiro
+	Autogiro
+	BitPay
+
+
+Vad sägs om en statistikmodul?
+Statistik över
+- Personer som går in i lokalen
+- Användning av maskiner
+- Köp av förbrukningsmaterial 
+
+-->

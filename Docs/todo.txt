@@ -1,34 +1,37 @@
-Förberedelser:
-	Skapa URL schema + URL router + controllers
+High prio:
 
-	Bygga UIkit gränssnitt för monetära transaktioner
-	Bygga React-gränssnitt för transaktioner
-	Integrera med Backbone
-	Bygga backend i Laravel
-	Mecka ihop allt ovan
-	Städa koden, dokumentera och använda som mall för övriga funktioner
+Medium prio:
+	Om Entity::save() går fel skall exception kastas
+	Utskick: Skicka-knapp skall förifylla member
+	Snyggare meddelanden
+	Kasta exception om man försöker sortera på kolumn som ej finns
+	Delete ska även ta bort rader i kopplingstabeller samt relationer
+	När man skapar eller uppdaterar en entitet ska den laddas "på riktigt" med Entity::Load() och skickas tillbaka till klienten som uppdaterar eventuella vyer med korrekt data (etc updated_at).
 
-Tasks:
-	Monetära transaktioner
-		En monetär transaktion kan ha en koppling till en användare
-		Transaktioner som nyligen importeras saknar koppling
-		Lista på samtliga transaktioner med olika filtreringsalternativ (PayPal/Strip, datum, koppling till medlem, etc)
-	Ekonomi
-		En monetär transaktion skall ha en koppling till en post i bokföringen. Vi kommer inte bygga någon bokföring i detta system inom en snar framtid. Däremot skulle det underlätta rejält med en kopplingstabell där man kan ange ett referensnummer för att hänvisa till en verifikation i det externa bokföringsprogrammet.
-	Uppdatera gamla internal
-		Eventuellt görs det databasändringar. Uppdatera Internal V1 så att det fungerar med den nya databasen
+Low prio:
+	A new search should reset pageIndex
 
-Tasks low prio:
-	Medlemshantering
-	Grupphantering
-	Export av data
-	Mail
-		Gör det möjligt att skriva ett mail direkt i Internal och sedan skicka det till en grupp, eller ett par utvalda användare, genom mailchimp eller annan extern leverantör (för att minimera risk att fastna i spamfilter). Detta skulle behövas för att skicka påminnelser för medlemsavgift etc.
-	Dokumentarkiv
-		Ett superenkelt dokumentarkiv som fungerar som så att man laddar upp filer och sorterar in manuellt via FTP. Ett PHP-script läser denna katalogstruktur och skapar en sida där man kan klicka runt. Självklart med automatiskt generering av thumbnails från bilder och pdf.
-	Config
-		Bygg ett gränssnitt som gör det möjligt att redigera config-tabellen direkt från webben
-	Kioskdator för nyckelutlämning
-		Vi bygger ett gränssnitt som är lämpligt för att någon förtroendevald ska få åtkomst endast till de funktioner och data som krävs för att lämna ut en nyckel till en medlem.
-	Inloggning via klientcertifikat
-	Inloggning via YubiKey
+	Warning: [react-router] `props.history` and `context.history` are deprecated. Please use `context.router`. http://tiny.cc/router-contextchanges
+	./nav.js:			if(this.context.history.isActive(this.props.navItem.target))
+	./nav.js:			if(this.context.history.isActive(item.target))
+
+	Listan över samtliga utskick skall länka till member eller dylikt (id-kolumnen skall länka någonstans)
+
+	DB: Remove table accounting_category?
+	DB: Remove table accounting_cost_center?
+	DB: Remove table accounting_verification_series?
+
+	Error handling in API:
+		404 när man försöker köra CRUD på en entitet som ej finns
+
+	Sökning i drop down för att välja land
+	Möjlighet att reseta modeller / formulär till state innan man började ändra
+
+	Formulär felmeddelanden under inputs + röd linje
+	Postadress flyttas inte korrekt på mobilen?
+
+	En ny sökning skall avbryta den tidigare
+
+	Mecka till Backbone så att när alla success-callback som körs gör det lagom fördröjda så att sync-eventet redan kört. Annars kommer React gnälla när det körs en setState() på en komponent som kanske inte finns längre eftersom den togs bort i success
+
+	Mellanrum på I-ikon i Rfid
