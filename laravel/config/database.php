@@ -48,10 +48,10 @@ return [
 
         'mysql' => [
             'driver'    => 'mysql',
-            'host'      => env('DB_HOST', 'localhost'),
-            'database'  => env('DB_DATABASE', 'internal'),
-            'username'  => env('DB_USERNAME', 'internal'),
-            'password'  => env('DB_PASSWORD', 'g34Api5C9L'),
+            'host'      => env('DB_HOST',     getenv("MYSQL_HOST")),
+            'database'  => env('DB_DATABASE', getenv("MYSQL_DB")),
+            'username'  => env('DB_USERNAME', getenv("MYSQL_USER")),
+            'password'  => env('DB_PASSWORD', getenv("MYSQL_PASS")),
             'charset'   => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix'    => '',
