@@ -1,1 +1,1 @@
-webpack --watch webpack.config.js
+nodejs ./node_modules/webpack/bin/webpack.js --watch webpack.config.js
