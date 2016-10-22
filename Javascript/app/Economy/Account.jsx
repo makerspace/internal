@@ -8,7 +8,6 @@ import TransactionCollection from '../Backbone/Collections/Transaction'
 
 import { Link } from 'react-router'
 import Currency from '../Formatters/Currency'
-import DateField from '../Formatters/Date'
 import BackboneTable from '../BackboneTable'
 
 import { EconomyAccountingInstructionList } from './Instruction'

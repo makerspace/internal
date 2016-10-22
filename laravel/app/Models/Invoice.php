@@ -68,6 +68,10 @@ class Invoice extends Entity
 			"column" => "invoice.accounting_period",
 			"select" => "invoice.accounting_period",
 		],
+		"date_expiry" => [
+			"column" => "date_expiry",
+			"select" => "DATE_FORMAT(DATE_ADD(invoice.date_invoice, INTERVAL invoice.conditions DAY), '%Y-%m-%dT%H:%i:%sZ')",
+		],
 	];
 	protected $sort = ["invoice_number", "desc"];
 
@@ -147,21 +151,14 @@ class Invoice extends Entity
 		// Get result
 		$data = $query->get();
 
-		// Go through invoices and calculate metadata
-		foreach($data as &$invoice)
-		{
-			// Calculate expiry date
-			$invoice->date_expiry = $this->_calculateExpiryDate($invoice);
-		}
-
 		$result = [
 			"data" => $data
 		];
 
 		if($this->pagination != null)
 		{
-			$result["total"]    = $query->count();
-			$result["per_page"] = $this->pagination;
+			$result["total"]     = $query->getCountForPagination();
+			$result["per_page"]  = $this->pagination;
 			$result["last_page"] = ceil($result["total"] / $result["per_page"]);
 		}
 
@@ -218,14 +215,6 @@ class Invoice extends Entity
 
 		// Return invoice
 		return $invoice;
-	}
-
-	/**
-	 * Calculate expiry date of an invoice
-	 */
-	function _calculateExpiryDate($invoice)
-	{
-		return date("Y-m-d", strtotime($invoice->date_invoice . "+{$invoice->conditions}days"));
 	}
 
 	/**

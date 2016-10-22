@@ -7,6 +7,7 @@ import InvoiceModel from '../Backbone/Models/Invoice'
 
 import { Link } from 'react-router'
 import Currency from '../Formatters/Currency'
+import DateField from '../Formatters/Date'
 import BackboneTable from '../BackboneTable'
 import TableFilterBox from '../TableFilterBox'
 
@@ -112,23 +113,24 @@ var InvoiceList = React.createClass({
 		return [
 			{
 				title: "#",
+				sort: "invoice_number",
 			},
 			{
 				title: "Förfallodatum",
-				sort: "",
+				sort: "date_expiry",
 			},
 			{
 				title: "Mottagare",
-				sort: "",
+				sort: "title",
 			},
 			{
 				title: "Referens",
-				sort: "rour_reference",
+				sort: "your_reference",
 			},
 			{
 				title: "Belopp",
 				class: "uk-text-right",
-				sort: "amount",
+				sort: "_total",
 			},
 			{
 				title: "Status",
@@ -147,7 +149,7 @@ var InvoiceList = React.createClass({
 		return (
 			<tr key={i}>
 				<td><Link to={"/economy/invoice/" + row.invoice_number}>{row.invoice_number}</Link></td>
-				<td>{row.date_expiry}</td>
+				<td><DateField date={row.date_expiry} /></td>
 				<td>{row.title}</td>
 				<td>{row.your_reference}</td>
 				<td className="uk-text-right"><Currency value={row._total} currency={row.currency} /></td>

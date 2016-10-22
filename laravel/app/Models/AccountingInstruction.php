@@ -223,7 +223,7 @@ class AccountingInstruction extends Entity
 
 		if($this->pagination != null)
 		{
-			$result["total"]    = $query->count();
+			$result["total"]    = $query->getCountForPagination();
 			$result["per_page"] = $this->pagination;
 			$result["last_page"] = ceil($result["total"] / $result["per_page"]);
 		}

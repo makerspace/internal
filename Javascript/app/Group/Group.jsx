@@ -32,8 +32,7 @@ var GroupHandler = React.createClass({
 						relations:
 						[
 							{
-								type: "member",
-								member_number: this.props.member_number,
+								entity_id: this.state.model.get("entity_id"),
 							}
 						]
 					}}

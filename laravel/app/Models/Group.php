@@ -30,13 +30,6 @@ class Group extends Entity
 			"column" => "entity.description",
 			"select" => "entity.description",
 		],
-		// TODO: Count members
-/*
-		"membercount" => [
-			"column" => "7",
-			"select" => "7",
-		],
-*/
 	];
 	protected $sort = ["title", "asc"];
 	protected $validation = [
@@ -57,5 +50,49 @@ class Group extends Entity
 		}
 
 		return $query;
+	}
+
+	protected function _list($filters = [])
+	{
+		// Preprocessing (join or type and sorting)
+		$this->_preprocessFilters($filters);
+
+		// Build base query
+		$query = $this->_buildLoadQuery($filters);
+
+		// Apply standard filters like entity_id, relations, etc
+		$query = $this->_applyFilter($query, $filters);
+
+		// Calculate total number of peoples in the group
+		$query = $query
+			->leftJoin("relation", "relation.entity2", "=", "entity.entity_id")
+			->selectRaw("(SELECT COUNT(*) FROM relation LEFT JOIN entity e ON e.entity_id = relation.entity1 WHERE relation.entity2 = entity.entity_id AND e.type=\"member\") AS membercount");
+
+		// Sort
+		$query = $this->_applySorting($query);
+
+		// Paginate
+		if($this->pagination != null)
+		{
+			$query->paginate($this->pagination);
+		}
+
+		// Run the MySQL query
+		$data = $query->get();
+
+		// Prepare array to be returned
+		$result = [
+			"data" => $data
+		];
+
+		// Pagination
+		if($this->pagination != null)
+		{
+			$result["total"]     = $query->getCountForPagination();
+			$result["per_page"]  = $this->pagination;
+			$result["last_page"] = ceil($result["total"] / $result["per_page"]);
+		}
+
+		return $result;
 	}
 }

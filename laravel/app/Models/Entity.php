@@ -228,7 +228,15 @@ class Entity
 			// Sort on single column
 			else
 			{
-				$query = $query->orderBy($this->columns[$this->sort[0]]["column"], $this->sort[1]);
+				// The column could be either an arbritary column like a SUM(meep) AS total, or a "real" column like entity.entity_id
+				if(array_key_exists($this->sort[0], $this->columns))
+				{
+					$query = $query->orderBy($this->columns[$this->sort[0]]["column"], $this->sort[1]);
+				}
+				else
+				{
+					$query = $query->orderBy($this->sort[0], $this->sort[1]);
+				}
 			}
 		}
 
@@ -279,7 +287,7 @@ class Entity
 		// Pagination
 		if($this->pagination != null)
 		{
-			$result["total"]     = $query->count();
+			$result["total"]     = $query->getCountForPagination();
 			$result["per_page"]  = $this->pagination;
 			$result["last_page"] = ceil($result["total"] / $result["per_page"]);
 		}
@@ -480,6 +488,11 @@ class Entity
 		$inserts = [];
 		foreach($this->columns as $name => $data)
 		{
+			if(!strpos($data["column"], "."))
+			{
+				continue;
+			}
+
 			list($table, $column) = explode(".", $data["column"]);
 			if($table == $this->join && array_key_exists($column, $this->data))
 			{
