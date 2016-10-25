@@ -11,20 +11,6 @@ server {
 		try_files $uri $uri/ /index.php?$query_string;
 	}
 
-	location /phpmyadmin {
-		alias /vagrant/phpMyAdmin;
-		index index.php;
-
-		location ~ \.php$ {
-#			fastcgi_split_path_info ^(.+\.php)(/.+)$;
-#			fastcgi_pass unix:/var/run/php5-fpm.sock;
-#			fastcgi_index index.php;
-#			include fastcgi_params;
-			include snippets/fastcgi-php.conf;
-			fastcgi_pass unix:/var/run/php-fpm.sock;
-		}
-	}
-
 	location ~ \.php$ {
 #		fastcgi_split_path_info ^(.+\.php)(/.+)$;
 #		fastcgi_pass unix:/var/run/php5-fpm.sock;
