@@ -1,3 +1,0 @@
-#!/bin/bash
-
-docker build --tag=makerspace/docker-webserver:0.1 .

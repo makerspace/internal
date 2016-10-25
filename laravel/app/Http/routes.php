@@ -19,7 +19,7 @@ header("Access-Control-Allow-Headers: authorization");
 //header("Access-Control-Allow-Credentials: true");
 
 // API version 2
-Route::group(["prefix" => "api/v2", "before" => "oauth"], function()
+Route::group(["prefix" => "v1", "before" => "oauth"], function()
 {
 	// OAuth 2.0
 	Route::post("oauth/access_token", function() {
@@ -154,5 +154,8 @@ Route::group(["prefix" => "api/v2", "before" => "oauth"], function()
 // Everything else should load the single page app
 Route::get("/{wildcard}", function ()
 {
-    return view("app");
+	return Response()->json([
+		"status"  => "error",
+		"message" => "Unknown API request",
+	], 400);
 })->where("wildcard", ".*");
