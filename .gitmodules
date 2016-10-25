@@ -1,3 +1,0 @@
-[submodule "application/libraries/fortnox"]
-	path = application/libraries/fortnox
-	url = git://github.com/makerspace/fortnox.git
