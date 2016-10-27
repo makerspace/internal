@@ -109,13 +109,6 @@ Route::group(["prefix" => "v1", "before" => "oauth"], function()
 			->header("Content-Type", "application/json");
 	}
 
-	// Products
-	Route::   get("product",      "V2\Product@list");   // Get collection
-	Route::  post("product",      "V2\Product@create"); // Model: Create
-	Route::   get("product/{id}", "V2\Product@read");   // Model: Read
-	Route::   put("product/{id}", "V2\Product@update"); // Model: Update
-	Route::delete("product/{id}", "V2\Product@delete"); // Model: Delete
-
 	// Mail
 	Route::   get("mail",      "V2\Mail@list");   // Get collection
 	Route::  post("mail",      "V2\Mail@create"); // Model: Create
@@ -124,13 +117,6 @@ Route::group(["prefix" => "v1", "before" => "oauth"], function()
 	Route::delete("mail/{id}", "V2\Mail@delete"); // Model: Delete
 	Route::  post("mail/send", "V2\Mail@send");   // Add E-mail to send queue
 
-	// Subscriptions
-	Route::   get("subscription",      "V2\Subscription@list");   // Get collection
-	Route::  post("subscription",      "V2\Subscription@create"); // Model: Create
-	Route::   get("subscription/{id}", "V2\Subscription@read");   // Model: Read
-	Route::   put("subscription/{id}", "V2\Subscription@update"); // Model: Update
-	Route::delete("subscription/{id}", "V2\Subscription@delete"); // Model: Delete
-
 	// RFID keys
 	Route::   get("rfid",      "V2\Rfid@list");   // Get collection
 	Route::  post("rfid",      "V2\Rfid@create"); // Model: Create
@@ -138,16 +124,6 @@ Route::group(["prefix" => "v1", "before" => "oauth"], function()
 	Route::   put("rfid/{id}", "V2\Rfid@update"); // Model: Update
 	Route::delete("rfid/{id}", "V2\Rfid@delete"); // Model: Delete
 
-	// Sales
-	Route::group(array("prefix" => "sales"), function()
-	{
-		// History
-		Route::   get("history",      "V2\Sales@list");   // Get collection
-		Route::  post("history",      "V2\Sales@create"); // Model: Create
-		Route::   get("history/{id}", "V2\Sales@read");   // Model: Read
-		Route::   put("history/{id}", "V2\Sales@update"); // Model: Update
-		Route::delete("history/{id}", "V2\Sales@delete"); // Model: Delete
-	});
 
 	// Import
 	Route::group(array("prefix" => "import"), function()
