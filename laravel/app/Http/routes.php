@@ -20,94 +20,11 @@ header("Access-Control-Allow-Headers: Origin, Content-Type, Accept, Authorizatio
 // API version 2
 Route::group(["prefix" => "v1", "before" => "oauth"], function()
 {
-	// OAuth 2.0
-	Route::post("oauth/access_token", function() {
-		return Response::json(Authorizer::issueAccessToken());
-	});
-	// TODO: Logout?
-
-	// Service registry
-	Route::  post("service/register",   "V2\ServiceRegistry@register");
-	Route::  post("service/unregister", "V2\ServiceRegistry@unregister");
-
 	// Debugging
 	Route::get("debug/test",                     "V2\Debug@test");
 	Route::get("debug/updateinstructionnumbers", "V2\Debug@UpdateInstructionNumbers");
 	Route::get("debug/unbalanced",               "V2\Debug@Unbalanced");
 	Route::get("debug/cleardatabase",            "V2\Debug@ClearDatabase");
-
-	$services = [
-		[
-			"name"     => "Membership",
-			"url"      => "/membership",
-			"endpoint" => "http://172.19.0.4:80",
-			"version"  => "1.0",
-		],
-	];
-
-	foreach($services as $service)
-	{
-		// Forward all CRUD requests to this service
-		Route::match(["get", "post", "put", "delete"], "{$service["url"]}{wildcard}", function(Illuminate\Http\Request $request) use ($service) {
-			return sendInternalRequest($request, $service["endpoint"]);
-		})->where("wildcard", ".*"); // TODO: Snyggare matchning
-	}
-
-	function sendInternalRequest(Illuminate\Http\Request $request, $endpoint)
-	{
-		// Initialize cURL
-		$path = substr($request->path(), 3); // TODO: Remove /v1
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_HEADER, false);
-
-		// TODO: Lägg på headers med inloggningsinformation / behörigheter
-		curl_setopt($ch, CURLOPT_HTTPHEADER,
-			[
-				"X-Username: chille",
-				"X-Organisation: Stockholm Makerspace",
-			]
-		);
-
-		// Use the right method
-		if("GET" == $request->method())
-		{
-			// A standard GET request
-			$querystring = http_build_query($request->all(), "", "&");
-			curl_setopt($ch, CURLOPT_URL, "{$endpoint}/{$path}?{$querystring}");
-		}
-		else if(in_array($request->method(), ["POST", "PUT", "DELETE"]))
-		{
-			// A POST, PUT or DELETE request should include the JSON data
-			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $request->method());
-
-			curl_setopt($ch, CURLOPT_URL, "http://172.19.0.4/{$path}");
-			curl_setopt($ch, CURLOPT_POST, true);
-			$data = json_encode($request->all());
-			curl_setopt($ch, CURLOPT_HTTPHEADER, [
-				"Content-Type: application/json",
-				"Content-Length: " . strlen($data)
-			]);
-			curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-		}
-		else
-		{
-			// Unknown request
-			return ["error" => "Unknown method"]; // TODO
-		}
-
-		// Execute the cURL request and get data
-		$data = curl_exec($ch);
-		$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-		curl_close($ch);
-
-		// Return the result as a human readable result
-		$result = json_encode(json_decode($data), JSON_PRETTY_PRINT)."\n";
-
-		// Send response to client
-		return response($result, $http_code)
-			->header("Content-Type", "application/json");
-	}
 
 	// Mail
 	Route::   get("mail",      "V2\Mail@list");   // Get collection
@@ -123,7 +40,6 @@ Route::group(["prefix" => "v1", "before" => "oauth"], function()
 	Route::   get("rfid/{id}", "V2\Rfid@read");   // Model: Read
 	Route::   put("rfid/{id}", "V2\Rfid@update"); // Model: Update
 	Route::delete("rfid/{id}", "V2\Rfid@delete"); // Model: Delete
-
 
 	// Import
 	Route::group(array("prefix" => "import"), function()
