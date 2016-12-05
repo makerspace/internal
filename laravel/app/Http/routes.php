@@ -20,20 +20,6 @@ header("Access-Control-Allow-Headers: Origin, Content-Type, Accept, Authorizatio
 // API version 2
 Route::group(["prefix" => "v1", "before" => "oauth"], function()
 {
-	// Debugging
-	Route::get("debug/test",                     "V2\Debug@test");
-	Route::get("debug/updateinstructionnumbers", "V2\Debug@UpdateInstructionNumbers");
-	Route::get("debug/unbalanced",               "V2\Debug@Unbalanced");
-	Route::get("debug/cleardatabase",            "V2\Debug@ClearDatabase");
-
-	// Mail
-	Route::   get("mail",      "V2\Mail@list");   // Get collection
-	Route::  post("mail",      "V2\Mail@create"); // Model: Create
-	Route::   get("mail/{id}", "V2\Mail@read");   // Model: Read
-	Route::   put("mail/{id}", "V2\Mail@update"); // Model: Update
-	Route::delete("mail/{id}", "V2\Mail@delete"); // Model: Delete
-	Route::  post("mail/send", "V2\Mail@send");   // Add E-mail to send queue
-
 	// RFID keys
 	Route::   get("rfid",      "V2\Rfid@list");   // Get collection
 	Route::  post("rfid",      "V2\Rfid@create"); // Model: Create
